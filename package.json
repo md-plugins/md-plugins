@@ -1,0 +1,39 @@
+{
+  "name": "md-plugins",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "prebuild2": "pnpm --filter=@md-plugins/shared build",
+    "build": "pnpm -r --stream build",
+    "build2": "pnpm -r --stream --filter=!@md-plugins/shared build",
+    "dev": "vitest",
+    "check-types": "tsc --noEmit --skipLibCheck",
+    "clean": "pnpm -r --stream clean",
+    "format": "prettier --write .",
+    "lint": "eslint . && prettier --check .",
+    "test": "vitest run"
+  },
+  "keywords": [
+    "markdown",
+    "markdown-it",
+    "quasar",
+    "quasarframework",
+    "vue"
+  ],
+  "author": "",
+  "license": "MIT",
+  "packageManager": "pnpm@9.14.4",
+  "devDependencies": {
+    "@eslint/js": "^9.17.0",
+    "@types/node": "^22.10.2",
+    "@typescript-eslint/eslint-plugin": "^8.18.1",
+    "@vitest/coverage-istanbul": "^2.1.8",
+    "eslint": "^9.17.0",
+    "globals": "^15.14.0",
+    "prettier": "^3.4.2",
+    "typescript": "~5.7.2",
+    "unbuild": "^3.0.1",
+    "vitest": "^2.1.8"
+  }
+}

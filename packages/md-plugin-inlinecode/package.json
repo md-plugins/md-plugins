@@ -1,0 +1,48 @@
+{
+  "name": "@md-plugins/md-plugin-inlinecode",
+  "version": "0.1.0",
+  "description": "A markdown-it plugin for handling inline code.",
+  "keywords": [
+    "markdown-it",
+    "quasarframework",
+    "vue",
+    "types"
+  ],
+  "homepage": "https://github.com/md-plugins",
+  "bugs": {
+    "url": "https://github.com/md-plugins/md-plugins/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/md-plugins/md-plugins.git"
+  },
+  "license": "MIT",
+  "author": "hawkeye64 <galbraith64@gmail.com>",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      }
+    }
+  },
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "./dist"
+  ],
+  "scripts": {
+    "build": "unbuild",
+    "clean": "rm -rf dist",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "@md-plugins/shared": "workspace:*",
+    "@types/markdown-it": "^14.1.2",
+    "markdown-it": "^14.1.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

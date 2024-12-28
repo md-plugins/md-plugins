@@ -1,0 +1,61 @@
+{
+  "name": "@md-plugins/vite-md-plugin",
+  "version": "0.1.0",
+  "description": "A very opinionated Vite plugin for @md-plugins.",
+  "keywords": [
+    "markdown-it",
+    "quasarframework",
+    "vue",
+    "utils",
+    "vite",
+    "vite-plugin"
+  ],
+  "homepage": "https://github.com/md-plugins",
+  "bugs": {
+    "url": "https://github.com/md-plugins/md-plugins/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/md-plugins/md-plugins.git"
+  },
+  "license": "MIT",
+  "author": "hawkeye64 <galbraith64@gmail.com>",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      }
+    }
+  },
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "./dist"
+  ],
+  "scripts": {
+    "build": "unbuild",
+    "clean": "rm -rf dist",
+    "test": "vitest"
+  },
+  "devDependencies": {
+    "@md-plugins/shared": "workspace:*",
+    "@md-plugins/md-plugin-containers": "workspace:*",
+    "@md-plugins/md-plugin-frontmatter": "workspace:*",
+    "@md-plugins/md-plugin-headers": "workspace:*",
+    "@md-plugins/md-plugin-link": "workspace:*",
+    "@md-plugins/md-plugin-inlinecode": "workspace:*",
+    "@md-plugins/md-plugin-image": "workspace:*",
+    "@md-plugins/md-plugin-imports": "workspace:*",
+    "@md-plugins/md-plugin-table": "workspace:*",
+    "@md-plugins/md-plugin-codeblocks": "workspace:*",
+    "@md-plugins/md-plugin-blockquote": "workspace:*",
+    "@md-plugins/md-plugin-title": "workspace:*",
+    "@types/markdown-it": "^14.1.2",
+    "markdown-it": "^14.1.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
