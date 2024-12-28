@@ -29,6 +29,7 @@ pnpm add @md-plugins/md-plugin-link
 ```js
 import MarkdownIt from 'markdown-it';
 import { linkPlugin } from '@md-plugins/md-plugin-link';
+import type { MarkdownItEnv } from '@md-plugins/shared';
 
 const md = new MarkdownIt();
 md.use(linkPlugin, {
@@ -42,7 +43,7 @@ const markdownContent = `
 [External Link](https://example.com)
 `;
 
-const env = {};
+const env: MarkdownItEnv = {};
 const renderedOutput = md.render(markdownContent, env);
 
 console.log('Rendered Output:', renderedOutput);

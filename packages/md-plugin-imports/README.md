@@ -13,7 +13,7 @@ The imports are stored in the `pageScripts` property of the Markdown-It environm
 
 ## Installation
 
-Install the plugin via npm:
+Install the plugin via your preferred package manager:
 
 ```bash
 # With npm:
@@ -31,6 +31,7 @@ pnpm add @md-plugins/md-plugin-imports
 ```js
 import MarkdownIt from 'markdown-it';
 import { importsPlugin } from '@md-plugins/md-plugin-imports';
+import type { MarkdownItEnv } from '@md-plugins/shared';
 
 const md = new MarkdownIt();
 md.use(importsPlugin);
@@ -46,7 +47,7 @@ import B from './B.vue';
 Some content here.
 `;
 
-const env = {};
+const env: MarkdownItEnv = {};
 const renderedOutput = md.render(markdownContent, env);
 
 console.log('Rendered Output:', renderedOutput);

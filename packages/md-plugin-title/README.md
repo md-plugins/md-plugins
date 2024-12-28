@@ -29,6 +29,7 @@ pnpm add @md-plugins/md-plugin-title
 ```js
 import MarkdownIt from 'markdown-it';
 import { titlePlugin } from '@md-plugins/md-plugin-title';
+import type { MarkdownItEnv } from '@md-plugins/shared';
 
 const md = new MarkdownIt();
 md.use(titlePlugin);
@@ -39,7 +40,7 @@ const markdownContent = `
 Some content here.
 `;
 
-const env = {};
+const env: MarkdownItEnv = {};
 const renderedOutput = md.render(markdownContent, env);
 
 console.log('Rendered Output:', renderedOutput);

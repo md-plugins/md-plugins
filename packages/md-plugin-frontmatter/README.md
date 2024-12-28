@@ -30,6 +30,7 @@ pnpm add @md-plugins/md-plugin-frontmatter
 ```js
 import MarkdownIt from 'markdown-it';
 import { frontmatterPlugin } from '@md-plugins/md-plugin-frontmatter';
+import type { MarkdownItEnv } from '@md-plugins/shared';
 
 const md = new MarkdownIt();
 md.use(frontmatterPlugin, {
@@ -48,7 +49,7 @@ date: 2024-01-01
 This is the main content of the Markdown file.
 `;
 
-const env = {};
+const env: MarkdownItEnv = {};
 const renderedOutput = md.render(markdownContent, env);
 
 console.log('Rendered Output:', renderedOutput);

@@ -32,6 +32,7 @@ pnpm add @md-plugins/md-plugin-headers
 ```js
 import MarkdownIt from 'markdown-it';
 import { headersPlugin } from '@md-plugins/md-plugin-headers';
+import type { MarkdownItEnv } from '@md-plugins/shared';
 
 const md = new MarkdownIt();
 md.use(headersPlugin, {
@@ -48,7 +49,7 @@ const markdownContent = `
 ### Subheader 1.1.1
 `;
 
-const env = {};
+const env: MarkdownItEnv = {};
 const renderedOutput = md.render(markdownContent, env);
 
 console.log('Rendered Output:', renderedOutput);

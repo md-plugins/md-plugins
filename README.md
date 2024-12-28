@@ -34,7 +34,7 @@ This monorepo provides:
 | `@md-plugins/md-plugin-frontmatter` | Extracts and processes frontmatter content from Markdown files.         | [README](packages/md-plugin-frontmatter/README.md) |
 | `@md-plugins/md-plugin-containers`  | Adds custom containers for callouts, warnings, and more.                | [README](packages/md-plugin-containers/README.md)  |
 | `@md-plugins/shared`                | Shared utilities and types for the plugins.                             | [README](packages/shared/README.md)                |
-| `viteMdPlugin`                      | Vite plugin for transforming Markdown into Vue SFCs.                    | [README](packages/vite-md-plugin/README.md)        |
+| `viteMdPlugin`                      | Vite plugin for transforming Markdown into Vue SFCs.                    | [README](packages/viteMdPlugin/README.md)          |
 
 ## Installation
 
