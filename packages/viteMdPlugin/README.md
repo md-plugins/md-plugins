@@ -63,7 +63,7 @@ build: {
   },
 
   vitePlugins: [
-    viteMdPlugin(ctx.appPaths.srcDir, menu),
+    viteMdPlugin(ctx.appPaths.srcDir + '/pages', menu),
     // ...
   ],
 },

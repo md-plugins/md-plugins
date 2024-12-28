@@ -2,10 +2,6 @@ import { join } from 'node:path';
 import { fileURLToPath, URL } from 'node:url';
 import type { MenuItem, FlatMenu, FlatMenuEntry, RelatedItem } from './types';
 
-// TODO: Jeff - prefix needs to be passed in
-// Path prefix
-// const prefix = fileURLToPath(new URL('../../src/pages', import.meta.url));
-
 let prev: FlatMenuEntry | null = null;
 
 /**
