@@ -48,6 +48,10 @@ If you’re using the Quasar Framework, additional configuration is needed to en
 1. Update `quasar.config.(js|ts)`:
 
 ```js
+import { viteMdPlugin } from '@md-plugins/vite-md-plugin';
+```
+
+```js
 build: {
   vueRouterMode: 'history', // Required for proper hash link handling
 
