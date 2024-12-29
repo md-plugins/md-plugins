@@ -38,7 +38,7 @@
     "build": "unbuild",
     "clean": "rm -rf dist"
   },
-  "devDependencies": {
+  "dependencies": {
     "@md-plugins/shared": "workspace:*",
     "@md-plugins/md-plugin-containers": "workspace:*",
     "@md-plugins/md-plugin-frontmatter": "workspace:*",

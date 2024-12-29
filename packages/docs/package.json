@@ -24,6 +24,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.14.0",
+    "@md-plugins/shared": "workspace:*",
     "@md-plugins/vite-md-plugin": "workspace:*",
     "@md-plugins/vite-examples-plugin": "workspace:*",
     "@quasar/app-vite": "^2.0.0",
