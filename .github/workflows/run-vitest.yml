@@ -2,7 +2,7 @@ name: Run Vitest Tests
 
 on:
   push: # Trigger on push to any branch
-  pull_request: # Trigger on pull requst to any branch
+  pull_request: # Trigger on pull request to any branch
 
 jobs:
   vitest:
@@ -19,8 +19,6 @@ jobs:
       # Install pnpm
       - name: Install pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 9
 
       # Use Node.js
       - name: Use Node.js ${{ matrix.node-version }}
@@ -29,10 +27,22 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
 
-      # Install dependencies
+      # Install dependencies for all packages
       - name: Install dependencies
         run: pnpm install
 
-      # Run Vitest
+      # Build all packages except docs
+      - name: Build all packages (exclude docs)
+        run: pnpm build --filter '!packages/docs'
+
+      # Run the "prepared" script for docs
+      - name: Prepare Quasar (docs)
+        run: pnpm --filter 'packages/docs' prepared
+
+      # Build the docs package
+      - name: Build Quasar project (docs)
+        run: pnpm build --filter 'packages/docs'
+
+      # Run Vitest tests
       - name: Run Vitest tests
         run: pnpm test
