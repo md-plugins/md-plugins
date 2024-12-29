@@ -29,19 +29,19 @@ jobs:
 
       # Install dependencies for non-Quasar packages
       - name: Install dependencies (exclude docs)
-        run: pnpm install --filter "!packages/docs"
+        run: pnpm install --filter "!@md-plugins/docs"
 
       # Build all non-Quasar packages
       - name: Build non-Quasar packages
-        run: pnpm build --filter "!packages/docs"
+        run: pnpm build --filter "!@md-plugins/docs"
 
       # Install dependencies for Quasar docs
       - name: Install dependencies for Quasar project (docs)
-        run: pnpm install --filter "packages/docs"
+        run: pnpm install --filter "@md-plugins/docs"
 
       # Build the Quasar project (docs)
       - name: Build Quasar project (docs)
-        run: pnpm build --filter "packages/docs"
+        run: pnpm build --filter "@md-plugins/docs"
 
       # Run Vitest
       - name: Run Vitest tests
