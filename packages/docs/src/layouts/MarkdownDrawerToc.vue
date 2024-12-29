@@ -1,7 +1,7 @@
 <template>
   <q-drawer
     id="toc-drawer"
-    v-model="docStore.tocDrawer"
+    v-model="markdownStore.tocDrawer"
     side="right"
     class="markdown-drawer"
     behavior="mobile"
@@ -15,7 +15,7 @@
         dense
         flat
         color="brand-accent"
-        @click="docStore.toggleTocDrawer"
+        @click="markdownStore.toggleTocDrawer"
       />
     </div>
 
@@ -29,9 +29,9 @@
 <script setup lang="ts">
 import { mdiClose } from '@quasar/extras/mdi-v7'
 
-import { useDocStore } from 'stores/doc'
+import { useMarkdownStore } from 'src/stores/markdown'
 
 import MarkdownPageToc from './MarkdownPageToc.vue'
 
-const docStore = useDocStore()
+const markdownStore = useMarkdownStore()
 </script>

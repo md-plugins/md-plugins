@@ -1,7 +1,7 @@
 import { scroll } from 'quasar'
 import { watch, onMounted, onBeforeUnmount } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { useDocStore } from 'stores/doc'
+import { useMarkdownStore } from 'src/stores/markdown'
 const { setVerticalScrollPosition, getVerticalScrollPosition } = scroll
 
 export function useScroll() {
@@ -9,7 +9,7 @@ export function useScroll() {
   const scrollDuration = 500
   const route = useRoute()
   const router = useRouter()
-  const docStore = useDocStore()
+  const markdownStore = useMarkdownStore()
 
   let preventTocUpdate = route.hash.length > 1
 
@@ -53,14 +53,14 @@ export function useScroll() {
     changeRouterHash('#' + id)
 
     setTimeout(() => {
-      docStore.setActiveToc(getVerticalScrollPosition(window))
+      markdownStore.setActiveToc(getVerticalScrollPosition(window))
     }, scrollDuration + 50)
   }
 
   function onPageScroll({ position }: { position: number }) {
     // @ts-expect-error Jeff - fix later when I can figure this one out
     if (preventTocUpdate !== true && document.qScrollPrevented !== true) {
-      docStore.setActiveToc(position)
+      markdownStore.setActiveToc(position)
     }
   }
 
@@ -94,7 +94,7 @@ export function useScroll() {
       scrollPage(el, immediate === true ? 0 : scrollDuration)
     } else {
       preventTocUpdate = false
-      docStore.setActiveToc()
+      markdownStore.setActiveToc()
     }
   }
 

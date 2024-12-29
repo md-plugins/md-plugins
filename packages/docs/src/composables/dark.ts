@@ -1,20 +1,20 @@
 import { useQuasar } from 'quasar'
-import { useDocStore } from '../stores/doc'
+import { useMarkdownStore } from '../stores/markdown'
 import { computed, watch } from 'vue'
 
 export function useDark() {
   const $q = useQuasar()
-  const docStore = useDocStore()
+  const markdownStore = useMarkdownStore()
 
-  const isDark = computed(() => docStore.dark)
+  const isDark = computed(() => markdownStore.dark)
 
   function initDark() {
-    docStore.dark = $q.cookies.get('theme') !== 'light'
+    markdownStore.dark = $q.cookies.get('theme') !== 'light'
   }
 
   function toggleDark() {
-    const val = !docStore.dark
-    docStore.dark = val
+    const val = !markdownStore.dark
+    markdownStore.dark = val
 
     $q.cookies.set('theme', val ? 'dark' : 'light', {
       path: '/',
@@ -24,7 +24,7 @@ export function useDark() {
   }
 
   watch(
-    () => docStore.dark,
+    () => markdownStore.dark,
     (val) => {
       $q.dark.set(val)
     },

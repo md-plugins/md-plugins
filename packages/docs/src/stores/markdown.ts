@@ -4,7 +4,7 @@ import { useScroll } from 'src/composables/scroll'
 import { useQuasar } from 'quasar'
 import type { TocItem } from '@md-plugins/md-plugin-headers'
 
-export const useDocStore = defineStore('doc-store', {
+export const useMarkdownStore = defineStore('markdown-store', {
   state: () => ({
     title: '',
     toc: [] as TocMenuItem[],
@@ -112,5 +112,5 @@ export const useDocStore = defineStore('doc-store', {
 })
 
 if (import.meta.hot) {
-  import.meta.hot.accept(acceptHMRUpdate(useDocStore, import.meta.hot))
+  import.meta.hot.accept(acceptHMRUpdate(useMarkdownStore, import.meta.hot))
 }

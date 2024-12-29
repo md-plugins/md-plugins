@@ -103,7 +103,7 @@ import MarkdownLink from 'components/md/MarkdownLink.vue'
 import MarkdownPageToc from './MarkdownPageToc.vue'
 
 import getMeta from 'assets/get-meta'
-import { useDocStore } from 'stores/doc'
+import { useMarkdownStore } from 'src/stores/markdown'
 import siteConfig from 'src/assets/siteConfig'
 const {
   config: { useToc },
@@ -133,12 +133,12 @@ useMeta(
 )
 
 const route = useRoute()
-const docStore = useDocStore()
+const markdownStore = useMarkdownStore()
 
 console.log('toc', props.toc)
 
 if (props.toc !== void 0) {
-  docStore.setToc(props.toc)
+  markdownStore.setToc(props.toc)
 }
 
 const editHref = computed(
@@ -153,7 +153,7 @@ const hasToc = computed(
     route.meta.fullwidth !== true &&
     route.meta.fullscreen !== true &&
     useToc &&
-    docStore.toc.length !== 0,
+    markdownStore.toc.length !== 0,
 )
 
 const tocClass = computed(

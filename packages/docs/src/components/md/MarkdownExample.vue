@@ -12,7 +12,7 @@
           flat
           round
           :icon="mdiCompare"
-          @click="docStore.toggleDark"
+          @click="markdownStore.toggleDark"
         >
           <q-tooltip>Toggle dark mode</q-tooltip>
         </q-btn> -->

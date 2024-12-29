@@ -11,9 +11,9 @@
         round
         icon="menu"
         aria-label="Menu"
-        :aria-expanded="docStore.menuDrawer ? 'true' : 'false'"
+        :aria-expanded="markdownStore.menuDrawer ? 'true' : 'false'"
         aria-controls="menu-drawer"
-        @click="docStore.toggleMenuDrawer"
+        @click="markdownStore.toggleMenuDrawer"
       >
         <q-tooltip>Menu</q-tooltip>
       </q-btn>
@@ -57,7 +57,7 @@
         nav-class="text-uppercase text-size-16 letter-spacing-300"
       />
 
-      <!-- <DocSearch /> -->
+      <!-- <MarkdownSearch /> -->
 
       <div
         v-if="showThemeChanger"
@@ -74,9 +74,9 @@
         round
         icon="menu"
         aria-label="Menu"
-        :aria-expanded="docStore.menuDrawer ? 'true' : 'false'"
+        :aria-expanded="markdownStore.menuDrawer ? 'true' : 'false'"
         aria-controls="menu-drawer"
-        @click="docStore.toggleMenuDrawer"
+        @click="markdownStore.toggleMenuDrawer"
       >
         <q-tooltip>Menu</q-tooltip>
       </q-btn>
@@ -148,9 +148,9 @@
           round
           :icon="mdiFolderPound"
           aria-label="Table of Contents"
-          :aria-expanded="docStore.tocDrawer ? 'true' : 'false'"
+          :aria-expanded="markdownStore.tocDrawer ? 'true' : 'false'"
           aria-controls="toc-drawer"
-          @click="docStore.toggleTocDrawer"
+          @click="markdownStore.toggleTocDrawer"
         >
           <q-tooltip>Table of Contents</q-tooltip>
         </q-btn>
@@ -184,15 +184,15 @@ console.log('socialLinks', socialLinks)
 console.log('versionLinks', versionLinks)
 console.log('logoConfig', showLogo, showText, showVersion, version)
 
-// import DocSearch from './DocSearch.vue'
+// import MarkdownSearch from './MarkdownSearch.vue'
 import MarkdownHeaderTextLinks from './MarkdownHeaderTextLinks.vue'
 import MarkdownHeaderIconLinks from './MarkdownHeaderIconLinks.vue'
 
 import { useRoute } from 'vue-router'
-import { useDocStore } from 'stores/doc'
+import { useMarkdownStore } from 'src/stores/markdown'
 import { useDark } from 'src/composables/dark'
 
-const docStore = useDocStore()
+const markdownStore = useMarkdownStore()
 const route = useRoute()
 const { toggleDark, isDark } = useDark()
 
@@ -214,7 +214,7 @@ const hasToc = computed(
     route.meta.fullwidth !== true &&
     route.meta.fullscreen !== true &&
     useToc &&
-    docStore.toc.length !== 0,
+    markdownStore.toc.length !== 0,
 )
 const hasMoreLinks = computed(() => moreLinks.length > 0)
 </script>
