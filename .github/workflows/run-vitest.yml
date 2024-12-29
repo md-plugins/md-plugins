@@ -1,36 +1,38 @@
 name: Run Vitest Tests
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+  push: # Trigger on push to any branch
+  pull_request: # Trigger on pull requst to any branch
 
 jobs:
   vitest:
     name: Run Vitest
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18, 20] # Test against multiple Node.js versions
 
     steps:
       # Checkout the repository code
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      # Set up Node.js
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      # Install pnpm
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
         with:
-          node-version: 20 # Use the Node.js version your project requires
+          version: 9
+
+      # Use Node.js
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
 
       # Install dependencies
       - name: Install dependencies
-        run: |
-          npm install -g pnpm
-          pnpm install
+        run: pnpm install
 
       # Run Vitest
-      - name: Run tests
+      - name: Run Vitest tests
         run: pnpm test
