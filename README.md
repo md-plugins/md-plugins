@@ -1,8 +1,8 @@
 # Markdown Plugins Monorepo (md-plugins)
 
 <p align="center">
-<a href="https://github.com/md-plugins/md-plugins#gh-light-mode-only">
-  <img src="https://raw.githubusercontent.com/md-plugins/md-plugins/main/media/markdown-128x128.png#gh-light-mode-only" alt="md-plugins - Collection of Markdown-it! plugins for Vue and Quasar" width="300">
+<a href="https://github.com/md-plugins/md-plugins">
+  <img src="https://raw.githubusercontent.com/md-plugins/md-plugins/refs/heads/main/media/markdown-128x128.png" alt="md-plugins - Collection of Markdown-it! plugins for Vue and Quasar" width="300">
 </a>
 <br>
 Collection of Markdown-it! plugins for Vue and Quasar
