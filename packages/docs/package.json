@@ -12,7 +12,8 @@
     "test": "echo \"No test specified\" && exit 0",
     "dev": "quasar dev",
     "build": "quasar build",
-    "postinstall": "quasar prepare"
+    "prepare": "quasar prepare",
+    "postinstall2": "quasar prepare"
   },
   "dependencies": {
     "@quasar/extras": "^1.16.4",
