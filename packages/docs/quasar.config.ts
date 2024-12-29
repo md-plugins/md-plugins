@@ -92,7 +92,7 @@ export default defineConfig((ctx) => {
       },
 
       vitePlugins: [
-        viteMdPlugin(ctx.appPaths.srcDir + '/pages', sidebar) as Plugin,
+        viteMdPlugin(ctx.appPaths.srcDir + '/pages', sidebar) as unknown as Plugin,
         viteExamplesPlugin(ctx.appPaths.srcDir + '/examples') as unknown as Plugin,
         [
           'vite-plugin-checker',
