@@ -27,13 +27,21 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
 
-      # Install dependencies
-      - name: Install dependencies
-        run: pnpm install
+      # Install dependencies for non-Quasar packages
+      - name: Install dependencies (exclude docs)
+        run: pnpm install --filter "!packages/docs"
 
-      # Build the project
-      - name: Build the project
-        run: pnpm build
+      # Build all non-Quasar packages
+      - name: Build non-Quasar packages
+        run: pnpm build --filter "!packages/docs"
+
+      # Install dependencies for Quasar docs
+      - name: Install dependencies for Quasar project (docs)
+        run: pnpm install --filter "packages/docs"
+
+      # Build the Quasar project (docs)
+      - name: Build Quasar project (docs)
+        run: pnpm build --filter "packages/docs"
 
       # Run Vitest
       - name: Run Vitest tests
