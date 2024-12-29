@@ -112,7 +112,7 @@ The `viteManualChunks` function analyzes the module ID and assigns it to a speci
 
 1. **`Vendor Chunk`**: Files from `node_modules` matching libraries like `vue`, `@vue`, `quasar`, and `vue-router` are assigned to the `vendor` chunk.
 
-**`Examples Chunk`**: Example files matching the pattern `examples:<name>` or located in `src/examples/<name>` are grouped into chunks named `e.<name>`.
+2. **`Examples Chunk`**: Example files matching the pattern `examples:<name>` or located in `src/examples/<name>` are grouped into chunks named `e.<name>`.
 
 ### Example
 

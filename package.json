@@ -1,6 +1,6 @@
 {
   "name": "md-plugins",
-  "version": "0.1.0",
+  "version": "0.1.0-alpha.1",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -12,6 +12,7 @@
     "clean": "pnpm -r --stream clean",
     "format": "prettier --write .",
     "lint": "eslint . && prettier --check .",
+    "publish": "pnpm -r publish --access public",
     "test": "vitest run"
   },
   "keywords": [

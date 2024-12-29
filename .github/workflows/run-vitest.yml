@@ -1,0 +1,36 @@
+name: Run Vitest Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  vitest:
+    name: Run Vitest
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20 # Use the Node.js version your project requires
+          cache: 'pnpm'
+
+      # Install dependencies
+      - name: Install dependencies
+        run: |
+          npm install -g pnpm
+          pnpm install
+
+      # Run Vitest
+      - name: Run tests
+        run: pnpm test
