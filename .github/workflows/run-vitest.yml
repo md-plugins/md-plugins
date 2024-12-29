@@ -2,7 +2,7 @@ name: Run Vitest Tests
 
 on:
   push: # Trigger on push to any branch
-  pull_request: # Trigger on pull requst to any branch
+  pull_request: # Trigger on pull request to any branch
 
 jobs:
   vitest:
@@ -19,8 +19,6 @@ jobs:
       # Install pnpm
       - name: Install pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 9
 
       # Use Node.js
       - name: Use Node.js ${{ matrix.node-version }}
