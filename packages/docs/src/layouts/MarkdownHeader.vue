@@ -232,10 +232,11 @@ const hasMoreLinks = computed(() => moreLinks.length > 0)
     height: 55px;
   }
 
-  //  &__logo-img {
-  //    transform: rotate(0deg);
-  //    transition: transform 0.8s ease-in-out;
-  //  }
+  &__logo-img {
+    border-radius: 50%;
+    //    transform: rotate(0deg);
+    //    transition: transform 0.8s ease-in-out;
+  }
 
   &__logo {
     padding-right: 24px;
@@ -292,16 +293,16 @@ const hasMoreLinks = computed(() => moreLinks.length > 0)
     &__logo {
       padding-right: 16px;
     }
-    .doc-search {
+    .markdown-search {
       width: 100%;
     }
   }
 
   @media (min-width: 700px) {
-    .doc-search {
+    .markdown-search {
       margin-left: 8px;
 
-      .doc-search__logo {
+      .markdown-search__logo {
         display: none;
       }
     }
