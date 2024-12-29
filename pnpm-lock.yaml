@@ -63,6 +63,9 @@ importers:
       '@eslint/js':
         specifier: ^9.14.0
         version: 9.17.0
+      '@md-plugins/shared':
+        specifier: workspace:*
+        version: link:../shared
       '@md-plugins/vite-examples-plugin':
         specifier: workspace:*
         version: link:../viteExamplesPlugin
@@ -280,7 +283,7 @@ importers:
         version: 0.2.10
 
   packages/viteMdPlugin:
-    devDependencies:
+    dependencies:
       '@md-plugins/md-plugin-blockquote':
         specifier: workspace:*
         version: link:../md-plugin-blockquote
