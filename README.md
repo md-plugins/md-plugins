@@ -21,20 +21,21 @@ This monorepo provides:
 
 ## Plugins
 
-| Plugin                              | Description                                                             | Readme                                             |
-| ----------------------------------- | ----------------------------------------------------------------------- | -------------------------------------------------- |
-| `@md-plugins/md-plugin-imports`     | Extracts and processes `<script import>` blocks from Markdown.          | [README](packages/md-plugin-imports/README.md)     |
-| `@md-plugins/md-plugin-codeblocks`  | Enhances code block rendering with syntax highlighting, tabs, and more. | [README](packages/md-plugin-codeblocks/README.md)  |
-| `@md-plugins/md-plugin-blockquote`  | Adds customizable CSS classes to blockquotes.                           | [README](packages/md-plugin-blockquote/README.md)  |
-| `@md-plugins/md-plugin-headers`     | Extracts and processes headers for generating ToCs or managing headers. | [README](packages/md-plugin-headers/README.md)     |
-| `@md-plugins/md-plugin-inlinecode`  | Adds a custom class to inline code blocks for styling.                  | [README](packages/md-plugin-inlinecode/README.md)  |
-| `@md-plugins/md-plugin-link`        | Converts Markdown links into Vue components for SPA-friendly routing.   | [README](packages/md-plugin-link/README.md)        |
-| `@md-plugins/md-plugin-table`       | Adds custom classes and attributes to Markdown tables.                  | [README](packages/md-plugin-table/README.md)       |
-| `@md-plugins/md-plugin-title`       | Extracts the first header in Markdown as the page title.                | [README](packages/md-plugin-title/README.md)       |
-| `@md-plugins/md-plugin-frontmatter` | Extracts and processes frontmatter content from Markdown files.         | [README](packages/md-plugin-frontmatter/README.md) |
-| `@md-plugins/md-plugin-containers`  | Adds custom containers for callouts, warnings, and more.                | [README](packages/md-plugin-containers/README.md)  |
-| `@md-plugins/shared`                | Shared utilities and types for the plugins.                             | [README](packages/shared/README.md)                |
-| `viteMdPlugin`                      | Vite plugin for transforming Markdown into Vue SFCs.                    | [README](packages/viteMdPlugin/README.md)          |
+| Plugin                              | Description                                                                                                          | Readme                                             |
+| ----------------------------------- | -------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+| `@md-plugins/md-plugin-imports`     | Extracts and processes `<script import>` blocks from Markdown.                                                       | [README](packages/md-plugin-imports/README.md)     |
+| `@md-plugins/md-plugin-codeblocks`  | Enhances code block rendering with syntax highlighting, tabs, and more.                                              | [README](packages/md-plugin-codeblocks/README.md)  |
+| `@md-plugins/md-plugin-blockquote`  | Adds customizable CSS classes to blockquotes.                                                                        | [README](packages/md-plugin-blockquote/README.md)  |
+| `@md-plugins/md-plugin-headers`     | Extracts and processes headers for generating ToCs or managing headers.                                              | [README](packages/md-plugin-headers/README.md)     |
+| `@md-plugins/md-plugin-inlinecode`  | Adds a custom class to inline code blocks for styling.                                                               | [README](packages/md-plugin-inlinecode/README.md)  |
+| `@md-plugins/md-plugin-link`        | Converts Markdown links into Vue components for SPA-friendly routing.                                                | [README](packages/md-plugin-link/README.md)        |
+| `@md-plugins/md-plugin-table`       | Adds custom classes and attributes to Markdown tables.                                                               | [README](packages/md-plugin-table/README.md)       |
+| `@md-plugins/md-plugin-title`       | Extracts the first header in Markdown as the page title.                                                             | [README](packages/md-plugin-title/README.md)       |
+| `@md-plugins/md-plugin-frontmatter` | Extracts and processes frontmatter content from Markdown files.                                                      | [README](packages/md-plugin-frontmatter/README.md) |
+| `@md-plugins/md-plugin-containers`  | Adds custom containers for callouts, warnings, and more.                                                             | [README](packages/md-plugin-containers/README.md)  |
+| `@md-plugins/shared`                | Shared utilities and types for the plugins.                                                                          | [README](packages/shared/README.md)                |
+| `viteMdPlugin`                      | Vite plugin for transforming Markdown into Vue SFCs.                                                                 | [README](packages/viteMdPlugin/README.md)          |
+| `viteExamplesPlugin`                | Vite plugin for loading and transforming example components and their raw source code for usage in your application. | [README](packages/viteExamplesPlugin/README.md)    |
 
 ## Installation
 
