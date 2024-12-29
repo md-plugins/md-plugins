@@ -63,6 +63,9 @@ importers:
       '@eslint/js':
         specifier: ^9.14.0
         version: 9.17.0
+      '@md-plugins/vite-examples-plugin':
+        specifier: workspace:*
+        version: link:../viteExamplesPlugin
       '@md-plugins/vite-md-plugin':
         specifier: workspace:*
         version: link:../viteMdPlugin
@@ -269,6 +272,12 @@ importers:
       markdown-it:
         specifier: ^14.1.0
         version: 14.1.0
+
+  packages/viteExamplesPlugin:
+    dependencies:
+      tinyglobby:
+        specifier: ^0.2.10
+        version: 0.2.10
 
   packages/viteMdPlugin:
     devDependencies:

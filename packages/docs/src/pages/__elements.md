@@ -436,11 +436,11 @@ Lorem ipsum dolor sit amet, **consectetur adipiscing** elit, sed do _eiusmod_ te
 
 <DocInstallation plugins="AppFullscreen" />
 
-<script doc>
-import Api from '@quasar/quasar-ui-qmarkdown/dist/api/QMarkdown.json'
+<script import>
+import AvatarApi from 'quasar/dist/api/QAvatar.json'
 </script>
 
-<DocApi :api="Api" name="QMarkdown"/>
+<MarkdownApi :api="AvatarApi" name="QAvatar"/>
 
 <!-- <DocApi file="QSelect" /> -->
 
@@ -448,4 +448,4 @@ import Api from '@quasar/quasar-ui-qmarkdown/dist/api/QMarkdown.json'
 
 <!-- <DocApi file="Loading" /> -->
 
-<DocExample title="Title for example card" file="Code" />
+<!-- <DocExample title="Title for example card" file="Code" /> -->

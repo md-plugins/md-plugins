@@ -31,7 +31,7 @@
         padding="xs sm"
         no-caps
         outline
-        :to="docPath"
+        :to="apiPath"
       >
         <q-icon name="launch" />
         <div class="q-ml-xs">Docs</div>
@@ -124,7 +124,7 @@
 
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue'
-import { mdiClose, mdiMagnify } from '@quasar/extras/mdi-v6'
+import { mdiClose, mdiMagnify } from '@quasar/extras/mdi-v7'
 
 import MarkdownCardTitle from './MarkdownCardTitle.vue'
 import MarkdownApiEntry from './MarkdownApiEntry.js'
@@ -212,7 +212,6 @@ function getFilteredApi(parsedApi, filter, tabs, innerTabs) {
       const name = parsedApi[tab][defaultInnerTabName]
       acc[tab] = {}
       acc[tab][defaultInnerTabName] = passesFilter(filter, name, '') === true ? name : {}
-
       return
     }
 
@@ -275,7 +274,6 @@ function getApiCount(parsedApi, tabs, innerTabs) {
       acc[tab] = {
         overall: Object.keys(tabApi[tabCategories[0]]).length === 0 ? 0 : 1,
       }
-
       return
     }
 
@@ -289,7 +287,6 @@ function getApiCount(parsedApi, tabs, innerTabs) {
               ? 1
               : Object.keys(api.definition).length,
       }
-
       return
     }
 
@@ -325,19 +322,23 @@ const getJsonUrl =
 const props = defineProps({
   file: {
     type: String,
-    required: true,
+    required: false,
   },
-
+  api: {
+    type: Object,
+    required: false,
+  },
+  name: String,
   pageLink: Boolean,
 })
 
 const inputRef = ref(null)
 
 const loading = ref(true)
-const nameBanner = ref(`Loading ${props.file} API...`)
+const nameBanner = ref(`Loading ${props.file || props.name} API...`)
 const nothingToShow = ref(false)
 
-const docPath = ref('')
+const apiPath = ref('')
 
 const filter = ref('')
 const apiDef = ref({})
@@ -362,7 +363,7 @@ const filteredApiCount = computed(() =>
 
 function parseApiFile(name, { type, behavior, meta, addedIn, ...api }) {
   nameBanner.value = `${name} API`
-  docPath.value = meta.docsUrl.replace(/^https:\/\/v[\d]+\.quasar\.dev/, '')
+  apiPath.value = meta.docsUrl.replace(/^https:\/\/v[\d]+\.quasar\.dev/, '')
 
   const { internal: _, ...apiSections } = api
   const tabs = Object.keys(apiSections)
@@ -392,131 +393,186 @@ function onFilterClick() {
 
 if (process.env.CLIENT) {
   onMounted(() => {
-    fetch(getJsonUrl(props.file))
-      .then((response) => response.json())
-      .then((json) => {
-        parseApiFile(props.file, json)
-        loading.value = false
-      })
+    if (props.file) {
+      fetch(getJsonUrl(props.file))
+        .then((response) => response.json())
+        .then((json) => {
+          parseApiFile(props.file, json)
+          loading.value = false
+        })
+    } else if (props.api) {
+      parseApiFile(props.name, props.api)
+      loading.value = false
+    }
   })
 }
 </script>
 
-<style lang="sass">
-.markdown-api
-  &__subtabs .q-tabs__content
-    padding: 8px 0
+<style lang="scss">
+.markdown-api {
+  &__subtabs .q-tabs__content {
+    padding: 8px 0;
+  }
 
-  &__subtabs-item
-    justify-content: left
-    min-height: 36px !important
-    .q-tab__content
-      width: 100%
+  &__subtabs-item {
+    justify-content: left;
+    min-height: 36px !important;
+
+    .q-tab__content {
+      width: 100%;
+    }
+  }
 
   &__subtabs,
-  &__subtabs-item
-    border-radius: 0 !important
+  &__subtabs-item {
+    border-radius: 0 !important;
+  }
 
-  &__container
-    max-height: 600px
+  &__container {
+    max-height: 600px;
+  }
 
-  &__nothing-to-show
-    padding: 16px
+  &__nothing-to-show {
+    padding: 16px;
+  }
 
-  &__search-field
-    cursor: text
-    min-width: 10em !important
+  &__search-field {
+    cursor: text;
+    min-width: 10em !important;
+  }
 
-  &__search
-    border: 0
-    outline: 0
-    background: none
-    color: inherit
-    width: 1px !important // required when on narrow width window to not overflow the page
-    height: 37px
+  &__search {
+    border: 0;
+    outline: 0;
+    background: none;
+    color: inherit;
+    width: 1px !important; // required when on narrow width window to not overflow the page
+    height: 37px;
+  }
+}
 
-.markdown-api-entry
-  padding: 16px
-  color: $header-btn-color--light
+.markdown-api-entry {
+  padding: 16px;
+  color: $header-btn-color--light;
 
-  .markdown-api-entry
-    padding: 8px
+  .markdown-api-entry {
+    padding: 8px;
+  }
 
-  & + &
-    border-top: 1px solid #ddd
+  & + & {
+    border-top: 1px solid #ddd;
+  }
 
-  &__expand-btn
-    margin-left: 4px
+  &__expand-btn {
+    margin-left: 4px;
+  }
 
-  &__item
-    min-height: 25px
-    & + &
-      margin-top: 4px
+  &__item {
+    min-height: 25px;
 
-  &__subitem
-    padding: 4px 0 0 8px
-    border-radius: $generic-border-radius
-    > div
-      border: 1px solid rgba(0,0,0,.12) !important
-      border-radius: inherit
-    > div + div
-      margin-top: 8px
+    & + & {
+      margin-top: 4px;
+    }
+  }
 
-  &__type
-    line-height: ($font-size + 8px)
+  &__subitem {
+    padding: 4px 0 0 8px;
+    border-radius: $generic-border-radius;
 
-  &__value
-    color: $light-text
+    > div {
+      border: 1px solid rgba(0, 0, 0, 0.12) !important;
+      border-radius: inherit;
+    }
 
-  &--indent
-    padding-left: 8px
+    > div + div {
+      margin-top: 8px;
+    }
+  }
 
-  .markdown-token
-    margin: 4px
-    display: inline-block
+  &__type {
+    line-height: ($font-size + 8px);
+  }
+
+  &__value {
+    color: $light-text;
+  }
+
+  &--indent {
+    padding-left: 8px;
+  }
+
+  .markdown-token {
+    margin: 4px;
+    display: inline-block;
+  }
 
   &__added-in,
-  &__pill
-    font-size: ($font-size - 1px)
-    letter-spacing: $letter-spacing-brand
-    line-height: 1.4em
+  &__pill {
+    font-size: ($font-size - 1px);
+    letter-spacing: $letter-spacing-brand;
+    line-height: 1.4em;
+  }
 
-  &__added-in
-    font-size: ($font-size - 4px)
+  &__added-in {
+    font-size: ($font-size - 4px);
+  }
+}
 
-body.body--light
-  .markdown-api .markdown-token
-    background-color: #eee
-    border: 1px solid $separator-color
-    color: $light-text
-  .markdown-api-entry__pill
-    color: #fff
-  .markdown-api-entry__added-in
-    color: $red-7
-    border-color: $red
-    background-color: $red-1
+body.body--light {
+  .markdown-api .markdown-token {
+    background-color: #eee;
+    border: 1px solid $separator-color;
+    color: $light-text;
+  }
 
-body.body--dark
-  .markdown-api .markdown-token
-    background-color: $dark-bg
-    border: 1px solid $separator-dark-color
-    color: $dark-text
-  .markdown-api__search
-    color: $dark-text
-  .markdown-api-entry
-    color: $ship-shell
+  .markdown-api-entry__pill {
+    color: #fff;
+  }
+
+  .markdown-api-entry__added-in {
+    color: $red-7;
+    border-color: $red;
+    background-color: $red-1;
+  }
+}
+
+body.body--dark {
+  .markdown-api .markdown-token {
+    background-color: $dark-bg;
+    border: 1px solid $separator-dark-color;
+    color: $dark-text;
+  }
+
+  .markdown-api__search {
+    color: $dark-text;
+  }
+
+  .markdown-api-entry {
+    color: $ship-shell;
+
     & + .markdown-api-entry,
-    &__subitem > div
-      border-color: $separator-dark-color !important
-    &__value
-      color: $dark-text
-    &__example
-      color: $brand-primary
-      border-color: $brand-primary
-    &__pill
-      color: $dark
-    &__added-in
-      color: $red
-      border-color: $red
-      background-color: $dark-bg
+    &__subitem > div {
+      border-color: $separator-dark-color !important;
+    }
+
+    &__value {
+      color: $dark-text;
+    }
+
+    &__example {
+      color: $brand-primary;
+      border-color: $brand-primary;
+    }
+
+    &__pill {
+      color: $dark;
+    }
+
+    &__added-in {
+      color: $red;
+      border-color: $red;
+      background-color: $dark-bg;
+    }
+  }
+}
 </style>

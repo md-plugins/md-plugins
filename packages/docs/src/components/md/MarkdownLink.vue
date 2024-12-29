@@ -18,18 +18,21 @@ const internal = computed(
 )
 </script>
 
-<style lang="sass">
-.markdown-link
-  color: $brand-primary
-  text-decoration: none
-  border-bottom: 1px dotted currentColor
-  outline: 0
-  transition: color $header-quick-transition
+<style lang="scss">
+.markdown-link {
+  color: $brand-primary;
+  text-decoration: none;
+  border-bottom: 1px dotted currentColor;
+  outline: 0;
+  transition: color $header-quick-transition;
 
-  &:hover
-    color: inherit !important
+  &:hover {
+    color: inherit !important;
+  }
 
-  .q-icon
-    margin-top: -2px
-    margin-left: 4px
+  .q-icon {
+    margin-top: -2px;
+    margin-left: 4px;
+  }
+}
 </style>

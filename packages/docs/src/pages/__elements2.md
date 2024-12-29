@@ -337,3 +337,11 @@ const x = {
   max: 100
 }
 ```
+
+<MarkdownInstallation plugins="AppFullscreen" />
+
+<script import>
+import AvatarApi from 'quasar/dist/api/QAvatar.json'
+</script>
+
+<MarkdownApi :api="AvatarApi" name="QAvatar"/>

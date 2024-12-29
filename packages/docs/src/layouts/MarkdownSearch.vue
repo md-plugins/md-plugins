@@ -1,13 +1,13 @@
 <!-- <template>
   <div
     ref="rootRef"
-    class="doc-search z-max self-center"
+    class="markdown-search z-max self-center"
     :class="classes"
     @click.prevent="onClick"
     @focusin="onFocusin"
     @focusout="onFocusout"
   >
-    <div class="doc-search__field rounded-borders row items-center no-wrap q-pl-sm q-pr-md">
+    <div class="markdown-search__field rounded-borders row items-center no-wrap q-pl-sm q-pr-md">
       <input
         class="col"
         name="search"
@@ -17,9 +17,9 @@
         @keydown="onKeydown"
       />
 
-      <q-icon class="doc-search__icon cursor-pointer" :name="icon.name" size="24px" @click="icon.onClick" />
+      <q-icon class="markdown-search__icon cursor-pointer" :name="icon.name" size="24px" @click="icon.onClick" />
       <q-no-ssr v-if="keysLabel">
-        <kbd class="doc-search__kbd q-ma-none">{{ keysLabel }}</kbd>
+        <kbd class="markdown-search__kbd q-ma-none">{{ keysLabel }}</kbd>
       </q-no-ssr>
     </div>
 
@@ -82,10 +82,10 @@ function onFocusout () {
   }, 150)
 }
 
-const classes = computed(() => (hasFocus.value ? 'doc-search--focused' : null))
+const classes = computed(() => (hasFocus.value ? 'markdown-search--focused' : null))
 const resultsClass = computed(() => (
-  'doc-search__results rounded-borders rounded-borders overflow-auto' +
-  ` doc-search__results--${ results.value ? 'active' : 'hidden' }`
+  'markdown-search__results rounded-borders rounded-borders overflow-auto' +
+  ` markdown-search__results--${ results.value ? 'active' : 'hidden' }`
 ))
 
 function closePopup () {
@@ -310,95 +310,140 @@ onBeforeUnmount(() => {
 })
 </script>
 
-<style lang="sass">
-body.desktop
-  .doc-search__icon
-    display: none
+<style lang="scss">
+body.desktop {
+  .markdown-search__icon {
+    display: none;
+  }
+}
 
-.doc-search
-  width: 400px
-  height: 43px
+.markdown-search {
+  width: 400px;
+  height: 43px;
 
-  &__field
-    height: inherit
-    width: inherit
-    cursor: text
-    transition: box-shadow $header-quick-transition, background-color $header-quick-transition
+  &__field {
+    height: inherit;
+    width: inherit;
+    cursor: text;
+    transition: box-shadow $header-quick-transition, background-color $header-quick-transition;
+  }
 
-  input
-    font-size: $font-size
-    width: 1px !important // required when on narrow width window to not overflow the page
-    border: 0
-    outline: 0
-    background: none
+  input {
+    font-size: $font-size;
+    width: 1px !important; // required when on narrow width window to not overflow the page
+    border: 0;
+    outline: 0;
+    background: none;
+  }
 
-  &__kbd
-    box-shadow: none !important
-    padding: 4px
-    border: 1px solid $grey !important
-    background: transparent !important
+  &__kbd {
+    box-shadow: none !important;
+    padding: 4px;
+    border: 1px solid $grey !important;
+    background: transparent !important;
+  }
 
-  &__results
-    max-height: 80vh
-    top: 45px
-    left: 0
-    right: 0
-    transform: scale3d(1, 0, 1)
-    transform-origin: top
-    transition: transform .14s ease-in-out, box-shadow $header-quick-transition
+  &__results {
+    max-height: 80vh;
+    top: 45px;
+    left: 0;
+    right: 0;
+    transform: scale3d(1, 0, 1);
+    transform-origin: top;
+    transition: transform 0.14s ease-in-out, box-shadow $header-quick-transition;
+  }
 
-  &--focused
-    .doc-search__results--active
-      transform: scale3d(1, 1, 1)
+  &--focused {
+    .markdown-search__results--active {
+      transform: scale3d(1, 1, 1);
+    }
 
-    .doc-search__icon
-      display: inline-block !important
-    .doc-search__kbd
-      display: none
+    .markdown-search__icon {
+      display: inline-block !important;
+    }
 
-@media (max-width: 445px)
-  .doc-search__results
-    position: fixed
-    top: 60px
-    left: 16px
-    right: 16px
-@media (min-width: 446px)
-  .doc-search
-    position: relative
-  .doc-search__results
-    position: absolute
+    .markdown-search__kbd {
+      display: none;
+    }
+  }
+}
 
-body.mobile
-  .doc-search__results
-    max-height: 50vh
+@media (max-width: 445px) {
+  .markdown-search__results {
+    position: fixed;
+    top: 60px;
+    left: 16px;
+    right: 16px;
+  }
+}
 
-body.body--light .doc-search
-  input
-    color: $light-text
-  &__field
-    background: $grey-4
-  &__results
-    background: #fff
-    color: $light-text
-  &--focused
-    .doc-search__results--active
-      border: 1px solid $separator-color
-    .doc-search__field
-      background-color: rgba(#000, .28)
+@media (min-width: 446px) {
+  .markdown-search {
+    position: relative;
+  }
 
-body.body--dark .doc-search
-  input
-    color: #fff
-  &__field
-    background-color: rgba(#fff, .12)
-  &__icon
-    color: $brand-primary
-  &__results
-    background: $dark-bg
-    color: $dark-text
-  &--focused
-    .doc-search__results--active
-      border: 1px solid $separator-dark-color
-    .doc-search__field
-      background-color: rgba(#fff, .28)
+  .markdown-search__results {
+    position: absolute;
+  }
+}
+
+body.mobile {
+  .markdown-search__results {
+    max-height: 50vh;
+  }
+}
+
+body.body--light .markdown-search {
+  input {
+    color: $light-text;
+  }
+
+  &__field {
+    background: $grey-4;
+  }
+
+  &__results {
+    background: #fff;
+    color: $light-text;
+  }
+
+  &--focused {
+    .markdown-search__results--active {
+      border: 1px solid $separator-color;
+    }
+
+    .markdown-search__field {
+      background-color: rgba(#000, 0.28);
+    }
+  }
+}
+
+body.body--dark .markdown-search {
+  input {
+    color: #fff;
+  }
+
+  &__field {
+    background-color: rgba(#fff, 0.12);
+  }
+
+  &__icon {
+    color: $brand-primary;
+  }
+
+  &__results {
+    background: $dark-bg;
+    color: $dark-text;
+  }
+
+  &--focused {
+    .markdown-search__results--active {
+      border: 1px solid $separator-dark-color;
+    }
+
+    .markdown-search__field {
+      background-color: rgba(#fff, 0.28);
+    }
+  }
+}
 </style> -->

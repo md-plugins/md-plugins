@@ -6,8 +6,8 @@ describe('codeblocksPlugin', () => {
   it('adds syntax highlighting for a specific language', () => {
     const md = new MarkdownIt();
     md.use(codeblocksPlugin, {
-      containerComponent: 'markdown-prerender',
-      copyButtonComponent: 'markdown-copy-button',
+      containerComponent: 'MarkdownPrerender',
+      copyButtonComponent: 'MarkdownCopyButton',
       preClass: 'markdown-code',
     });
 
@@ -20,8 +20,8 @@ console.log('Hello, world!');
     const renderedHTML = md.render(markdownInput);
 
     // Check for container component
-    expect(renderedHTML).toContain('<markdown-prerender>');
-    expect(renderedHTML).toContain('</markdown-prerender>');
+    expect(renderedHTML).toContain('<MarkdownPrerender>');
+    expect(renderedHTML).toContain('</MarkdownPrerender>');
 
     // Check for syntax highlighting
     expect(renderedHTML).toContain(
@@ -34,15 +34,15 @@ console.log('Hello, world!');
     );
 
     // Check for copy button
-    expect(renderedHTML).toContain('<markdown-copy-button');
+    expect(renderedHTML).toContain('<MarkdownCopyButton');
   });
 
   it('applies a default language when none is specified', () => {
     const md = new MarkdownIt();
     md.use(codeblocksPlugin, {
       defaultLang: 'markup',
-      containerComponent: 'markdown-prerender',
-      copyButtonComponent: 'markdown-copy-button',
+      containerComponent: 'MarkdownPrerender',
+      copyButtonComponent: 'MarkdownCopyButton',
       preClass: 'markdown-code',
     });
 
@@ -54,18 +54,18 @@ console.log('Hello, world!');
 
     const renderedHTML = md.render(markdownInput);
 
-    expect(renderedHTML).toContain('<markdown-prerender>');
+    expect(renderedHTML).toContain('<MarkdownPrerender>');
     expect(renderedHTML).toContain(
       '<pre v-pre class="markdown-code language-markup">'
     );
-    expect(renderedHTML).toContain('<markdown-copy-button');
+    expect(renderedHTML).toContain('<MarkdownCopyButton');
   });
 
   it('handles highlighted lines correctly', () => {
     const md = new MarkdownIt();
     md.use(codeblocksPlugin, {
-      containerComponent: 'markdown-prerender',
-      copyButtonComponent: 'markdown-copy-button',
+      containerComponent: 'MarkdownPrerender',
+      copyButtonComponent: 'MarkdownCopyButton',
       preClass: 'markdown-code',
       linePrefixClass: 'line-',
     });
@@ -82,15 +82,15 @@ console.log('Line 3');
 
     console.log('renderedHTML:', renderedHTML);
 
-    expect(renderedHTML).toContain('<markdown-prerender>');
+    expect(renderedHTML).toContain('<MarkdownPrerender>');
     expect(renderedHTML).toContain('<span class="c-line line-highlight">');
   });
 
   it('handles highlighted lines correctly (string value)', () => {
     const md = new MarkdownIt();
     md.use(codeblocksPlugin, {
-      containerComponent: 'markdown-prerender',
-      copyButtonComponent: 'markdown-copy-button',
+      containerComponent: 'MarkdownPrerender',
+      copyButtonComponent: 'MarkdownCopyButton',
       preClass: 'markdown-code',
       linePrefixClass: 'line-',
     });
@@ -105,14 +105,14 @@ console.log('Line 3');
 
     const renderedHTML = md.render(markdownInput);
 
-    expect(renderedHTML).toContain('<markdown-prerender>');
+    expect(renderedHTML).toContain('<MarkdownPrerender>');
     expect(renderedHTML).toContain('<span class="c-line line-highlight">');
   });
 
   it('renders tabbed code blocks with multiple tabs and attributes', () => {
     const md = new MarkdownIt();
     md.use(codeblocksPlugin, {
-      containerComponent: 'markdown-prerender',
+      containerComponent: 'MarkdownPrerender',
       tabPanelTagName: 'q-tab-panel',
       tabPanelTagClass: 'q-pa-none',
       preClass: 'markdown-code',
@@ -144,7 +144,7 @@ const x = {
 
     // Verify rendered tabs
     expect(renderedHTML).toContain(
-      '<markdown-prerender title="quasar.config file"'
+      '<MarkdownPrerender title="quasar.config file"'
     );
     expect(renderedHTML).toContain(
       '<q-tab-panel class="q-pa-none" name="One">'
@@ -209,7 +209,7 @@ console.log('Normal Line');
   it('renders empty tabs gracefully with no content', () => {
     const md = new MarkdownIt();
     md.use(codeblocksPlugin, {
-      containerComponent: 'markdown-prerender',
+      containerComponent: 'MarkdownPrerender',
       tabPanelTagName: 'q-tab-panel',
       tabPanelTagClass: 'q-pa-none',
       preClass: 'markdown-code',
@@ -227,7 +227,7 @@ console.log('Normal Line');
     const renderedHTML = md.render(markdownInput);
 
     // Verify rendered tabs
-    expect(renderedHTML).toContain('<markdown-prerender');
+    expect(renderedHTML).toContain('<MarkdownPrerender');
     expect(renderedHTML).toContain(
       '<q-tab-panel class="q-pa-none" name="Empty Tab">'
     );
@@ -237,10 +237,10 @@ console.log('Normal Line');
 
     // Verify the content of empty tabs contains a <pre> block and copy button
     expect(renderedHTML).toContain(
-      '<q-tab-panel class="q-pa-none" name="Empty Tab"><pre v-pre class="markdown-code language-js"><code></code></pre><markdown-copy-button  /></q-tab-panel>'
+      '<q-tab-panel class="q-pa-none" name="Empty Tab"><pre v-pre class="markdown-code language-js"><code></code></pre><MarkdownCopyButton  /></q-tab-panel>'
     );
     expect(renderedHTML).toContain(
-      '<q-tab-panel class="q-pa-none" name="Another Empty Tab"><pre v-pre class="markdown-code language-js"><code></code></pre><markdown-copy-button  /></q-tab-panel>'
+      '<q-tab-panel class="q-pa-none" name="Another Empty Tab"><pre v-pre class="markdown-code language-js"><code></code></pre><MarkdownCopyButton  /></q-tab-panel>'
     );
   });
 });

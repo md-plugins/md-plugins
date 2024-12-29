@@ -1,7 +1,7 @@
 <template>
   <q-drawer
     id="menu-drawer"
-    v-model="docStore.menuDrawer"
+    v-model="markdownStore.menuDrawer"
     class="markdown-drawer"
     behavior="mobile"
     :width="330"
@@ -15,7 +15,7 @@
         dense
         flat
         color="brand-accent"
-        @click="docStore.toggleMenuDrawer"
+        @click="markdownStore.toggleMenuDrawer"
       />
     </div>
     <MarkdownPageSidebar class="q-mx-xs q-mb-lg" />
@@ -25,8 +25,8 @@
 <script setup lang="ts">
 import { mdiClose } from '@quasar/extras/mdi-v7'
 
-import { useDocStore } from 'stores/doc'
+import { useMarkdownStore } from 'src/stores/markdown'
 import MarkdownPageSidebar from './MarkdownPageSidebar'
 
-const docStore = useDocStore()
+const markdownStore = useMarkdownStore()
 </script>

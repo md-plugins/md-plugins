@@ -2,27 +2,17 @@
 // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file
 
 import { defineConfig } from '#q-app/wrappers'
-import { fileURLToPath } from 'url'
-import path from 'path'
+import type { Plugin } from 'vite'
 
 import siteConfig from './src/assets/siteConfig'
 const { sidebar } = siteConfig
-
-// get root folder
-const root = path.dirname(fileURLToPath(import.meta.url))
-
-console.log('root', root)
-
 // console.log('sidebar', sidebar)
 
 import { viteMdPlugin } from '@md-plugins/vite-md-plugin'
-// console.log('viteMdPlugin', viteMdPlugin)
+import { viteExamplesPlugin, viteManualChunks } from '@md-plugins/vite-examples-plugin'
 
-// console.log('vitePlugin', vitePlugin)
-
-/// @ts-expect-error Jeff - investigate later
 export default defineConfig((ctx) => {
-  console.log('ctx', ctx)
+  // console.log('ctx', ctx)
 
   return {
     // https://v2.quasar.dev/quasar-cli-vite/prefetch-feature
@@ -34,7 +24,7 @@ export default defineConfig((ctx) => {
     boot: [],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#css
-    css: ['app.sass'],
+    css: ['app.scss'],
 
     // https://github.com/quasarframework/quasar/tree/dev/extras
     extras: [
@@ -80,7 +70,18 @@ export default defineConfig((ctx) => {
       // polyfillModulePreload: true,
       // distDir
 
-      // extendViteConf (viteConf) {},
+      extendViteConf(viteConf, { isClient }) {
+        if (ctx.prod && isClient) {
+          if (!viteConf.build) {
+            viteConf.build = {}
+          }
+          viteConf.build.chunkSizeWarningLimit = 650
+          viteConf.build.rollupOptions = {
+            output: { manualChunks: viteManualChunks },
+          }
+        }
+      },
+
       viteVuePluginOptions: {
         include: [/\.(vue|md)$/],
         // template: {
@@ -91,7 +92,8 @@ export default defineConfig((ctx) => {
       },
 
       vitePlugins: [
-        viteMdPlugin(ctx.appPaths.srcDir + '/pages', sidebar),
+        viteMdPlugin(ctx.appPaths.srcDir + '/pages', sidebar) as Plugin,
+        viteExamplesPlugin(ctx.appPaths.srcDir + '/examples') as unknown as Plugin,
         [
           'vite-plugin-checker',
           {

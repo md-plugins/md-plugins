@@ -1,4 +1,5 @@
 import { Notify } from 'quasar'
+import { slugify } from '@md-plugins/shared'
 
 export function copyToClipboard(text: string): void {
   const textArea = document.createElement('textarea')
@@ -46,3 +47,5 @@ export function copyHeading(id: string): void {
     timeout: 2000,
   })
 }
+
+export { slugify }

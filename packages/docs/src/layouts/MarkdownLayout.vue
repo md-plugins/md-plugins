@@ -38,7 +38,7 @@ import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { mdiArrowUp } from '@quasar/extras/mdi-v7'
 
-// import { useDocStore } from 'stores/doc'
+// import { useMarkdownStore } from 'stores/doc'
 import { useScroll } from 'src/composables/scroll'
 
 import MarkdownHeader from './MarkdownHeader.vue'
@@ -53,7 +53,7 @@ const { config } = siteConfig
 const { onPageScroll } = useScroll()
 
 const route = useRoute()
-// const docStore = useDocStore()
+// const markdownStore = useMarkdownStore()
 
 const isFullscreen = computed(() => route.meta.fullscreen === true)
 const pageClass = computed(
