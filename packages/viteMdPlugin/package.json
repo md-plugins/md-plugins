@@ -39,22 +39,25 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@md-plugins/shared": "workspace:*",
+    "@md-plugins/md-plugin-blockquote": "workspace:*",
+    "@md-plugins/md-plugin-codeblocks": "workspace:*",
     "@md-plugins/md-plugin-containers": "workspace:*",
     "@md-plugins/md-plugin-frontmatter": "workspace:*",
     "@md-plugins/md-plugin-headers": "workspace:*",
-    "@md-plugins/md-plugin-link": "workspace:*",
-    "@md-plugins/md-plugin-inlinecode": "workspace:*",
     "@md-plugins/md-plugin-image": "workspace:*",
     "@md-plugins/md-plugin-imports": "workspace:*",
+    "@md-plugins/md-plugin-inlinecode": "workspace:*",
+    "@md-plugins/md-plugin-link": "workspace:*",
     "@md-plugins/md-plugin-table": "workspace:*",
-    "@md-plugins/md-plugin-codeblocks": "workspace:*",
-    "@md-plugins/md-plugin-blockquote": "workspace:*",
     "@md-plugins/md-plugin-title": "workspace:*",
+    "@md-plugins/shared": "workspace:*",
     "@types/markdown-it": "^14.1.2",
     "markdown-it": "^14.1.0"
   },
   "publishConfig": {
     "access": "public"
+  },
+  "devDependencies": {
+    "vite": "^6.0.6"
   }
 }

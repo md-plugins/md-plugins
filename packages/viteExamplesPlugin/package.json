@@ -43,5 +43,8 @@
   },
   "dependencies": {
     "tinyglobby": "^0.2.10"
+  },
+  "devDependencies": {
+    "vite": "^6.0.6"
   }
 }
