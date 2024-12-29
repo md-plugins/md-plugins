@@ -1,0 +1,7 @@
+{
+  "extends": "./.quasar/tsconfig.json",
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true
+  }
+}
