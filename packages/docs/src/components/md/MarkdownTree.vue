@@ -54,31 +54,52 @@ const addId = (node) => {
 const nodes = [addId(props.def)]
 </script>
 
-<style lang="sass">
-.markdown-tree
-  &__label
-    font-size: ($font-size - 1px)
-  &__btn .q-icon
-    font-size: 17px
-  &__explanation
-    font-size: ($font-size - 3px)
-    letter-spacing: .2px
+<style lang="scss">
+.markdown-tree {
+  &__label {
+    font-size: ($font-size - 1px);
+  }
 
-  .q-tree__node
-    padding: 0 0 3px 11px
-    &:after
-      left: -9px
-  .q-tree__children
-    padding-left: 19px
-  .q-tree__node--parent
-    padding-left: 4px
-  .q-tree__node-header
-    padding: 0 3px
-    &:before
-      left: -13px
-  .q-tree__node--child
-    padding-left: 10px
-    > .q-tree__node-header:before
-      left: -19px
-      width: 15px
+  &__btn .q-icon {
+    font-size: 17px;
+  }
+
+  &__explanation {
+    font-size: ($font-size - 3px);
+    letter-spacing: 0.2px;
+  }
+
+  .q-tree__node {
+    padding: 0 0 3px 11px;
+
+    &:after {
+      left: -9px;
+    }
+  }
+
+  .q-tree__children {
+    padding-left: 19px;
+  }
+
+  .q-tree__node--parent {
+    padding-left: 4px;
+  }
+
+  .q-tree__node-header {
+    padding: 0 3px;
+
+    &:before {
+      left: -13px;
+    }
+  }
+
+  .q-tree__node--child {
+    padding-left: 10px;
+
+    > .q-tree__node-header:before {
+      left: -19px;
+      width: 15px;
+    }
+  }
+}
 </style>

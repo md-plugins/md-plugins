@@ -53,39 +53,52 @@ function copy() {
 }
 </script>
 
-<style lang="sass">
-.markdown-copy-btn
-  position: absolute
-  top: 8px
-  right: 16px // account for scrollbar
+<style lang="scss">
+.markdown-copy-btn {
+  position: absolute;
+  top: 8px;
+  right: 16px; // account for scrollbar
 
-  .q-icon
-    cursor: pointer
-    color: $brand-primary
-    font-size: 20px
-    padding: 4px
-    border-radius: $generic-border-radius
-    border: 1px solid $brand-primary
-    opacity: 0
-    transition: opacity .28s
+  .q-icon {
+    cursor: pointer;
+    color: $brand-primary;
+    font-size: 20px;
+    padding: 4px;
+    border-radius: $generic-border-radius;
+    border: 1px solid $brand-primary;
+    opacity: 0;
+    transition: opacity 0.28s;
+  }
 
-  .q-badge
-    top: 4px
-    right: 34px
+  .q-badge {
+    top: 4px;
+    right: 34px;
+  }
+}
 
-body.body--light
-  .markdown-copy-btn .q-icon
-    background-color: $light-pill
-    &:hover
-      background-color: #fff
+body.body--light {
+  .markdown-copy-btn .q-icon {
+    background-color: $light-pill;
 
-body.body--dark
-  .markdown-copy-btn .q-icon
-    background-color: $dark-pill
-    &:hover
-      background-color: #000
+    &:hover {
+      background-color: #fff;
+    }
+  }
+}
 
-.markdown-copybtn-hover:hover
-  .markdown-copy-btn .q-icon
-    opacity: 1
+body.body--dark {
+  .markdown-copy-btn .q-icon {
+    background-color: $dark-pill;
+
+    &:hover {
+      background-color: #000;
+    }
+  }
+}
+
+.markdown-copybtn-hover:hover {
+  .markdown-copy-btn .q-icon {
+    opacity: 1;
+  }
+}
 </style>

@@ -69,13 +69,13 @@
 
         <q-tab-panels class="text-grey-3 text-weight-regular" v-model="currentTab" animated>
           <q-tab-panel class="q-pa-none" v-for="tab in def.tabs" :key="`pane-${tab}`" :name="tab">
-            <DocCode lang="markup" :code="def.parts[tab]" max-height="70vh" />
+            <MarkdownCode lang="markup" :code="def.parts[tab]" max-height="70vh" />
           </q-tab-panel>
         </q-tab-panels>
       </div>
     </q-slide-transition>
 
-    <DocCodepen v-if="!isBusy" ref="codepenRef" :title="props.title" />
+    <MarkdownCodepen v-if="!isBusy" ref="codepenRef" :title="props.title" />
 
     <q-separator />
 
@@ -98,8 +98,8 @@ import { openURL } from 'quasar'
 import { fabGithub, fabCodepen } from '@quasar/extras/fontawesome-v6'
 // import { mdiCompare } from '@quasar/extras/mdi-v7'
 
-// import MarkdownCode from './MarkdownCode.vue'
-// import MarkdownCodepen from './MarkdownCodepen.vue'
+import MarkdownCode from './MarkdownCode.vue'
+import MarkdownCodepen from './MarkdownCodepen.vue'
 import MarkdownCardTitle from './MarkdownCardTitle.vue'
 
 const props = defineProps({
@@ -191,19 +191,22 @@ if (process.env.CLIENT) {
 }
 </script>
 
-<style lang="sass">
-.markdown-example
+<style lang="scss">
+.markdown-example {
+  &__actions {
+    padding: 3px 0 3px 7px;
+  }
 
-  &__actions
-    padding: 3px 0 3px 7px
-
-  &__content
-    position: relative
+  &__content {
+    position: relative;
 
     // reset markdown style
-    font-weight: 400
-    font-family: $font-family-examples
+    font-weight: 400;
+    font-family: $font-family-examples;
 
-    &--scrollable
-      height: 500px
+    &--scrollable {
+      height: 500px;
+    }
+  }
+}
 </style>

@@ -11,14 +11,15 @@
 const props = defineProps({
   to: {
     type: String,
-    required: true
+    required: true,
   },
 
-  external: Boolean
+  external: Boolean,
 })
 </script>
 
-<style lang="sass">
-.card-link
-  text-decoration: none
+<style lang="scss">
+.card-link {
+  text-decoration: none;
+}
 </style>
