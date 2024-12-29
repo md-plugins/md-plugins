@@ -11,7 +11,7 @@ The `@md-plugins/shared` package provides common utilities, types, and helpers u
 
 ## Installation
 
-Install the shared package via your preferred package manager:
+Install the plugin via your preferred package manager:
 
 ```bash
 # With npm:
