@@ -31,21 +31,21 @@ pnpm add @md-plugins/vite-examples-plugin
 To use the `viteExamplesPlugin`, configure it in your Vite project:
 
 ```js
-import { defineConfig } from 'vite';
-import vue from '@vitejs/plugin-vue';
-import { viteExamplesPlugin } from '@md-plugin/vite-examples-plugin';
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import { viteExamplesPlugin } from '@md-plugin/vite-examples-plugin'
 
 export default defineConfig({
   plugins: [vue(), viteExamplesPlugin('/absolute/path/to/examples')],
-});
+})
 ```
 
 ### Manual Chunk Splitting with Vite
 
 ```js
-import { defineConfig } from 'vite';
-import vue from '@vitejs/plugin-vue';
-import { viteExamplesPlugin, viteManualChunks } from 'vite-examples-plugin';
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import { viteExamplesPlugin, viteManualChunks } from 'vite-examples-plugin'
 
 export default defineConfig({
   plugins: [vue(), viteExamplesPlugin('/absolute/path/to/examples')],
@@ -57,7 +57,7 @@ export default defineConfig({
       },
     },
   },
-});
+})
 ```
 
 ## Quasar Framework Configuration
@@ -84,10 +84,7 @@ export default defineConfig((ctx) => {
 ### Manual Chunk Splitting with Quasar
 
 ```js
-import {
-  viteExamplesPlugin,
-  viteManualChunks,
-} from '@md-plugins/vite-examples-plugin';
+import { viteExamplesPlugin, viteManualChunks } from '@md-plugins/vite-examples-plugin'
 ```
 
 ```js
@@ -156,12 +153,12 @@ During development, the plugin uses Vite's `import.meta.glob` to dynamically loa
 ```ts
 export const code = import.meta.glob('/src/examples/example1/*.vue', {
   eager: true,
-});
+})
 export const source = import.meta.glob('/src/examples/example1/*.vue', {
   query: '?raw',
   import: 'default',
   eager: true,
-});
+})
 ```
 
 ### Production Mode
@@ -169,10 +166,10 @@ export const source = import.meta.glob('/src/examples/example1/*.vue', {
 In production, the plugin preloads example components and their raw source code, generating import and export statements:
 
 ```ts
-import Example1 from 'app/src/examples/example1/Example1.vue';
-import RawExample1 from 'app/src/examples/example1/Example1.vue?raw';
+import Example1 from 'app/src/examples/example1/Example1.vue'
+import RawExample1 from 'app/src/examples/example1/Example1.vue?raw'
 
-export { Example1, RawExample1 };
+export { Example1, RawExample1 }
 ```
 
 ## Development Notes
@@ -196,7 +193,7 @@ The plugin is structured with the following components:
 If the `targetFolder` is not defined when the plugin is initialized, an error will be thrown:
 
 ```ts
-throw new Error('targetFolder is not defined');
+throw new Error('targetFolder is not defined')
 ```
 
 ## License

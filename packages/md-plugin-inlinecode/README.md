@@ -26,21 +26,21 @@ pnpm add @md-plugins/md-plugin-inlinecode
 ### Basic Setup
 
 ```js
-import MarkdownIt from 'markdown-it';
-import { inlinecodePlugin } from '@md-plugins/md-plugin-inlinecode';
+import MarkdownIt from 'markdown-it'
+import { inlinecodePlugin } from '@md-plugins/md-plugin-inlinecode'
 
-const md = new MarkdownIt();
+const md = new MarkdownIt()
 md.use(inlinecodePlugin, {
   inlineCodeClass: 'custom-inline-code-class',
-});
+})
 
 const markdownContent = `
 Here is some \`inline code\` in a sentence.
-`;
+`
 
-const renderedOutput = md.render(markdownContent);
+const renderedOutput = md.render(markdownContent)
 
-console.log('Rendered Output:', renderedOutput);
+console.log('Rendered Output:', renderedOutput)
 ```
 
 ### Example Output
@@ -48,10 +48,7 @@ console.log('Rendered Output:', renderedOutput);
 The rendered output will include the specified CSS class:
 
 ```html
-<p>
-  Here is some <code class="custom-inline-code-class">inline code</code> in a
-  sentence.
-</p>
+<p>Here is some <code class="custom-inline-code-class">inline code</code> in a sentence.</p>
 ```
 
 ## Options

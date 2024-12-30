@@ -29,26 +29,26 @@ The `@md-plugins/shared` package is not intended to be used directly by end-user
 ## Example: Accessing Types
 
 ```ts
-import type { MarkdownItEnv } from '@md-plugins/shared';
+import type { MarkdownItEnv } from '@md-plugins/shared'
 
 const env: MarkdownItEnv = {
   toc: [],
   frontmatter: {},
-};
+}
 ```
 
 ## Example: Utility Function
 
 ```ts
-import { resolveTitleFromToken } from '@md-plugins/shared';
+import { resolveTitleFromToken } from '@md-plugins/shared'
 
-const token = { content: 'My Title' };
+const token = { content: 'My Title' }
 const title = resolveTitleFromToken(token, {
   shouldAllowHtml: false,
   shouldEscapeText: true,
-});
+})
 
-console.log(title); // "My Title"
+console.log(title) // "My Title"
 ```
 
 ## Provided Types
@@ -59,11 +59,11 @@ The `shared` package defines common types used across plugins. Here are some exa
 
 ```ts
 export interface MarkdownItEnv {
-  toc?: Array<Record<string, any>>; // Extracted table of contents
-  frontmatter?: Record<string, unknown>; // Frontmatter data
-  pageScripts?: Set<string>; // Scripts to be included in the page
-  content?: string; // Markdown content excluding frontmatter
-  title?: string; // Extracted title
+  toc?: Array<Record<string, any>> // Extracted table of contents
+  frontmatter?: Record<string, unknown> // Frontmatter data
+  pageScripts?: Set<string> // Scripts to be included in the page
+  content?: string // Markdown content excluding frontmatter
+  title?: string // Extracted title
 }
 ```
 
@@ -78,8 +78,8 @@ A utility function to resolve the title from a Markdown-It token.
 ```ts
 function resolveTitleFromToken(
   token: Token,
-  options: { shouldAllowHtml: boolean; shouldEscapeText: boolean }
-): string;
+  options: { shouldAllowHtml: boolean; shouldEscapeText: boolean },
+): string
 ```
 
 - Parameters:
@@ -92,7 +92,7 @@ function resolveTitleFromToken(
 Provides a standard implementation of slugification for plugins:
 
 ```ts
-function slugify(str: string): string;
+function slugify(str: string): string
 ```
 
 - Converts a string into a URL-friendly slug.

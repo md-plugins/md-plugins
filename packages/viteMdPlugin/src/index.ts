@@ -1,2 +1,2 @@
-export * from './viteMdPlugin';
-export type * from './types';
+export * from './viteMdPlugin'
+export type * from './types'

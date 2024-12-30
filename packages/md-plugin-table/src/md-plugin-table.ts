@@ -1,9 +1,9 @@
-import type { MarkdownItEnv } from '@md-plugins/shared';
-import type { PluginWithOptions } from 'markdown-it';
-import type { TablePluginOptions } from './types';
+import type { MarkdownItEnv } from '@md-plugins/shared'
+import type { PluginWithOptions } from 'markdown-it'
+import type { TablePluginOptions } from './types'
 
-import type { Options } from 'markdown-it';
-import type Token from 'markdown-it/lib/token.mjs';
+import type { Options } from 'markdown-it'
+import type Token from 'markdown-it/lib/token.mjs'
 
 export const tablePlugin: PluginWithOptions<TablePluginOptions> = (
   md,
@@ -14,59 +14,55 @@ export const tablePlugin: PluginWithOptions<TablePluginOptions> = (
     tableCellClass = '',
     tableToken = 'q-markup-table',
     tableAttributes = [],
-  } = {}
+  } = {},
 ): void => {
-  const render = md.renderer.render.bind(md.renderer);
+  const render = md.renderer.render.bind(md.renderer)
 
-  md.renderer.render = (
-    tokens: Token[],
-    options: Options,
-    env: MarkdownItEnv
-  ): string => {
+  md.renderer.render = (tokens: Token[], options: Options, env: MarkdownItEnv): string => {
     for (let i = 0; i < tokens.length; i++) {
-      const token = tokens[i];
+      const token = tokens[i]
       if (!token) {
-        continue;
+        continue
       }
 
       switch (token.type) {
         case 'table_open':
           // Replace default table tag with custom token
-          token.tag = tableToken;
-          token.attrSet('class', tableClass);
+          token.tag = tableToken
+          token.attrSet('class', tableClass)
           // Set any additional attributes
           for (const [attrName, attrValue] of tableAttributes) {
-            token.attrSet(attrName, String(attrValue));
+            token.attrSet(attrName, String(attrValue))
           }
-          break;
+          break
 
         case 'table_close':
           // Ensure closing tag matches the opening tag
-          token.tag = tableToken;
-          break;
+          token.tag = tableToken
+          break
 
         case 'th_open':
           if (tableHeaderClass) {
-            token.attrSet('class', tableHeaderClass);
+            token.attrSet('class', tableHeaderClass)
           }
-          break;
+          break
 
         case 'tr_open':
           if (tableRowClass) {
-            token.attrSet('class', tableRowClass);
+            token.attrSet('class', tableRowClass)
           }
-          break;
+          break
 
         case 'td_open':
           if (tableCellClass) {
-            token.attrSet('class', tableCellClass);
+            token.attrSet('class', tableCellClass)
           }
-          break;
+          break
 
         // Add more cases if other table-related tokens need handling
       }
     }
 
-    return render(tokens, options, env);
-  };
-};
+    return render(tokens, options, env)
+  }
+}

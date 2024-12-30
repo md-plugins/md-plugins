@@ -1,7 +1,5 @@
-const vendorRE =
-  /node_modules[\\/](vue|@vue|quasar|vue-router)[\\/](.*)\.(m?js|css|sass)$/;
-const exampleRE =
-  /examples:([a-zA-Z0-9]+)$|src[\\/]examples[\\/]([a-zA-Z0-9-]+)/;
+const vendorRE = /node_modules[\\/](vue|@vue|quasar|vue-router)[\\/](.*)\.(m?js|css|sass)$/
+const exampleRE = /examples:([a-zA-Z0-9]+)$|src[\\/]examples[\\/]([a-zA-Z0-9-]+)/
 
 /**
  * A function to determine the manual chunk name for a given module ID.
@@ -11,14 +9,14 @@ const exampleRE =
  */
 export function viteManualChunks(id: string): string | undefined {
   if (vendorRE.test(id)) {
-    return 'vendor';
+    return 'vendor'
   }
 
-  const examplesMatch = exampleRE.exec(id);
+  const examplesMatch = exampleRE.exec(id)
   if (examplesMatch !== null) {
-    const name = examplesMatch[1] || examplesMatch[2];
-    return `e.${name}`;
+    const name = examplesMatch[1] || examplesMatch[2]
+    return `e.${name}`
   }
 
-  return undefined;
+  return undefined
 }

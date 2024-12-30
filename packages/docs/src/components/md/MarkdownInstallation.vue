@@ -44,10 +44,10 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed } from 'vue'
 
-import MarkdownCode from './MarkdownCode.vue';
-import MarkdownCardTitle from './MarkdownCardTitle.vue';
+import MarkdownCode from './MarkdownCode.vue'
+import MarkdownCardTitle from './MarkdownCardTitle.vue'
 
 import { slugify } from '@md-plugins/shared'
 
@@ -60,47 +60,47 @@ const props = defineProps({
     type: String,
     default: 'Installation',
   },
-});
+})
 
-const tabList = ['Quasar CLI', 'Vite plugin / Vue CLI', 'UMD'];
-const currentTab = ref('Quasar CLI');
+const tabList = ['Quasar CLI', 'Vite plugin / Vue CLI', 'UMD']
+const currentTab = ref('Quasar CLI')
 
-const id = computed(() => slugify(props.title));
+const id = computed(() => slugify(props.title))
 
 function nameAsString(name, indent, quotes = true) {
-  const wrapper = quotes ? (str) => `'${str}'` : (str) => str;
+  const wrapper = quotes ? (str) => `'${str}'` : (str) => str
 
   return Array.isArray(name)
     ? name.map(wrapper).join(',\n' + ''.padStart(indent, ' '))
-    : wrapper(name);
+    : wrapper(name)
 }
 
 const quasarConf = computed(() => {
   return props.config !== void 0
     ? `${props.config}: /* look at QuasarConfOptions from the API card */`
-    : null;
-});
+    : null
+})
 
 const QuasarCli = computed(() => {
   if (props.plugins === void 0 && quasarConf.value === null) {
     return `/*
  * No installation step is necessary.
  * It gets installed by default by @quasar/app-vite or @quasar/app-webpack.
- */`;
+ */`
   }
 
-  const parts = [];
+  const parts = []
 
   if (props.plugins !== void 0) {
     parts.push(`plugins: [
       ${nameAsString(props.plugins, 6)}
-    ]`);
+    ]`)
   }
 
   if (quasarConf.value !== null) {
     parts.push(`config: {
       ${quasarConf.value}
-    }`);
+    }`)
   }
 
   return `// quasar.config file
@@ -109,8 +109,8 @@ return {
   framework: {
     ${parts.join(',\n    ')}
   }
-}`;
-});
+}`
+})
 
 const UMD = computed(() => {
   const config =
@@ -124,33 +124,33 @@ app.use(Quasar, {
     ${quasarConf.value}
   }
 }`
-      : '';
+      : ''
 
   const content = `/*
  * No installation step is necessary.
  * It gets installed by default.
- */`;
+ */`
 
-  return content + config;
-});
+  return content + config
+})
 
 const ExternalCli = computed(() => {
-  const types = [];
-  const imports = ['Quasar'];
+  const types = []
+  const imports = ['Quasar']
 
-  ['components', 'directives', 'plugins'].forEach((type) => {
+  ;['components', 'directives', 'plugins'].forEach((type) => {
     if (props[type] !== void 0) {
-      imports.push(nameAsString(props[type], 2, false));
+      imports.push(nameAsString(props[type], 2, false))
       types.push(`${type}: {
     ${nameAsString(props[type], 4, false)}
-  }`);
+  }`)
     }
-  });
+  })
 
   if (quasarConf.value !== null) {
     types.push(`config: {
     ${quasarConf.value}
-  }`);
+  }`)
   }
 
   return `// main.js
@@ -161,6 +161,6 @@ import {
 
 app.use(Quasar, {
   ${types.join(',\n  ')}
-})`;
-});
+})`
+})
 </script>

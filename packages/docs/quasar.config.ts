@@ -9,7 +9,7 @@ const { sidebar } = siteConfig
 // console.log('sidebar', sidebar)
 
 import { viteMdPlugin } from '@md-plugins/vite-md-plugin'
-import { viteExamplesPlugin, viteManualChunks } from '@md-plugins/vite-examples-plugin'
+// import { viteExamplesPlugin, viteManualChunks } from '@md-plugins/vite-examples-plugin'
 
 export default defineConfig((ctx) => {
   // console.log('ctx', ctx)
@@ -70,17 +70,17 @@ export default defineConfig((ctx) => {
       // polyfillModulePreload: true,
       // distDir
 
-      extendViteConf(viteConf, { isClient }) {
-        if (ctx.prod && isClient) {
-          if (!viteConf.build) {
-            viteConf.build = {}
-          }
-          viteConf.build.chunkSizeWarningLimit = 650
-          viteConf.build.rollupOptions = {
-            output: { manualChunks: viteManualChunks },
-          }
-        }
-      },
+      // extendViteConf(viteConf, { isClient }) {
+      //   if (ctx.prod && isClient) {
+      //     if (!viteConf.build) {
+      //       viteConf.build = {}
+      //     }
+      //     viteConf.build.chunkSizeWarningLimit = 650
+      //     viteConf.build.rollupOptions = {
+      //       output: { manualChunks: viteManualChunks },
+      //     }
+      //   }
+      // },
 
       viteVuePluginOptions: {
         include: [/\.(vue|md)$/],
@@ -93,7 +93,7 @@ export default defineConfig((ctx) => {
 
       vitePlugins: [
         viteMdPlugin(ctx.appPaths.srcDir + '/pages', sidebar) as unknown as Plugin,
-        viteExamplesPlugin(ctx.appPaths.srcDir + '/examples') as unknown as Plugin,
+        // viteExamplesPlugin(ctx.appPaths.srcDir + '/examples') as unknown as Plugin,
         [
           'vite-plugin-checker',
           {

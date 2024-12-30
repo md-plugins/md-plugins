@@ -64,7 +64,7 @@ For the example above, the plugin produces the following output:
 Additionally, the `pageScripts` property in the `env` object will contain:
 
 ```js
-Set(['import MarkdownLink from "src/components/md/MarkdownLink.vue";']);
+Set(['import MarkdownLink from "src/components/md/MarkdownLink.vue";'])
 ```
 
 ## Options

@@ -1,6 +1,6 @@
-import type matter from 'gray-matter';
+import type matter from 'gray-matter'
 
-type GrayMatterOptions = matter.GrayMatterOption<string, GrayMatterOptions>;
+type GrayMatterOptions = matter.GrayMatterOption<string, GrayMatterOptions>
 
 /**
  * Options of md-plugin-frontmatter
@@ -11,14 +11,14 @@ export interface FrontmatterPluginOptions {
    *
    * @see https://github.com/jonschlinkert/gray-matter#options
    */
-  grayMatterOptions?: GrayMatterOptions;
+  grayMatterOptions?: GrayMatterOptions
 
   /**
    * Render the excerpt or not
    *
    * @default true
    */
-  renderExcerpt?: boolean;
+  renderExcerpt?: boolean
 }
 
 declare module '@md-plugins/shared' {
@@ -26,7 +26,7 @@ declare module '@md-plugins/shared' {
     /**
      * The raw Markdown content without frontmatter
      */
-    content?: string;
+    content?: string
 
     /**
      * The excerpt that extracted by `md-plugin-frontmatter`
@@ -34,11 +34,11 @@ declare module '@md-plugins/shared' {
      * - Would be the rendered HTML when `renderExcerpt` is enabled
      * - Would be the raw Markdown when `renderExcerpt` is disabled
      */
-    excerpt?: string;
+    excerpt?: string
 
     /**
      * The frontmatter that extracted by `md-plugin-frontmatter`
      */
-    frontmatter?: Record<string, unknown>;
+    frontmatter?: Record<string, unknown>
   }
 }

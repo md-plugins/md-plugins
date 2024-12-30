@@ -1,21 +1,17 @@
-import { defineBuildConfig } from 'unbuild';
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { defineBuildConfig } from 'unbuild'
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
 
-const rootPackageJson = JSON.parse(
-  readFileSync(join(__dirname, './package.json'), 'utf8')
-);
+const rootPackageJson = JSON.parse(readFileSync(join(__dirname, './package.json'), 'utf8'))
 
 const allDependencies = [
   ...Object.keys(rootPackageJson.dependencies || {}),
   ...Object.keys(rootPackageJson.devDependencies || {}),
   ...Object.keys(rootPackageJson.peerDependencies || {}),
-];
+]
 
 // Filter to exclude `@md-plugins/*` packages
-const externals = allDependencies.filter(
-  (dep) => !dep.startsWith('@md-plugins/')
-);
+const externals = allDependencies.filter((dep) => !dep.startsWith('@md-plugins/'))
 
 export default defineBuildConfig({
   clean: true,
@@ -37,4 +33,4 @@ export default defineBuildConfig({
   //     console.log('Rollup Options:', options);
   //   },
   // },
-});
+})

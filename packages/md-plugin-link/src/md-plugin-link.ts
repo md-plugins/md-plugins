@@ -1,9 +1,9 @@
-import type { MarkdownItEnv } from '@md-plugins/shared';
-import type MarkdownIt from 'markdown-it';
-import type { Options, PluginWithOptions } from 'markdown-it';
-import type Renderer from 'markdown-it/lib/renderer.mjs';
-import type Token from 'markdown-it/lib/token.mjs';
-import type { LinkPluginOptions } from './types';
+import type { MarkdownItEnv } from '@md-plugins/shared'
+import type MarkdownIt from 'markdown-it'
+import type { Options, PluginWithOptions } from 'markdown-it'
+import type Renderer from 'markdown-it/lib/renderer.mjs'
+import type Token from 'markdown-it/lib/token.mjs'
+import type { LinkPluginOptions } from './types'
 
 export const linkPlugin: PluginWithOptions<LinkPluginOptions> = (
   md: MarkdownIt,
@@ -11,7 +11,7 @@ export const linkPlugin: PluginWithOptions<LinkPluginOptions> = (
     linkTag = 'MarkdownLink',
     linkToKeyword = 'to',
     pageScript = 'import MarkdownLink from "src/components/md/MarkdownLink.vue"',
-  }: LinkPluginOptions = {}
+  }: LinkPluginOptions = {},
 ): void => {
   // Override the link_open rule
   md.renderer.rules.link_open = (
@@ -19,37 +19,37 @@ export const linkPlugin: PluginWithOptions<LinkPluginOptions> = (
     idx: number,
     options: Options,
     env: any,
-    self: Renderer
+    self: Renderer,
   ): string => {
-    const token = tokens[idx];
+    const token = tokens[idx]
     if (!token) {
-      return '';
+      return ''
     }
 
-    const hrefIndex = token.attrIndex('href');
+    const hrefIndex = token.attrIndex('href')
     if (hrefIndex < 0 || !token.attrs) {
-      return self.renderToken(tokens, idx, options);
+      return self.renderToken(tokens, idx, options)
     }
 
-    const link = token.attrs[hrefIndex] as [string, string];
-    const url = link[1];
+    const link = token.attrs[hrefIndex] as [string, string]
+    const url = link[1]
 
-    token.tag = linkTag;
-    link[0] = linkToKeyword;
-    link[1] = decodeURI(url);
+    token.tag = linkTag
+    link[0] = linkToKeyword
+    link[1] = decodeURI(url)
 
     if (pageScript) {
       if (!env.pageScripts) {
         // Initialize pageScripts as a Set if it doesn't exist yet
-        env.pageScripts = new Set<string>();
+        env.pageScripts = new Set<string>()
       }
 
       // Add the pageScript to the set
-      env.pageScripts.add(pageScript);
+      env.pageScripts.add(pageScript)
     }
 
-    return self.renderToken(tokens, idx, options);
-  };
+    return self.renderToken(tokens, idx, options)
+  }
 
   // Override the link_close rule to ensure matching tags
   md.renderer.rules.link_close = (
@@ -57,25 +57,25 @@ export const linkPlugin: PluginWithOptions<LinkPluginOptions> = (
     idx: number,
     options: Options,
     env: MarkdownItEnv,
-    self: Renderer
+    self: Renderer,
   ): string => {
-    const token = tokens[idx];
+    const token = tokens[idx]
     if (!token) {
-      return '';
+      return ''
     }
 
     // To reliably find the link_open token, search backwards
-    let openIdx = idx - 1;
+    let openIdx = idx - 1
     while (openIdx >= 0 && tokens[openIdx]!.type !== 'link_open') {
-      openIdx--;
+      openIdx--
     }
 
-    const openingToken = tokens[openIdx];
+    const openingToken = tokens[openIdx]
     if (openingToken && openingToken.tag) {
       // make sure closing tag matches opening tag
-      token.tag = openingToken.tag;
+      token.tag = openingToken.tag
     }
 
-    return self.renderToken(tokens, idx, options);
-  };
-};
+    return self.renderToken(tokens, idx, options)
+  }
+}

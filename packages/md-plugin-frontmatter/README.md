@@ -92,7 +92,7 @@ md.use(frontmatterPlugin, {
   grayMatterOptions: {
     delimiters: '+++', // Use "+++" as the frontmatter delimiter
   },
-});
+})
 ```
 
 ## Testing

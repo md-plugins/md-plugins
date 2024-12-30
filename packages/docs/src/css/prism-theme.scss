@@ -75,7 +75,7 @@
 
 .line-add:before,
 .token.inserted-sign:before {
-  background: rgba($positive, .2);
+  background: rgba($positive, 0.2);
 }
 
 .token.deleted-sign,
@@ -106,11 +106,11 @@ body.body--light {
   }
 
   .line-highlight:before {
-    background: rgba($grey, .2);
+    background: rgba($grey, 0.2);
   }
   .line-rem:before,
   .token.deleted-sign:before {
-    background: rgba($negative, .2);
+    background: rgba($negative, 0.2);
   }
 
   .c-lpref {
@@ -126,12 +126,12 @@ body.body--light {
   .token.prolog,
   .token.doctype,
   .token.cdata {
-    color: #7D8B99;
+    color: #7d8b99;
   }
 
   .token {
     &.punctuation {
-      color: #5F6364;
+      color: #5f6364;
     }
     &.important {
       font-weight: 400;
@@ -194,7 +194,7 @@ body.body--light {
   }
 
   .namespace {
-    opacity: .7;
+    opacity: 0.7;
   }
 
   .token.tab:not(:empty):before,
@@ -211,11 +211,11 @@ body.body--dark {
   }
 
   .line-highlight:before {
-    background: rgba($grey-3, .2);
+    background: rgba($grey-3, 0.2);
   }
   .line-rem:before,
   .token.deleted-sign:before {
-    background: rgba($red, .3);
+    background: rgba($red, 0.3);
   }
 
   .c-lpref {

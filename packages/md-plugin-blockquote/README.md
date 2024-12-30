@@ -25,21 +25,21 @@ pnpm add @md-plugins/md-plugin-blockquote
 ### Basic Setup
 
 ```js
-import MarkdownIt from 'markdown-it';
-import { blockquotePlugin } from 'md-plugin-blockquote';
+import MarkdownIt from 'markdown-it'
+import { blockquotePlugin } from 'md-plugin-blockquote'
 
-const md = new MarkdownIt();
+const md = new MarkdownIt()
 md.use(blockquotePlugin, {
   blockquoteClass: 'custom-blockquote',
-});
+})
 
 const markdownContent = `
 > This is a blockquote.
-`;
+`
 
-const renderedOutput = md.render(markdownContent);
+const renderedOutput = md.render(markdownContent)
 
-console.log('Rendered Output:', renderedOutput);
+console.log('Rendered Output:', renderedOutput)
 ```
 
 ### Example Output

@@ -4,5 +4,5 @@ export interface InlineCodePluginOptions {
    *
    * @default 'markdown-token'
    */
-  inlineCodeClass?: string;
+  inlineCodeClass?: string
 }

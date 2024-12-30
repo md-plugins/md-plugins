@@ -4,5 +4,5 @@ export interface ImagePluginOptions {
    *
    * @default 'markdown-image'
    */
-  imageClass?: string;
+  imageClass?: string
 }

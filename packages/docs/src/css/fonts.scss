@@ -2,7 +2,8 @@
   font-family: 'Material Icons';
   font-style: normal;
   font-weight: 400;
-  src: url(https://cdn.quasar.dev/fonts/materialicons/v139/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2) format('woff2');
+  src: url(https://cdn.quasar.dev/fonts/materialicons/v139/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2)
+    format('woff2');
 }
 
 @font-face {
@@ -65,28 +66,33 @@ $unicodeMap: (
     U+2212,
     U+2215,
     U+FEFF,
-    U+FFFD
-  )
+    U+FFFD,
+  ),
 );
 
 @mixin fontFace($weight, $style) {
   @each $subset, $unicodeRangeValues in $unicodeMap {
     @font-face {
-      font-family: "Montserrat";
+      font-family: 'Montserrat';
       font-style: $style;
       font-weight: $weight;
-      src: url("https://cdn.quasar.dev/fonts/montserrat/v25-fix-2/montserrat-#{$subset}-variable-wghtOnly-#{$style}.woff2") format("woff2-variations"),
-           url("https://cdn.quasar.dev/fonts/montserrat/v25-fix-2/montserrat-#{$subset}-#{$weight}-#{$style}.woff2") format("woff2");
+      src:
+        url('https://cdn.quasar.dev/fonts/montserrat/v25-fix-2/montserrat-#{$subset}-variable-wghtOnly-#{$style}.woff2')
+          format('woff2-variations'),
+        url('https://cdn.quasar.dev/fonts/montserrat/v25-fix-2/montserrat-#{$subset}-#{$weight}-#{$style}.woff2')
+          format('woff2');
       unicode-range: $unicodeRangeValues;
     }
   }
 }
 
-@for $weight from 3 through 8 { // 300 - 700
+@for $weight from 3 through 8 {
+  // 300 - 700
   @include fontFace($weight * 100, normal);
 }
 
-@for $weight from 3 through 8 { // 300 - 700
+@for $weight from 3 through 8 {
+  // 300 - 700
   @include fontFace($weight * 100, italic);
 }
 

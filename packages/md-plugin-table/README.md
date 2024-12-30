@@ -27,10 +27,10 @@ pnpm add @md-plugins/md-plugin-table
 ### Basic Setup
 
 ```js
-import MarkdownIt from 'markdown-it';
-import { tablePlugin } from '@md-plugins/md-plugin-table';
+import MarkdownIt from 'markdown-it'
+import { tablePlugin } from '@md-plugins/md-plugin-table'
 
-const md = new MarkdownIt();
+const md = new MarkdownIt()
 md.use(tablePlugin, {
   tableClass: 'custom-table-class',
   tableToken: 'custom-table-tag',
@@ -38,18 +38,18 @@ md.use(tablePlugin, {
     [':wrap-cells', 'true'],
     [':flat', 'true'],
   ],
-});
+})
 
 const markdownContent = `
 | Header 1 | Header 2 |
 |----------|----------|
 | Cell 1   | Cell 2   |
 | Cell 3   | Cell 4   |
-`;
+`
 
-const renderedOutput = md.render(markdownContent);
+const renderedOutput = md.render(markdownContent)
 
-console.log('Rendered Output:', renderedOutput);
+console.log('Rendered Output:', renderedOutput)
 ```
 
 ### Example Output
@@ -102,7 +102,7 @@ md.use(tablePlugin, {
   tableHeaderClass: 'custom-header',
   tableRowClass: 'custom-row',
   tableCellClass: 'custom-cell',
-});
+})
 ```
 
 Renered output:
@@ -134,15 +134,13 @@ md.use(tablePlugin, {
     [':bordered', 'true'],
     [':flat', 'true'],
   ],
-});
+})
 ```
 
 Rendered output:
 
 ```html
-<q-markup-table class="markdown-page-table" :bordered="true" :flat="true">
-  ...
-</q-markup-table>
+<q-markup-table class="markdown-page-table" :bordered="true" :flat="true"> ... </q-markup-table>
 ```
 
 ## Testing

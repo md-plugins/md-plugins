@@ -29,10 +29,10 @@ pnpm add @md-plugins/md-plugin-codeblocks
 ### Basic Setup
 
 ```js
-import MarkdownIt from 'markdown-it';
-import { codeblocksPlugin } from '@md-plugins/md-plugin-codeblocks';
+import MarkdownIt from 'markdown-it'
+import { codeblocksPlugin } from '@md-plugins/md-plugin-codeblocks'
 
-const md = new MarkdownIt();
+const md = new MarkdownIt()
 md.use(codeblocksPlugin, {
   containerComponent: 'MarkdownPrerender',
   copyButtonComponent: '<MarkdownCopyButton',
@@ -41,13 +41,13 @@ md.use(codeblocksPlugin, {
     "import MarkdownPrerender from 'src/components/md/MarkdownPrerender'",
     "import MarkdownCopyButton from 'src/components/md/MarkdownCopyButton.vue'",
   ],
-});
+})
 ```
 
 ## Example Markdown Input
 
 ```javascript
-console.log('Hello, world!');
+console.log('Hello, world!')
 ```
 
 ### Example Output
@@ -93,43 +93,43 @@ The plugin supports magic comments for inline annotations:
 
 ```js [numbered]
 // All lines will be numbered
-console.log('Line 1');
-console.log('Line 2');
-console.log('Line 3');
+console.log('Line 1')
+console.log('Line 2')
+console.log('Line 3')
 ```
 
 ### Line Highlighting and Annotations
 
 ````markdown
 ```js [highlight=2]
-console.log('Line 1');
-console.log('Line 2'); // This line will be highlighted
-console.log('Line 3');
+console.log('Line 1')
+console.log('Line 2') // This line will be highlighted
+console.log('Line 3')
 ```
 ````
 
 ````markdown
 ```js
-console.log('Line 1');
-console.log('Line 2');
-[[highlight]]; // This line will be highlighted
-console.log('Line 3');
+console.log('Line 1')
+console.log('Line 2')
+;[[highlight]] // This line will be highlighted
+console.log('Line 3')
 ```
 ````
 
 ````markdown
 ```js [add=2]
-console.log('Line 1');
-console.log('Line 2'); // This line will be accented and prefixed with a '+'
-console.log('Line 3');
+console.log('Line 1')
+console.log('Line 2') // This line will be accented and prefixed with a '+'
+console.log('Line 3')
 ```
 ````
 
 ````markdown
 ```js [rem=2]
-console.log('Line 1');
-console.log('Line 2'); // This line will be accented and prefixed with a '-'
-console.log('Line 3');
+console.log('Line 1')
+console.log('Line 2') // This line will be accented and prefixed with a '-'
+console.log('Line 3')
 ```
 ````
 
@@ -137,9 +137,9 @@ console.log('Line 3');
 
 ````markdown
 ```js [numbered highlight=1 rem=2 add=3]
-console.log('Line 1'); // This line will be highlighted
-console.log('Line 2'); // This line will be accented and prefixed with a '-'
-console.log('Line 3'); // This line will be accented and prefixed
+console.log('Line 1') // This line will be highlighted
+console.log('Line 2') // This line will be accented and prefixed with a '-'
+console.log('Line 3') // This line will be accented and prefixed
 ```
 ````
 

@@ -3,37 +3,37 @@ export interface CodeblockPluginOptions {
    * The default language to use if none is detected.
    * @default 'markup'
    */
-  defaultLang?: string;
+  defaultLang?: string
 
   /**
    * The component used to wrap code blocks.
    * @default 'markdown-prerender'
    */
-  containerComponent?: string;
+  containerComponent?: string
 
   /**
    * The component used to render the copy button.
    * @default 'markdown-copy-button'
    */
-  copyButtonComponent?: string;
+  copyButtonComponent?: string
 
   /**
    * The comonent name for the tab panel.
    * @default 'q-tab-panel'
    */
-  tabPanelTagName?: string;
+  tabPanelTagName?: string
 
   /**
    * The class(es) to be used with the tab panel.
    * @default 'q-pa-none'
    */
-  tabPanelTagClass?: string;
+  tabPanelTagClass?: string
 
   /**
    * The class to be used for the line added.
    * @default 'line-add'
    */
-  lineAddClass?: string;
+  lineAddClass?: string
 
   /**
    * The prefix to be used for magic classes.
@@ -42,30 +42,30 @@ export interface CodeblockPluginOptions {
    * @default 'line-'
    * The final class names would be: `line-add`, `line-rem`, `line-highlight`.
    */
-  linePrefixClass?: string;
+  linePrefixClass?: string
 
   /**
    * The class to be used for the pre tag.
    * @default 'markdown-pre'
    */
-  preClass?: string;
+  preClass?: string
 
   /**
    * The class to be used for the code tag (ok to be empty).
    * @default 'markdown-code'
    */
-  codeClass?: string;
+  codeClass?: string
 
   /**
    * An array of page scripts to be included.
    */
-  pageScripts?: string[];
+  pageScripts?: string[]
 
   /**
    * Optional Prism languages configuration array. This allows you to override or add custom language definitions.
    * Each item can have a `name`, optional `aliases`, and `customCopy` boolean.
    */
-  langList?: Array<{ name: string; aliases?: string; customCopy?: boolean }>;
+  langList?: Array<{ name: string; aliases?: string; customCopy?: boolean }>
 }
 
 declare module '@md-plugins/shared' {
@@ -73,6 +73,6 @@ declare module '@md-plugins/shared' {
     /**
      * An array of page script (import statements) to be included.
      */
-    pageScripts?: Set<string>;
+    pageScripts?: Set<string>
   }
 }

@@ -1,12 +1,12 @@
-import type { Plugin } from 'vite';
-import type { MenuItem } from './types';
-import { mdParse } from './md-parse';
+import type { Plugin } from 'vite'
+import type { MenuItem } from './types'
+import { mdParse } from './md-parse'
 
 // Regex to match markdown files
-const mdRE = /\.md$/;
+const mdRE = /\.md$/
 
-let globalMenu: MenuItem[] = [];
-let globalPrefix: string = '';
+let globalMenu: MenuItem[] = []
+let globalPrefix: string = ''
 
 /**
  * Transforms markdown content into Vue Single File Component (SFC) format.
@@ -18,17 +18,17 @@ let globalPrefix: string = '';
  */
 function transform(code: string, id: string): string | null {
   // Skip files that are not markdown
-  if (!mdRE.test(id)) return null;
+  if (!mdRE.test(id)) return null
 
   try {
     // Transform markdown to Vue SFC
-    const result = mdParse(code, id, globalPrefix, globalMenu);
-    return result.code;
+    const result = mdParse(code, id, globalPrefix, globalMenu)
+    return result.code
   } catch (err) {
-    console.error(`Error processing Markdown file: ${id}`, err);
+    console.error(`Error processing Markdown file: ${id}`, err)
     throw new Error(
-      `Markdown transform failed: ${err instanceof Error ? err.message : String(err)}`
-    );
+      `Markdown transform failed: ${err instanceof Error ? err.message : String(err)}`,
+    )
   }
 }
 
@@ -41,7 +41,7 @@ const mdPlugins: Plugin = {
   enforce: 'pre', // before vue
 
   transform,
-};
+}
 
 /**
  * Creates a Vite plugin for processing Markdown files.
@@ -52,8 +52,8 @@ const mdPlugins: Plugin = {
  * @returns A Vite plugin object with pre-configured settings for Markdown processing.
  */
 export function viteMdPlugin(path: string, menu: MenuItem[]): Plugin {
-  globalMenu = menu;
-  globalPrefix = path;
+  globalMenu = menu
+  globalPrefix = path
 
-  return mdPlugins;
+  return mdPlugins
 }

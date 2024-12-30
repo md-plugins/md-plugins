@@ -47,16 +47,16 @@ pnpm add @md-plugins/vite-md-plugin
 To use the `viteMdPlugin`, configure it in your Vite project:
 
 ```js
-import { defineConfig } from 'vite';
-import vue from '@vitejs/plugin-vue';
-import { viteMdPlugin } from 'vite-md-plugin';
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import { viteMdPlugin } from 'vite-md-plugin'
 
-const menu = []; // Define your navigation menu structure here
-const basePath = '/docs'; // Base path prefix
+const menu = [] // Define your navigation menu structure here
+const basePath = '/docs' // Base path prefix
 
 export default defineConfig({
   plugins: [vue(), viteMdPlugin(basePath, menu)],
-});
+})
 ```
 
 ## Quasar Framework Configuration
@@ -102,7 +102,7 @@ The `viteMdPlugin` allows you to define a navigation structure that can be updat
 const menu = [
   { title: 'Home', path: '/home' },
   { title: 'About', path: '/about' },
-];
+]
 ```
 
 This menu is passed as a parameter to the plugin and can be used to build a dynamic sidebar or navigation bar in your application.
@@ -122,16 +122,16 @@ The `menu` parameter should conform to the following structure:
 
 ```ts
 export interface MenuItem {
-  name: string;
-  path?: string;
-  icon?: string;
-  iconColor?: string;
-  rightIcon?: string;
-  rightIconColor?: string;
-  badge?: string;
-  children?: MenuItem[];
-  external?: boolean;
-  expanded?: boolean;
+  name: string
+  path?: string
+  icon?: string
+  iconColor?: string
+  rightIcon?: string
+  rightIconColor?: string
+  badge?: string
+  children?: MenuItem[]
+  external?: boolean
+  expanded?: boolean
 }
 ```
 

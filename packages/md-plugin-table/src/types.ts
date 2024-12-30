@@ -4,35 +4,35 @@ export interface TablePluginOptions {
    *
    * @default 'markdown-page-table'
    */
-  tableClass?: string;
+  tableClass?: string
   /**
    * The class for the table header
    *
    * @default 'text-left'
    */
-  tableHeaderClass?: string;
+  tableHeaderClass?: string
   /**
    * The class for the table row
    *
    * @default ''
    */
-  tableRowClass?: string;
+  tableRowClass?: string
   /**
    * The class for the table cell
    *
    * @default ''
    */
-  tableCellClass?: string;
+  tableCellClass?: string
   /**
    * The token for the table
    *
    * @default 'q-markup-table' (replaces 'table')
    */
-  tableToken?: string;
+  tableToken?: string
   /**
    * The attributes for the table
    *
    * @default [ [':wrap-cells', 'true'],[':flat', 'true'],[':bordered', 'true'] ]
    */
-  tableAttributes?: [string, any][];
+  tableAttributes?: [string, any][]
 }

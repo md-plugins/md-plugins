@@ -4,5 +4,5 @@ export interface BlockquotePluginOptions {
    *
    * @default 'markdown-blockquote'
    */
-  blockquoteClass?: string;
+  blockquoteClass?: string
 }

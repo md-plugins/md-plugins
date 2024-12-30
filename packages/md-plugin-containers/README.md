@@ -27,16 +27,16 @@ pnpm add @md-plugins/md-plugin-containers
 ### Basic Setup
 
 ```js
-import MarkdownIt from 'markdown-it';
-import { containersPlugin } from '@md-plugins/md-plugin-containers';
+import MarkdownIt from 'markdown-it'
+import { containersPlugin } from '@md-plugins/md-plugin-containers'
 
-const md = new MarkdownIt();
+const md = new MarkdownIt()
 md.use(containersPlugin, {
   containers: [
     { type: 'note', defaultTitle: 'Note' },
     { type: 'warning', defaultTitle: 'Warning' },
   ],
-});
+})
 
 const markdownContent = `
 :::note
@@ -46,11 +46,11 @@ This is a note.
 :::warning
 This is a warning!
 :::
-`;
+`
 
-const renderedOutput = md.render(markdownContent);
+const renderedOutput = md.render(markdownContent)
 
-console.log('Rendered Output:', renderedOutput);
+console.log('Rendered Output:', renderedOutput)
 ```
 
 ### Example Output
@@ -86,7 +86,7 @@ md.use(containersPlugin, {
     { type: 'tip', defaultTitle: 'Tip' },
     { type: 'important', defaultTitle: 'Important' },
   ],
-});
+})
 ```
 
 ## Advanced Usage
@@ -99,17 +99,17 @@ Override the default rendering logic for containers:
 md.use(containersPlugin, {
   containers: [{ type: 'note', defaultTitle: 'Note' }],
   render(tokens, idx) {
-    const token = tokens[idx];
+    const token = tokens[idx]
     if (token.nesting === 1) {
       // Opening tag
-      const title = token.info.trim() || 'Note';
-      return `<div class="custom-note"><strong>${title}:</strong>\n`;
+      const title = token.info.trim() || 'Note'
+      return `<div class="custom-note"><strong>${title}:</strong>\n`
     } else {
       // Closing tag
-      return `</div>\n`;
+      return `</div>\n`
     }
   },
-});
+})
 ```
 
 ## Adding Titles

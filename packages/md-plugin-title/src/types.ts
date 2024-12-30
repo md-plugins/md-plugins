@@ -1,12 +1,12 @@
-export {}; // make this file a module
+export {} // make this file a module
 
 declare module '@md-plugins/shared' {
   interface MarkdownItEnv {
     /**
      * The title that extracted by `md-plugin-title`
      */
-    title?: string;
+    title?: string
 
-    heading?: boolean;
+    heading?: boolean
   }
 }

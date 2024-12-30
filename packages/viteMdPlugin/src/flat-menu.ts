@@ -1,8 +1,8 @@
-import { join } from 'node:path';
-import { fileURLToPath, URL } from 'node:url';
-import type { MenuItem, FlatMenu, FlatMenuEntry, RelatedItem } from './types';
+import { join } from 'node:path'
+import { fileURLToPath, URL } from 'node:url'
+import type { MenuItem, FlatMenu, FlatMenuEntry, RelatedItem } from './types'
 
-let prev: FlatMenuEntry | null = null;
+let prev: FlatMenuEntry | null = null
 
 /**
  * Recursively traverses the sidebar menu structure to build a flat menu representation.
@@ -18,55 +18,55 @@ function menuWalk(
   menuNodes: FlatMenu,
   node: MenuItem,
   path: string,
-  parentName: string | null
+  parentName: string | null,
 ): void {
-  const newPath = path + (node.path ? `/${node.path}` : '');
+  const newPath = path + (node.path ? `/${node.path}` : '')
 
   if (node.children) {
     node.children.forEach((childNode) => {
-      menuWalk(prefix, menuNodes, childNode, newPath, node.name);
-    });
+      menuWalk(prefix, menuNodes, childNode, newPath, node.name)
+    })
   } else if (!node.external) {
     const current: FlatMenuEntry = {
       name: node.name,
       category: parentName,
       path: newPath,
-    };
+    }
 
     if (prev) {
       prev.next = {
         name: current.name,
         category: current.category,
         path: current.path,
-      };
+      }
       current.prev = {
         name: prev.name,
         category: prev.category,
         path: prev.path,
-      };
+      }
     }
 
     // Add entries to menuNodes
-    menuNodes[join(prefix, newPath + '.md')] = current;
+    menuNodes[join(prefix, newPath + '.md')] = current
     // Handle folder-based menu structures
     if (node.path) {
-      menuNodes[join(prefix, newPath + '/' + node.path + '.md')] = current;
+      menuNodes[join(prefix, newPath + '/' + node.path + '.md')] = current
     }
 
-    prev = current;
+    prev = current
   }
 }
 
 // Traverse the menu structure
 export function generateFlatMenu(prefix: string, menu: MenuItem[]): FlatMenu {
-  const menuNodes: FlatMenu = {};
-  prev = null;
+  const menuNodes: FlatMenu = {}
+  prev = null
   if (menu) {
     menu.forEach((node) => {
-      menuWalk(prefix, menuNodes, node, '', null);
-    });
+      menuWalk(prefix, menuNodes, node, '', null)
+    })
   }
-  return menuNodes;
+  return menuNodes
 }
 
 /**
@@ -82,22 +82,22 @@ export function convertToRelated(
   prefix: string,
   menuNodes: FlatMenu,
   entry: string,
-  id: string
+  id: string,
 ): RelatedItem {
-  const menuEntry = menuNodes[join(prefix, entry + '.md')];
+  const menuEntry = menuNodes[join(prefix, entry + '.md')]
 
   if (!menuEntry) {
-    console.error('[flat-menu] ERROR - wrong related link:', entry, '@id', id);
+    console.error('[flat-menu] ERROR - wrong related link:', entry, '@id', id)
     return {
       name: '',
       category: '',
       path: '',
-    } as RelatedItem;
+    } as RelatedItem
   }
 
   return {
     name: menuEntry.name,
     category: menuEntry.category,
     path: menuEntry.path,
-  } as RelatedItem;
+  } as RelatedItem
 }
