@@ -1,7 +1,7 @@
 import { Notify } from 'quasar'
 import { slugify } from '@md-plugins/shared'
 
-export function copyToClipboard(text: string): void {
+function copyToClipboardFallback(text: string): boolean {
   const textArea = document.createElement('textarea')
   textArea.className = 'fixed-top'
   textArea.value = text
@@ -9,13 +9,28 @@ export function copyToClipboard(text: string): void {
   textArea.focus()
   textArea.select()
 
+  let res = false
   try {
-    document.execCommand('copy')
+    res = document.execCommand('copy')
   } catch (err) {
     console.error('Unable to copy to clipboard', err)
   } finally {
     document.body.removeChild(textArea)
   }
+  return res
+}
+
+export function copyToClipboard(text: string) {
+  return navigator.clipboard !== void 0
+    ? navigator.clipboard.writeText(text)
+    : new Promise((resolve, reject) => {
+        const res = copyToClipboardFallback(text)
+        if (res) {
+          resolve(true)
+        } else {
+          reject(res)
+        }
+      })
 }
 
 export function copyHeading(id: string): void {
