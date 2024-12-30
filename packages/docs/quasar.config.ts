@@ -8,7 +8,7 @@ import siteConfig from './src/assets/siteConfig'
 const { sidebar } = siteConfig
 // console.log('sidebar', sidebar)
 
-import { viteMdPlugin } from '@md-plugins/vite-md-plugin'
+import { viteMdPlugin, type MenuItem } from '@md-plugins/vite-md-plugin'
 import { viteExamplesPlugin, viteManualChunks } from '@md-plugins/vite-examples-plugin'
 
 /// @ts-ignore Fix later
@@ -91,7 +91,7 @@ export default defineConfig((ctx) => {
       },
 
       vitePlugins: [
-        viteMdPlugin(ctx.appPaths.srcDir + '/pages', sidebar) as unknown as Plugin,
+        viteMdPlugin(ctx.appPaths.srcDir + '/pages', sidebar as MenuItem[]),
         viteExamplesPlugin(ctx.appPaths.srcDir + '/examples') as unknown as Plugin,
         [
           'vite-plugin-checker',

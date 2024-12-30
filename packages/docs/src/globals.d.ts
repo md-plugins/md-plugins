@@ -31,7 +31,7 @@ interface MenuItem {
   rightIcon?: string
   rightIconColor?: string
   badge?: string
-  children?: MenuItem[]
+  children?: MenuItem[] | undefined
   external?: boolean
   expanded?: boolean
 }
