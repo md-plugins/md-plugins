@@ -10,7 +10,7 @@
 
 <script setup>
 import { ref, getCurrentInstance } from 'vue'
-import { copyToClipboard } from 'quasar'
+import { copyToClipboard } from './markdown-utils'
 import { mdiClipboardOutline } from '@quasar/extras/mdi-v7'
 
 const props = defineProps({

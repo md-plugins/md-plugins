@@ -127,7 +127,7 @@ import { ref, computed, watch, onMounted } from 'vue'
 import { mdiClose, mdiMagnify } from '@quasar/extras/mdi-v7'
 
 import MarkdownCardTitle from './MarkdownCardTitle.vue'
-import MarkdownApiEntry from './MarkdownApiEntry.js'
+import MarkdownApiEntry from './MarkdownApiEntry'
 
 const defaultInnerTabName = '__default'
 
