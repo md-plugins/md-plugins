@@ -16,10 +16,7 @@ export const importsPlugin: PluginSimple = (md: MarkdownIt): void => {
   const render = md.render.bind(md)
 
   md.render = (src: string, env: MarkdownItEnv = {}): string => {
-    if (!env.pageScripts) {
-      env.pageScripts = new Set<string>()
-    }
-
+    env.pageScripts = env.pageScripts || new Set<string>()
     const mdContent = src.replace(scriptRE, (_, scriptContent) => {
       const imports = scriptContent
         .split('\n')

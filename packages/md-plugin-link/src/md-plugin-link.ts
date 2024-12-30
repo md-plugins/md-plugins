@@ -39,11 +39,7 @@ export const linkPlugin: PluginWithOptions<LinkPluginOptions> = (
     link[1] = decodeURI(url)
 
     if (pageScript) {
-      if (!env.pageScripts) {
-        // Initialize pageScripts as a Set if it doesn't exist yet
-        env.pageScripts = new Set<string>()
-      }
-
+      env.pageScripts = env.pageScripts || new Set<string>()
       // Add the pageScript to the set
       env.pageScripts.add(pageScript)
     }
