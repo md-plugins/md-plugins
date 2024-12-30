@@ -73,9 +73,7 @@ export default defineConfig((ctx) => {
 
       extendViteConf(viteConf, { isClient }) {
         if (ctx.prod && isClient) {
-          if (!viteConf.build) {
-            viteConf.build = {}
-          }
+          viteConf.build = viteConf.build || {}
           viteConf.build.chunkSizeWarningLimit = 650
           viteConf.build.rollupOptions = {
             output: { manualChunks: viteManualChunks },
