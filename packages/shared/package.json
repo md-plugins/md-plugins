@@ -34,7 +34,7 @@
   ],
   "scripts": {
     "build": "unbuild",
-    "clean": "rm -rf dist",
+    "clean": "rm -rf dist/ node_modules/",
     "test": "vitest"
   },
   "dependencies": {
