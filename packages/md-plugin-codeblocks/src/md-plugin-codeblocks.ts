@@ -111,7 +111,7 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
 
     let currentTabName: string | null = null
 
-    for (const line of content.split('\n').map((line) => line.trim())) {
+    for (const line of content.split('\n')) {
       if (line.startsWith('<<|')) {
         const tabsMatch: RegExpMatchArray | null = line.match(tabsLineRE)
 
