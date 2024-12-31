@@ -18,7 +18,6 @@ interface MarkdownModule {
   headers?: TocMenuItem[]
   frontmatter?: Record<string, unknown>
   filename?: string
-  // render: RenderFunction
   render: (...args: unknown[]) => unknown
 }
 
