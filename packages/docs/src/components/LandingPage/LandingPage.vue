@@ -47,13 +47,13 @@
         </ul>
       </q-card>
     </main>
-    <footer class="footer">
+    <div class="byline">
       <p>
         We hope you find this documentation helpful. If you have any questions or need further
         assistance, please don't hesitate to reach out to our support team.
       </p>
       <p>Happy coding!</p>
-    </footer>
+    </div>
   </div>
 </template>
 
@@ -138,7 +138,7 @@ const sections = [
 }
 
 .hero {
-  background: linear-gradient(135deg, #42b883, #35495e);
+  background: linear-gradient(135deg, $brand-primary, #35495e);
   color: white;
   text-align: center;
   padding: 50px 20px;
@@ -178,7 +178,7 @@ const sections = [
 
 .hero-button {
   background: white;
-  color: #42b883;
+  color: $brand-primary;
   padding: 10px 20px;
   border-radius: 5px;
   text-decoration: none;
@@ -227,7 +227,7 @@ body.body--dark .byline {
 
 .section h2 {
   margin-top: 0;
-  color: #42b883;
+  color: $brand-primary;
 }
 
 .section ul {
@@ -246,7 +246,7 @@ body.body--dark .byline {
 }
 
 .section ul li a:hover {
-  color: #42b883;
+  color: $brand-primary;
 }
 
 .footer {
