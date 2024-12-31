@@ -19,7 +19,9 @@
             :target="item.external ? '_blank' : void 0"
             class="markdown-layout__item"
           >
-            <q-item-section v-if="item.image" class="letter-spacing-100"><q-img :src="item.image" :style="{ maxWidth: item.maxWidth ?? '150px'}"/></q-item-section>
+            <q-item-section v-if="item.image" class="letter-spacing-100"
+              ><q-img :src="item.image" :style="{ maxWidth: item.maxWidth ?? '150px' }"
+            /></q-item-section>
             <q-item-section v-else class="letter-spacing-100">{{ item.name }}</q-item-section>
           </q-item>
         </q-list>
@@ -97,7 +99,9 @@ const isPrivacyLocal = computed(() => {
  */
 function getMenu(path: string): SiteMenuItem[] {
   const children: SiteMenuItem[] = []
-  const menuItem: SiteMenuItem|undefined = sidebar.find((item) => item.path === path) as SiteMenuItem
+  const menuItem: SiteMenuItem | undefined = sidebar.find(
+    (item) => item.path === path,
+  ) as SiteMenuItem
 
   if (menuItem !== void 0 && menuItem.children) {
     for (const item of menuItem.children) {
