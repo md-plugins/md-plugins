@@ -33,6 +33,25 @@ function transform(code: string, id: string): string | null {
 }
 
 /**
+ * Handles hot updates for markdown files.
+ *
+ * @param {Object} context - The context object provided by Vite.
+ * @returns {Array} An array of modules to be reloaded.
+ */
+function handleHotUpdate({ file, server }: { file: string; server: any }) {
+  if (mdRE.test(file)) {
+    const module = server.moduleGraph.getModuleById(file)
+    if (module) {
+      server.moduleGraph.invalidateModule(module)
+    }
+    server.ws.send({
+      type: 'full-reload',
+      path: '*',
+    })
+  }
+}
+
+/**
  * A Vite plugin object that transforms Markdown content into Vue Single File Components (SFCs).
  * This plugin is configured with a path prefix and a navigation menu structure.
  */
@@ -41,6 +60,8 @@ const mdPlugins: Plugin = {
   enforce: 'pre', // before vue
 
   transform,
+
+  handleHotUpdate,
 }
 
 /**
