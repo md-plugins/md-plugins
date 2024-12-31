@@ -100,7 +100,7 @@ console.log('Line 3')
 
 ### Line Highlighting and Annotations
 
-````markdown
+````markup
 ```js [highlight=2]
 console.log('Line 1')
 console.log('Line 2') // This line will be highlighted
@@ -108,7 +108,7 @@ console.log('Line 3')
 ```
 ````
 
-````markdown
+````markup
 ```js
 console.log('Line 1')
 console.log('Line 2')
@@ -117,7 +117,7 @@ console.log('Line 3')
 ```
 ````
 
-````markdown
+````markup
 ```js [add=2]
 console.log('Line 1')
 console.log('Line 2') // This line will be accented and prefixed with a '+'
@@ -125,7 +125,7 @@ console.log('Line 3')
 ```
 ````
 
-````markdown
+````markup
 ```js [rem=2]
 console.log('Line 1')
 console.log('Line 2') // This line will be accented and prefixed with a '-'
@@ -135,7 +135,7 @@ console.log('Line 3')
 
 #### Combining Annotations
 
-````markdown
+````markup
 ```js [numbered highlight=1 rem=2 add=3]
 console.log('Line 1') // This line will be highlighted
 console.log('Line 2') // This line will be accented and prefixed with a '-'
@@ -147,7 +147,7 @@ console.log('Line 3') // This line will be accented and prefixed
 
 Additonally, with the exception of `numbered`, you can use ranges to annotate multiple lines:
 
-```markdown
+```markup
 [highlight=1,10-11 add=4,7-9 rem=12-14]
 ```
 
@@ -155,7 +155,7 @@ Additonally, with the exception of `numbered`, you can use ranges to annotate mu
 
 Easily create tabbed interfaces for multiple code examples:
 
-````markdown
+````markup
 ```tabs
 <<|js Tab 1|>>
 console.log('Hello from Tab 1');

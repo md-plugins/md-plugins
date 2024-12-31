@@ -62,7 +62,7 @@ The `md-plugin-imports` plugin does not currently accept options. All `<script i
 
 The plugin recognizes `<script import>` blocks in the following format:
 
-```markdown
+```markup
 <script import>
 import A from './A.vue';
 import B from './B.vue';
@@ -80,7 +80,7 @@ import B from './B.vue';
 
 The plugin supports multiple `<script import>` blocks in a single Markdown file:
 
-```markdown
+```markup
 <script import>
 import A from './A.vue';
 </script>
@@ -98,7 +98,7 @@ Both `import A from './A.vue';` and `import B from './B.vue';` will be added to 
 
 The plugin does not interfere with frontmatter or other Markdown content:
 
-```markdown
+```markup
 ---
 title: Frontmatter Example
 ---

@@ -116,7 +116,7 @@ md.use(containersPlugin, {
 
 Containers can include titles by default or allow custom titles to be specified:
 
-```markdown
+```markup
 :::note Custom Note Title
 This is a custom note with a title.
 :::
@@ -135,7 +135,7 @@ Rendered Output:
 
 Containers can be nested if your rendering logic supports it:
 
-```markdown
+```markup
 :::note Outer Note
 :::warning Inner Warning
 Be cautious!
