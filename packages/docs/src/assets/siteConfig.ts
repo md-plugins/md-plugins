@@ -131,7 +131,7 @@ const socialLinks = {
     {
       name: 'GitHub',
       icon: fabGithub,
-      path: 'https://github.com/quasarframework/quasar-ui-qmarkdown/tree/next',
+      path: 'https://github.com/md-plugins/md-plugins/tree/dev',
       external: true,
     },
     // { name: 'Discord', icon: mdiDiscord, path: 'https://chat.quasar.dev', external: true },
