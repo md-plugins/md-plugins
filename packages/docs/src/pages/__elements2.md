@@ -315,7 +315,7 @@ export default function (ctx) { // can be async too
   // Example output on console:
   {
     dev: true,
-    prod: false
+    prod: false [[! highlight]]
   }
 
   const { FOO } = process.env // ❌ It doesn't allow destructuring or similar

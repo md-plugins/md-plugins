@@ -3,12 +3,12 @@ title: Design Elements
 desc: The elements for doc design.
 overline: Title overline
 badge: title badge
-related:
-  - /style/spacing
-  - /style/visibility
-  - /layout/grid/column
-  - /layout/grid/gutter
-  - /layout/grid/flex-playground
+# related:
+#   - /style/spacing
+#   - /style/visibility
+#   - /layout/grid/column
+#   - /layout/grid/gutter
+#   - /layout/grid/flex-playground
 scope:
   tree:
     l: '.'
@@ -134,7 +134,7 @@ For a full list of our `wonderful` people who make Quasar happen, visit the [Bac
 <br><br>
 
 - It is important that you specify all sections of a QLayout, even if you don't use them. For example, even if you don't use footer or right side drawer, still specify them within your QLayout's `view` prop.
-- When QDrawer is set into overlay mode, **it will force it to go into fixed position**, regardless if QLayout's "view" prop is configured with "l/r" or "L/R". Also, **if on iOS platform and QLayout is containerized**, the fixed position will also be forced upon QDrawer due to platform limitations that cannot be overcome.
+- When QDrawer is set into overlay mode, **it will force it to go into fixed position**, regardless if QLayout's "view" prop is configured with "l/r" or "L/R". Also, **if on iOS platform and QLayout is containerized**, the fixed position will also be forced upon QDrawer due to platform limitations that cannot be overcome...
   :::
 
 ## Call to action button
@@ -148,6 +148,8 @@ For a full list of our `wonderful` people who make Quasar happen, visit the [Bac
 - Windows: <kbd>Ctrl</kbd> <kbd>Shift</kbd> <kbd>I</kbd> or <kbd>F12</kbd>
 
 ## Code containers
+
+### Plain (internal highlight on `prod:`)
 
 ```js
 export default function (ctx) { // can be async too
@@ -167,6 +169,8 @@ export default function (ctx) { // can be async too
 }
 ```
 
+### Highlight [2,5]
+
 ```js [highlight=2,5]
 export default function (ctx) { // can be async too
   console.log(ctx)
@@ -184,6 +188,8 @@ export default function (ctx) { // can be async too
   // with which you run "quasar dev" or "quasar build"
 }
 ```
+
+### Highlight [2,5,9,10] add [3,6-7] rem [15] with numbered lines
 
 ```js [highlight=2,5,9,10 numbered add=3,6-7]
 export default function (ctx) { // can be async too
@@ -203,6 +209,8 @@ export default function (ctx) { // can be async too
 }
 ```
 
+### Titled code
+
 ```js Titled code
 export default function (ctx) { // can be async too
   console.log(ctx)
@@ -221,34 +229,50 @@ export default function (ctx) { // can be async too
 }
 ```
 
+### bash
+
 ```bash
-/home/your_user/bin:/home/your_user/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/home/your_user/Android/Sdk/tools:/home/your_user/Android/Sdk/platform-tools
+sudo apt update
+sudo apt upgrade
+sudo apt autoremove
 ```
 
-```js [numbered]
-export default function (ctx) { // can be async too
-  console.log(ctx)
+### bash numbered
 
-  // Example output on console:
-  {
-    dev: true,
-    prod: false,
-    mode: { spa: true },
-    modeName: 'spa',
-    target: {},
-    targetName: undefined,
-    arch: {},
-    archName: undefined,
-    debug: undefined
-  }
+```bash [numbered]
+sudo apt update
+sudo apt upgrade
+sudo apt autoremove
+```
 
-  const { FOO } = process.env // ❌ It doesn't allow destructuring or similar
-  process.env.FOO             // ✅ It can only replace direct usage like this
+### CSS
 
-  // context gets generated based on the parameters
-  // with which you run "quasar dev" or "quasar build"
+```css
+.my-class {
+  color: red;
+  background-color: blue;
 }
 ```
+
+### CSS numbered
+
+```css [numbered]
+.my-class {
+  color: red;
+  background-color: blue;
+}
+```
+
+### CSS numbered with highlight
+
+```css [numbered]
+.my-class {
+  color: red; [[! highlight]]
+  background-color: blue;
+}
+```
+
+### JSON
 
 ```json
 {
@@ -257,6 +281,8 @@ export default function (ctx) { // can be async too
   "max": 100
 }
 ```
+
+### JSON (internal rem/add)
 
 ```json [rem=1]
 {
@@ -267,6 +293,8 @@ export default function (ctx) { // can be async too
 }
 ```
 
+### JSON (internal rem/add and numbered)
+
 ```json [numbered]
 {
   "min": 0,
@@ -276,6 +304,8 @@ export default function (ctx) { // can be async too
 }
 ```
 
+### JSON (numbered/highlight)
+
 ```json [numbered]
 {
   "min": 0,
@@ -283,6 +313,8 @@ export default function (ctx) { // can be async too
   "max": 100
 }
 ```
+
+### diff
 
 ```diff
 @@ -13,6 +13,8 @@ const langList = [
@@ -344,6 +376,8 @@ export default function (ctx) { // can be async too
 +  const lines = content.split('\n')
 ```
 
+### Tabs
+
 ```tabs
 <<| js [numbered] Config file |>>
 export default function (ctx) { // can be async too
@@ -368,6 +402,8 @@ const x = {
 }
 ```
 
+### Tabs (3)
+
 ```tabs quasar.config file
 <<| js One |>>
 export default function (ctx) { // can be async too
@@ -376,7 +412,7 @@ export default function (ctx) { // can be async too
   // Example output on console:
   {
     dev: true,
-    prod: false
+    prod: false [[! highlight]]
   }
 
   const { FOO } = process.env // ❌ It doesn't allow destructuring or similar
@@ -399,9 +435,9 @@ const x = {
 }
 ```
 
-## Tree
+<!-- ## Tree -->
 
-<DocTree :def="scope.tree" />
+<!-- <DocTree :def="scope.tree" /> -->
 
 ## Table
 
@@ -434,7 +470,7 @@ Lorem ipsum dolor sit amet, **consectetur adipiscing** elit, sed do _eiusmod_ te
 
 Lorem ipsum dolor sit amet, **consectetur adipiscing** elit, sed do _eiusmod_ tempor incididunt ut labore et dolore magna aliqua.
 
-<DocInstallation plugins="AppFullscreen" />
+<!-- <DocInstallation plugins="AppFullscreen" /> -->
 
 <script import>
 import AvatarApi from 'quasar/dist/api/QAvatar.json'
