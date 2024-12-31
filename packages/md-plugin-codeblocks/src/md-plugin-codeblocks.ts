@@ -258,7 +258,11 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
     const grammar = prism.languages[lang || defaultLang]
 
     const html = prism
-      .highlight(content.replace(magicCommentGlobalRE, ''), grammar, lang)
+      .highlight(
+        lang === 'markup' ? content : content.replace(magicCommentGlobalRE, ''),
+        grammar,
+        lang,
+      )
       .split('\n') // split into individual lines
       .map((line: string, lineIndex: number) => {
         const target = lineList[lineIndex]
@@ -300,7 +304,11 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
     tabs?: { param: string; content: string }
   }
 
-  function parseDefinitionLine(token: { info: string; content: string }): DefinitionLine {
+  function parseDefinitionLine(token: {
+    info: string
+    content: string
+    level: number
+  }): DefinitionLine {
     const match = token.info.trim().match(definitionLineRE)
 
     if (match === null) {
@@ -311,12 +319,7 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
     }
 
     const { groups } = match
-    const acc: {
-      lang: string
-      title: string | null
-      attrs?: { [x: string]: any }
-      tabs?: { param: string; content: string }
-    } = {
+    const acc: DefinitionLine = {
       ...parseAttrs(groups?.attrs?.trim() || null),
       lang: groups?.lang || defaultLang,
       title: groups?.title?.trim() || null,
@@ -340,22 +343,39 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
     env: MarkdownItEnv,
   ): string => {
     const token = tokens[idx]
-    if (!token) {
+    if (!token || token.level > 0) {
       return ''
     }
-    const attrs = parseDefinitionLine(token)
+    const { info } = token
+    let attrs: DefinitionLine = {
+      lang: defaultLang,
+      title: null,
+    }
+
+    if (info.trim() !== 'markup') {
+      attrs = parseDefinitionLine(token)
+    }
 
     // add pageScripts if found
     if (pageScripts.length > 0) {
-      if (!env.pageScripts) {
-        // Initialize pageScripts as a Set if it doesn't exist yet
-        env.pageScripts = new Set<string>()
-      }
+      env.pageScripts = env.pageScripts || new Set<string>()
 
       // Add the scripts into env.pageScripts
       for (const script of pageScripts) {
         env.pageScripts.add(script)
       }
+    }
+
+    // Special handling for markup language to show raw content
+    if (info.trim() === 'markup') {
+      const rawContent = token.content
+      return (
+        `<${containerComponent}${attrs.title !== null ? ` title="${attrs.title}"` : ''}>` +
+        `<pre v-pre class="${preClass} language-markup"><code${codeClass ? ` class="${codeClass}"` : ''}>` +
+        md.utils.escapeHtml(rawContent) +
+        `</code></pre>` +
+        `</${containerComponent}>`
+      )
     }
 
     return (
