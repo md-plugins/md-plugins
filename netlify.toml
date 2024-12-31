@@ -1,0 +1,12 @@
+[build]
+publish = "packages/docs/dist/spa"
+command = "pnpm install && pnpm run build"
+
+[build.environment]
+NODE_OPTIONS = "--max_old_space_size=4096"
+NODE_VERSION = "20"
+
+[[redirects]]
+from = "/*"
+to = "/index.html"
+status = 200
