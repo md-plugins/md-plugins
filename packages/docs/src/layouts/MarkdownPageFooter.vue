@@ -12,13 +12,15 @@
             v-for="(item, index) in entry.children"
             :key="index"
             dense
+            :flat="item.image"
             clickable
             :to="item.path"
             :href="item.external ? item.path : void 0"
             :target="item.external ? '_blank' : void 0"
             class="markdown-layout__item"
           >
-            <q-item-section class="letter-spacing-100">{{ item.name }}</q-item-section>
+            <q-item-section v-if="item.image" class="letter-spacing-100"><q-img :src="item.image" :style="{ maxWidth: item.maxWidth ?? '150px'}"/></q-item-section>
+            <q-item-section v-else class="letter-spacing-100">{{ item.name }}</q-item-section>
           </q-item>
         </q-list>
       </nav>
@@ -82,6 +84,7 @@ const {
   license,
   privacy,
 } = siteConfig
+import type { SiteMenuItem } from 'src/assets/siteConfig'
 
 const isPrivacyLocal = computed(() => {
   return privacy?.link?.startsWith('/') || privacy?.link?.startsWith('.')
@@ -92,20 +95,19 @@ const isPrivacyLocal = computed(() => {
  * @param menus menu items to extract from
  * @return {*[]} An array of flattened menu items (no more children, they move up to the same level as others)
  */
-function getMenu(path: string): { name: string; path: string; external?: boolean }[] {
-  const children: { name: string; path: string; external?: boolean }[] = []
-  /// @ts-expect-error Jeff - fix later
-  const menuItem: MenuItem = sidebar.find((item) => item.path === path)
+function getMenu(path: string): SiteMenuItem[] {
+  const children: SiteMenuItem[] = []
+  const menuItem: SiteMenuItem|undefined = sidebar.find((item) => item.path === path) as SiteMenuItem
 
   if (menuItem !== void 0 && menuItem.children) {
     for (const item of menuItem.children) {
       if (item.children === void 0) {
         children.push({
           name: item.name,
-          /// @ts-expect-error Jeff - fix later
           path: item.external === true ? item.path : `/${path}/${item.path}`,
           external: item.external,
-        })
+          image: item.image ?? void 0,
+        } as SiteMenuItem)
       }
     }
   }
