@@ -24,9 +24,10 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.14.0",
+    "@md-plugins/md-plugin-headers": "workspace:*",
     "@md-plugins/shared": "workspace:*",
-    "@md-plugins/vite-md-plugin": "workspace:*",
     "@md-plugins/vite-examples-plugin": "workspace:*",
+    "@md-plugins/vite-md-plugin": "workspace:*",
     "@quasar/app-vite": "^2.0.0",
     "@types/markdown-it-container": "^2.0.10",
     "@types/node": "^20.5.9",
@@ -40,6 +41,7 @@
     "markdown-it-container": "^4.0.0",
     "prettier": "^3.3.3",
     "typescript": "~5.5.3",
+    "vite": "^6.0.6",
     "vite-plugin-checker": "^0.8.0",
     "vue-tsc": "^2.0.29"
   },
