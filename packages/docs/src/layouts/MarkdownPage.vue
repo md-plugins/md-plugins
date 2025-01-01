@@ -145,7 +145,7 @@ if (props.toc !== void 0) {
 
 const editHref = computed(
   () =>
-    `https://github.com/quasarframework/quasar/edit/${process.env.DOCS_BRANCH}/docs/src/pages/${props.editLink}.md`,
+    `https://github.com/md-plugins/md-plugins/edit/${process.env.DOCS_BRANCH}/packages/docs/src/pages/${props.editLink}.md`,
 )
 
 const isFullscreen = computed(() => route.meta.fullscreen === true || props.fullscreen)
