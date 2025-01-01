@@ -85,7 +85,7 @@ ul {
     margin-bottom: 0;
   }
 
-  &:not(.markdown-note--tip):not(.markdown-note--warning):not(.markdown-note--danger) {
+  &:not(.markdown-note--tip, .markdown-note--warning, .markdown-note--danger) {
     background-color: $grey-2;
     border-color: $separator-color;
     .markdown-note__title,
