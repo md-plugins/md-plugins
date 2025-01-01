@@ -74,7 +74,7 @@ console.log('Line 3');
 
     const renderedHTML = md.render(markdownInput)
 
-    console.log('renderedHTML:', renderedHTML)
+    // console.log('renderedHTML:', renderedHTML)
 
     expect(renderedHTML).toContain('<MarkdownPrerender>')
     expect(renderedHTML).toContain('<span class="c-line line-highlight">')

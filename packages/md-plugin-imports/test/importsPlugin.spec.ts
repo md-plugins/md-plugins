@@ -119,8 +119,8 @@ Some content here.
     const env: MarkdownItEnv = {}
     const result = markdownIt.render(src, env)
 
-    console.log('env:', env)
-    console.log('result:', result)
+    // console.log('env:', env)
+    // console.log('result:', result)
 
     // Verify the script imports are correctly extracted
     expect(env.pageScripts).toBeInstanceOf(Set)
