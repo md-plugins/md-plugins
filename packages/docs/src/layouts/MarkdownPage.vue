@@ -115,6 +115,8 @@ const props = defineProps({
   overline: String,
   badge: String,
 
+  fullscreen: Boolean,
+
   heading: Boolean,
   editLink: String,
 
@@ -146,12 +148,13 @@ const editHref = computed(
     `https://github.com/quasarframework/quasar/edit/${process.env.DOCS_BRANCH}/docs/src/pages/${props.editLink}.md`,
 )
 
-const isFullscreen = computed(() => route.meta.fullscreen === true)
+const isFullscreen = computed(() => route.meta.fullscreen === true || props.fullscreen)
 
 const hasToc = computed(
   () =>
     route.meta.fullwidth !== true &&
     route.meta.fullscreen !== true &&
+    props.fullscreen !== true &&
     useToc &&
     markdownStore.toc.length !== 0,
 )

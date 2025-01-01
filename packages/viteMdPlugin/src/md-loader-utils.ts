@@ -121,6 +121,7 @@ export function getVueComponent(
 
   const title = frontmatter.title || rendered.env.title || rendered.title || 'Generic Page'
   const desc = frontmatter.desc || false
+  const fullscreen = frontmatter.fullscreen || false
   const overline = frontmatter.overline || false
   const heading = rendered.env.heading || !!title || false
   const related =
@@ -154,6 +155,7 @@ export function getVueComponent(
   <markdown-page
     title="${title}"
     ${desc !== false ? `desc="${desc}"` : ''}
+    ${fullscreen !== false ? 'fullscreen' : ''}
     ${overline !== false ? `overline="${overline}"` : ''}
     ${badge !== false ? `badge="${badge}"` : ''}
     ${heading !== false ? 'heading' : ''}
