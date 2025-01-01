@@ -123,7 +123,7 @@ export function getVueComponent(
   const desc = frontmatter.desc || false
   const fullscreen = frontmatter.fullscreen || false
   const overline = frontmatter.overline || false
-  const heading = rendered.env.heading || !!title || false
+  const heading = rendered.env.heading || false
   const related =
     (frontmatter.related &&
       Array.isArray(frontmatter.related) &&
