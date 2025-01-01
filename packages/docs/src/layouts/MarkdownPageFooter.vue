@@ -38,7 +38,7 @@
         v-if="!!license.label && !!license.link"
         no-caps
         flat
-        :to="license.link"
+        :href="license.link"
         target="_blank"
         class="header-btn text-weight-bold"
         :label="license.label"
