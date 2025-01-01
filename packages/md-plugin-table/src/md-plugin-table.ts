@@ -8,7 +8,7 @@ import type Token from 'markdown-it/lib/token.mjs'
 export const tablePlugin: PluginWithOptions<TablePluginOptions> = (
   md,
   {
-    tableClass = 'markdown-page-table',
+    tableClass = 'markdown-table',
     tableHeaderClass = 'text-left',
     tableRowClass = '',
     tableCellClass = '',

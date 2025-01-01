@@ -2,7 +2,7 @@ export interface TablePluginOptions {
   /**
    * The class for the table
    *
-   * @default 'markdown-page-table'
+   * @default 'markdown-table'
    */
   tableClass?: string
   /**

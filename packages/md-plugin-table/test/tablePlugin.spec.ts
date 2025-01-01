@@ -45,9 +45,7 @@ describe('tablePlugin', () => {
 
     const renderedHTML = md.render(markdownInput)
 
-    expect(renderedHTML).toContain(
-      '<custom-table-tag class="markdown-page-table" data-attr="example">',
-    )
+    expect(renderedHTML).toContain('<custom-table-tag class="markdown-table" data-attr="example">')
     expect(renderedHTML).toContain('</custom-table-tag>')
   })
 
@@ -65,7 +63,7 @@ describe('tablePlugin', () => {
 
     const renderedHTML = md.render(markdownInput)
 
-    expect(renderedHTML).toContain('<q-markup-table class="markdown-page-table">')
+    expect(renderedHTML).toContain('<q-markup-table class="markdown-table">')
     expect(renderedHTML).toContain('<th class="text-left">Header 1</th>')
     expect(renderedHTML).toContain('<tr>')
     expect(renderedHTML).toContain('<td>Cell 1</td>')
@@ -89,8 +87,8 @@ describe('tablePlugin', () => {
 
     const renderedHTML = md.render(markdownInput)
 
-    expect(renderedHTML).toContain('<q-markup-table class="markdown-page-table">')
-    expect(renderedHTML).toContain('<q-markup-table class="markdown-page-table">')
+    expect(renderedHTML).toContain('<q-markup-table class="markdown-table">')
+    expect(renderedHTML).toContain('<q-markup-table class="markdown-table">')
     expect(renderedHTML).toContain('<td>Inner Table:</td>')
   })
 
@@ -111,7 +109,7 @@ describe('tablePlugin', () => {
     const renderedHTML = md.render(markdownInput)
 
     expect(renderedHTML).toContain(
-      '<q-markup-table class="markdown-page-table" aria-label="Custom Table">',
+      '<q-markup-table class="markdown-table" aria-label="Custom Table">',
     )
   })
 })
