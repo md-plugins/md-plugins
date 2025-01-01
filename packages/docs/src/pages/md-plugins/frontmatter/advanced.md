@@ -35,7 +35,7 @@ The frontmatter plugin provides several options for customization. Here are the 
 #### `renderExcerpt`
 
 - **Type**: `boolean`
-- **Default**: `true`
+- **Default**: `false`
 - **Description**: Whether to render the excerpt using the original `markdown-it` render method.
 
 ### Example Configuration

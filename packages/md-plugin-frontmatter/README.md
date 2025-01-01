@@ -79,7 +79,7 @@ The `md-plugin-frontmatter` plugin supports the following options:
 | Option            | Type    | Default | Description                                                                                    |
 | ----------------- | ------- | ------- | ---------------------------------------------------------------------------------------------- |
 | grayMatterOptions | object  | {}      | Options for the gray-matter library. Refer to the gray-matter documentation.                   |
-| renderExcerpt     | boolean | true    | Whether to render the excerpt as HTML. If false, the raw Markdown is extracted as the excerpt. |
+| renderExcerpt     | boolean | false   | Whether to render the excerpt as HTML. If false, the raw Markdown is extracted as the excerpt. |
 
 ## Advanced Usage
 

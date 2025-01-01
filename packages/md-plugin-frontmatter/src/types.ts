@@ -16,7 +16,7 @@ export interface FrontmatterPluginOptions {
   /**
    * Render the excerpt or not
    *
-   * @default true
+   * @default false
    */
   renderExcerpt?: boolean
 }
@@ -27,6 +27,11 @@ declare module '@md-plugins/shared' {
      * The raw Markdown content without frontmatter
      */
     content?: string
+
+    /**
+     * Whether render excerpt or not
+     */
+    renderExcerpt?: boolean
 
     /**
      * The excerpt that extracted by `md-plugin-frontmatter`

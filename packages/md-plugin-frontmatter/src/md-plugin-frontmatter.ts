@@ -11,7 +11,7 @@ import type MarkdownIt from 'markdown-it'
  */
 export const frontmatterPlugin: PluginWithOptions<FrontmatterPluginOptions> = (
   md: MarkdownIt,
-  { grayMatterOptions, renderExcerpt = true } = {},
+  { grayMatterOptions, renderExcerpt = false } = {},
 ): void => {
   const render = md.render.bind(md)
 
