@@ -343,7 +343,7 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
     env: MarkdownItEnv,
   ): string => {
     const token = tokens[idx]
-    if (!token || token.level > 0) {
+    if (!token) {
       return ''
     }
     const { info } = token
