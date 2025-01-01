@@ -67,6 +67,48 @@ Here are some examples of what you can achieve with the Blockquote Plugin:
 > > This is an embedded blockquote.
 ```
 
+### Embedded Plugins
+
+> This is a blockquote with other embedded plugins.
+>
+> This is an embedded `inlinecode`.
+>
+> This is an embedded [link](https://md-plugins.netlify.app).
+>
+> ::: tip
+> This is an embedded container.
+> :::
+>
+> ```js
+> // This is an embedded codeblock.
+> export function containersPlugin(
+>   md: MarkdownIt,
+>   containers: ContainerDetails[],
+>   createContainer: CreateContainerFn,
+> ): void {
+> ```
+
+````markup
+> This is a blockquote with other embedded plugins.
+>
+> This is an embedded `inlinecode`.
+>
+> This is an embedded [link](https://md-plugins.netlify.app).
+>
+> ::: tip
+> This is an embedded container.
+> :::
+>
+> ```js
+> // This is an embedded codeblock.
+> export function containersPlugin(
+>   md: MarkdownIt,
+>   containers: ContainerDetails[],
+>   createContainer: CreateContainerFn,
+> ): void {
+> ```
+````
+
 ## Name
 
 The official NPM name is `@md-plugins/md-plugin-blockquote`.
