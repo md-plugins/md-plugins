@@ -106,7 +106,7 @@ console.log(result)
 
 The Table plugin accepts the following options:
 
-- **tableClass**: The class for the table. Default is `'markdown-page-table'`.
+- **tableClass**: The class for the table. Default is `'markdown-table'`.
 - **tableHeaderClass**: The class for the table header. Default is `'text-left'`.
 - **tableRowClass**: The class for the table row. Default is `''`.
 - **tableCellClass**: The class for the table cell. Default is `''`.

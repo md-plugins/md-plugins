@@ -139,7 +139,7 @@ function createMarkdownRenderer(options: MarkdownOptions = {}): MarkdownRenderer
   md.use(containersPlugin, containers, createContainer)
   md.use(blockquotePlugin, { blockquoteClass: 'markdown-note' })
   md.use(tablePlugin, {
-    tableClass: 'markdown-page-table',
+    tableClass: 'markdown-table',
     tableHeaderClass: 'text-left',
     tableToken: 'q-markup-table',
     tableAttributes: [
