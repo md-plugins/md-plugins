@@ -4,9 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "prebuild2": "pnpm --filter=@md-plugins/shared build",
     "build": "pnpm -r --stream build",
-    "build2": "pnpm -r --stream --filter=!@md-plugins/shared build",
     "dev": "vitest",
     "check-types": "tsc --noEmit --skipLibCheck",
     "clean": "pnpm -r --stream clean",
