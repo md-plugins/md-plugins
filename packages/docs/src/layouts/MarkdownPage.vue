@@ -129,7 +129,7 @@ useMeta(
   props.desc !== void 0
     ? {
         title: props.title ?? '',
-        meta: getMeta(`${props.title ?? ''} | ${siteConfig.title ?? ''}`, props.desc),
+        meta: getMeta(`${props.title ?? ''} || ${siteConfig.title ?? ''}`, props.desc),
       }
     : { title: props.title ?? '' },
 )
