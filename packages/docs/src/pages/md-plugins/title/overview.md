@@ -97,7 +97,3 @@ console.log(result)
 If you have any questions or need assistance, please refer to the FAQ or reach out to our support team.
 
 Happy coding!
-
-```
-
-```
