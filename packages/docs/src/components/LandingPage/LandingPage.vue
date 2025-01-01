@@ -8,7 +8,13 @@
       />
       <h1 class="hero-title">Markdown Plugins</h1>
       <h2 class="hero-subtitle">(@md-plugins)</h2>
-      <p class="hero-subtitle2">Your guide to mastering Markdown Plugins</p>
+      <div class="row justify-center">
+        <p class="hero-subtitle2" style="max-width: 660px">
+          MD-Plugins is a collection of Markdown and Vite plugins that make it easy to build
+          markdown user interfaces in Vue and Quasar applications.
+        </p>
+      </div>
+
       <div class="hero-buttons">
         <router-link
           to="/getting-started/introduction"
