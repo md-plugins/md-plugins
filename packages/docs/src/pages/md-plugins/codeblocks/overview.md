@@ -13,9 +13,13 @@ The Codeblocks Plugin is a powerful tool that enhances the standard code block f
 
 - **Syntax Highlighting**: Automatically highlight code syntax for various programming languages.
 - **Line Numbers**: Display line numbers alongside your code blocks for better readability.
+- **Line Highlighting**: Highlight specific lines of code for emphasis.
+- **Add/Remove Lines**: Highlight add or remove lines of code with ease.
+- **Tabs**: Organize your code blocks into tabs for easy navigation.
 - **Copy to Clipboard**: Add a button to copy code snippets to the clipboard with a single click.
 - **Customizable Styles**: Apply custom styles to your code blocks to match your documentation's theme.
 - **Responsive Design**: Ensure your code blocks look great on all devices.
+- **Fixed Height**: (optional) Maintain a consistent height for your code blocks.
 
 ## Supported Language Syntaxes
 
@@ -58,6 +62,60 @@ console.log('Hello, world!')
 ````markup
 ```js My Title
 console.log('Hello, world!')
+```
+````
+
+### Code Block with Restricted Height
+
+```js [maxheight=300px]
+export function containersPlugin(
+  md: MarkdownIt,
+  containers: ContainerDetails[],
+  createContainer: CreateContainerFn,
+): void {
+  if (!Array.isArray(containers) || containers.length === 0) {
+    console.warn('No containers provided to containersPlugin.')
+    return
+  }
+
+  if (typeof createContainer == 'function') {
+    throw new Error('Invalid createContainer function provided to containersPlugin.')
+  }
+
+  containers.forEach(({ type, defaultTitle }) => {
+    try {
+      md.use(...createContainer(container, type, defaultTitle))
+    } catch (error) {
+      console.error(`Failed to create container for type: ${type}`, error)
+    }
+  })
+}
+```
+
+````markup
+```js [maxheight=300px]
+export function containersPlugin(
+  md: MarkdownIt,
+  containers: ContainerDetails[],
+  createContainer: CreateContainerFn,
+): void {
+  if (!Array.isArray(containers) || containers.length === 0) {
+    console.warn('No containers provided to containersPlugin.')
+    return
+  }
+
+  if (typeof createContainer == 'function') {
+    throw new Error('Invalid createContainer function provided to containersPlugin.')
+  }
+
+  containers.forEach(({ type, defaultTitle }) => {
+    try {
+      md.use(...createContainer(container, type, defaultTitle))
+    } catch (error) {
+      console.error(`Failed to create container for type: ${type}`, error)
+    }
+  })
+}
 ```
 ````
 
@@ -362,44 +420,44 @@ pnpm add @md-plugins/md-plugin-codeblocks
 ```tabs
 <<| javascript [numbered highlight=2,4 add=3 rem=5] javascript |>>
 console.log('Hello, world!'); // Line 1
-[[! highlight]] const a = 10; // Line 2
-[[! add]] const b = 20; // Line 3
-[[! highlight]] console.log(a + b); // Line 4
-[[! rem]] console.log('This line will be removed'); // Line 5
+const a = 10; // Line 2
+const b = 20; // Line 3
+console.log(a + b); // Line 4
+console.log('This line will be removed'); // Line 5
 <<| typescript [numbered highlight=2,4 add=3 rem=5] typescript |>>
 console.log('Hello, TypeScript!'); // Line 1
-[[! highlight]] const a: number = 10; // Line 2
-[[! add]] const b: number = 20; // Line 3
-[[! highlight]] console.log(a + b); // Line 4
-[[! rem]] console.log('This line will be removed'); // Line 5
+const a: number = 10; // Line 2
+const b: number = 20; // Line 3
+console.log(a + b); // Line 4
+console.log('This line will be removed'); // Line 5
 <<| bash [numbered highlight=2,4 add=3 rem=5] bash |>>
 echo 'Hello, Bash!' # Line 1
-[[! highlight]] VAR1=10 # Line 2
-[[! add]] VAR2=20 # Line 3
-[[! highlight]] echo $((VAR1 + VAR2)) # Line 4
-[[! rem]] echo 'This line will be removed' # Line 5
+VAR1=10 # Line 2
+VAR2=20 # Line 3
+echo $((VAR1 + VAR2)) # Line 4
+echo 'This line will be removed' # Line 5
 ```
 
 ````markup
 ```tabs
 <<| javascript [numbered highlight=2,4 add=3 rem=5] javascript |>>
 console.log('Hello, world!'); // Line 1
-[[! highlight]] const a = 10; // Line 2
-[[! add]] const b = 20; // Line 3
-[[! highlight]] console.log(a + b); // Line 4
-[[! rem]] console.log('This line will be removed'); // Line 5
+const a = 10; // Line 2
+const b = 20; // Line 3
+console.log(a + b); // Line 4
+console.log('This line will be removed'); // Line 5
 <<| typescript [numbered highlight=2,4 add=3 rem=5] typescript |>>
 console.log('Hello, TypeScript!'); // Line 1
-[[! highlight]] const a: number = 10; // Line 2
-[[! add]] const b: number = 20; // Line 3
-[[! highlight]] console.log(a + b); // Line 4
-[[! rem]] console.log('This line will be removed'); // Line 5
+const a: number = 10; // Line 2
+const b: number = 20; // Line 3
+console.log(a + b); // Line 4
+console.log('This line will be removed'); // Line 5
 <<| bash [numbered highlight=2,4 add=3 rem=5] bash |>>
 echo 'Hello, Bash!' # Line 1
-[[! highlight]] VAR1=10 # Line 2
-[[! add]] VAR2=20 # Line 3
-[[! highlight]] echo $((VAR1 + VAR2)) # Line 4
-[[! rem]] echo 'This line will be removed' # Line 5
+VAR1=10 # Line 2
+VAR2=20 # Line 3
+echo $((VAR1 + VAR2)) # Line 4
+echo 'This line will be removed' # Line 5
 ```
 ````
 
@@ -408,44 +466,43 @@ echo 'Hello, Bash!' # Line 1
 ```tabs Examples
 <<| javascript [numbered highlight=2,4 add=3 rem=5] javascript |>>
 console.log('Hello, world!'); // Line 1
-[[! highlight]] const a = 10; // Line 2
-[[! add]] const b = 20; // Line 3
-[[! highlight]] console.log(a + b); // Line 4
-[[! rem]] console.log('This line will be removed'); // Line 5
+const a = 10; // Line 2
+const b = 20; // Line 3
+console.log(a + b); // Line 4
+console.log('This line will be removed'); // Line 5
 <<| typescript [numbered highlight=2,4 add=3 rem=5] typescript |>>
 console.log('Hello, TypeScript!'); // Line 1
-[[! highlight]] const a: number = 10; // Line 2
-[[! add]] const b: number = 20; // Line 3
-[[! highlight]] console.log(a + b); // Line 4
-[[! rem]] console.log('This line will be removed'); // Line 5
+const a: number = 10; // Line 2
+const b: number = 20; // Line 3
+console.log(a + b); // Line 4
+console.log('This line will be removed'); // Line 5
 <<| bash [numbered highlight=2,4 add=3 rem=5] bash |>>
 echo 'Hello, Bash!' # Line 1
-[[! highlight]] VAR1=10 # Line 2
-[[! add]] VAR2=20 # Line 3
-[[! highlight]] echo $((VAR1 + VAR2)) # Line 4
-[[! rem]] echo 'This line will be removed' # Line 5
+VAR1=10 # Line 2
+VAR2=20 # Line 3
+echo $((VAR1 + VAR2)) # Line 4
+echo 'This line will be removed' # Line 5
 ```
 
 ````markup
 ```tabs Examples
-<<| javascript [numbered highlight=2,4 add=3 rem=5] javascript |>>
 console.log('Hello, world!'); // Line 1
-[[! highlight]] const a = 10; // Line 2
-[[! add]] const b = 20; // Line 3
-[[! highlight]] console.log(a + b); // Line 4
-[[! rem]] console.log('This line will be removed'); // Line 5
+const a = 10; // Line 2
+const b = 20; // Line 3
+console.log(a + b); // Line 4
+console.log('This line will be removed'); // Line 5
 <<| typescript [numbered highlight=2,4 add=3 rem=5] typescript |>>
 console.log('Hello, TypeScript!'); // Line 1
-[[! highlight]] const a: number = 10; // Line 2
-[[! add]] const b: number = 20; // Line 3
-[[! highlight]] console.log(a + b); // Line 4
-[[! rem]] console.log('This line will be removed'); // Line 5
+const a: number = 10; // Line 2
+const b: number = 20; // Line 3
+console.log(a + b); // Line 4
+console.log('This line will be removed'); // Line 5
 <<| bash [numbered highlight=2,4 add=3 rem=5] bash |>>
 echo 'Hello, Bash!' # Line 1
-[[! highlight]] VAR1=10 # Line 2
-[[! add]] VAR2=20 # Line 3
-[[! highlight]] echo $((VAR1 + VAR2)) # Line 4
-[[! rem]] echo 'This line will be removed' # Line 5
+VAR1=10 # Line 2
+VAR2=20 # Line 3
+echo $((VAR1 + VAR2)) # Line 4
+echo 'This line will be removed' # Line 5
 ```
 ````
 
