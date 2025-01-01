@@ -136,10 +136,16 @@ const socialLinks = {
     },
     // { name: 'Discord', icon: mdiDiscord, path: 'https://chat.quasar.dev', external: true },
     // { name: 'Forum', icon: mdiForum, path: 'https://forum.quasar.dev', external: true },
+    // {
+    //   name: 'X (Twitter)',
+    //   icon: fabXTwitter,
+    //   path: 'https://twitter.com/jgalbraith64',
+    //   external: true,
+    // },
     {
       name: 'X (Twitter)',
       icon: fabXTwitter,
-      path: 'https://twitter.com/jgalbraith64',
+      path: 'https://twitter.com/md_plugins',
       external: true,
     },
     // { name: 'Facebook', icon: fabFacebook, path: 'https://facebook.quasar.dev', external: true },
@@ -245,14 +251,14 @@ const vitePluginsMenu = {
       name: 'viteMdPlugin',
       children: [
         { name: 'Overview', path: '/vite-plugins/vitemdplugin/overview' },
-        { name: 'API', path: '/vite-plugins/vitemdplugin/api' },
+        { name: 'Advanced', path: '/vite-plugins/vitemdplugin/advanced' },
       ],
     },
     {
       name: 'viteExamplesPlugin',
       children: [
         { name: 'Overview', path: '/vite-plugins/viteexamplesplugin/overview' },
-        { name: 'API', path: '/vite-plugins/viteexamplesplugin/api' },
+        { name: 'Advanced', path: '/vite-plugins/viteexamplesplugin/advanced' },
       ],
     },
   ],
@@ -266,77 +272,77 @@ const mdPluginsMenu = {
       name: 'Blockquote',
       children: [
         { name: 'Overview', path: '/md-plugins/blockquote/overview' },
-        { name: 'API', path: '/md-plugins/blockquote/api' },
+        { name: 'Advanced', path: '/md-plugins/blockquote/advanced' },
       ],
     },
     {
       name: 'Codeblocks',
       children: [
         { name: 'Overview', path: '/md-plugins/codeblocks/overview' },
-        { name: 'API', path: '/md-plugins/codeblocks/api' },
+        { name: 'Advanced', path: '/md-plugins/codeblocks/advanced' },
       ],
     },
     {
       name: 'Containers',
       children: [
         { name: 'Overview', path: '/md-plugins/containers/overview' },
-        { name: 'API', path: '/md-plugins/containers/api' },
+        { name: 'Advanced', path: '/md-plugins/containers/advanced' },
       ],
     },
     {
       name: 'Frontmatter',
       children: [
         { name: 'Overview', path: '/md-plugins/frontmatter/overview' },
-        { name: 'API', path: '/md-plugins/frontmatter/api' },
+        { name: 'Advanced', path: '/md-plugins/frontmatter/advanced' },
       ],
     },
     {
       name: 'Headers',
       children: [
         { name: 'Overview', path: '/md-plugins/headers/overview' },
-        { name: 'API', path: '/md-plugins/headers/api' },
+        { name: 'Advanced', path: '/md-plugins/headers/advanced' },
       ],
     },
     {
       name: 'Image',
       children: [
         { name: 'Overview', path: '/md-plugins/image/overview' },
-        { name: 'API', path: '/md-plugins/image/api' },
+        { name: 'Advanced', path: '/md-plugins/image/advanced' },
       ],
     },
     {
       name: 'Imports',
       children: [
         { name: 'Overview', path: '/md-plugins/imports/overview' },
-        { name: 'API', path: '/md-plugins/imports/api' },
+        { name: 'Advanced', path: '/md-plugins/imports/advanced' },
       ],
     },
     {
       name: 'Inline Code',
       children: [
         { name: 'Overview', path: '/md-plugins/inlinecode/overview' },
-        { name: 'API', path: '/md-plugins/inlinecode/api' },
+        { name: 'Advanced', path: '/md-plugins/inlinecode/advanced' },
       ],
     },
     {
       name: 'Link',
       children: [
         { name: 'Overview', path: '/md-plugins/link/overview' },
-        { name: 'API', path: '/md-plugins/link/api' },
+        { name: 'Advanced', path: '/md-plugins/link/advanced' },
       ],
     },
     {
       name: 'Table',
       children: [
         { name: 'Overview', path: '/md-plugins/table/overview' },
-        { name: 'API', path: '/md-plugins/table/api' },
+        { name: 'Advanced', path: '/md-plugins/table/advanced' },
       ],
     },
     {
       name: 'Title',
       children: [
         { name: 'Overview', path: '/md-plugins/title/overview' },
-        { name: 'API', path: '/md-plugins/title/api' },
+        { name: 'Advanced', path: '/md-plugins/title/advanced' },
       ],
     },
   ],
@@ -541,21 +547,21 @@ export default {
     line1: `Copyright © 2020-${new Date().getFullYear()} Jeff Galbraith`,
     line2: '',
   },
-  github: 'https://github.com/quasarframework/quasar-ui-qmarkdown',
-  twitter: 'https://twitter.com/jgalbraith64',
+  github: 'https://github.com/md-plugins/md-plugins',
+  twitter: 'https://twitter.com/md-plugins',
   license: {
     label: 'MIT License',
-    link: 'https://github.com/quasarframework/quasar-ui-qmarkdown/blob/dev/LICENSE',
+    link: 'https://github.com/md-plugins/md-plugins/blob/dev/LICENSE.md',
   },
   privacy: {
     label: 'Privacy Policy',
     link: '/privacy-policy',
   },
   docs: {
-    baseUrl: 'https://github.com/quasarframework/quasar-ui-qmarkdown',
-    github: 'https://github.com/quasarframework/quasar-ui-qmarkdown',
-    twitter: 'https://twitter.com/jgalbraith64',
-    twitterHandle: '@jgalbraith64',
+    baseUrl: 'https://github.com/md-plugins/md-plugins',
+    github: 'https://github.com/md-plugins/md-plugins',
+    twitter: 'https://twitter.com/md_plugins',
+    twitterHandle: '@md_plugins',
     twitterCard: 'summary_large_image',
     twitterImage: 'https://jgalbraith64.github.io/quasar-ui-qmarkdown/images/twitter-card.png',
   },
