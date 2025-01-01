@@ -64,7 +64,9 @@ export default defineConfig((ctx) => {
 
       // publicPath: '/',
       // analyze: true,
-      // env: {},
+      env: {
+        DOCS_BRANCH: 'dev',
+      },
       // rawDefine: {}
       // ignorePublicFolder: true,
       // minify: false,
