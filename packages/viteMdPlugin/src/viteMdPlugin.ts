@@ -1,4 +1,4 @@
-import type { Plugin } from 'vite'
+import type { Plugin, ViteDevServer, ModuleNode } from 'vite'
 import type { MenuItem } from './types'
 import { mdParse } from './md-parse'
 
@@ -38,17 +38,63 @@ function transform(code: string, id: string): string | null {
  * @param {Object} context - The context object provided by Vite.
  * @returns {Array} An array of modules to be reloaded.
  */
-function handleHotUpdate({ file, server }: { file: string; server: any }) {
+// function handleHotUpdate({ file, server }: { file: string; server: any }) {
+//   console.log('handleHotUpdate', file)
+//   if (mdRE.test(file)) {
+//     const module = server.moduleGraph.getModuleById(file)
+//     if (module) {
+//       server.moduleGraph.invalidateModule(module)
+//       server.ws.send({
+//         type: 'update',
+//         updates: [
+//           {
+//             type: 'js-update',
+//             path: module.file,
+//             acceptedPath: module.file,
+//             timestamp: Date.now(),
+//           },
+//           {
+//             type: 'html-update',
+//             path: module.file,
+//             acceptedPath: module.file,
+//             timestamp: Date.now(),
+//           },
+//         ],
+//       })
+//     } else {
+//       server.ws.send({
+//         type: 'full-reload',
+//         path: '*',
+//       })
+//     }
+//   }
+// }
+
+function hotUpdate({
+  file,
+  server,
+  modules,
+  timestamp,
+}: {
+  file: string
+  server: ViteDevServer
+  modules: Array<any>
+  timestamp: number
+}) {
+  // console.log('hotUpdate', file)
+  // console.log('modules', modules)
   if (mdRE.test(file)) {
-    const module = server.moduleGraph.getModuleById(file)
-    if (module) {
-      server.moduleGraph.invalidateModule(module)
+    const invalidatedModules = new Set<ModuleNode>()
+    for (const mod of modules) {
+      server.moduleGraph.invalidateModule(mod, invalidatedModules, timestamp, true)
     }
     server.ws.send({
       type: 'full-reload',
       path: '*',
     })
+    // console.log('Invalidated modules', Array.from(invalidatedModules))
   }
+  return []
 }
 
 /**
@@ -61,7 +107,8 @@ const mdPlugins: Plugin = {
 
   transform,
 
-  handleHotUpdate,
+  // handleHotUpdate,
+  hotUpdate,
 }
 
 /**
