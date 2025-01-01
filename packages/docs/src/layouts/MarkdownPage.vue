@@ -137,7 +137,7 @@ useMeta(
 const route = useRoute()
 const markdownStore = useMarkdownStore()
 
-console.log('toc', props.toc)
+// console.log('toc', props.toc)
 
 if (props.toc !== void 0) {
   markdownStore.setToc(props.toc)
