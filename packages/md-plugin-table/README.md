@@ -81,14 +81,14 @@ For the example above, the plugin produces the following output:
 
 The `md-plugin-table` plugin supports the following options:
 
-| Option           | Type   | Default               | Description                                        |
-| ---------------- | ------ | --------------------- | -------------------------------------------------- |
-| tableClass       | string | 'markdown-page-table' | CSS class for the `<table>` or custom tag.         |
-| tableToken       | string | 'q-markup-table'      | Tag name to replace the default `<table>` tag.     |
-| tableAttributes  | Array  | []                    | Array of attribute name-value pairs for the table. |
-| tableHeaderClass | string | 'text-left'           | CSS class for `<th>` elements.                     |
-| tableRowClass    | string | ''                    | CSS class for `<tr>` elements.                     |
-| tableCellClass   | string | ''                    | CSS class for `<td>` elements.                     |
+| Option           | Type   | Default          | Description                                        |
+| ---------------- | ------ | ---------------- | -------------------------------------------------- |
+| tableClass       | string | 'markdown-table' | CSS class for the `<table>` or custom tag.         |
+| tableToken       | string | 'q-markup-table' | Tag name to replace the default `<table>` tag.     |
+| tableAttributes  | Array  | []               | Array of attribute name-value pairs for the table. |
+| tableHeaderClass | string | 'text-left'      | CSS class for `<th>` elements.                     |
+| tableRowClass    | string | ''               | CSS class for `<tr>` elements.                     |
+| tableCellClass   | string | ''               | CSS class for `<td>` elements.                     |
 
 ## Advanced Usage
 
@@ -140,7 +140,7 @@ md.use(tablePlugin, {
 Rendered output:
 
 ```html
-<q-markup-table class="markdown-page-table" :bordered="true" :flat="true"> ... </q-markup-table>
+<q-markup-table class="markdown-table" :bordered="true" :flat="true"> ... </q-markup-table>
 ```
 
 ## Testing
