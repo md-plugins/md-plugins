@@ -482,10 +482,9 @@ md.use(codeblocksPlugin, {
   copyButtonComponent: 'MarkdownCopyButton', // Optional: Customize the copy button component
   tabPanelTagName: 'q-tab-panel', // Optional: Customize the tab panel tag name
   tabPanelTagClass: 'q-pa-none', // Optional: Customize the tab panel tag class
-  lineAddClass: 'line-add', // Optional: Customize the class for added lines
-  linePrefixClass: 'line-', // Optional: Customize the prefix for magic classes
-  preClass: 'markdown-pre', // Optional: Customize the class for the pre tag
-  codeClass: 'markdown-code', // Optional: Customize the class for the code tag
+  linePrefixClass: 'line-', // Optional: Customize the prefix for magic classes ("highlight", "rem", and "add")
+  preClass: 'markdown-code', // Optional: Customize the class for the pre tag
+  codeClass: '', // Optional: Customize the class for the code tag
   pageScripts: [
     "import MarkdownPrerender from 'src/components/md/MarkdownPrerender'", // ts file
     "import MarkdownCopyButton from 'src/components/md/MarkdownCopyButton.vue'",
@@ -510,7 +509,6 @@ The Codeblocks plugin accepts the following options:
 - **copyButtonComponent**: The component used to render the copy button. Default is `MarkdownCopyButton`.
 - **tabPanelTagName**: The component name for the tab panel. Default is `q-tab-panel`.
 - **tabPanelTagClass**: The class(es) to be used with the tab panel. Default is `q-pa-none`.
-- **lineAddClass**: The class to be used for the line added. Default is `line-add`.
 - **linePrefixClass**: The prefix to be used for magic classes. Default is `line-`.
 - **preClass**: The class to be used for the pre tag. Default is `markdown-pre`.
 - **codeClass**: The class to be used for the code tag. Default is `markdown-code`.
@@ -535,7 +533,6 @@ md.use(codeblocksPlugin, {
   copyButtonComponent: 'MarkdownCopyButton', // Customize the copy button component
   tabPanelTagName: 'q-tab-panel', // Customize the tab panel tag name
   tabPanelTagClass: 'q-pa-none', // Customize the tab panel tag class
-  lineAddClass: 'line-add', // Customize the class for added lines
   linePrefixClass: 'line-', // Customize the prefix for magic classes
   preClass: 'markdown-pre', // Customize the class for the pre tag
   codeClass: 'markdown-code', // Customize the class for the code tag
