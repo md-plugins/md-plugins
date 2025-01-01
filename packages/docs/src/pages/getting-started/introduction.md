@@ -3,7 +3,7 @@ title: Introduction to Markdown Plugins
 desc: Markdown for your Quasar and Vue builds
 ---
 
-Welcome to the Markdown Plugins documentation! This guide will help you get started with using Markdown Plugins to enhance your documentation and content creation experience.
+Welcome to the Markdown Plugins documentation! This guide will help you start using Markdown Plugins to enhance your documentation and content creation experience.
 
 ## What are Markdown Plugins?
 
