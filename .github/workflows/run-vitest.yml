@@ -32,16 +32,8 @@ jobs:
         run: pnpm install
 
       # Build all packages except docs
-      - name: Build all packages (exclude docs)
-        run: pnpm build --filter=!packages/docs
-
-      # Run the "prepared" script for docs
-      - name: Prepare Quasar (docs)
-        run: pnpm --filter=packages/docs prepared
-
-      # Build the docs package
-      - name: Build Quasar project (docs)
-        run: pnpm build --filter=packages/docs
+      - name: Build all packages
+        run: pnpm build
 
       # Run Vitest tests
       - name: Run Vitest tests
