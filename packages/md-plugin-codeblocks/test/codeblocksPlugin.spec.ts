@@ -215,10 +215,10 @@ console.log('Normal Line');
 
     // Verify the content of empty tabs contains a <pre> block and copy button
     expect(renderedHTML).toContain(
-      '<q-tab-panel class="q-pa-none" name="Empty Tab"><pre v-pre class="markdown-code language-js"><code></code></pre><MarkdownCopyButton  /></q-tab-panel>',
+      '<q-tab-panel class="q-pa-none" name="Empty Tab"><pre v-pre class="markdown-code language-js"><code></code></pre><MarkdownCopyButton /></q-tab-panel>',
     )
     expect(renderedHTML).toContain(
-      '<q-tab-panel class="q-pa-none" name="Another Empty Tab"><pre v-pre class="markdown-code language-js"><code></code></pre><MarkdownCopyButton  /></q-tab-panel>',
+      '<q-tab-panel class="q-pa-none" name="Another Empty Tab"><pre v-pre class="markdown-code language-js"><code></code></pre><MarkdownCopyButton /></q-tab-panel>',
     )
   })
 })
