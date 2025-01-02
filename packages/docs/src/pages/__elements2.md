@@ -257,7 +257,7 @@ sudo apt autoremove
        const props = tabMap[ tabName ]
        return (
          `<q-tab-panel class="q-pa-none" name="${ tabName }">` +
--        `<pre v-pre class="doc-code">${ highlight(props.content.join('\n'), props.attrs) }</pre>` +
+-        `<pre v-pre class="markdown-code">${ highlight(props.content.join('\n'), props.attrs) }</pre>` +
 -        '<copy-button />' +
 +        highlight(props.content.join('\n'), props.attrs) +
          '</q-tab-panel>'

@@ -3,6 +3,7 @@ title: Design Elements
 desc: The elements for doc design.
 overline: Title overline
 badge: title badge
+examples: QAvatar
 # related:
 #   - /style/spacing
 #   - /style/visibility
@@ -148,6 +149,28 @@ For a full list of our `wonderful` people who make Quasar happen, visit the [Bac
 - Windows: <kbd>Ctrl</kbd> <kbd>Shift</kbd> <kbd>I</kbd> or <kbd>F12</kbd>
 
 ## Code containers
+
+### markup
+
+````markup
+```js
+export default function (ctx) { // can be async too
+  console.log(ctx)
+
+  // Example output on console:
+  {
+    dev: true,
+    prod: false [[! highlight]]
+  }
+
+  const { FOO } = process.env // ❌ It doesn't allow destructuring or similar
+  process.env.FOO             // ✅ It can only replace direct usage like this
+
+  // context gets generated based on the parameters
+  // with which you run "quasar dev" or "quasar build"
+}
+```
+````
 
 ### Plain (internal highlight on `prod:`)
 
@@ -484,4 +507,4 @@ import AvatarApi from 'quasar/dist/api/QAvatar.json'
 
 <!-- <DocApi file="Loading" /> -->
 
-<!-- <DocExample title="Title for example card" file="Code" /> -->
+<MarkdownExample title="Title for example card" file="BasicExample" />
