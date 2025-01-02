@@ -1,3 +1,9 @@
+export interface Lang {
+  name: string
+  customCopy?: boolean
+  aliases?: string
+}
+
 export interface CodeblockPluginOptions {
   /**
    * The default language to use if none is detected.
@@ -59,7 +65,7 @@ export interface CodeblockPluginOptions {
    * Optional Prism languages configuration array. This allows you to override or add custom language definitions.
    * Each item can have a `name`, optional `aliases`, and `customCopy` boolean.
    */
-  langList?: Array<{ name: string; aliases?: string; customCopy?: boolean }>
+  langList?: Lang[]
 }
 
 declare module '@md-plugins/shared' {

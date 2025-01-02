@@ -1,15 +1,16 @@
-import type { PluginWithOptions } from 'markdown-it'
-import type { Options } from 'markdown-it'
+import MarkdownIt from 'markdown-it'
+import type { PluginWithOptions, Options } from 'markdown-it'
 import type Token from 'markdown-it/lib/token.mjs'
 import type { MarkdownItEnv } from '@md-plugins/shared'
-import type { CodeblockPluginOptions } from './types'
-
-import type MarkdownIt from 'markdown-it'
+import type { CodeblockPluginOptions, Lang } from './types'
 import prism from 'prismjs'
 import loadLanguages from 'prismjs/components/index.js'
 
-// Default language definitions (can be overridden by user)
-const defaultLangList = [
+/**
+ * A list of default programming languages supported by Prism.
+ * Each language in the list has a name and can optionally specify aliases and whether it has a custom copy button.
+ */
+const defaultLangList: Lang[] = [
   { name: 'markup' },
   { name: 'bash', customCopy: true },
   { name: 'javascript', aliases: 'javascript|js' },
@@ -21,9 +22,7 @@ const defaultLangList = [
   { name: 'xml' },
   { name: 'nginx' },
   { name: 'html' },
-
-  // special grammars:
-  { name: 'diff' },
+  { name: 'diff' }, // special grammars
 ]
 
 export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
@@ -44,104 +43,72 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
     langList = defaultLangList,
   }: CodeblockPluginOptions = {},
 ): void => {
-  const customCopyLangList = langList.filter((l) => l.customCopy).map((l) => l.name)
+  const customCopyLangList = langList.filter((l) => l.customCopy === true).map((l) => l.name)
 
   loadLanguages(langList.map((l) => l.name))
 
   const langMatch = langList.map((l) => l.aliases || l.name).join('|')
 
   /**
-   * lang -> one of the supported languages (langList)
-   * attrs -> optional attributes:
-   *    * numbered - lines are numbered
-   *    * highlight=1,2-4,6 - lines are highlighted
-   *    * add=1,2-4,6 - lines are added
-   *    * rem=1,2-4,6 - lines are removed
-   *    * maxheight=300px - max height of the code block (including CSS unit)
-   * title -> optional card title
+   * A regular expression pattern that matches the definition line for a code block with optional language and attributes.
+   * The pattern captures the following groups:
+   * - `lang`: The language of the code block, which can be either "tabs" or one of the languages specified in the `langMatch` variable.
+   * - `attrs`: Any optional attributes specified for the code block, enclosed in square brackets.
+   *       * numbered - lines are numbered
+   *       * highlight=1,2-4,6 - highlight lines
+   *       * add=1,2-4,6 - add lines
+   *       * rem=1,2-4,6 - remove lines
+   *       * maxheight=200px - set max height
+   * - `title`: An optional title for the code block.
    */
   const definitionLineRE = new RegExp(
     '^' +
-      `(?<lang>(tabs|${langMatch}))` + // language name
-      '(\\s+\\[(?<attrs>[^\\]]+)\\])?' + // optional attrs
-      '(\\s+(?<title>.+))?' + // optional title
+      `(?<lang>(tabs|${langMatch}))` +
+      '(\\s+\\[(?<attrs>.*)\\])?' +
+      '(\\s+(?<title>.+))?' +
       '$',
   )
 
-  /**
-   * <<| lang [attrs] [title] |>>
-   * ...content...
-   */
   const tabsLineRE = new RegExp(
-    '^' +
-      '<<\\|\\s*' + // starts with "<<|" + optional spaces
-      `(?<lang>${langMatch})` + // language
-      '(?:\\s+\\[(?<attrs>[^\\]]+)\\])?' + // optional attrs (non-capturing group for optional attributes in square brackets)
-      '(?:\\s+(?<title>.+?))?' + // optional title (non-capturing group for the title)
-      '\\s*\\|>>$', // ends with "|>>" + optional spaces
+    '^<<\\|\\s+' +
+      `(?<lang>${langMatch})` +
+      '(\\s+\\[(?<attrs>.*)\\])?' +
+      '(\\s+(?<title>.+))?' +
+      '\\s*\\|>>$',
   )
 
-  const magicCommentList = ['highlight', 'rem', 'add']
-  const magicCommentRE = new RegExp(` *\\[\\[! (?<type>(${magicCommentList.join('|')}))\\]\\] *`)
-  const magicCommentGlobalRE = new RegExp(magicCommentRE, 'g')
-
-  function parseAttrs(rawAttrs: string | null): { [x: string]: any } {
-    if (rawAttrs === null) return {}
-
-    const acc: { [x: string]: any } = {}
-    const attrList = rawAttrs.split(/\s+/)
-
-    for (const attr of attrList) {
-      const [key, value] = attr.split('=')
-      if (key !== undefined) {
-        // Normalize the value: remove quotes and trim whitespace
-        const normalizedValue =
-          value !== undefined
-            ? value.trim().replace(/^['"]|['"]$/g, '') // Remove quotes
-            : true // If no value, set as boolean true
-        acc[key.trim()] = normalizedValue
-      }
+  interface TabMap {
+    [key: string]: {
+      attrs: { [key: string]: any }
+      content: string[]
     }
-    return acc
   }
 
-  function extractTabs(content: string): { param: string; content: string } | undefined {
+  function extractTabs(content: string) {
     const list: string[] = []
-    const tabMap: { [x: string]: { attrs: any; content: string[] } } = {}
+    const tabMap: TabMap = {}
 
-    let currentTabName: string | null = null
+    let currentTabName: string = ''
 
     for (const line of content.split('\n')) {
-      if (line.startsWith('<<|')) {
-        const tabsMatch: RegExpMatchArray | null = line.match(tabsLineRE)
+      const tabsMatch = line.match(tabsLineRE)
 
-        if (tabsMatch !== null) {
-          const { groups } = tabsMatch
+      if (tabsMatch !== null) {
+        const { lang, attrs, title } = tabsMatch.groups || {}
 
-          const lang = groups?.lang
-          const attrs = groups?.attrs
-          const title = groups?.title
+        currentTabName = title?.trim() || `Tab ${list.length + 1}`
 
-          currentTabName = title?.trim() || `Tab ${list.length + 1}`
-
-          if (currentTabName) {
-            list.push(currentTabName)
-            tabMap[currentTabName] = {
-              attrs: {
-                ...parseAttrs(attrs?.trim() || null),
-                lang,
-              },
-              content: [],
-            }
-          }
+        list.push(currentTabName)
+        tabMap[currentTabName] = {
+          attrs: {
+            ...parseAttrs(attrs?.trim() || null),
+            lang,
+          },
+          content: [],
         }
       } else if (currentTabName !== null) {
-        // Add the line to the current tab's content
-        tabMap[currentTabName]?.content.push(line)
+        tabMap[currentTabName].content.push(line)
       }
-      // else {
-      //   console.log('Skipping non-tab line:', line);
-      // }
     }
 
     if (list.length === 0) return
@@ -151,24 +118,27 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
       content: list
         .map((tabName) => {
           const props = tabMap[tabName]
-          if (props) {
-            return (
-              `<${tabPanelTagName} class="${tabPanelTagClass}" name="${tabName}">` +
-              getHighlightedContent(props.content.join('\n'), props.attrs) +
-              `</${tabPanelTagName}>`
-            )
-          }
-          return ''
+          return (
+            `<${tabPanelTagName} class="${tabPanelTagClass}" name="${tabName}">` +
+            getHighlightedContent(props.content.join('\n'), props.attrs) +
+            `</${tabPanelTagName}>`
+          )
         })
         .join('\n'),
     }
   }
 
-  function extractCodeLineProps(
-    lines: string[],
-    attrs: Record<string, string | undefined>,
-  ): Record<string, string[]> {
-    const acc: Record<string, string[]> = {}
+  const magicCommentList = ['highlight', 'rem', 'add']
+  const magicCommentRE = new RegExp(` *\\[\\[! (?<type>(${magicCommentList.join('|')}))\\]\\] *`)
+  const magicCommentGlobalRE = new RegExp(magicCommentRE, 'g')
+
+  interface CodeLineProps {
+    prefix: string[]
+    classList: string[]
+  }
+
+  function extractCodeLineProps(lines: string[], attrs: { [key: string]: any }) {
+    const acc: { [key: string]: string[] } = {}
 
     for (const type of magicCommentList) {
       acc[type] = attrs[type] !== void 0 ? attrs[type].split(',') : []
@@ -176,10 +146,11 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
 
     lines.forEach((line, lineIndex) => {
       const match = line.match(magicCommentRE)
-      if (match !== null && match.groups) {
-        const { type } = match.groups
-        if (type && type in acc) {
-          acc[type]!.push('' + (lineIndex + 1))
+
+      if (match !== null) {
+        const type = match.groups?.type
+        if (type !== undefined) {
+          acc[type].push('' + (lineIndex + 1))
         }
       }
     })
@@ -187,204 +158,175 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
     return acc
   }
 
-  type LineProps = {
-    prefix: string[]
-    classList: string[]
-  }
+  function parseCodeLine(content: string, attrs: { [key: string]: any }) {
+    const lines = content.split('\n')
 
-  function parseCodeLine(content: string, attrs: Record<string, any>): LineProps[] {
-    // Normalize line endings to just "\n"
-    const normalized = content.replace(/\r\n/g, '\n').replace(/\r/g, '\n')
+    const acc: CodeLineProps[] = lines.map(() => ({
+      prefix: [],
+      classList: [],
+    }))
 
-    const lines = normalized.split('\n')
+    if (attrs.lang === 'markup') {
+      return acc
+    }
 
-    // Extract code line properties
     const props = extractCodeLineProps(lines, attrs)
-    const acc: LineProps[] = lines.map(() => ({ prefix: [], classList: [] }))
 
-    const hasRemOrAdd = (props.rem?.length || 0) > 0 || (props.add?.length || 0) > 0
+    const hasRemOrAdd = props.rem.length !== 0 || props.add.length !== 0
 
     for (const type of magicCommentList) {
       const target = props[type]
-      if (target) {
-        for (const value of target) {
-          const [fromStr, toStr] = value.split('-')
-          const from = parseInt(String(fromStr), 10)
-          const to = toStr ? parseInt(toStr, 10) : from
 
-          if (!isNaN(from) && !isNaN(to)) {
-            for (let i = from; i <= to; i++) {
-              if (acc[i - 1]) {
-                acc[i - 1]!.classList.push(`${linePrefixClass}${type}`)
-              }
-            }
-          }
+      for (const value of target) {
+        let [from, to] = value.split('-').map((i) => parseInt(i, 10))
+        if (to === void 0) to = from
+
+        for (let i = from; i <= to; i++) {
+          acc[i - 1].classList.push(`${linePrefixClass}${type}`)
         }
       }
     }
 
     if (attrs.numbered === true) {
-      const lineCount = String(lines.length).length
+      const lineCount = ('' + lines.length).length
+
       lines.forEach((_, lineIndex) => {
-        if (acc[lineIndex]) {
-          acc[lineIndex].prefix.push(String(lineIndex + 1).padStart(lineCount, ' '))
-        }
+        acc[lineIndex].prefix.push(('' + (lineIndex + 1)).padStart(lineCount, ' '))
       })
     }
 
-    if (hasRemOrAdd) {
+    hasRemOrAdd === true &&
       lines.forEach((_, lineIndex) => {
         const target = acc[lineIndex]
-        if (target) {
-          target.prefix.push(
-            target.classList.includes(`${linePrefixClass}add`) // was c-add
-              ? '+'
-              : target.classList.includes(`${linePrefixClass}rem`) // was c-rem
-                ? '-'
-                : ' ',
-          )
-        }
+
+        target.prefix.push(
+          target.classList.includes(`${linePrefixClass}add`) === true
+            ? '+'
+            : target.classList.includes(`${linePrefixClass}rem`) === true
+              ? '-'
+              : ' ',
+        )
       })
-    }
 
     return acc
   }
 
-  function getHighlightedContent(rawContent: string, attrs: any): string {
-    const { lang = defaultLang, maxheight } = attrs
-    const content = rawContent.trim()
-    const lineList = parseCodeLine(content, attrs)
+  function renderCodeBlock(html: string, codeClass?: string): string {
+    return `<code${codeClass ? ` class="${codeClass}"` : ''}>${html}</code>`
+  }
 
-    const grammar = prism.languages[lang || defaultLang]
+  function getPrismHighlightedContent(rawContent: string, lang: string) {
+    const content = rawContent.trim()
+    return prism.highlight(content, prism.languages[lang], lang)
+  }
+
+  function getHighlightedContent(rawContent: string, attrs: { [key: string]: any }) {
+    const { lang, maxheight } = attrs
+
+    let content = ''
+    const lineList = parseCodeLine(rawContent.trim(), attrs)
+    content = rawContent.trim()
+
+    if (lang !== 'markup') {
+      content = content.trim().replace(magicCommentGlobalRE, '')
+    }
 
     const html = prism
-      .highlight(
-        lang === 'markup' ? content : content.replace(magicCommentGlobalRE, ''),
-        grammar,
-        lang,
-      )
-      .split('\n') // split into individual lines
-      .map((line: string, lineIndex: number) => {
+      .highlight(content, prism.languages[lang], lang)
+      .split('\n')
+      .map((line, lineIndex) => {
         const target = lineList[lineIndex]
 
-        let lineHtml = ''
-        // TODO: we will deal with the c-line and c-lpref classes later
-        if (target) {
-          if (target.classList.length !== 0) {
-            lineHtml += `<span class="c-line ${target.classList.join(' ')}"></span>`
-          }
-          if (target.prefix.length !== 0) {
-            lineHtml += `<span class="c-lpref">${target.prefix.join(' ')}</span>`
-          }
-        }
-
-        // Add the line content
-        lineHtml += line
-        return lineHtml
+        return (
+          (target.classList.length !== 0
+            ? `<span class="c-line ${target.classList.join(' ')}"></span>`
+            : '') +
+          (target.prefix.length !== 0
+            ? `<span class="c-lpref">${target.prefix.join(' ')}</span>`
+            : '') +
+          line
+        )
       })
       .join('\n')
 
     const langClass = lang === 'css' ? ' language-css' : ` language-${lang}`
+
     const preAttrs = maxheight !== void 0 ? ` style="max-height:${maxheight}"` : ''
 
     const langProp = customCopyLangList.includes(lang) === true ? ` lang="${lang}"` : ''
 
-    // add v-pre for Vue
-    const results =
-      `<pre v-pre class="${preClass}${langClass}"${preAttrs}><code${codeClass ? ` class="${codeClass}"` : ''}>${grammar ? html : rawContent}</code></pre>` +
-      (copyButtonComponent ? `<${copyButtonComponent} ${langProp} />` : '')
-
-    return results
+    return (
+      `<pre v-pre class="${preClass}${langClass}"${preAttrs}>` +
+      renderCodeBlock(html, codeClass) +
+      `</pre><${copyButtonComponent}${langProp} />`
+    )
   }
 
-  type DefinitionLine = {
-    lang: string
-    title: string | null
-    attrs?: { [x: string]: any }
-    tabs?: { param: string; content: string }
-  }
+  function parseAttrs(rawAttrs: string | null) {
+    if (rawAttrs === null) return {}
 
-  function parseDefinitionLine(token: {
-    info: string
-    content: string
-    level: number
-  }): DefinitionLine {
-    const match = token.info.trim().match(definitionLineRE)
+    const acc: { [key: string]: any } = {}
+    const attrList = rawAttrs.split(/\s+/)
 
-    if (match === null) {
-      return {
-        lang: defaultLang,
-        title: null,
-      }
-    }
-
-    const { groups } = match
-    const acc: DefinitionLine = {
-      ...parseAttrs(groups?.attrs?.trim() || null),
-      lang: groups?.lang || defaultLang,
-      title: groups?.title?.trim() || null,
-    }
-
-    if (acc.lang === 'tabs') {
-      const tabs = extractTabs(token.content)
-      if (tabs) {
-        acc.tabs = tabs
-      }
+    for (const attr of attrList) {
+      const [key, value] = attr.split('=')
+      acc[key.trim()] = value?.trim() || true
     }
 
     return acc
   }
 
-  // const fence = md.renderer.rules.fence
+  function parseDefinitionLine(token: Token) {
+    const match = token.info.trim().match(definitionLineRE)
+
+    if (match === null) {
+      return {
+        lang: 'markup',
+        title: null,
+      }
+    }
+
+    const { lang, attrs, title } = match.groups || {}
+    const acc: { lang: string; title: string | null; tabs?: any } = {
+      ...parseAttrs(attrs?.trim()?.replace(/["']/g, '') || null),
+      lang,
+      title: title?.trim() || null,
+    }
+
+    if (acc.lang === 'tabs') {
+      acc.tabs = extractTabs(token.content)
+    }
+
+    return acc
+  }
+
   md.renderer.rules.fence = (
     tokens: Token[],
     idx: number,
     _options: Options,
     env: MarkdownItEnv,
-  ): string => {
+  ) => {
     const token = tokens[idx]
     if (!token) {
       return ''
     }
-    const { info } = token
-    let attrs: DefinitionLine = {
-      lang: defaultLang,
-      title: null,
+
+    if (token.info === '') {
+      token.info = defaultLang
     }
 
-    if (info.trim() !== 'markup') {
-      attrs = parseDefinitionLine(token)
-    }
-
-    // add pageScripts if found
     if (pageScripts.length > 0) {
       env.pageScripts = env.pageScripts || new Set<string>()
-
-      // Add the scripts into env.pageScripts
       for (const script of pageScripts) {
         env.pageScripts.add(script)
       }
     }
 
-    // Special handling for markup language to show raw content
-    if (info.trim() === 'markup') {
-      const rawContent = token.content
-      return (
-        `<${containerComponent}${attrs.title !== null ? ` title="${attrs.title}"` : ''}>` +
-        `<pre v-pre class="${preClass} language-markup"><code${codeClass ? ` class="${codeClass}"` : ''}>` +
-        md.utils.escapeHtml(rawContent) +
-        `</code></pre>` +
-        `</${containerComponent}>`
-      )
-    }
+    const attrs = parseDefinitionLine(token)
 
     return (
-      `<${containerComponent}${attrs.title !== null ? ` title="${attrs.title}"` : ''}${
-        'tabs' in attrs && attrs.tabs !== undefined ? ` :tabs="${attrs.tabs.param}"` : ''
-      }>` +
-      ('tabs' in attrs && attrs.tabs !== undefined
-        ? attrs.tabs.content
-        : getHighlightedContent(token.content, attrs)) +
+      `<${containerComponent}${attrs.title !== null ? ` title="${attrs.title}"` : ''}${attrs.tabs !== void 0 ? ` :tabs="${attrs.tabs.param}"` : ''}>` +
+      (attrs.tabs !== void 0 ? attrs.tabs.content : getHighlightedContent(token.content, attrs)) +
       `</${containerComponent}>`
     )
   }
