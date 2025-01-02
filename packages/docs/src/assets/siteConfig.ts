@@ -544,7 +544,7 @@ export default {
   theme: 'doc',
   version: version,
   copyright: {
-    line1: `Copyright © 2020-${new Date().getFullYear()} Jeff Galbraith`,
+    line1: `Copyright © 2020-${new Date().getFullYear()} MD-PLUGINS`,
     line2: '',
   },
   github: 'https://github.com/md-plugins/md-plugins',
