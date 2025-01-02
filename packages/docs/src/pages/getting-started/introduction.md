@@ -12,7 +12,15 @@ Markdown Plugins are a set of tools and extensions designed to enhance the funct
 ## Key Features
 
 - **Extended Syntax**: Add custom syntax and elements to your Markdown documents.
-- **Interactive Components**: Embed interactive components such as charts, diagrams, and more.
+- **Custom Containers**: Use custom containers for callouts, warnings, and more.
+- **Frontmatter Support**: Extract and process frontmatter content from your Markdown files.
+- **Header Management**: Extract and process headers for generating ToCs or managing headers.
+- **Inline Code Styling**: Add custom classes to inline code blocks for styling.
+- **Link Customization**: Convert Markdown links into Vue components for SPA-friendly routing.
+- **Table Enhancements**: Add custom classes and attributes to Markdown tables.
+- **Title Extraction**: Extract the first header in Markdown as the page title.
+- **Script Imports**: Extract and process **&lt;script import&gt;** blocks from Markdown.
+- **Code Block Enhancements**: Enhance code block rendering with syntax highlighting, tabs, and more.
 - **Custom Styling**: Apply custom styles to your Markdown content for a more polished look.
 - **Integration**: Easily integrate with other tools and platforms to streamline your workflow.
 
