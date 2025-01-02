@@ -42,7 +42,42 @@
     </header>
     <div class="byline">
       <p>Discover the power of Markdown Plugins and enhance your documentation experience!</p>
+      <p>
+        <strong>NOTE:</strong> MD-Plugins are currently in development and not suitable for
+        production.
+      </p>
     </div>
+    <div class="row justify-center hero">
+      <div class="hero-title">Markdown-It! Plugins</div>
+    </div>
+    <main class="content">
+      <div
+        v-for="plugin in mdPlugins"
+        :key="plugin.name"
+        class="section"
+        @click="navigate(plugin.path)"
+      >
+        <q-card flat style="background: transparent">
+          <h2>{{ plugin.name }}</h2>
+          <p>{{ plugin.desc }}</p>
+        </q-card>
+      </div>
+    </main>
+    <div class="row justify-center hero">
+      <div class="hero-title">Vite Plugins</div>
+    </div>
+    <main class="content">
+      <div
+        v-for="plugin in vitePlugins"
+        :key="plugin.name"
+        class="section"
+        @click="navigate(plugin.path)"
+      >
+        <h2>{{ plugin.name }}</h2>
+        <p>{{ plugin.desc }}</p>
+      </div>
+    </main>
+    <!--
     <main class="content">
       <q-card v-for="section in sections" :key="section.title" flat class="section">
         <h2 class="text-h2">{{ section.title }}</h2>
@@ -53,6 +88,7 @@
         </ul>
       </q-card>
     </main>
+     -->
     <div class="byline">
       <p>
         We hope you find this documentation helpful. If you have any questions or need further
@@ -66,75 +102,153 @@
 <script setup lang="ts">
 import { QIcon } from 'quasar'
 import { fabGithub } from '@quasar/extras/fontawesome-v6'
+import { useRouter } from 'vue-router'
 
-const sections = [
+const router = useRouter()
+
+const mdPlugins = [
   {
-    title: 'Getting Started',
-    links: [
-      { text: 'Introduction', url: '/getting-started/introduction' },
-      { text: 'Installation', url: '/getting-started/installation' },
-      { text: 'Configuration', url: '/getting-started/configuration' },
-    ],
+    name: 'Blockquote Plugin',
+    desc: 'Adds support for creating Markdown blockquotes.',
+    path: '/md-plugins/blockquote/overview',
   },
   {
-    title: 'Guides',
-    links: [
-      { text: 'Usage', url: '/guides/usage' },
-      { text: 'Examples', url: '/guides/examples' },
-      { text: 'Best Practices', url: '/guides/best-practices' },
-    ],
+    name: 'Codeblocks Plugin',
+    desc: 'Adds support for creating Markdown code blocks.',
+    path: '/md-plugins/code/overview',
   },
   {
-    title: 'Reference',
-    links: [
-      { text: 'API Overview', url: '/reference/api/overview' },
-      { text: 'CLI Commands', url: '/reference/cli' },
-      { text: 'Configuration', url: '/reference/configuration' },
-    ],
+    name: 'Container Plugin',
+    desc: 'Adds support for creating Markdown containers.',
+    path: '/md-plugins/containers/overview',
   },
   {
-    title: 'Tutorials',
-    links: [
-      { text: 'Basic Tutorial', url: '/tutorials/basic-tutorial' },
-      { text: 'Advanced Tutorial', url: '/tutorials/advanced-tutorial' },
-      { text: 'Creating Custom Plugins', url: '/tutorials/custom-plugins' },
-    ],
+    name: 'Frontmatter Plugin',
+    desc: 'Adds support for getting frontmatter data into your Markdown.',
+    path: '/md-plugins/frontmatter/overview',
   },
   {
-    title: 'FAQ',
-    links: [
-      { text: 'General FAQ', url: '/faq/general' },
-      { text: 'Troubleshooting', url: '/faq/troubleshooting' },
-      { text: 'Common Issues', url: '/faq/common-issues' },
-    ],
+    name: 'Headers Plugin',
+    desc: "Adds support for creating ToC's inMarkdown.",
+    path: '/md-plugins/headers/overview',
   },
   {
-    title: 'Plugins',
-    links: [
-      { text: 'Plugin 1', url: '/plugins/plugin1/overview' },
-      { text: 'Plugin 2', url: '/plugins/plugin2/overview' },
-      { text: 'Plugin 3', url: '/plugins/plugin3/overview' },
-    ],
+    name: 'Image Plugin',
+    desc: 'Adds support for creating Markdown images.',
+    path: '/md-plugins/image/overview',
   },
   {
-    title: 'Shared Utilities',
-    links: [
-      { text: 'Overview', url: '/shared/overview' },
-      { text: 'Utilities', url: '/shared/utilities' },
-      { text: 'Constants', url: '/shared/constants' },
-      { text: 'Helpers', url: '/shared/helpers' },
-    ],
+    name: 'Imports Plugin',
+    desc: 'Adds support for creating custom imports for your Markdown.',
+    path: '/md-plugins/imports/overview',
   },
   {
-    title: 'Vite Plugins',
-    links: [
-      { text: 'Overview', url: '/vite-plugins/overview' },
-      { text: 'Vite Plugin 1', url: '/vite-plugins/plugin1/overview' },
-      { text: 'Vite Plugin 2', url: '/vite-plugins/plugin2/overview' },
-      { text: 'Vite Plugin 3', url: '/vite-plugins/plugin3/overview' },
-    ],
+    name: 'Inlinecode Plugin',
+    desc: 'Adds support for creating Markdown inline code.',
+    path: '/md-plugins/inline-code/overview',
+  },
+  {
+    name: 'Link Plugin',
+    desc: 'Adds support for creating Markdown links.',
+    path: '/md-plugins/link/overview',
+  },
+  {
+    name: 'Table Plugin',
+    desc: 'Adds support for creating Markdown tables.',
+    path: '/md-plugins/table',
+  },
+  {
+    name: 'Title Plugin',
+    desc: 'Adds support for creating Markdown titles.',
+    path: '/md-plugins/title/overview',
   },
 ]
+
+const vitePlugins = [
+  {
+    name: 'Vite MD Plugin',
+    desc: 'Adds support for creating Vue SFCs from Markdown files.',
+    path: '/vite-plugins/vitemdplugin/overview',
+  },
+  {
+    name: 'Vite Examples Plugin',
+    desc: 'Adds support for importing Vue files as raw source.',
+    path: '/vite-plugins/viteexamplesplugin/overview',
+  },
+]
+
+// const sections = [
+//   {
+//     title: 'Getting Started',
+//     links: [
+//       { text: 'Introduction', url: '/getting-started/introduction' },
+//       { text: 'Installation', url: '/getting-started/installation' },
+//       { text: 'Configuration', url: '/getting-started/configuration' },
+//     ],
+//   },
+//   {
+//     title: 'Guides',
+//     links: [
+//       { text: 'Usage', url: '/guides/usage' },
+//       { text: 'Examples', url: '/guides/examples' },
+//       { text: 'Best Practices', url: '/guides/best-practices' },
+//     ],
+//   },
+//   {
+//     title: 'Reference',
+//     links: [
+//       { text: 'API Overview', url: '/reference/api/overview' },
+//       { text: 'CLI Commands', url: '/reference/cli' },
+//       { text: 'Configuration', url: '/reference/configuration' },
+//     ],
+//   },
+//   {
+//     title: 'Tutorials',
+//     links: [
+//       { text: 'Basic Tutorial', url: '/tutorials/basic-tutorial' },
+//       { text: 'Advanced Tutorial', url: '/tutorials/advanced-tutorial' },
+//       { text: 'Creating Custom Plugins', url: '/tutorials/custom-plugins' },
+//     ],
+//   },
+//   {
+//     title: 'FAQ',
+//     links: [
+//       { text: 'General FAQ', url: '/faq/general' },
+//       { text: 'Troubleshooting', url: '/faq/troubleshooting' },
+//       { text: 'Common Issues', url: '/faq/common-issues' },
+//     ],
+//   },
+//   {
+//     title: 'Plugins',
+//     links: [
+//       { text: 'Plugin 1', url: '/plugins/plugin1/overview' },
+//       { text: 'Plugin 2', url: '/plugins/plugin2/overview' },
+//       { text: 'Plugin 3', url: '/plugins/plugin3/overview' },
+//     ],
+//   },
+//   {
+//     title: 'Shared Utilities',
+//     links: [
+//       { text: 'Overview', url: '/shared/overview' },
+//       { text: 'Utilities', url: '/shared/utilities' },
+//       { text: 'Constants', url: '/shared/constants' },
+//       { text: 'Helpers', url: '/shared/helpers' },
+//     ],
+//   },
+//   {
+//     title: 'Vite Plugins',
+//     links: [
+//       { text: 'Overview', url: '/vite-plugins/overview' },
+//       { text: 'Vite Plugin 1', url: '/vite-plugins/plugin1/overview' },
+//       { text: 'Vite Plugin 2', url: '/vite-plugins/plugin2/overview' },
+//       { text: 'Vite Plugin 3', url: '/vite-plugins/plugin3/overview' },
+//     ],
+//   },
+// ]
+
+function navigate(path: string) {
+  router.push(path)
+}
 </script>
 
 <style lang="scss" scoped>
@@ -218,7 +332,9 @@ body.body--dark .byline {
   flex: 1 1 300px;
   margin: 20px;
   padding: 20px;
-  background: #f9f9f9;
+  color: white;
+  text-decoration: none;
+  background: linear-gradient(135deg, $brand-primary, #35495e);
   border-radius: 10px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   transition:
@@ -229,11 +345,19 @@ body.body--dark .byline {
 .section:hover {
   transform: translateY(-5px);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  // change mouseover effects
+  cursor: pointer;
 }
 
 .section h2 {
   margin-top: 0;
-  color: $brand-primary;
+  color: white;
+  font-size: 2.125rem;
+  font-weight: 400;
+  line-height: 2.5rem;
+  letter-spacing: 0.00735em;
+  font-weight: 700;
+  text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.8);
 }
 
 .section ul {

@@ -519,6 +519,11 @@ if (process.env.CLIENT) {
 }
 
 body.body--light {
+  .markdown-api .q-badge {
+    color: $light-clouds;
+    background-color: $midnight-blue;
+  }
+
   .markdown-api .markdown-token {
     background-color: #eee;
     border: 1px solid $separator-color;
@@ -537,6 +542,11 @@ body.body--light {
 }
 
 body.body--dark {
+  .markdown-api .q-badge {
+    color: $midnight-blue;
+    background-color: $deep-sky-blue;
+  }
+
   .markdown-api .markdown-token {
     background-color: $dark-bg;
     border: 1px solid $separator-dark-color;
@@ -548,7 +558,7 @@ body.body--dark {
   }
 
   .markdown-api-entry {
-    color: $ship-shell;
+    color: $battleship-grey;
 
     & + .markdown-api-entry,
     &__subitem > div {
