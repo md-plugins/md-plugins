@@ -3,8 +3,6 @@ title: ViteMdPlugin Advanced Topics
 desc: ViteMdPlugin advanced topics for Markdown.
 ---
 
-## ViteMdPlugin
-
 The `viteMdPlugin` is a powerful tool for integrating Markdown processing into your Vite project. This section will cover how the plugin works, the available options for customization, and examples of how to use it effectively with both Vite and Quasar with Vite.
 
 ### How It Works
