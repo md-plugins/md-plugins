@@ -115,7 +115,7 @@ const mdPlugins = [
   {
     name: 'Codeblocks Plugin',
     desc: 'Adds support for creating Markdown code blocks.',
-    path: '/md-plugins/code/overview',
+    path: '/md-plugins/codeblocks/overview',
   },
   {
     name: 'Container Plugin',
@@ -155,7 +155,7 @@ const mdPlugins = [
   {
     name: 'Table Plugin',
     desc: 'Adds support for creating Markdown tables.',
-    path: '/md-plugins/table',
+    path: '/md-plugins/table/overview',
   },
   {
     name: 'Title Plugin',
