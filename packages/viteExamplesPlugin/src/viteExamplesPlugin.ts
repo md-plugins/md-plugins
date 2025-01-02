@@ -105,8 +105,8 @@ function vitePlugin(isProd: boolean): Plugin {
  *
  * @returns A function that creates a Vite plugin.
  */
-export function viteExamplesPlugin(path: string): (isProd: boolean) => Plugin {
+export function viteExamplesPlugin(isProd: boolean, path: string): Plugin {
   targetFolder = path
 
-  return vitePlugin
+  return vitePlugin(isProd)
 }
