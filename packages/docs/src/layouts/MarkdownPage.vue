@@ -290,8 +290,8 @@ console.log('MarkdownPage props', props)
 body.body--light .markdown-page {
   &__related {
     color: $light-text;
-    background: $void-suit;
-    border: 1px solid $void-suit; // match dark to avoid page reflow
+    background: $light-clouds;
+    border: 1px solid $light-clouds; // match dark to avoid page reflow
   }
 
   &__toc-container .q-item {

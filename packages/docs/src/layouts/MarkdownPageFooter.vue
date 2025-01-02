@@ -132,7 +132,7 @@ const props = defineProps({
 <style lang="scss">
 .markdown-page-footer {
   position: relative;
-  background-color: $void-suit;
+  background-color: $light-clouds;
   width: 100%;
   z-index: 1;
   border-top: 1px solid $separator-color;
@@ -186,7 +186,7 @@ const props = defineProps({
 
 body.body--dark {
   .markdown-page-footer {
-    background-color: $floating-rock;
+    background-color: $dark-bg;
     border-top-color: $separator-dark-color;
   }
 }

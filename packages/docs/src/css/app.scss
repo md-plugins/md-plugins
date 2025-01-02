@@ -455,12 +455,12 @@ body.q-scroll--lock .q-page > .q-scroll--anchor {
 
 .header-toolbar {
   color: $header-btn-color--light;
-  background: #fff;
+  background: $light-clouds;
 }
 
 .header-tabs,
 .header-tabs .q-tabs__content {
-  background: #fff;
+  background: $light-clouds;
   letter-spacing: $letter-spacing-brand;
   border-radius: $generic-border-radius $generic-border-radius 0 0;
 }
@@ -475,7 +475,7 @@ body.q-scroll--lock .q-page > .q-scroll--anchor {
 .markdown-heading .q-badge,
 .header-badge {
   color: $light-bg;
-  background: $brand-primary;
+  background: scale-color($light-bg, $lightness: 15%);
   vertical-align: super;
   letter-spacing: $letter-spacing-brand;
   padding: 4px 8px;
@@ -540,6 +540,7 @@ body.body--dark {
   .markdown-heading .q-badge,
   .header-badge {
     color: $dark-bg;
+    background: scale-color($dark-bg, $lightness: 15%);
   }
 
   .markdown-img {
@@ -610,8 +611,8 @@ body.body--dark {
   padding: 4px 8px 4px 28px;
   position: relative;
   border-radius: 3px 5px 5px 0;
-  background: $void-suit;
-  color: $header-btn-color--light;
+  background: scale-color($light-clouds, $lightness: -15%);
+  color: $dark-clouds;
   font-size: ($font-size + 2px);
   letter-spacing: $letter-spacing-brand;
 
@@ -624,14 +625,14 @@ body.body--dark {
     height: 0;
     border: 0 solid transparent;
     border-width: 9px 0 0 11px;
-    border-top-color: scale-color($void-suit, $lightness: -15%);
+    border-top-color: scale-color($light-clouds, $lightness: -25%);
   }
 }
 
 body.body--dark .markdown-card-title {
-  background: $floating-rock;
+  background: $dark-clouds;
   color: $dark-text;
   &:after {
-    border-top-color: scale-color($floating-rock, $lightness: -30%);
+    border-top-color: scale-color($dark-clouds, $lightness: -30%);
   }
 }
