@@ -68,9 +68,9 @@ const NAME_PROP_COLOR = ['orange-8', 'brand-primary', 'green-5', 'purple-5']
 const NAME_PROP_COLOR_LEN = NAME_PROP_COLOR.length
 
 function getDiv(col: number, propName: string, propValue?: string, slot?: any) {
-  return h('div', { class: `doc-api-entry__item col-xs-12 col-sm-${col}` }, [
-    h('div', { class: 'doc-api-entry__type' }, propName),
-    propValue !== void 0 ? h('div', { class: 'doc-api-entry__value' }, propValue) : slot,
+  return h('div', { class: `markdown-api-entry__item col-xs-12 col-sm-${col}` }, [
+    h('div', { class: 'markdown-api-entry__type' }, propName),
+    propValue !== void 0 ? h('div', { class: 'markdown-api-entry__value' }, propValue) : slot,
   ])
 }
 
@@ -78,12 +78,12 @@ function getNameDiv(prop: any, label: string, level: number, suffix?: string, pr
   const child = []
 
   if (prefix !== void 0) {
-    child.push(h('div', { class: 'doc-api-entry__type q-mr-xs' }, prefix))
+    child.push(h('div', { class: 'markdown-api-entry__type q-mr-xs' }, prefix))
   }
 
   child.push(
     h(QBadge, {
-      class: 'doc-api-entry__pill cursor-pointer',
+      class: 'markdown-api-entry__pill cursor-pointer',
       label,
       color: NAME_PROP_COLOR[level % NAME_PROP_COLOR_LEN],
       onClick: () => {
@@ -94,20 +94,20 @@ function getNameDiv(prop: any, label: string, level: number, suffix?: string, pr
 
   const suffixLabel = `${suffix ? ` : ${suffix}` : ''}${prop.required ? ' - required!' : ''}`
   if (suffixLabel !== '') {
-    child.push(h('div', { class: 'doc-api-entry__type q-ml-xs' }, suffixLabel))
+    child.push(h('div', { class: 'markdown-api-entry__type q-ml-xs' }, suffixLabel))
   }
 
   if (prop.addedIn !== void 0) {
     child.push(
       h(QBadge, {
-        class: 'q-ml-sm doc-api-entry__added-in',
+        class: 'q-ml-sm markdown-api-entry__added-in',
         outline: true,
         label: prop.addedIn + '+',
       }),
     )
   }
 
-  return h('div', { class: 'doc-api-entry__item col-xs-12 col-sm-12 row items-center' }, child)
+  return h('div', { class: 'markdown-api-entry__item col-xs-12 col-sm-12 row items-center' }, child)
 }
 
 function getExpandable(
@@ -120,11 +120,11 @@ function getExpandable(
   if (isExpandable === true) {
     const expanded = openState.value[key] === true
     const child = [
-      h('div', { class: 'doc-api-entry__item col-xs-12 col-sm-12' }, [
-        h('div', { class: 'doc-api-entry__type row items-center no-wrap' }, [
+      h('div', { class: 'markdown-api-entry__item col-xs-12 col-sm-12' }, [
+        h('div', { class: 'markdown-api-entry__type row items-center no-wrap' }, [
           h('span', 'Description'),
           h(QBtn, {
-            class: 'doc-api-entry__expand-btn header-btn',
+            class: 'markdown-api-entry__expand-btn header-btn',
             flat: true,
             size: '11px',
             padding: '1px',
@@ -134,7 +134,7 @@ function getExpandable(
             },
           }),
         ]),
-        h('div', { class: 'doc-api-entry__value' }, desc),
+        h('div', { class: 'markdown-api-entry__value' }, desc),
       ]),
     ]
 
@@ -164,8 +164,8 @@ function getPropDetails(
         void 0,
         h(
           'div',
-          { class: 'doc-api-entry--indent doc-api-entry__value' },
-          h('div', { class: 'doc-token' }, '' + prop.default),
+          { class: 'markdown-api-entry--indent markdown-api-entry__value' },
+          h('div', { class: 'markdown-token' }, '' + prop.default),
         ),
       ),
     )
@@ -183,8 +183,8 @@ function getPropDetails(
         void 0,
         h(
           'div',
-          { class: 'doc-api-entry--indent doc-api-entry__value' },
-          prop.values.map((val: any) => h('div', { class: 'doc-token' }, '' + val)),
+          { class: 'markdown-api-entry--indent markdown-api-entry__value' },
+          prop.values.map((val: any) => h('div', { class: 'markdown-token' }, '' + val)),
         ),
       ),
     )
@@ -196,7 +196,9 @@ function getPropDetails(
       nodes.push(getProp(openState, masterKey, prop.definition[propName], propName, level))
     }
 
-    details.push(getDiv(12, 'Props', void 0, h('div', { class: 'doc-api-entry__subitem' }, nodes)))
+    details.push(
+      getDiv(12, 'Props', void 0, h('div', { class: 'markdown-api-entry__subitem' }, nodes)),
+    )
   }
 
   if (prop.params !== void 0 && prop.params !== null) {
@@ -206,7 +208,9 @@ function getPropDetails(
       nodes.push(getProp(openState, masterKey, prop.params[propName], propName, level))
     }
 
-    details.push(getDiv(12, 'Params', void 0, h('div', { class: 'doc-api-entry__subitem' }, nodes)))
+    details.push(
+      getDiv(12, 'Params', void 0, h('div', { class: 'markdown-api-entry__subitem' }, nodes)),
+    )
   }
 
   if (prop.returns !== void 0 && prop.returns !== null) {
@@ -215,7 +219,7 @@ function getPropDetails(
         12,
         `Return type: ${getStringType(prop.returns.type)}`,
         void 0,
-        h('div', { class: 'doc-api-entry__subitem' }, [
+        h('div', { class: 'markdown-api-entry__subitem' }, [
           getProp(openState, masterKey, prop.returns, void 0, level),
         ]),
       ),
@@ -228,7 +232,9 @@ function getPropDetails(
       nodes.push(getProp(openState, masterKey, prop.scope[propName], propName, level))
     }
 
-    details.push(getDiv(12, 'Scope', void 0, h('div', { class: 'doc-api-entry__subitem' }, nodes)))
+    details.push(
+      getDiv(12, 'Scope', void 0, h('div', { class: 'markdown-api-entry__subitem' }, nodes)),
+    )
   }
 
   if (prop.examples !== void 0) {
@@ -239,8 +245,8 @@ function getPropDetails(
         void 0,
         h(
           'div',
-          { class: 'doc-api-entry--indent doc-api-entry__value' },
-          prop.examples.map((example: any) => h('div', { class: 'doc-token' }, '' + example)),
+          { class: 'markdown-api-entry--indent markdown-api-entry__value' },
+          prop.examples.map((example: any) => h('div', { class: 'markdown-token' }, '' + example)),
         ),
       ),
     )
@@ -300,7 +306,7 @@ function getProp(
     ),
   )
 
-  return onlyChildren !== true ? [h('div', { class: 'doc-api-entry row' }, child)] : child
+  return onlyChildren !== true ? [h('div', { class: 'markdown-api-entry row' }, child)] : child
 }
 
 const describe: Record<string, any> = {}
@@ -331,7 +337,7 @@ describe.events = (openState: Ref<Record<string, boolean>>, events: any) => {
     const masterKey = `event|${eventName}`
 
     child.push(
-      h('div', { class: 'doc-api-entry row' }, [
+      h('div', { class: 'markdown-api-entry row' }, [
         getNameDiv(event, `@${eventName}`, 0, getEventParams(event)),
 
         ...getExpandable(
@@ -351,7 +357,7 @@ describe.events = (openState: Ref<Record<string, boolean>>, events: any) => {
                 12,
                 'Parameters',
                 void 0,
-                h('div', { class: 'doc-api-entry__subitem' }, params),
+                h('div', { class: 'markdown-api-entry__subitem' }, params),
               ),
             ]
           },
@@ -373,7 +379,7 @@ describe.methods = (openState: Ref<Record<string, boolean>>, methods: any) => {
     const alias = method.alias ? `Alias: "${method.alias}"; ` : ''
     const desc = `${alias}${method.desc}`
 
-    const methodNode = h('div', { class: 'doc-api-entry row' }, [
+    const methodNode = h('div', { class: 'markdown-api-entry row' }, [
       getNameDiv(
         method,
         methodName,
@@ -399,7 +405,7 @@ describe.methods = (openState: Ref<Record<string, boolean>>, methods: any) => {
                 12,
                 'Parameters',
                 void 0,
-                h('div', { class: 'doc-api-entry__subitem' }, props),
+                h('div', { class: 'markdown-api-entry__subitem' }, props),
               ),
             )
           }
@@ -410,7 +416,7 @@ describe.methods = (openState: Ref<Record<string, boolean>>, methods: any) => {
                 12,
                 `Return type: ${getStringType(method.returns.type)}`,
                 void 0,
-                h('div', { class: 'doc-api-entry__subitem' }, [
+                h('div', { class: 'markdown-api-entry__subitem' }, [
                   getProp(openState, masterKey, method.returns, void 0, 1),
                 ]),
               ),
@@ -432,7 +438,7 @@ describe.value = (openState: Ref<Record<string, boolean>>, value: any) => {
   return [
     h(
       'div',
-      { class: 'doc-api-entry row' },
+      { class: 'markdown-api-entry row' },
       [getDiv(12, 'Type', getStringType(value.type))].concat(
         ...(getProp(openState, 'value', value, void 0, -1, true) || []),
       ),
@@ -444,7 +450,7 @@ describe.arg = (openState: Ref<Record<string, boolean>>, arg: any) => {
   return [
     h(
       'div',
-      { class: 'doc-api-entry row' },
+      { class: 'markdown-api-entry row' },
       [getDiv(12, 'Type', getStringType(arg.type))].concat(
         getProp(openState, 'arg', arg, void 0, -1, true),
       ),
@@ -461,7 +467,7 @@ describe.modifiers = (openState: Ref<Record<string, boolean>>, modifiers: any) =
     child.push(
       h(
         'div',
-        { class: 'doc-api-entry row' },
+        { class: 'markdown-api-entry row' },
         getProp(openState, 'modifiers', modifier, modifierName, 0, true),
       ),
     )
@@ -471,7 +477,7 @@ describe.modifiers = (openState: Ref<Record<string, boolean>>, modifiers: any) =
 }
 
 describe.injection = (_: Ref<Record<string, boolean>>, injection: any) => {
-  return [h('div', { class: 'doc-api-entry row' }, [getNameDiv(injection, injection, 0)])]
+  return [h('div', { class: 'markdown-api-entry row' }, [getNameDiv(injection, injection, 0)])]
 }
 
 function useConfigToggle(openState: Ref<Record<string, boolean>>) {
@@ -507,7 +513,7 @@ describe.quasarConfOptions = (openState: Ref<Record<string, boolean>>, conf: any
     ? [
         configToggle.type === 'configFile' ? configFileName() : uiConfigName(),
         getDiv(8, 'Type', getStringType(conf.configFileType || conf.type || 'Object')),
-        h('div', { class: 'doc-api-entry__item col row justify-end items-center' }, [
+        h('div', { class: 'markdown-api-entry__item col row justify-end items-center' }, [
           h(QBtnToggle, {
             modelValue: configToggle.type,
             'onUpdate:modelValue': configToggle.setType,
@@ -532,7 +538,7 @@ describe.quasarConfOptions = (openState: Ref<Record<string, boolean>>, conf: any
 
   if (conf.definition && Object.keys(conf.definition).length === 0) {
     entry.push(
-      h('div', { class: 'q-pa-md doc-api__nothing-to-show' }, [
+      h('div', { class: 'q-pa-md markdown-api__nothing-to-show' }, [
         h('div', 'No matching props found.'),
         h(
           'div',
@@ -542,7 +548,7 @@ describe.quasarConfOptions = (openState: Ref<Record<string, boolean>>, conf: any
     )
   }
 
-  return [h('div', { class: 'doc-api-entry row' }, entry)]
+  return [h('div', { class: 'markdown-api-entry row' }, entry)]
 }
 
 export default defineComponent({
@@ -567,7 +573,7 @@ export default defineComponent({
         Object.keys(props.definition).length !== 0
           ? describe[props.type](openState, props.definition)
           : [
-              h('div', { class: 'q-pa-md doc-api__nothing-to-show' }, [
+              h('div', { class: 'q-pa-md markdown-api__nothing-to-show' }, [
                 h('div', 'No matching entries found on this tab.'),
                 h(
                   'div',
@@ -576,7 +582,7 @@ export default defineComponent({
               ]),
             ]
 
-      return h('div', { class: 'doc-api-entrys' }, content)
+      return h('div', { class: 'markdown-api-entrys' }, content)
     }
   },
 })

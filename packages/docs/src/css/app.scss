@@ -25,7 +25,7 @@
   line-height: normal;
 }
 
-.doc-technical {
+.markdown-technical {
   font-family: $font-family-technical;
   font-weight: $font-weight-technical;
   font-size: $font-size;
@@ -46,7 +46,7 @@
   font-weight: $font-weight-brand;
 }
 
-// resets .doc-technical above to Quasar original
+// resets .markdown-technical above to Quasar original
 .markdown-example-typography {
   font-size: 14px;
   line-height: 1.5em;
@@ -270,7 +270,7 @@ kbd {
     0 1px 2px 1px rgba(30, 35, 90, 0.4);
 }
 
-.doc-gdpr {
+.markdown-gdpr {
   font-family: $font-family-brand;
   max-width: 360px;
   &,
@@ -515,7 +515,7 @@ $letter-spacing-list: 40, 100, 225, 263, 300, 375, 450;
 }
 
 body.body--dark {
-  .doc-technical {
+  .markdown-technical {
     color: $dark-text;
     background: #080e1a;
   }

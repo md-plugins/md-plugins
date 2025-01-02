@@ -1,5 +1,5 @@
 <template>
-  <q-layout class="markdown-layout doc-technical" view="hHh LpR fff" @scroll="onPageScroll">
+  <q-layout class="markdown-layout markdown-technical" view="hHh LpR fff" @scroll="onPageScroll">
     <MarkdownHeader />
 
     <q-page-container>

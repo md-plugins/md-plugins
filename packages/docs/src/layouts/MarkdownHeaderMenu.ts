@@ -65,7 +65,7 @@ export default {
                     {
                       anchor: 'top right',
                       self: 'top left',
-                      class: 'markdown-header-menu doc-technical',
+                      class: 'markdown-header-menu markdown-technical',
                       cover: Screen.lt.sm,
                     },
                     () => getChildren(entry.children!),
@@ -85,6 +85,6 @@ export default {
     }
 
     return () =>
-      h(QMenu, { fit: true, class: 'markdown-header-menu doc-technical', offset }, getMenu)
+      h(QMenu, { fit: true, class: 'markdown-header-menu markdown-technical', offset }, getMenu)
   },
 }
