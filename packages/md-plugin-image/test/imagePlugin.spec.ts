@@ -14,6 +14,17 @@ describe('imagePlugin', () => {
     expect(renderedHTML).toBe(expectedOutput)
   })
 
+  it('adds size to images', () => {
+    const md = new MarkdownIt()
+    md.use(imagePlugin)
+
+    const markdownInput = `![alt text width="300" height="200"](image.jpg)`
+    const renderedHTML = md.render(markdownInput).trim()
+
+    const expectedOutput = `<p><img src="image.jpg" alt="alt text" width="300" height="200" class="markdown-image"></p>`
+    expect(renderedHTML).toBe(expectedOutput)
+  })
+
   it('adds a custom class to images when provided', () => {
     const md = new MarkdownIt()
     const customClass = 'custom-image-class'

@@ -7,12 +7,13 @@ Welcome to the Image Plugin documentation! This guide will provide you with an o
 
 ## What is the Image Plugin?
 
-The Image Plugin is a simple yet powerful tool that enhances the standard image functionality in Markdown. It allows you to apply custom CSS classes to images, making it easier to style and manage images in your documentation.
+The Image Plugin is a simple yet powerful tool that enhances the standard image functionality in Markdown. It allows you to apply custom CSS classes to images as well as provide a width and a height, making it easier to style and manage images in your documentation.
 
 ## Key Features
 
 - **Custom CSS Class**: Apply a custom CSS class to images for consistent styling.
 - **Automatic Alt Text**: Automatically set the `alt` attribute for images based on their content.
+- **Width and Height**: Specify the width and height of images for responsive design.
 
 ## Examples
 
@@ -22,6 +23,14 @@ Here are some examples of what you can achieve with the Image Plugin:
 
 ```markup
 ![Alt text](image.jpg)
+```
+
+### External Image with Width/Height
+
+![MD-Plugins width="200" height="200"](https://raw.githubusercontent.com/md-plugins/md-plugins/refs/heads/main/media/markdown-1024x1024.png)
+
+```markup
+![MD-Plugins width="200" height="200"](https://raw.githubusercontent.com/md-plugins/md-plugins/refs/heads/main/media/markdown-1024x1024.png)
 ```
 
 ### Image with Custom Class

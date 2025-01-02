@@ -5,20 +5,22 @@ desc: Image plugin advanced topics for Markdown.
 
 ## Image Plugin
 
-The `image` plugin allows you to add custom classes to images and ensure that the `alt` attribute is properly set in your Markdown content. This section will cover how the plugin works, the available options for customization, and examples of how to use it effectively.
+The `image` plugin allows you to add custom classes to images and ensure that the `alt` attribute is properly set in your Markdown content. It also allows you to provide a `width` and a `height`. This section will cover how the plugin works, the available options for customization, and examples of how to use it effectively.
 
 ### How It Works
 
-The `image` plugin processes image tokens in your Markdown content, adding custom classes and ensuring that the `alt` attribute is properly set. This helps improve the accessibility and styling of images in your Markdown content.
+The `image` plugin processes image tokens in your Markdown content, adding custom classes and ensuring that the `alt` attribute is properly set as well as setting the `width` and `height` attributes if set inside the `alt text` area of the image markdown. This helps improve the accessibility and styling of images in your Markdown content.
 
 ### Default Behavior
 
-By default, the `image` plugin adds the `markdown-image` class to all images and sets the `alt` attribute to the image's content if it is not already set. Here is an example of a Markdown file with images:
+By default, the `image` plugin adds the `markdown-image` class to all images and sets the `alt` attribute to the image's content if it is not already set. It also allows you to specify the `width` and `height` of the displayed image. Here is an example of a Markdown file with images:
 
 ```markdown
 ![Alt text](path/to/image.jpg)
 
 ![Another image](path/to/another-image.png)
+
+![Alt text width="200" height="200"](path/to/image.jpg)
 ```
 
 ### Plugin Options
@@ -75,12 +77,12 @@ You can customize the appearance of images by overriding the default CSS class. 
 }
 ```
 
-### Handling the `alt` Attribute
+### Handling the `alt`, `width`, and `height` Attributes
 
-The `image` plugin ensures that the `alt` attribute is properly set for all images. If the `alt` attribute is not present or is empty, the plugin sets it to the image's content. This helps improve the accessibility of your Markdown content.
+The `image` plugin ensures that the `alt` attribute is properly set for all images. If the `alt` attribute is not present or is empty, the plugin sets it to the image's content. Additionally, the plugin allows you to specify the `width` and `height` attributes within the `alt` text. These attributes are extracted and applied to the image element, and then removed from the `alt` text. This helps improve the accessibility and styling of your Markdown content.
 
 ### Conclusion
 
-The `image` plugin is a powerful tool for adding custom classes to images and ensuring that the `alt` attribute is properly set in your Markdown content. By customizing the class and CSS, you can tailor the appearance of images to match the style of your project. Experiment with different configurations and find the one that works best for you.
+The `image` plugin is a powerful tool for adding custom classes to images and ensuring that the `alt`, `width`, and `height` attributes are properly set in your Markdown content. By customizing the class and CSS, you can tailor the appearance of images to match the style of your project. Experiment with different configurations and find the one that works best for you.
 
 Happy coding!

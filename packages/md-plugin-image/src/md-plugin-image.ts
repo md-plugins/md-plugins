@@ -20,22 +20,45 @@ export const imagePlugin = (md: MarkdownIt, { imageClass = 'markdown-image' } = 
       return self.renderToken(tokens, idx, options)
     }
 
+    // Extract width and height from the token content if present
+    let content = token.content
+    const widthMatch = content.match(/width="(\d+)"/)
+    const heightMatch = content.match(/height="(\d+)"/)
+
+    if (widthMatch) {
+      token.attrSet('width', widthMatch[1])
+      content = content.replace(widthMatch[0], '').trim() // Remove width from content
+    }
+    if (heightMatch) {
+      token.attrSet('height', heightMatch[1])
+      content = content.replace(heightMatch[0], '').trim() // Remove height from content
+    }
+
+    // Add or update the 'alt' attribute
+    if (content) {
+      const altIndex = token.attrIndex('alt')
+      if (altIndex >= 0 && token.attrs) {
+        const altValue = token.attrs[altIndex][1] // Get the current 'alt' value
+        if (!altValue) {
+          token.attrs[altIndex][1] = content // Set 'alt' if empty
+        }
+      } else {
+        token.attrPush(['alt', content]) // Add 'alt' if not present
+      }
+    }
+
     // Add or update the class
     const existingClass = token.attrGet('class') || ''
     const combinedClass = [existingClass, imageClass].filter(Boolean).join(' ')
     token.attrSet('class', combinedClass)
 
-    // Add to or update the 'alt' attribute
-    if (token.content) {
-      const altIndex = token.attrIndex('alt')
-      if (altIndex >= 0 && token.attrs) {
-        const altValue = token.attrs[altIndex][1] // Get the current 'alt' value
-        if (!altValue) {
-          token.attrs[altIndex][1] = token.content // Set 'alt' if empty
+    token.content = content // Update the content with the modified token
+    if (token.children) {
+      token.children.forEach((child) => {
+        if (child.type === 'text') {
+          child.content = content // Update the content of child images
         }
-      } else {
-        token.attrPush(['alt', token.content]) // Add 'alt' if not present
-      }
+      })
     }
 
     // Call the original render method
