@@ -61,7 +61,6 @@ console.log('Hello, world!');
       containerComponent: 'MarkdownPrerender',
       copyButtonComponent: 'MarkdownCopyButton',
       preClass: 'markdown-code',
-      linePrefixClass: 'line-',
     })
 
     const markdownInput = `
@@ -80,29 +79,6 @@ console.log('Line 3');
     expect(renderedHTML).toContain('<span class="c-line line-highlight">')
   })
 
-  it('handles highlighted lines correctly (string value)', () => {
-    const md = new MarkdownIt()
-    md.use(codeblocksPlugin, {
-      containerComponent: 'MarkdownPrerender',
-      copyButtonComponent: 'MarkdownCopyButton',
-      preClass: 'markdown-code',
-      linePrefixClass: 'line-',
-    })
-
-    const markdownInput = `
-  \`\`\`javascript [highlight="2"]
-  console.log('Line 1');
-  console.log('Line 2');
-  console.log('Line 3');
-  \`\`\`
-      `.trim()
-
-    const renderedHTML = md.render(markdownInput)
-
-    expect(renderedHTML).toContain('<MarkdownPrerender>')
-    expect(renderedHTML).toContain('<span class="c-line line-highlight">')
-  })
-
   it('renders tabbed code blocks with multiple tabs and attributes', () => {
     const md = new MarkdownIt()
     md.use(codeblocksPlugin, {
@@ -110,7 +86,6 @@ console.log('Line 3');
       tabPanelTagName: 'q-tab-panel',
       tabPanelTagClass: 'q-pa-none',
       preClass: 'markdown-code',
-      linePrefixClass: 'c-line',
     })
 
     const markdownInput = `
@@ -195,7 +170,6 @@ console.log('Normal Line');
       tabPanelTagName: 'q-tab-panel',
       tabPanelTagClass: 'q-pa-none',
       preClass: 'markdown-code',
-      linePrefixClass: 'c-line',
     })
 
     const markdownInput = `

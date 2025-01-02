@@ -33,7 +33,6 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
     copyButtonComponent = 'MarkdownCopyButton',
     preClass = 'markdown-code',
     codeClass = '',
-    linePrefixClass = 'line-',
     tabPanelTagName = 'q-tab-panel',
     tabPanelTagClass = 'q-pa-none',
     pageScripts = [
@@ -88,7 +87,7 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
     const list: string[] = []
     const tabMap: TabMap = {}
 
-    let currentTabName: string = ''
+    let currentTabName: string | null = null
 
     for (const line of content.split('\n')) {
       const tabsMatch = line.match(tabsLineRE)
@@ -182,7 +181,7 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
         if (to === void 0) to = from
 
         for (let i = from; i <= to; i++) {
-          acc[i - 1].classList.push(`${linePrefixClass}${type}`)
+          acc[i - 1].classList.push(`line-${type}`)
         }
       }
     }
@@ -200,9 +199,9 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
         const target = acc[lineIndex]
 
         target.prefix.push(
-          target.classList.includes(`${linePrefixClass}add`) === true
+          target.classList.includes(`line-add`) === true
             ? '+'
-            : target.classList.includes(`${linePrefixClass}rem`) === true
+            : target.classList.includes(`line-rem`) === true
               ? '-'
               : ' ',
         )
@@ -223,9 +222,8 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
   function getHighlightedContent(rawContent: string, attrs: { [key: string]: any }) {
     const { lang, maxheight } = attrs
 
-    let content = ''
-    const lineList = parseCodeLine(rawContent.trim(), attrs)
-    content = rawContent.trim()
+    let content = rawContent.trim()
+    const lineList = parseCodeLine(content, attrs)
 
     if (lang !== 'markup') {
       content = content.trim().replace(magicCommentGlobalRE, '')
@@ -237,15 +235,17 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
       .map((line, lineIndex) => {
         const target = lineList[lineIndex]
 
-        return (
-          (target.classList.length !== 0
+        let lineHtml = ''
+        lineHtml +=
+          target.classList.length !== 0
             ? `<span class="c-line ${target.classList.join(' ')}"></span>`
-            : '') +
-          (target.prefix.length !== 0
+            : ''
+        lineHtml +=
+          target.prefix.length !== 0
             ? `<span class="c-lpref">${target.prefix.join(' ')}</span>`
-            : '') +
-          line
-        )
+            : ''
+        lineHtml += line
+        return lineHtml
       })
       .join('\n')
 
@@ -288,7 +288,7 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
 
     const { lang, attrs, title } = match.groups || {}
     const acc: { lang: string; title: string | null; tabs?: any } = {
-      ...parseAttrs(attrs?.trim()?.replace(/["']/g, '') || null),
+      ...parseAttrs(attrs?.trim() || null),
       lang,
       title: title?.trim() || null,
     }

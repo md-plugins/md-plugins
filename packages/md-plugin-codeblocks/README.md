@@ -81,7 +81,6 @@ The `md-plugin-codeblocks` plugin supports the following options:
 | copyButtonComponent | string | 'markdown-copy-button' | Custom copy button component.                                  |
 | preClass            | string | 'markdown-code'        | CSS class for the `<pre>` element.                             |
 | codeClass           | string | ''                     | CSS class for the `<code>` element.                            |
-| linePrefixClass     | string | 'line-'                | Prefix for classes used in line annotations.                   |
 | tabPanelTagName     | string | 'q-tab-panel'          | Tag name for the tab panels.                                   |
 | tabPanelTagClass    | string | 'q-pa-none'            | CSS class for the tab panels.                                  |
 

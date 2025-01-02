@@ -109,12 +109,6 @@ The `codeblocks` plugin provides several options for customization. Here are the
 - **Default**: `'q-pa-none'`
 - **Description**: The class(es) to be used with the tab panels.
 
-#### `linePrefixClass`
-
-- **Type**: `string`
-- **Default**: `'line-'`
-- **Description**: The prefix to be used for magic classes. The 3 magic classes are `add`, `rem`, and `highlight`. Classes in your code are then prefixed with this prefix. The final class names would be: `line-add`, `line-rem`, `line-highlight`.
-
 #### `preClass`
 
 - **Type**: `string`

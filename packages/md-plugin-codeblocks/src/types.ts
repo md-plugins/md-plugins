@@ -36,15 +36,6 @@ export interface CodeblockPluginOptions {
   tabPanelTagClass?: string
 
   /**
-   * The prefix to be used for magic classes.
-   * The 3 magic classes are `add`, `rem`, and `highlight`.
-   * Classes in your code are then prefixed with this prefix.
-   * @default 'line-'
-   * The final class names would be: `line-add`, `line-rem`, `line-highlight`.
-   */
-  linePrefixClass?: string
-
-  /**
    * The class to be used for the pre tag.
    * @default 'markdown-code'
    */
