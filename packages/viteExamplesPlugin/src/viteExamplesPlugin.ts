@@ -100,10 +100,18 @@ function vitePlugin(isProd: boolean): Plugin {
  * that creates the actual Vite plugin. The returned plugin resolves and loads
  * example code based on the production or development environment.
  *
+ * @param isProd - A boolean indicating whether the Vite build is in production mode.
+ *                 This parameter determines whether the plugin will use the `prodLoad` or `devLoad` function for loading example code.
+ *
  * @param path - The path to the directory containing the example files.
  *               This path will be used as the target folder for resolving examples.
+ *               The `targetFolder` variable is set to this value before creating the Vite plugin.
  *
  * @returns A function that creates a Vite plugin.
+ *          The returned function takes a boolean parameter `isProd` and returns a Vite plugin object.
+ *          The plugin object has a `name`, `enforce`, `resolveId`, and `load` property.
+ *          The `resolveId` property resolves module IDs starting with "examples:" and returns a resolved ID.
+ *          The `load` property loads example code based on the production or development environment.
  */
 export function viteExamplesPlugin(isProd: boolean, path: string): Plugin {
   targetFolder = path
