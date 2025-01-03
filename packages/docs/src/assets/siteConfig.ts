@@ -441,7 +441,8 @@ export const ecoSystemLinks = [
 export default {
   lang: 'en-US',
   title: '@md-plugins',
-  description: 'A set of Markdown-It! plugins',
+  description:
+    'MD-Plugins is a collection of Markdown and Vite plugins that make it easy to build markdown user interfaces in Vue and Quasar applications.',
   theme: 'doc',
   version: version,
   copyright: {

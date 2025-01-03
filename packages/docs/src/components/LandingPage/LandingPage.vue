@@ -10,8 +10,7 @@
       <h2 class="hero-subtitle">(@md-plugins)</h2>
       <div class="row justify-center">
         <p class="hero-subtitle2" style="max-width: 660px">
-          MD-Plugins is a collection of Markdown and Vite plugins that make it easy to build
-          markdown user interfaces in Vue and Quasar applications.
+          {{ description }}
         </p>
       </div>
 
@@ -103,6 +102,9 @@
 import { QIcon } from 'quasar'
 import { fabGithub } from '@quasar/extras/fontawesome-v6'
 import { useRouter } from 'vue-router'
+import siteConfig from 'src/assets/siteConfig'
+
+const description = siteConfig.description
 
 const router = useRouter()
 
