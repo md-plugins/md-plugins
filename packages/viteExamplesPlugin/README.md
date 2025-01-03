@@ -30,13 +30,17 @@ pnpm add @md-plugins/vite-examples-plugin
 
 To use the `viteExamplesPlugin`, configure it in your Vite project:
 
-```js
+```typescript
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import { viteExamplesPlugin } from '@md-plugin/vite-examples-plugin'
+import { viteExamplesPlugin, viteManualChunks } from 'vite-examples-plugin'
 
-export default defineConfig({
-  plugins: [vue(), viteExamplesPlugin('/absolute/path/to/examples')],
+export default defineConfig(({ mode }) => {
+  const isProduction = mode === 'production'
+
+  return {
+    plugins: [vue(), viteExamplesPlugin(isProduction, '/absolute/path/to/examples')],
+  }
 })
 ```
 
@@ -74,7 +78,7 @@ export default defineConfig((ctx) => {
 ```js
   build: {
     vitePlugins: [
-      viteExamplesPlugin(ctx.appPaths.srcDir + '/examples'),
+      viteExamplesPlugin(ctx.isProd, ctx.appPaths.srcDir + '/examples'),
       // ...
     ],
   },
@@ -91,9 +95,7 @@ import { viteExamplesPlugin, viteManualChunks } from '@md-plugins/vite-examples-
   build: {
     extendViteConf(viteConf, { isClient }) {
       if (ctx.prod && isClient) {
-        if (!viteConf.build) {
-          viteConf.build = {}
-        }
+        viteConf.build = viteConf.build || {}
         viteConf.build.chunkSizeWarningLimit = 650
         viteConf.build.rollupOptions = {
           output: { manualChunks: viteManualChunks },
