@@ -315,6 +315,10 @@ const mdPluginsMenu = {
         { name: 'Advanced', path: '/md-plugins/title/advanced' },
       ],
     },
+    {
+      name: 'Shared',
+      children: [{ name: 'Overview', path: '/md-plugins/shared/overview' }],
+    },
   ],
 }
 
