@@ -92,9 +92,9 @@ import { linkPlugin } from '@md-plugins/md-plugin-link'
 const md = new MarkdownIt()
 
 md.use(linkPlugin, {
-  linkTag: 'RouterLink',
+  linkTag: 'RouterLink', // or 'router-link'
   linkToKeyword: 'to',
-  pageScript: 'import RouterLink from "vue-router"',
+  pageScript: 'import { RouterLink } from "vue-router"',
 })
 ```
 
