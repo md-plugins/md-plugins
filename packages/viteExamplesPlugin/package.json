@@ -43,6 +43,6 @@
   },
   "dependencies": {
     "tinyglobby": "^0.2.10",
-    "vite": "^6.0.6"
+    "vite": "^6.0.7"
   }
 }
