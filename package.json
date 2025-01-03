@@ -10,7 +10,7 @@
     "clean": "pnpm -r --stream clean",
     "format": "prettier --write .",
     "lint": "eslint . && prettier --check .",
-    "publish": "pnpm -r publish --access public",
+    "publish": "pnpm -r publish --access public --publish-branch dev",
     "test": "vitest run"
   },
   "keywords": [
