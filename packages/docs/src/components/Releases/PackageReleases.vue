@@ -33,11 +33,18 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import { mdiMagnify } from '@quasar/extras/mdi-v6'
 
-const props = defineProps(['releases'])
+interface Release {
+  version: string
+  body: string
+  date: string
+  label: string
+}
+
+const props = defineProps<{ releases: Release[] }>()
 
 const search = ref('')
 const selectedVersion = ref(getLatestVersion())
@@ -47,8 +54,8 @@ watch(
   () => { selectedVersion.value = getLatestVersion() }
 )
 
-function getLatestVersion () {
-  return props.releases[ 0 ].version
+function getLatestVersion (): string {
+  return props.releases && props.releases.length > 0 ? props.releases[0]!.version : 'unknown'
 }
 
 const filteredReleases = computed(() => {
@@ -64,64 +71,94 @@ const filteredReleases = computed(() => {
 })
 
 const currentReleaseBody = computed(() => {
-  const { body } = props.releases.find(r => r.version === selectedVersion.value)
-  return body
+  const release = props.releases.find(r => r.version === selectedVersion.value)
+  return release ? release.body : ''
 })
 </script>
 
-<style lang="sass">
-.release__splitter .q-scrollarea
-  height: 600px
+<style lang="scss">
+.release__splitter .q-scrollarea {
+  height: 600px;
+}
 
-.release__tab-label
-  font-size: $font-size
-  font-weight: 700
-  line-height: ($font-size + 3px)
-.release__tab-date
-  font-size: ($font-size - 3px)
-  line-height: ($font-size + 3px)
+.release__tab-label {
+  font-size: $font-size;
+  font-weight: 700;
+  line-height: ($font-size + 3px);
+}
 
-.release__body
-  h1, h2, h3, h4, h5, h6
-    padding: 0
-    margin: .7em 0 .5em
-    line-height: 1.1em
-    color: $brand-primary
-    &:first-child
-      margin-top: 0
-  h1
-    font-size: ($font-size + 18px)
-  h2
-    font-size: ($font-size + 14px)
-  h3
-    font-size: ($font-size + 10px)
-  h4
-    font-size: ($font-size + 6px)
-  h5
-    font-size: ($font-size + 4px)
-  h6
-    font-size: ($font-size + 2px)
+.release__tab-date {
+  font-size: ($font-size - 3px);
+  line-height: ($font-size + 3px);
+}
 
-  table
-    white-space: normal
-    border: 1px solid $separator-color
-    border-radius: $generic-border-radius
-    width: 100%
-    max-width: 100%
-    border-collapse: separate
-    border-spacing: 0
-    th, td
-      text-align: left
-      padding: 8px 16px
-    th
-      font-weight: 700
-      letter-spacing: $letter-spacing-brand
-      border-bottom: 1px solid $separator-color
-    tr:not(:first-child) td
-      border-top: 1px solid $separator-color
+.release__body {
+  h1, h2, h3, h4, h5, h6 {
+    padding: 0;
+    margin: .7em 0 .5em;
+    line-height: 1.1em;
+    color: $brand-primary;
 
-body.body--dark .release__body
-  table
-    &, th, tr:not(:first-child) td
-      border-color: $separator-dark-color
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+
+  h1 {
+    font-size: ($font-size + 18px);
+  }
+
+  h2 {
+    font-size: ($font-size + 14px);
+  }
+
+  h3 {
+    font-size: ($font-size + 10px);
+  }
+
+  h4 {
+    font-size: ($font-size + 6px);
+  }
+
+  h5 {
+    font-size: ($font-size + 4px);
+  }
+
+  h6 {
+    font-size: ($font-size + 2px);
+  }
+
+  table {
+    white-space: normal;
+    border: 1px solid $separator-color;
+    border-radius: $generic-border-radius;
+    width: 100%;
+    max-width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+
+    th, td {
+      text-align: left;
+      padding: 8px 16px;
+    }
+
+    th {
+      font-weight: 700;
+      letter-spacing: $letter-spacing-brand;
+      border-bottom: 1px solid $separator-color;
+    }
+
+    tr:not(:first-child) td {
+      border-top: 1px solid $separator-color;
+    }
+  }
+}
+
+body.body--dark .release__body {
+  table {
+    &, th, tr:not(:first-child) td {
+      border-color: $separator-dark-color;
+    }
+  }
+}
 </style>

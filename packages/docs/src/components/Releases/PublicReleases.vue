@@ -4,10 +4,12 @@
       <q-icon name="warning" size="24px" color="negative" class="q-mr-sm" />
       <div>Cannot connect to GitHub. Try again later.</div>
     </q-card-section>
+
     <q-card-section v-else-if="loading" class="row no-wrap items-center">
       <q-spinner size="24px" color="primary" class="q-mr-sm" />
       <div>Loading release notes from GitHub</div>
     </q-card-section>
+
     <template v-else>
       <q-separator />
       <q-tab-panels v-model="currentPackage" animated class="packages-container">
@@ -17,11 +19,11 @@
           :name="packageName"
           class="q-pa-none"
         >
-        test: {{ packageName }}
-          <!-- <PackageReleases
+          <PackageReleases
+            v-if="String(latestVersions[packageName]) && packageReleases.length > 0"
             :latest-version="String(latestVersions[packageName])"
             :releases="packageReleases"
-          /> -->
+          />
         </q-tab-panel>
       </q-tab-panels>
     </template>
@@ -32,7 +34,7 @@
 import { ref, onMounted } from 'vue'
 import { date } from 'quasar'
 
-// import PackageReleases from './PackageReleases.vue'
+import PackageReleases from './PackageReleases.vue'
 
 const { extractDate, formatDate } = date
 
@@ -50,7 +52,7 @@ interface PackageReleasesMap {
 
 // Reactive state
 const packages = ref<PackageReleasesMap>({
-  QMarkdown: [],
+  'MD-Plugins': [],
 })
 const loading = ref<boolean>(false)
 const error = ref<boolean>(false)
@@ -61,9 +63,9 @@ function queryReleases(page = 1): void {
   loading.value = true
   error.value = false
 
-  const xhrQuasar = new XMLHttpRequest()
+  const xhr = new XMLHttpRequest()
 
-  xhrQuasar.addEventListener('load', function () {
+  xhr.addEventListener('load', function () {
     const releases = JSON.parse(this.responseText)
 
     if (!releases || releases.length === 0) {
@@ -71,6 +73,7 @@ function queryReleases(page = 1): void {
       return
     }
 
+    error.value = false
     let stopQuery = true
 
     for (const release of releases) {
@@ -109,22 +112,26 @@ function queryReleases(page = 1): void {
       queryReleases(page + 1)
     }
 
-    if (packages.value.QMarkdown) {
-      packages.value.QMarkdown.sort((a, b) => {
+    if (packages.value['MD-Plugins']) {
+      packages.value['MD-Plugins'].sort((a, b) => {
         return parseInt(b.date.replace(/-/g, ''), 10) - parseInt(a.date.replace(/-/g, ''), 10)
       })
     }
+
+    loading.value = false
+    console.log('Packages:', packages.value)
+    console.log('Latest versions:', latestVersions.value)
   })
 
-  xhrQuasar.addEventListener('error', () => {
+  xhr.addEventListener('error', () => {
     error.value = true
   })
 
-  xhrQuasar.open(
+  xhr.open(
     'GET',
     `https://api.github.com/repos/md-plugins/md-plugins/releases?page=${page}&per_page=100`,
   )
-  xhrQuasar.send()
+  xhr.send()
 }
 
 onMounted(() => {
