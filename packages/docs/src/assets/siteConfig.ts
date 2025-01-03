@@ -366,6 +366,17 @@ const guidesMenu = {
   ],
 }
 
+const otherMenu = {
+  name: 'Other',
+  mq: 1000,
+  children: [
+    {
+      name: 'Releases',
+      path: '/other/release-notes',
+    },
+  ],
+}
+
 const processedMdPluginsMenu = {
   name: mdPluginsMenu.name,
   path: slugify(mdPluginsMenu.name),
@@ -387,7 +398,13 @@ const processedGuidesMenu = {
   children: guidesMenu.children.map(processMenuItem),
 }
 
-const secondaryToolbarLinks = [gettingStartedMenu, mdPluginsMenu, vitePluginsMenu, guidesMenu]
+const secondaryToolbarLinks = [
+  gettingStartedMenu,
+  mdPluginsMenu,
+  vitePluginsMenu,
+  guidesMenu,
+  otherMenu,
+]
 
 export const moreLinks = [
   {
