@@ -47,13 +47,21 @@ For detailed instructions on installation and configuration, refer to the **Inst
 Here are some examples of what you can achieve with Markdown Plugins:
 
 - **Custom Syntax**: Add custom syntax for specific use cases.
-- **Interactive Components**: Embed interactive charts and diagrams.
-- **Custom Styling**: Apply custom styles to your content.
+- **Enhanced Components**: Embed interactive and enhanced components.
+- **Custom Styling**: Apply custom styles to your content for a polished look.
+- **Frontmatter Support**: Extract and process frontmatter content from your Markdown files.
+- **Header Management**: Extract and process headers for generating ToCs or managing headers.
+- **Inline Code Styling**: Add custom classes to inline code blocks for styling.
+- **Link Customization**: Convert Markdown links into Vue components for SPA-friendly routing.
+- **Table Enhancements**: Add custom classes and attributes to Markdown tables.
+- **Title Extraction**: Extract the first header in Markdown as the page title.
+- **Script Imports**: Extract and process `<script import>` blocks from Markdown.
+- **Code Block Enhancements**: Enhance code block rendering with syntax highlighting, tabs, and more.
 
-Check out the [Examples](../guides/examples.md) section for more detailed examples and use cases.
+<!-- Check out the [Examples](../guides/examples) section for more detailed examples and use cases. -->
 
 ## Support
 
-If you have any questions or need assistance, please refer to the [FAQ](../faq/general.md) or reach out to our support team.
+If you have any questions or need assistance, please refer to the [FAQ](../guides/faq) or reach out to our support team.
 
 Happy coding!

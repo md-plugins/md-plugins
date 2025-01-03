@@ -134,21 +134,12 @@ const socialLinks = {
       path: 'https://github.com/md-plugins/md-plugins/tree/dev',
       external: true,
     },
-    // { name: 'Discord', icon: mdiDiscord, path: 'https://chat.quasar.dev', external: true },
-    // { name: 'Forum', icon: mdiForum, path: 'https://forum.quasar.dev', external: true },
-    // {
-    //   name: 'X (Twitter)',
-    //   icon: fabXTwitter,
-    //   path: 'https://twitter.com/jgalbraith64',
-    //   external: true,
-    // },
     {
       name: 'X (Twitter)',
       icon: fabXTwitter,
       path: 'https://twitter.com/md_plugins',
       external: true,
     },
-    // { name: 'Facebook', icon: fabFacebook, path: 'https://facebook.quasar.dev', external: true },
   ],
 }
 
@@ -239,34 +230,13 @@ const versionLinks = [
 
 const gettingStartedMenu = {
   name: 'Getting Started',
-  mq: 510,
+  mq: 430,
   children: [{ name: 'Introduction', path: '/getting-started/introduction' }],
-}
-
-const vitePluginsMenu = {
-  name: 'Vite Plugins',
-  mq: 510,
-  children: [
-    {
-      name: 'viteMdPlugin',
-      children: [
-        { name: 'Overview', path: '/vite-plugins/vitemdplugin/overview' },
-        { name: 'Advanced', path: '/vite-plugins/vitemdplugin/advanced' },
-      ],
-    },
-    {
-      name: 'viteExamplesPlugin',
-      children: [
-        { name: 'Overview', path: '/vite-plugins/viteexamplesplugin/overview' },
-        { name: 'Advanced', path: '/vite-plugins/viteexamplesplugin/advanced' },
-      ],
-    },
-  ],
 }
 
 const mdPluginsMenu = {
   name: 'MD Plugins',
-  mq: 510,
+  mq: 600,
   children: [
     {
       name: 'Blockquote',
@@ -348,7 +318,55 @@ const mdPluginsMenu = {
   ],
 }
 
-const processedPluginsMenu = {
+const vitePluginsMenu = {
+  name: 'Vite Plugins',
+  mq: 750,
+  children: [
+    {
+      name: 'viteMdPlugin',
+      children: [
+        { name: 'Overview', path: '/vite-plugins/vitemdplugin/overview' },
+        { name: 'Advanced', path: '/vite-plugins/vitemdplugin/advanced' },
+      ],
+    },
+    {
+      name: 'viteExamplesPlugin',
+      children: [
+        { name: 'Overview', path: '/vite-plugins/viteexamplesplugin/overview' },
+        { name: 'Advanced', path: '/vite-plugins/viteexamplesplugin/advanced' },
+      ],
+    },
+  ],
+}
+
+const guidesMenu = {
+  name: 'Guides',
+  mq: 860,
+  children: [
+    {
+      name: 'FAQ',
+      path: '/guides/faq',
+    },
+    {
+      name: 'Contributing',
+      path: '/guides/contributing',
+    },
+    // {
+    //   name: 'Style Guide',
+    //   path: '/guides/style-guide',
+    // },
+    // {
+    //   name: 'Release Notes',
+    //   path: '/start/release-notes',
+    // },
+    // {
+    //   name: 'Security',
+    //   path: '/security/report-a-vulnerability',
+    // },
+  ],
+}
+
+const processedMdPluginsMenu = {
   name: mdPluginsMenu.name,
   path: slugify(mdPluginsMenu.name),
   expanded: false,
@@ -362,148 +380,14 @@ const processedVitePluginsMenu = {
   children: vitePluginsMenu.children.map(processMenuItem),
 }
 
-// const docsMenu = {
-//   name: 'Docs',
-//   mq: 750,
-//   children: [
-//     { name: 'Guide', path: '/docs/guide' },
-//     { name: 'Tutorial', path: '/docs/tutorial' },
-//     { name: 'Examples', path: '/docs/examples' },
-//   ],
-// }
+const processedGuidesMenu = {
+  name: guidesMenu.name,
+  path: slugify(guidesMenu.name),
+  expanded: false,
+  children: guidesMenu.children.map(processMenuItem),
+}
 
-// const contributing = {
-//   name: 'Contributing',
-//   mq: 510,
-//   children: [
-//     { name: 'Overview', path: '/contributing/overview' },
-//     { name: 'Call to action', path: '/contributing/call-to-action' },
-//     { name: 'Bugs and feature requests', path: '/contributing/bugs-and-feature-requests' },
-//     { name: 'Documentation', path: '/contributing/documentation' },
-//     { name: 'Components', path: '/contributing/components' },
-//     { name: 'Sponsor', path: '/contributing/sponsor' },
-//   ],
-// }
-
-// const latestNews = {
-//   name: 'Latest News',
-//   mq: 1060,
-//   children: [
-//     { name: 'Changelog', path: '/latest-news/changelog' },
-//     { name: 'Roadmap', path: '/latest-news/roadmap' },
-//   ],
-// }
-
-// const help = {
-//   name: 'Help',
-//   mq: 510,
-//   children: [
-//     {
-//       name: 'GitHub',
-//       external: true,
-//       path: 'https://github.com/quasarframework/quasar-ui-qmarkdown',
-//     },
-//     { name: 'X (Twitter)', external: true, path: 'https://twitter.com/jgalbraith64' },
-//     { name: 'FAQ', path: '/help/faq' },
-//     { name: 'Contact us', path: '/help/contact-us' },
-//   ],
-// }
-
-// const gettingStarted = {
-//   name: 'Getting Started',
-//   mq: 510,
-//   children: [
-//     { name: 'Quick Start', path: '/start/quick-start' },
-//     {
-//       name: 'Installation',
-//       children: [
-//         { name: 'Pick Quasar Flavour', path: '/start/pick-quasar-flavour' },
-//         {
-//           separator: true,
-//         },
-//         { name: 'Quasar CLI', path: '/start/quasar-cli' },
-//         { name: 'Vite Plugin', path: '/start/vite-plugin' },
-//         { name: 'UMD / Standalone', path: '/start/umd' },
-//         { name: 'Vue CLI Plugin', path: '/start/vue-cli-plugin' },
-//       ],
-//     },
-//     { name: 'How to use Vue', path: '/start/how-to-use-vue' },
-//     { name: 'Playground', path: '/start/playground' },
-//     { name: 'UI Upgrade Guide', path: '/start/upgrade-guide' },
-//     { name: 'VS Code Configuration', path: '/start/vs-code-configuration' },
-//   ],
-// }
-
-// const tools = {
-//   name: 'Tools',
-//   mq: 600,
-//   children: [
-//     { name: 'Awesome List', icon: mdiFlare, path: 'https://awesome.quasar.dev', external: true },
-//     { name: 'Integrations', icon: mdiMathIntegralBox, path: '/integrations' },
-//     { name: 'App Extensions', icon: mdiPuzzle, path: '/app-extensions/discover' },
-//     {
-//       header: 'Helpers',
-//     },
-//     { name: 'Icon Genie CLI', icon: mdiStarCircle, path: '/icongenie/introduction' },
-//     { name: 'Theme Builder', icon: mdiPaletteSwatch, path: '/style/theme-builder' },
-//     { name: 'Dark Mode', icon: mdiThemeLightDark, path: '/style/dark-mode' },
-//     { name: 'Layout Builder', icon: mdiViewDashboard, path: '/layout-builder', external: true },
-//     { name: 'Layout Gallery', icon: mdiShoppingMusic, path: '/layout/gallery' },
-//     { name: 'Flex Playground', icon: mdiFlask, path: '/layout/grid/flex-playground' },
-//     {
-//       header: 'Playground',
-//     },
-//     { name: 'Codepen', icon: mdiCodepen, path: 'https://codepen.quasar.dev', external: true },
-//     { name: 'jsFiddle', icon: mdiJsfiddle, path: 'https://jsfiddle.quasar.dev', external: true },
-//     {
-//       name: 'Stackblitz (Vite)',
-//       icon: fasBolt,
-//       path: 'https://stackblitz.quasar.dev',
-//       external: true,
-//     },
-//     {
-//       name: 'Stackblitz (Webpack)',
-//       icon: fasBolt,
-//       path: 'https://stackblitz-webpack.quasar.dev',
-//       external: true,
-//     },
-//     { name: 'Codesandbox', icon: fasCubes, path: 'https://codesandbox.quasar.dev', external: true },
-//   ],
-// }
-
-// const primaryToolbarLinks = [
-//   { name: 'Docs', mq: 750, path: '/docs' },
-//   { name: 'Components', mq: 860, path: '/components' },
-//   { name: 'Sponsors', mq: 1190, path: '/sponsors-and-backers' },
-//   { name: 'Team', mq: 1310, path: '/meet-the-team' },
-//   // { name: 'Blog', mq: 1400, path: 'https://blog.quasar.dev', external: true },
-// ]
-
-const secondaryToolbarLinks = [
-  gettingStartedMenu,
-  mdPluginsMenu,
-  vitePluginsMenu,
-  // docsMenu,
-  // contributing,
-  // latestNews,
-  // help,
-  // gettingStarted,
-  // tools,
-  // {
-  //   name: 'Announcements',
-  //   mq: 910,
-  //   path: 'https://github.com/quasarframework/quasar/discussions/categories/announcements',
-  //   external: true,
-  // },
-  // { name: 'Video Tutorials', mq: 1000, path: '/video-tutorials' },
-  // { name: 'Roadmap', mq: 1130, path: 'https://roadmap.quasar.dev', external: true },
-  // {
-  //   name: 'Brand resources',
-  //   mq: 1400,
-  //   path: 'https://github.com/quasarframework/quasar-art',
-  //   external: true,
-  // },
-]
+const secondaryToolbarLinks = [gettingStartedMenu, mdPluginsMenu, vitePluginsMenu, guidesMenu]
 
 export const moreLinks = [
   {
@@ -615,103 +499,8 @@ export default {
         path: slugify(item.name),
       })),
     },
-    processedPluginsMenu,
+    processedMdPluginsMenu,
     processedVitePluginsMenu,
-    // {
-    //   name: docsMenu.name,
-    //   path: slugify(docsMenu.name),
-    //   expanded: false,
-    //   children: docsMenu.children.map((item) => ({ name: item.name, path: slugify(item.name) })),
-    // },
-    // {
-    //   name: 'Developing',
-    //   path: 'developing',
-    //   expanded: false,
-    //   children: [
-    //     {
-    //       name: 'Using QMarkdown',
-    //       path: 'using-qmarkdown',
-    //     },
-    //   ],
-    // },
-    // {
-    //   name: 'Contributing',
-    //   path: 'contributing',
-    //   expanded: false,
-    //   children: [
-    //     {
-    //       name: 'Overview',
-    //       path: 'overview',
-    //     },
-    //     {
-    //       name: 'Call to action',
-    //       path: 'call-to-action',
-    //     },
-    //     {
-    //       name: 'Bugs and feature requests',
-    //       path: 'bugs-and-feature-requests',
-    //     },
-    //     {
-    //       name: 'Documentation',
-    //       path: 'documentation',
-    //     },
-    //     {
-    //       name: 'Components',
-    //       path: 'components',
-    //     },
-    //     {
-    //       name: 'Sponsor',
-    //       path: 'sponsor',
-    //       rightIcon: mdiCharity,
-    //       rightIconColor: 'red-8',
-    //     },
-    //   ],
-    // },
-    // {
-    //   name: 'Latest news',
-    //   path: 'latest-news',
-    //   expanded: false,
-    //   children: [
-    //     {
-    //       name: 'Changelog',
-    //       path: 'changelog',
-    //     },
-    //     {
-    //       name: 'Roadmap',
-    //       path: 'roadmap',
-    //     },
-    //   ],
-    // },
-    // {
-    //   name: 'Help',
-    //   path: 'help',
-    //   expanded: false,
-    //   children: [
-    //     {
-    //       name: 'GitHub',
-    //       external: true,
-    //       path: 'https://github.com/quasarframework/quasar-ui-qmarkdown',
-    //       rightIcon: biGithub,
-    //     },
-    //     {
-    //       name: 'Twitter',
-    //       external: true,
-    //       path: 'https://twitter.com/jgalbraith64',
-    //       rightIcon: biTwitter,
-    //     },
-    //     {
-    //       name: 'FAQ',
-    //       path: 'faq',
-    //     },
-    //     {
-    //       name: 'Contact us',
-    //       path: 'contact-us',
-    //     },
-    //   ],
-    // },
-    // {
-    //   name: 'Ecosystem',
-    //   path: 'ecosystem',
-    // },
+    processedGuidesMenu,
   ],
 }
