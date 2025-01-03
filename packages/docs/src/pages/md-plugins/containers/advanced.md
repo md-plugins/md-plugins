@@ -7,6 +7,92 @@ desc: Containers plugin advanced topics for Markdown.
 
 The `containers` plugin allows you to add custom containers for callouts, warnings, and more in your Markdown content. This section will cover the CSS used by the plugin, how you can customize the output with your own CSS, and the available options for configuring the plugin.
 
+### Type Information
+
+```ts
+import MarkdownIt from 'markdown-it'
+import Token from 'markdown-it/lib/token.mjs'
+import container from 'markdown-it-container'
+
+type Container = typeof container
+
+type CreateContainerFn = (
+  container: Container,
+  type: string,
+  defaultTitle: string,
+) => [Container, string, any?]
+
+interface ContainerDetails {
+  type: string
+  defaultTitle: string
+}
+
+interface ContainerOptions {
+  render(tokens: Token[], idx: number): string
+}
+
+/**
+ * Adds container support to a MarkdownIt instance.
+ *
+ * This function applies custom container plugins to the MarkdownIt parser.
+ *
+ * @param md - The MarkdownIt instance to which the container plugins will be added.
+ * @param containers - An array of ContainerDetails objects, each specifying a container type and its default title.
+ * @param createContainer - A function that creates and returns the container plugin configuration.
+ *
+ * @example
+ * const containers: ContainerDetails[] = [
+ *   { type: 'warning', defaultTitle: 'Warning' },
+ *   { type: 'tip', defaultTitle: 'Tip' },
+ *   { type: 'details', defaultTitle: 'Details' },
+ * ];
+ *
+ * function createContainer(
+ *   container: Container,
+ *   containerType: string,
+ *   defaultTitle: string
+ * ): [Container, string, ContainerOptions] {
+ *   const containerTypeLen = containerType.length;
+ *
+ *   return [
+ *     container,
+ *     containerType,
+ *     {
+ *       render(tokens: Token[], idx: number): string {
+ *         const token = tokens[idx];
+ *         const title =
+ *           token.info.trim().slice(containerTypeLen).trim() || defaultTitle;
+ *
+ *         if (containerType === 'details') {
+ *           return token.nesting === 1
+ *             ? `<details class="markdown-note markdown-note--${containerType}"><summary class="markdown-note__title">${title}</summary>\n`
+ *             : '</details>\n';
+ *         }
+ *
+ *         return token.nesting === 1
+ *           ? `<div class="markdown-note markdown-note--${containerType}"><p class="markdown-note__title">${title}</p>\n`
+ *           : '</div>\n';
+ *       },
+ *     },
+ *   ];
+ * }
+ *
+ */
+declare function containersPlugin(
+  md: MarkdownIt,
+  containers: ContainerDetails[],
+  createContainer: CreateContainerFn,
+): void
+
+export {
+  type Container,
+  type ContainerDetails,
+  type ContainerOptions,
+  type CreateContainerFn,
+  containersPlugin,
+}
+```
+
 ### Default CSS
 
 By default, the `containers` plugin applies specific CSS classes to different types of containers. You can add these classes in your CSS to customize the appearance of containers.

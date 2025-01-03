@@ -7,6 +7,33 @@ desc: Imports plugin advanced topics for Markdown.
 
 The `imports` plugin allows you to extract and store script imports from your Markdown content. This section will cover how the plugin works, the available options for customization, and examples of how to use it effectively.
 
+### Type Information
+
+```ts
+import { PluginSimple } from 'markdown-it'
+
+/**
+ * A Markdown-It plugin that extracts and stores script imports from the Markdown content.
+ *
+ * This plugin replaces script import blocks (delimited by `<script import>` and `</script>`) with an empty string,
+ * and adds the extracted script content to the `env.pageScripts` set in the Markdown-It environment.
+ *
+ * @param md - The Markdown-It instance to extend.
+ */
+declare const importsPlugin: PluginSimple
+
+declare module '@md-plugins/shared' {
+  interface MarkdownItEnv {
+    /**
+     * An array of page script (import statements) to be included.
+     */
+    pageScripts?: Set<string>
+  }
+}
+
+export { importsPlugin }
+```
+
 ### How It Works
 
 The `imports` plugin processes script import blocks in your Markdown content, extracting the script content and storing it in the `env.pageScripts` set. This allows you to manage and use script imports in your Markdown content.

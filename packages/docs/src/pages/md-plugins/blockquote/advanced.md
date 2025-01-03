@@ -7,6 +7,25 @@ desc: Blockquote plugin advanced topics for Markdown.
 
 The `blockquote` plugin allows you to add customizable CSS classes to blockquotes in your Markdown content. This section will cover the CSS used by the plugin and how you can customize the output with your own CSS.
 
+### Type Information
+
+```ts
+import { PluginWithOptions } from 'markdown-it'
+
+interface BlockquotePluginOptions {
+  /**
+   * The class for the blockquote
+   *
+   * @default 'markdown-blockquote'
+   */
+  blockquoteClass?: string
+}
+
+declare const blockquotePlugin: PluginWithOptions<BlockquotePluginOptions>
+
+export { type BlockquotePluginOptions, blockquotePlugin }
+```
+
 ### Default CSS
 
 By default, the `blockquote` plugin applies the `.markdown-blockquote` CSS class to blockquotes. You can add this class in your CSS to customize the appearance of blockquotes.

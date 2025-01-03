@@ -7,6 +7,66 @@ desc: Frontmatter plugin advanced topics for Markdown.
 
 The `frontmatter` plugin allows you to extract and process frontmatter content from your Markdown files. This section will cover how the plugin works, the available options for customization, and examples of how to use it effectively.
 
+### Type Information
+
+```ts
+import { PluginWithOptions } from 'markdown-it'
+import matter from 'gray-matter'
+
+type GrayMatterOptions = matter.GrayMatterOption<string, GrayMatterOptions>
+
+/**
+ * Options of md-plugin-frontmatter
+ */
+interface FrontmatterPluginOptions {
+  /**
+   * Options of gray-matter
+   *
+   * @see https://github.com/jonschlinkert/gray-matter#options
+   */
+  grayMatterOptions?: GrayMatterOptions
+  /**
+   * Render the excerpt or not
+   *
+   * @default false
+   */
+  renderExcerpt?: boolean
+}
+
+declare module '@md-plugins/shared' {
+  interface MarkdownItEnv {
+    /**
+     * The raw Markdown content without frontmatter
+     */
+    content?: string
+    /**
+     * Whether render excerpt or not
+     */
+    renderExcerpt?: boolean
+    /**
+     * The excerpt that extracted by `md-plugin-frontmatter`
+     *
+     * - Would be the rendered HTML when `renderExcerpt` is enabled
+     * - Would be the raw Markdown when `renderExcerpt` is disabled
+     */
+    excerpt?: string
+    /**
+     * The frontmatter that extracted by `md-plugin-frontmatter`
+     */
+    frontmatter?: Record<string, unknown>
+  }
+}
+
+/**
+ * Get markdown frontmatter and excerpt
+ *
+ * Extract them into env
+ */
+declare const frontmatterPlugin: PluginWithOptions<FrontmatterPluginOptions>
+
+export { type FrontmatterPluginOptions, frontmatterPlugin }
+```
+
 ### How It Works
 
 Frontmatter is a block of metadata at the top of a Markdown file, enclosed by triple dashes (`---`). The `frontmatter` plugin parses this block and makes the metadata available for use in your Markdown content.

@@ -7,6 +7,55 @@ desc: Table plugin advanced topics for Markdown.
 
 The `table` plugin allows you to customize the rendering of tables in your Markdown content by adding custom classes and attributes. This section will cover how the plugin works, the available options for customization, and examples of how to use it effectively.
 
+### Type Information
+
+```ts
+import { PluginWithOptions } from 'markdown-it'
+
+interface TablePluginOptions {
+  /**
+   * The class for the table
+   *
+   * @default 'markdown-table'
+   */
+  tableClass?: string
+  /**
+   * The class for the table header
+   *
+   * @default 'text-left'
+   */
+  tableHeaderClass?: string
+  /**
+   * The class for the table row
+   *
+   * @default ''
+   */
+  tableRowClass?: string
+  /**
+   * The class for the table cell
+   *
+   * @default ''
+   */
+  tableCellClass?: string
+  /**
+   * The token for the table
+   *
+   * @default 'q-markup-table' (replaces 'table')
+   */
+  tableToken?: string
+  /**
+   * The attributes for the table
+   *
+   * @default [ [':wrap-cells', 'true'],[':flat', 'true'],[':bordered', 'true'] ]
+   */
+  tableAttributes?: [string, any][]
+}
+
+declare const tablePlugin: PluginWithOptions<TablePluginOptions>
+
+export { type TablePluginOptions, tablePlugin }
+```
+
 ### How It Works
 
 The `table` plugin processes table tokens in your Markdown content, adding custom classes and attributes to them. This helps improve the styling and functionality of tables in your Markdown content.

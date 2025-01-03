@@ -7,6 +7,28 @@ desc: Inline code plugin advanced topics for Markdown.
 
 The `inlinecode` plugin allows you to add custom classes to inline code elements in your Markdown content. This section will cover how the plugin works, the available options for customization, and examples of how to use it effectively.
 
+### Type Information
+
+```ts
+import { PluginWithOptions } from 'markdown-it'
+
+interface InlineCodePluginOptions {
+  /**
+   * The CSS class to apply to inline code blocks
+   *
+   * @default 'markdown-token'
+   */
+  inlineCodeClass?: string
+}
+
+/**
+ * Adds a class to inline code.
+ */
+declare const inlinecodePlugin: PluginWithOptions<InlineCodePluginOptions>
+
+export { type InlineCodePluginOptions, inlinecodePlugin }
+```
+
 ### How It Works
 
 The `inlinecode` plugin processes inline code tokens in your Markdown content, adding custom classes to them. This helps improve the styling and accessibility of inline code elements in your Markdown content.

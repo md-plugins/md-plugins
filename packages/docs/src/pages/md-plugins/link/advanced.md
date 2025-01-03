@@ -7,6 +7,45 @@ desc: Link plugin advanced topics for Markdown.
 
 The `link` plugin allows you to customize the rendering of links in your Markdown content by replacing the default `<a>` tags with custom components. This section will cover how the plugin works, the available options for customization, and examples of how to use it effectively.
 
+### Type Information
+
+```ts
+import { PluginWithOptions } from 'markdown-it'
+
+interface LinkPluginOptions {
+  /**
+   * The tag for the internal link
+   *
+   * @default 'MarkdownLink'
+   */
+  linkTag?: string
+  /**
+   * The "to" keyword" for the internal link
+   *
+   * @default 'to'
+   */
+  linkToKeyword?: string
+  /**
+   * add import statements to the page.
+   *
+   */
+  pageScript?: string
+}
+
+declare module '@md-plugins/shared' {
+  interface MarkdownItEnv {
+    /**
+     * An array of page script (import statements) to be included for tags.
+     */
+    pageScripts?: Set<string>
+  }
+}
+
+declare const linkPlugin: PluginWithOptions<LinkPluginOptions>
+
+export { type LinkPluginOptions, linkPlugin }
+```
+
 ### How It Works
 
 The `link` plugin processes link tokens in your Markdown content, replacing the default `<a>` tags with custom components. This helps improve the styling and functionality of links in your Markdown content.

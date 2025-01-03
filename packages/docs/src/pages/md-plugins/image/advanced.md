@@ -7,6 +7,32 @@ desc: Image plugin advanced topics for Markdown.
 
 The `image` plugin allows you to add custom classes to images and ensure that the `alt` attribute is properly set in your Markdown content. It also allows you to provide a `width` and a `height`. This section will cover how the plugin works, the available options for customization, and examples of how to use it effectively.
 
+### Type Information
+
+```ts
+import MarkdownIt from 'markdown-it'
+
+declare const imagePlugin: (
+  md: MarkdownIt,
+  {
+    imageClass,
+  }?: {
+    imageClass?: string | undefined
+  },
+) => void
+
+interface ImagePluginOptions {
+  /**
+   * The class for the image
+   *
+   * @default 'markdown-image'
+   */
+  imageClass?: string
+}
+
+export { type ImagePluginOptions, imagePlugin }
+```
+
 ### How It Works
 
 The `image` plugin processes image tokens in your Markdown content, adding custom classes and ensuring that the `alt` attribute is properly set as well as setting the `width` and `height` attributes if set inside the `alt text` area of the image markdown. This helps improve the accessibility and styling of images in your Markdown content.

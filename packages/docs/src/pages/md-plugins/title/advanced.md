@@ -7,6 +7,31 @@ desc: Title plugin advanced topics for Markdown.
 
 The `title` plugin allows you to extract the title from your Markdown content and store it in the `env` object. This section will cover how the plugin works, the available options for customization, and examples of how to use it effectively.
 
+### Type Information
+
+```ts
+import { PluginSimple } from 'markdown-it'
+
+/**
+ * Get markdown page title info
+ *
+ * Extract it into env
+ */
+declare const titlePlugin: PluginSimple
+
+declare module '@md-plugins/shared' {
+  interface MarkdownItEnv {
+    /**
+     * The title that extracted by `md-plugin-title`
+     */
+    title?: string
+    heading?: boolean
+  }
+}
+
+export { titlePlugin }
+```
+
 ### How It Works
 
 The `title` plugin processes the tokens in your Markdown content, extracting the first `h1` tag and storing its content as the title in the `env` object. This helps manage the title of your Markdown content programmatically.
