@@ -110,8 +110,7 @@ console.log('Line 3')
 ````markup
 ```js
 console.log('Line 1')
-console.log('Line 2')
-;[[highlight]] // This line will be highlighted
+console.log('Line 2') [[highlight]] // This line will be highlighted
 console.log('Line 3')
 ```
 ````
