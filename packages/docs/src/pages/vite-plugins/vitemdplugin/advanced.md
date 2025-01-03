@@ -5,6 +5,72 @@ desc: ViteMdPlugin advanced topics for Markdown.
 
 The `viteMdPlugin` is a powerful tool for integrating Markdown processing into your Vite project. This section will cover how the plugin works, the available options for customization, and examples of how to use it effectively with both Vite and Quasar with Vite.
 
+### Type Information
+
+```ts
+import { Plugin } from 'vite'
+
+interface MenuItem {
+  name: string
+  path?: string
+  icon?: string
+  iconColor?: string
+  rightIcon?: string
+  rightIconColor?: string
+  badge?: string
+  children?: MenuItem[] | undefined
+  external?: boolean
+  expanded?: boolean
+}
+
+interface MenuNode {
+  name: string
+  path?: string
+  external?: boolean
+  children?: MenuNode[]
+}
+
+interface FlatMenuEntry {
+  name: string
+  category: string | null
+  path: string
+  prev?: FlatMenuEntry
+  next?: FlatMenuEntry
+}
+
+type FlatMenu = Record<string, FlatMenuEntry>
+
+interface NavItem extends FlatMenuEntry {
+  classes: string
+}
+
+interface RelatedItem {
+  name: string
+  category: string
+  path: string
+}
+
+/**
+ * Creates a Vite plugin for processing Markdown files.
+ * This plugin transforms Markdown content into Vue Single File Components (SFCs).
+ *
+ * @param path - The base path prefix to be used for routing or file resolution.
+ * @param menu - An array of MenuItem objects representing the navigation menu structure.
+ * @returns A Vite plugin object with pre-configured settings for Markdown processing.
+ */
+declare function viteMdPlugin(path: string, menu: MenuItem[]): Plugin
+
+export {
+  type FlatMenu,
+  type FlatMenuEntry,
+  type MenuItem,
+  type MenuNode,
+  type NavItem,
+  type RelatedItem,
+  viteMdPlugin,
+}
+```
+
 ### How It Works
 
 The `viteMdPlugin` processes Markdown files in your Vite project, transforming them into Vue Single File Components (SFCs). It supports various plugins to enhance the Markdown content, such as handling frontmatter, headers, containers, code blocks, and more.
