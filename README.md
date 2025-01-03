@@ -59,20 +59,20 @@ pnpm install
 
 ## Development
 
-### Running Tests
-
-Each package includes unit tests. To run all tests across the monorepo:
-
-```bash
-pnpm test
-```
-
 ### Building Packages
 
 Build all packages in the monorepo:
 
 ```bash
 pnpm build
+```
+
+### Running Tests
+
+Each package includes unit tests. To run all tests across the monorepo:
+
+```bash
+pnpm test
 ```
 
 ### Linting
@@ -89,4 +89,4 @@ We welcome contributions! Please open an issue or submit a pull request with you
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE.md) file for details.
