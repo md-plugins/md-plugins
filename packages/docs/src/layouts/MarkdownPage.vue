@@ -4,11 +4,7 @@
       {{ props.overline }}
     </div>
 
-    <div
-      v-if="!isFullscreen && props.heading"
-      class="markdown-heading markdown-h1"
-      id="introduction"
-    >
+    <div v-if="!isFullscreen && props.title" class="markdown-heading markdown-h1" id="introduction">
       <div class="row items-center q-gutter-sm">
         <div>{{ props.title }}</div>
         <q-badge v-if="props.badge" :label="props.badge" />
