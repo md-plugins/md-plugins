@@ -11,7 +11,6 @@ const { sidebar } = siteConfig
 import { viteMdPlugin, type MenuItem } from '@md-plugins/vite-md-plugin'
 import { viteExamplesPlugin, viteManualChunks } from '@md-plugins/vite-examples-plugin'
 
-/// @ts-expect-error fix later
 export default defineConfig((ctx) => {
   // console.log('ctx', ctx)
 
