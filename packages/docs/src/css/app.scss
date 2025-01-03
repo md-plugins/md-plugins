@@ -474,11 +474,12 @@ body.q-scroll--lock .q-page > .q-scroll--anchor {
 
 .markdown-heading .q-badge,
 .header-badge {
-  color: $light-bg;
+  color: $brand-primary;
   background: scale-color($light-bg, $lightness: 15%);
   vertical-align: super;
   letter-spacing: $letter-spacing-brand;
   padding: 4px 8px;
+  border: $brand-primary 1px solid;
 }
 
 $additional-colors: (
@@ -539,8 +540,8 @@ body.body--dark {
 
   .markdown-heading .q-badge,
   .header-badge {
-    color: $dark-bg;
-    background: scale-color($dark-bg, $lightness: 15%);
+    color: $brand-primary;
+    background: $dark-codeblock-bg;
   }
 
   .markdown-img {
