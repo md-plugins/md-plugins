@@ -39,7 +39,6 @@
   },
   "dependencies": {
     "@md-plugins/shared": "workspace:*",
-    "@types/markdown-it": "^14.1.2",
     "markdown-it": "^14.1.0",
     "markdown-it-container": "^4.0.0"
   },
@@ -47,6 +46,11 @@
     "access": "public"
   },
   "devDependencies": {
-    "@types/markdown-it-container": "^2.0.10"
+    "@types/markdown-it-container": "^2.0.10",
+    "@types/markdown-it": "^14.1.2"
+  },
+  "peerDependencies": {
+    "markdown-it": "^14.1.0",
+    "markdown-it-container": "^4.0.0"
   }
 }

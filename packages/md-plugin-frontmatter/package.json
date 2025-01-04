@@ -39,7 +39,13 @@
   },
   "dependencies": {
     "@md-plugins/shared": "workspace:*",
-    "@types/markdown-it": "^14.1.2",
+    "gray-matter": "^4.0.3",
+    "markdown-it": "^14.1.0"
+  },
+  "devDependencies": {
+    "@types/markdown-it": "^14.1.2"
+  },
+  "peerDependencies": {
     "gray-matter": "^4.0.3",
     "markdown-it": "^14.1.0"
   },
