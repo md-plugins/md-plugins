@@ -13,7 +13,7 @@ const routeMap = {
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    component: () => import('layouts/MarkdownLayout.vue'),
+    component: () => import('layouts/md/MarkdownLayout.vue'),
     children: [
       // Include the Landing Page route first
       ...Object.entries(mdPageList)
