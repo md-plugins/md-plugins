@@ -34,7 +34,7 @@ export function mdParse(code: string, id: string, prefix: string, menu: MenuItem
   } // Environment for storing metadata
 
   // pre-processing
-  env.pageScripts!.add("import MarkdownPage from 'src/layouts/MarkdownPage.vue'")
+  env.pageScripts!.add("import MarkdownPage from 'src/layouts/md/MarkdownPage.vue'")
   if (markdownApiRE.test(code) === true) {
     env.pageScripts!.add("import MarkdownApi from 'components/md/MarkdownApi.vue'")
   }
