@@ -1,6 +1,6 @@
 {
   "name": "md-plugins",
-  "version": "0.1.0-alpha.5",
+  "version": "0.1.0-alpha.6",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -20,6 +20,7 @@
     "quasarframework",
     "vue"
   ],
+  "access": "private",
   "author": "",
   "license": "MIT",
   "packageManager": "pnpm@9.15.2",

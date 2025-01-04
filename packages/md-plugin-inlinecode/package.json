@@ -1,6 +1,6 @@
 {
   "name": "@md-plugins/md-plugin-inlinecode",
-  "version": "0.1.0-alpha.5",
+  "version": "0.1.0-alpha.6",
   "description": "A markdown-it plugin for handling inline code.",
   "keywords": [
     "markdown-it",
