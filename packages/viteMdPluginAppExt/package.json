@@ -1,0 +1,31 @@
+{
+  "name": "@md-plugins/quasar-app-extension-vite-md-plugin",
+  "version": "0.1.0-alpha.5",
+  "description": "A Quasar app-ext for @md-plugins/viteMdPlugin",
+  "author": "Jeff <galbraith64@gmail.com>",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"No test specified\" && exit 0"
+  },
+  "engines": {
+    "node": ">= 20",
+    "npm": ">= 5.6.0",
+    "yarn": ">= 1.6.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "quasar",
+    "app",
+    "app extension",
+    "extension",
+    "markdown",
+    "md-plugins",
+    "viteMdPlugin"
+  ],
+  "dependencies": {
+    "@md-plugins/vite-md-plugin": "workspace:*"
+  }
+}
