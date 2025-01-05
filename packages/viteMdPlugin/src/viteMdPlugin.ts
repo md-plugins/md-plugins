@@ -32,44 +32,6 @@ function transform(code: string, id: string): string | null {
   }
 }
 
-/**
- * Handles hot updates for markdown files.
- *
- * @param {Object} context - The context object provided by Vite.
- * @returns {Array} An array of modules to be reloaded.
- */
-// function handleHotUpdate({ file, server }: { file: string; server: any }) {
-//   console.log('handleHotUpdate', file)
-//   if (mdRE.test(file)) {
-//     const module = server.moduleGraph.getModuleById(file)
-//     if (module) {
-//       server.moduleGraph.invalidateModule(module)
-//       server.ws.send({
-//         type: 'update',
-//         updates: [
-//           {
-//             type: 'js-update',
-//             path: module.file,
-//             acceptedPath: module.file,
-//             timestamp: Date.now(),
-//           },
-//           {
-//             type: 'html-update',
-//             path: module.file,
-//             acceptedPath: module.file,
-//             timestamp: Date.now(),
-//           },
-//         ],
-//       })
-//     } else {
-//       server.ws.send({
-//         type: 'full-reload',
-//         path: '*',
-//       })
-//     }
-//   }
-// }
-
 function hotUpdate({
   file,
   server,
