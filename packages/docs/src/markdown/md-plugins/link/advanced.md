@@ -83,7 +83,7 @@ The `link` plugin provides several options for customization. Here are the avail
 #### pageScript
 
 - **Type**: `string`
-- **Default**: `'import MarkdownLink from "src/components/md/MarkdownLink.vue"'`
+- **Default**: `'import MarkdownLink from "src/.q-press/components/MarkdownLink.vue"'`
 - **Description**: The script to import the custom link component.
 
 ### Example Configuration

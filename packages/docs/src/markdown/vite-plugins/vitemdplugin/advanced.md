@@ -112,7 +112,7 @@ export default defineConfig((ctx) => {
     },
 
     vitePlugins: [
-      viteMdPlugin(ctx.appPaths.srcDir + '/pages', menu),
+      viteMdPlugin(ctx.appPaths.srcDir + '/markdown', menu),
       // ...
     ],
   },

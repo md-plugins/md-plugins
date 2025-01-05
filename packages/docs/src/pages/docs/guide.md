@@ -1,5 +1,0 @@
----
-title: Guide
----
-
-## Usage
