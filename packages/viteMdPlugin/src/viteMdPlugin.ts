@@ -52,7 +52,7 @@ function hotUpdate({
     }
     server.ws.send({
       type: 'full-reload',
-      path: '*',
+      path: file, // '*',
     })
     // console.log('Invalidated modules', Array.from(invalidatedModules))
   }
