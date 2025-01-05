@@ -1,6 +1,6 @@
 {
   "name": "@md-plugins/md-plugin-imports",
-  "version": "0.1.0-alpha.6",
+  "version": "0.1.0-alpha.7",
   "description": "A markdown-it plugin for handling imports in markdown files.",
   "keywords": [
     "markdown-it",

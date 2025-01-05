@@ -1,6 +1,6 @@
 {
   "name": "@md-plugins/md-plugin-headers",
-  "version": "0.1.0-alpha.6",
+  "version": "0.1.0-alpha.7",
   "description": "A markdown-it plugin for handling headers (H1-H6).",
   "keywords": [
     "markdown-it",
