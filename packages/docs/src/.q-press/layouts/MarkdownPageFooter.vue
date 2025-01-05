@@ -77,7 +77,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import siteConfig from 'src/assets/siteConfig'
+import siteConfig from '../../siteConfig'
 const {
   sidebar,
   config: { useFooter },
@@ -86,7 +86,7 @@ const {
   license,
   privacy,
 } = siteConfig
-import type { SiteMenuItem } from 'src/assets/siteConfig'
+import type { SiteMenuItem } from '../../siteConfig'
 
 const isPrivacyLocal = computed(() => {
   return privacy?.link?.startsWith('/') || privacy?.link?.startsWith('.')

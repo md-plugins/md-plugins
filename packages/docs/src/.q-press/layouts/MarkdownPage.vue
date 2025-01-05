@@ -95,12 +95,12 @@ import { mdiPencil, mdiFlash, mdiLaunch } from '@quasar/extras/mdi-v7'
 
 import type { NavItem, RelatedItem } from '@md-plugins/vite-md-plugin'
 import type { TocItem } from '@md-plugins/md-plugin-headers'
-import MarkdownLink from 'components/md/MarkdownLink.vue'
+import MarkdownLink from '../components/MarkdownLink.vue'
 import MarkdownPageToc from './MarkdownPageToc.vue'
 
-import getMeta from 'assets/get-meta'
-import { useMarkdownStore } from 'src/stores/markdown'
-import siteConfig from 'src/assets/siteConfig'
+import getMeta from '../assets/get-meta'
+import { useMarkdownStore } from '../../stores/markdown'
+import siteConfig from '../../siteConfig'
 const {
   config: { useToc },
 } = siteConfig
@@ -141,7 +141,7 @@ if (props.toc !== void 0) {
 
 const editHref = computed(
   () =>
-    `https://github.com/md-plugins/md-plugins/edit/${process.env.DOCS_BRANCH}/packages/docs/src/pages/${props.editLink}.md`,
+    `https://github.com/md-plugins/md-plugins/edit/${process.env.DOCS_BRANCH}/packages/docs/src/markdown/${props.editLink}.md`,
 )
 
 const isFullscreen = computed(() => route.meta.fullscreen === true || props.fullscreen)

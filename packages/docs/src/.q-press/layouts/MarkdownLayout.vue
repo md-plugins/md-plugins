@@ -47,7 +47,7 @@ import MarkdownDrawerToc from './MarkdownDrawerToc.vue'
 import MarkdownPageSidebar from './MarkdownPageSidebar'
 import MarkdownPageFooter from './MarkdownPageFooter.vue'
 
-import siteConfig from 'src/assets/siteConfig'
+import siteConfig from '../../siteConfig'
 const { config } = siteConfig
 
 const { onPageScroll } = useScroll()

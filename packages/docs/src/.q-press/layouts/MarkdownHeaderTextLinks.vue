@@ -27,7 +27,7 @@
 <script setup lang="ts">
 import { mdiMenuDown } from '@quasar/extras/mdi-v7'
 import MarkdownHeaderMenu from './MarkdownHeaderMenu'
-import type { SiteMenuItem } from 'src/assets/siteConfig'
+import type { SiteMenuItem } from '../../siteConfig'
 
 const props = defineProps({
   menu: Array<SiteMenuItem>,

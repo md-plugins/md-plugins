@@ -169,7 +169,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { mdiCompare, mdiFolderPound } from '@quasar/extras/mdi-v7'
-import siteConfig from 'src/assets/siteConfig'
+import siteConfig from '../../siteConfig'
 const {
   version,
   links: { primaryHeaderLinks, secondaryHeaderLinks, moreLinks, socialLinks, versionLinks },

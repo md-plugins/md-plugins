@@ -4,8 +4,7 @@ import { mdiMenuDown } from '@quasar/extras/mdi-v7'
 import { h, ref, watch, onBeforeUpdate, withDirectives, type VNode } from 'vue'
 import { useRoute } from 'vue-router'
 
-// import Menu from 'assets/menu'
-import siteConfig from 'src/assets/siteConfig'
+import siteConfig from '../../siteConfig'
 const { config, sidebar } = siteConfig
 import './MarkdownPageSidebar.scss'
 
