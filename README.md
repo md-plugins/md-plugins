@@ -10,7 +10,7 @@ Collection of Markdown-it! plugins for Vue and Quasar
 
 **NOTE:** This monorepo is currently under development and not yet ready for production use.
 
-A collection of **Markdown-It plugins** and utilities designed for enhanced Markdown processing. This monorepo contains various plugins for handling specific Markdown features, as well as a Vite plugin for transforming Markdown into Vue Single File Components (SFCs).
+A collection of **Markdown-It plugins** and utilities designed for enhanced Markdown processing. This monorepo contains various plugins for handling specific Markdown features, as well as a Vite plugin for transforming Markdown into Vue Single File Components (SFCs) and another Vite pluin for handling raw SFC content.
 
 Inspired by [Quasar Framework](https://quasar.dev) documentation and [mdit-vue](https://github.com/mdit-vue/mdit-vue), this project aims to provide a comprehensive set of tools for working with Markdown content.
 
@@ -20,6 +20,7 @@ This monorepo provides:
 
 - Plugins to enhance Markdown rendering with features like blockquotes, inline code, tables, headers, and more.
 - A Vite plugin for seamless integration of Markdown into Vue projects.
+- A Vite plugin for handling raw SFC content.
 - Shared utilities for common processing tasks.
 
 ## Table of Contents
