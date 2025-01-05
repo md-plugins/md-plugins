@@ -38,8 +38,8 @@ md.use(codeblocksPlugin, {
   copyButtonComponent: '<MarkdownCopyButton',
   preClass: 'markdown-code',
   pageScripts: [
-    "import MarkdownPrerender from 'src/components/md/MarkdownPrerender'",
-    "import MarkdownCopyButton from 'src/components/md/MarkdownCopyButton.vue'",
+    "import MarkdownPrerender from 'src/.q-press/components/MarkdownPrerender'",
+    "import MarkdownCopyButton from 'src/.q-press/components/MarkdownCopyButton.vue'",
   ],
 })
 ```

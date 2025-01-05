@@ -1,5 +1,5 @@
 import type { RouteRecordRaw } from 'vue-router'
-import mdPageList from 'src/pages/listing'
+import mdPageList from 'src/markdown/listing'
 
 const routeMap = {
   // './docs/docs.md': { path: 'docs' },
@@ -13,7 +13,7 @@ const routeMap = {
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    component: () => import('layouts/md/MarkdownLayout.vue'),
+    component: () => import('src/.q-press/layouts/MarkdownLayout.vue'),
     children: [
       // Include the Landing Page route first
       ...Object.entries(mdPageList)

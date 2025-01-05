@@ -5,7 +5,7 @@
 <script setup lang="ts">
 import { useMeta } from 'quasar'
 import { useDark } from './composables/dark'
-import getMeta from 'assets/get-meta.js'
+import getMeta from 'src/.q-press/assets/get-meta.js'
 const { initDark } = useDark()
 initDark()
 

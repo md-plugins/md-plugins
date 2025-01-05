@@ -116,7 +116,7 @@ export function getVueComponent(
 
   // default is true, unless false is specifically set
   if (frontmatter.editLink !== false) {
-    frontmatter.editLink = id.substring(id.indexOf('src/pages/') + 10, id.length - 3)
+    frontmatter.editLink = id.substring(id.indexOf('src/markdown/') + 10, id.length - 3)
   }
 
   const title = frontmatter.title || rendered.env.title || rendered.title || 'Generic Page'
@@ -165,7 +165,7 @@ export function getVueComponent(
     ${nav !== false ? ':nav="nav"' : ''}>${mdContent}</markdown-page>
 </template>
 <script setup>
-import { copyHeading } from 'components/md/markdown-utils'
+import { copyHeading } from 'src/.q-press/components/markdown-utils'
 ${
   examples !== false
     ? `

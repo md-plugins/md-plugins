@@ -34,17 +34,17 @@ export function mdParse(code: string, id: string, prefix: string, menu: MenuItem
   } // Environment for storing metadata
 
   // pre-processing
-  env.pageScripts!.add("import MarkdownPage from 'src/layouts/md/MarkdownPage.vue'")
+  env.pageScripts!.add("import MarkdownPage from 'src/.q-press/layouts/MarkdownPage.vue'")
   if (markdownApiRE.test(code) === true) {
-    env.pageScripts!.add("import MarkdownApi from 'components/md/MarkdownApi.vue'")
+    env.pageScripts!.add("import MarkdownApi from 'src/.q-press/components/MarkdownApi.vue'")
   }
   if (markdownInstallationRE.test(code) === true) {
     env.pageScripts!.add(
-      "import MarkdownInstallation from 'components/md/MarkdownInstallation.vue'",
+      "import MarkdownInstallation from 'src/.q-press/components/MarkdownInstallation.vue'",
     )
   }
   if (markdownTreeRE.test(code) === true) {
-    env.pageScripts!.add("import MarkdownTree from 'components/md/MarkdownTree.vue'")
+    env.pageScripts!.add("import MarkdownTree from 'src/.q-press/components/MarkdownTree.vue'")
   }
 
   // render the markdown code to HTML, gather all other info (ex: frontmatter, etc)
@@ -52,10 +52,12 @@ export function mdParse(code: string, id: string, prefix: string, menu: MenuItem
 
   // post-processing
   if (env.frontmatter!.examples !== void 0) {
-    env.pageScripts!.add("import MarkdownExample from 'components/md/MarkdownExample.vue'")
+    env.pageScripts!.add(
+      "import MarkdownExample from 'src/.q-press/components/MarkdownExample.vue'",
+    )
   }
   if (markdownLinkRE.test(code) === true) {
-    env.pageScripts!.add("import MarkdownLink from 'components/md/MarkdownLink.vue'")
+    env.pageScripts!.add("import MarkdownLink from 'src/.q-press/components/MarkdownLink.vue'")
   }
 
   const component = getVueComponent(results, code, id, prefix, menu)

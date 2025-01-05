@@ -67,7 +67,7 @@ If you’re using the Quasar Framework, additional configuration is needed to en
 
 ```js
 import { viteMdPlugin } from '@md-plugins/vite-md-plugin';
-import { menu } from './src/assets/menu'; // be sure to create this file
+import { menu } from './src/.q-press/assets/menu'; // be sure to create this file
 
 export default defineConfig((ctx) => {
   // ...
@@ -82,7 +82,7 @@ build: {
   },
 
   vitePlugins: [
-    viteMdPlugin(ctx.appPaths.srcDir + '/pages', menu),
+    viteMdPlugin(ctx.appPaths.srcDir + '/markdown', menu),
     // ...
   ],
 },

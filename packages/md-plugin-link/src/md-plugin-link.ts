@@ -10,7 +10,7 @@ export const linkPlugin: PluginWithOptions<LinkPluginOptions> = (
   {
     linkTag = 'MarkdownLink',
     linkToKeyword = 'to',
-    pageScript = 'import MarkdownLink from "src/components/md/MarkdownLink.vue"',
+    pageScript = 'import MarkdownLink from "src/.q-press/components/MarkdownLink.vue"',
   }: LinkPluginOptions = {},
 ): void => {
   // Override the link_open rule

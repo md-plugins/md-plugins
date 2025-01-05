@@ -36,8 +36,8 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
     tabPanelTagName = 'q-tab-panel',
     tabPanelTagClass = 'q-pa-none',
     pageScripts = [
-      "import MarkdownPrerender from 'src/components/md/MarkdownPrerender'", // ts file
-      "import MarkdownCopyButton from 'src/components/md/MarkdownCopyButton.vue'",
+      "import MarkdownPrerender from 'src/.q-press/components/MarkdownPrerender'", // ts file
+      "import MarkdownCopyButton from 'src/.q-press/components/MarkdownCopyButton.vue'",
     ],
     langList = defaultLangList,
   }: CodeblockPluginOptions = {},

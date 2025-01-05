@@ -153,8 +153,8 @@ function createMarkdownRenderer(options: MarkdownOptions = {}): MarkdownRenderer
     containerComponent: 'MarkdownPrerender',
     copyButtonComponent: 'MarkdownCopyButton',
     pageScripts: [
-      "import MarkdownPrerender from 'components/md/MarkdownPrerender'",
-      "import MarkdownCopyButton from 'components/md/MarkdownCopyButton.vue'",
+      "import MarkdownPrerender from 'src/.q-press/components/MarkdownPrerender'",
+      "import MarkdownCopyButton from 'src/.q-press/components/MarkdownCopyButton.vue'",
     ],
   })
   md.use(linkPlugin) // needs fixing

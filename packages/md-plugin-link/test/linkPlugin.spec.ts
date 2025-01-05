@@ -9,7 +9,7 @@ describe('linkPlugin', () => {
 
     // Register the plugin with default options
     md.use(linkPlugin, {
-      pageScript: 'import MarkdownLink from "src/components/md/MarkdownLink.vue"',
+      pageScript: 'import MarkdownLink from "src/.q-press/components/MarkdownLink.vue"',
     })
 
     const markdownInput = `[Internal Link](/path/to/page)`
@@ -20,9 +20,9 @@ describe('linkPlugin', () => {
     const renderedHTML = md.render(markdownInput, { pageScripts })
 
     expect(renderedHTML).contains(expectedOutput)
-    expect(pageScripts.has('import MarkdownLink from "src/components/md/MarkdownLink.vue"')).toBe(
-      true,
-    )
+    expect(
+      pageScripts.has('import MarkdownLink from "src/.q-press/components/MarkdownLink.vue"'),
+    ).toBe(true)
   })
 
   it('handles multiple internal links with custom tag', () => {
@@ -31,7 +31,7 @@ describe('linkPlugin', () => {
 
     // Register the plugin with default options
     md.use(linkPlugin, {
-      pageScript: 'import MarkdownLink from "src/components/md/MarkdownLink.vue"',
+      pageScript: 'import MarkdownLink from "src/.q-press/components/MarkdownLink.vue"',
     })
 
     const markdownInput = `
@@ -47,9 +47,9 @@ describe('linkPlugin', () => {
     const renderedHTML = md.render(markdownInput, { pageScripts })
 
     expect(renderedHTML).contains(expectedOutput)
-    expect(pageScripts.has('import MarkdownLink from "src/components/md/MarkdownLink.vue"')).toBe(
-      true,
-    )
+    expect(
+      pageScripts.has('import MarkdownLink from "src/.q-press/components/MarkdownLink.vue"'),
+    ).toBe(true)
   })
 
   it('uses custom tag and attribute names', () => {
@@ -76,7 +76,7 @@ describe('linkPlugin', () => {
 
     // Register the plugin with default options
     md.use(linkPlugin, {
-      pageScript: 'import MarkdownLink from "src/components/md/MarkdownLink.vue"',
+      pageScript: 'import MarkdownLink from "src/.q-press/components/MarkdownLink.vue"',
     })
 
     const markdownInput = `[No Env Link](/no-env)`

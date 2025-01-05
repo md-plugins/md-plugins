@@ -4,9 +4,8 @@
 import { defineConfig } from '#q-app/wrappers'
 import type { Plugin } from 'vite'
 
-import siteConfig from './src/assets/siteConfig'
+import siteConfig from './src/siteConfig'
 const { sidebar } = siteConfig
-// console.log('sidebar', sidebar)
 
 import { viteMdPlugin, type MenuItem } from '@md-plugins/vite-md-plugin'
 import { viteExamplesPlugin, viteManualChunks } from '@md-plugins/vite-examples-plugin'
@@ -84,15 +83,10 @@ export default defineConfig((ctx) => {
 
       viteVuePluginOptions: {
         include: [/\.(vue|md)$/],
-        // template: {
-        //   compilerOptions: {
-        //     isPreTag: (tag) => tag === 'pre' || tag === 'q-markdown' || tag === 'QMarkdown',
-        //   },
-        // },
       },
 
       vitePlugins: [
-        viteMdPlugin(ctx.appPaths.srcDir + '/pages', sidebar as MenuItem[]),
+        viteMdPlugin(ctx.appPaths.srcDir + '/markdown', sidebar as MenuItem[]),
         viteExamplesPlugin(ctx.prod, ctx.appPaths.srcDir + '/examples') as unknown as Plugin,
         [
           'vite-plugin-checker',
@@ -112,6 +106,7 @@ export default defineConfig((ctx) => {
     devServer: {
       // https: true,
       open: true, // opens browser window automatically
+      port: 9876,
     },
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#framework
