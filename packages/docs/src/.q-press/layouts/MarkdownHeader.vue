@@ -32,21 +32,23 @@
         />
       </router-link>
 
-      <div v-if="showText" class="row items-center no-wrap cursor-pointer gt-750">
-        <q-btn
-          to="/"
-          no-caps
-          flat
-          class="markdown-header__logo row items-center no-wrap cursor-pointer"
-        >
-          <div class="column">
-            <div class="col text-weight-bold">
-              {{ logoText }}
+      <template v-if="showOnHeader">
+        <div v-if="showTitle" class="row items-center no-wrap cursor-pointer gt-750">
+          <q-btn
+            to="/"
+            no-caps
+            flat
+            class="markdown-header__logo row items-center no-wrap cursor-pointer"
+          >
+            <div class="column">
+              <div class="col text-weight-bold">
+                {{ title }}
+              </div>
+              <div v-if="showVersion" class="col text-weight-light">{{ version }}</div>
             </div>
-            <div v-if="showVersion" class="col text-weight-light">{{ version }}</div>
-          </div>
-        </q-btn>
-      </div>
+          </q-btn>
+        </div>
+      </template>
 
       <div class="markdown-header__primary-left-spacer gt-lg" />
 
@@ -95,24 +97,23 @@
         />
       </router-link>
 
-      <div
-        v-if="!usePrimaryHeader && showText"
-        class="row items-center no-wrap cursor-pointer gt-1190"
-      >
-        <q-btn
-          to="/"
-          no-caps
-          flat
-          class="markdown-header__logo row items-center no-wrap cursor-pointer"
-        >
-          <div class="column">
-            <div class="col text-weight-bold">
-              {{ logoText }}
+      <template v-if="!usePrimaryHeader && showOnHeader">
+        <div v-if="showTitle" class="row items-center no-wrap cursor-pointer gt-1190">
+          <q-btn
+            to="/"
+            no-caps
+            flat
+            class="markdown-header__logo row items-center no-wrap cursor-pointer"
+          >
+            <div class="column">
+              <div class="col text-weight-bold">
+                {{ title }}
+              </div>
+              <div v-if="showVersion" class="col text-weight-light">{{ version }}</div>
             </div>
-            <div v-if="showVersion" class="col text-weight-light">{{ version }}</div>
-          </div>
-        </q-btn>
-      </div>
+          </q-btn>
+        </div>
+      </template>
 
       <div class="markdown-header__secondary-left-spacer gt-lg" />
 
@@ -171,10 +172,12 @@ import { computed } from 'vue'
 import { mdiCompare, mdiFolderPound } from '@quasar/extras/mdi-v7'
 import siteConfig from '../../siteConfig'
 const {
+  title,
   version,
   links: { primaryHeaderLinks, secondaryHeaderLinks, moreLinks, socialLinks, versionLinks },
   config: { usePrimaryHeader, useSecondaryHeader, useVersionLinks, useToc, useMoreLinks },
-  logoConfig: { showLogo, showText, showVersion, logoLight, logoDark, logoAlt, logoText },
+  logoConfig: { showLogo, logoLight, logoDark, logoAlt },
+  versionConfig: { showVersion, showTitle, showOnHeader },
 } = siteConfig
 
 console.log('primaryHeaderLinks', primaryHeaderLinks)
@@ -182,7 +185,7 @@ console.log('secondaryHeaderLinks', secondaryHeaderLinks)
 console.log('moreLinks', moreLinks)
 console.log('socialLinks', socialLinks)
 console.log('versionLinks', versionLinks)
-console.log('logoConfig', showLogo, showText, showVersion, version)
+console.log('logoConfig', showLogo, showTitle, showVersion, version)
 
 // import MarkdownSearch from './MarkdownSearch.vue'
 import MarkdownHeaderTextLinks from './MarkdownHeaderTextLinks.vue'

@@ -73,12 +73,16 @@ export interface LinksConfig {
 
 export interface LogoConfig {
   showLogo: boolean
-  showText: boolean
-  showVersion: boolean
   logoLight: string
   logoDark: string
   logoAlt: string
-  logoText: string
+}
+
+export interface versionConfig {
+  showTitle: boolean
+  showVersion: boolean
+  showOnHeader: boolean
+  showOnSidebar: boolean
 }
 
 export interface DocsConfig {
@@ -110,6 +114,7 @@ export interface SiteConfig {
   twitter: string
   docs: DocsConfig
   logoConfig: LogoConfig
+  versionConfig: versionConfig
   config: UIConfig
   links: LinksConfig
   sidebar: MenuItem[]
@@ -473,15 +478,18 @@ export default {
   },
   logoConfig: {
     showLogo: true,
-    showText: true,
-    showVersion: true,
     logoLight:
       'https://raw.githubusercontent.com/md-plugins/md-plugins/refs/heads/main/media/markdown-1024x1024.png',
     logoDark:
       'https://raw.githubusercontent.com/md-plugins/md-plugins/refs/heads/main/media/markdown-1024x1024.png',
     logoAlt: '@md-plugins',
-    logoText: '@md-plugins',
   } as LogoConfig,
+  versionConfig: {
+    showTitle: true,
+    showVersion: true,
+    showOnHeader: false,
+    showOnSidebar: true,
+  } as versionConfig,
   config: {
     usePrimaryHeader: false,
     useSecondaryHeader: true,
@@ -489,6 +497,7 @@ export default {
     useFooter: true,
     // useFooterLinks: true,
     useSidebar: true,
+    useSidebarVersion: true,
     useToc: true,
     useVersionLinks: false,
   } as UIConfig,
