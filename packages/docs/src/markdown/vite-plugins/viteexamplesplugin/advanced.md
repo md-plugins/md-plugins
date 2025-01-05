@@ -1,6 +1,8 @@
 ---
 title: ViteExamplesPlugin Advanced Topics
 desc: ViteExamplesPlugin advanced topics for Vite.
+related:
+  - vite-plugins/vitemdplugin/advanced
 ---
 
 ## ViteExamplesPlugin
