@@ -42,7 +42,7 @@ const env: MarkdownItEnv = {
 ```ts
 import { resolveTitleFromToken } from '@md-plugins/shared'
 
-const token = { content: 'My Title' }
+const token = { content: '# My Title' }
 const title = resolveTitleFromToken(token, {
   shouldAllowHtml: false,
   shouldEscapeText: true,

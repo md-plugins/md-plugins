@@ -103,7 +103,7 @@ declare const resolveTitleFromToken: (
 
 interface ResolveHeadersOptions extends ResolveTitleOptions {
   /**
-   * Heading level that going to be resolved
+   * Heading level that is going to be resolved; ie: `1` to `6`
    */
   level: number[]
   /**
