@@ -23,14 +23,50 @@ Here are some examples of what you can achieve with the Table Plugin:
 
 ### Standard Table
 
-| Header 1 | Header 2 |
-| -------- | -------- |
-| Cell 1   | Cell 2   |
+| Header 1 | Header 2 | Header 3 |
+| -------- | -------- | -------- |
+| Cell 1   | Cell 2   | Cell 3   |
 
 ```markup
-| Header 1 | Header 2 |
-| -------- | -------- |
-| Cell 1   | Cell 2   |
+| Header 1 | Header 2 | Header 3 |
+| -------- | -------- | -------- |
+| Cell 1   | Cell 2   | Cell 3   |
+```
+
+### Right-aligned Columns
+
+| Header 1 | Header 2 | Header 3 |
+| -------: | -------: | -------: |
+|   Cell 1 |   Cell 2 |   Cell 3 |
+
+```markup
+| Header 1 | Header 2 | Header 3 |
+| -------: | -------: | -------: |
+|   Cell 1 |   Cell 2 |   Cell 3 |
+```
+
+### Cenetered-aligned Columns
+
+| Header 1 | Header 2 | Header 3 |
+| :------: | :------: | :------: |
+|  Cell 1  |  Cell 2  |  Cell 3  |
+
+```markup
+| Header 1 | Header 2 | Header 3 |
+| :------: | :------: | :------: |
+|  Cell 1  |  Cell 2  |  Cell 3  |
+```
+
+### Left-aligned Columns (default)
+
+| Header 1 | Header 2 | Header 3 |
+| :------- | :------- | :------- |
+| Cell 1   | Cell 2   | Cell 3   |
+
+```markup
+| Header 1 | Header 2 | Header 3 |
+| :------- | :------- | :------- |
+| Cell 1   | Cell 2   | Cell 3   |
 ```
 
 ### Custom Table Class and Attributes
