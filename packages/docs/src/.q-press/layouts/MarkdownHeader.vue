@@ -150,12 +150,6 @@
 
       <MarkdownHeaderIconLinks class="gt-1400" :menu="siteConfig.links.socialLinks" />
 
-      <MarkdownHeaderTextLinks
-        v-if="siteConfig.config.useVersionLinks === true"
-        :menu="siteConfig.links.versionLinks"
-        nav-class="text-size-14 letter-spacing-100 markdown-header__version q-ml-sm"
-      />
-
       <div
         v-if="siteConfig.config.useToc && hasToc"
         class="markdown-header-icon-links q-ml-sm lt-md row no-wrap items-center"

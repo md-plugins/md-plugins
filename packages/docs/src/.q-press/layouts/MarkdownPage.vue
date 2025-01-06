@@ -136,10 +136,7 @@ if (props.toc !== void 0) {
   markdownStore.setToc(props.toc)
 }
 
-const editHref = computed(
-  () =>
-    `https://github.com/md-plugins/md-plugins/edit/${process.env.DOCS_BRANCH}/packages/docs/src/markdown/${props.editLink}.md`,
-)
+const editHref = computed(() => `${siteConfig.githubEditRoot}${props.editLink}.md`)
 
 const isFullscreen = computed(() => route.meta.fullscreen === true || props.fullscreen)
 

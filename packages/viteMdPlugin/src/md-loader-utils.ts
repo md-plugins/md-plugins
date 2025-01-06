@@ -116,8 +116,9 @@ export function getVueComponent(
 
   // default is true, unless false is specifically set
   if (frontmatter.editLink !== false) {
-    frontmatter.editLink = id.substring(id.indexOf('src/markdown/') + 10, id.length - 3)
+    frontmatter.editLink = id.substring(id.indexOf('src/markdown/') + 13, id.length - 3)
   }
+  console.log('editLink:', frontmatter.editLink)
 
   const title = frontmatter.title || rendered.env.title || rendered.title || 'Generic Page'
   const desc = frontmatter.desc || false
@@ -133,8 +134,6 @@ export function getVueComponent(
   const badge = frontmatter.badge || false
   const toc = rendered.env.toc || false
   const editLink = frontmatter.editLink || false
-  const components = frontmatter.components || false
-  // const examples = frontmatter.examples || false
   const scope = frontmatter.scope || false
   const examples = frontmatter.examples || false
 
