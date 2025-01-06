@@ -1,8 +1,5 @@
 import { fabGithub, fabXTwitter } from '@quasar/extras/fontawesome-v6'
-
-// import { mdiDiscord } from '@quasar/extras/mdi-v6'
 import { slugify } from '@md-plugins/shared'
-
 import { version } from '../../../../package.json'
 
 export interface SocialLink {
@@ -264,6 +261,27 @@ const vitePluginsMenu = {
   ],
 }
 
+const QuasarAppExts = {
+  name: 'Quasar App Extensions',
+  mq: 900, // media query breakpoint
+  children: [
+    {
+      name: 'viteMdPluginAppExt',
+      children: [
+        { name: 'Overview', path: '/quasar-app-extensions/vitemdpluginappext/overview' },
+        { name: 'Advanced', path: '/quasar-app-extensions/vitemdpluginappext/advanced' },
+      ],
+    },
+    {
+      name: 'QPress',
+      children: [
+        { name: 'Overview', path: '/quasar-app-extensions/qpress/overview' },
+        { name: 'Advanced', path: '/quasar-app-extensions/qpress/advanced' },
+      ],
+    },
+  ],
+}
+
 const guidesMenu = {
   name: 'Guides',
   mq: 860, // media query breakpoint
@@ -304,6 +322,13 @@ const processedVitePluginsMenu = {
   children: vitePluginsMenu.children.map(processMenuItem),
 }
 
+const processedQuasarAppExts = {
+  name: QuasarAppExts.name,
+  path: slugify(QuasarAppExts.name),
+  expanded: false,
+  children: QuasarAppExts.children.map(processMenuItem),
+}
+
 const processedGuidesMenu = {
   name: guidesMenu.name,
   path: slugify(guidesMenu.name),
@@ -315,6 +340,7 @@ const secondaryToolbarLinks = [
   gettingStartedMenu,
   mdPluginsMenu,
   vitePluginsMenu,
+  QuasarAppExts,
   guidesMenu,
   otherMenu,
 ]
@@ -401,6 +427,7 @@ export default {
     },
     processedMdPluginsMenu,
     processedVitePluginsMenu,
+    processedQuasarAppExts,
     processedGuidesMenu,
   ],
 } as SiteConfig
