@@ -126,7 +126,7 @@ const props = defineProps({
 <style lang="scss">
 .markdown-page-footer {
   position: relative;
-  background-color: $light-clouds;
+  background-color: $brand-light;
   width: 100%;
   z-index: 1;
   border-top: 1px solid $separator-color;

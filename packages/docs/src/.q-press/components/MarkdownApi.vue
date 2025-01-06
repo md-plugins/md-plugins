@@ -520,8 +520,8 @@ if (process.env.CLIENT) {
 
 body.body--light {
   .markdown-api .q-badge {
-    color: $light-clouds;
-    background-color: $midnight-blue;
+    color: $brand-light;
+    background-color: $brand-dark;
   }
 
   .markdown-api .markdown-token {
@@ -543,8 +543,8 @@ body.body--light {
 
 body.body--dark {
   .markdown-api .q-badge {
-    color: $midnight-blue;
-    background-color: $deep-sky-blue;
+    color: $brand-dark;
+    background-color: $brand-primary;
   }
 
   .markdown-api .markdown-token {
@@ -558,7 +558,7 @@ body.body--dark {
   }
 
   .markdown-api-entry {
-    color: $battleship-grey;
+    color: $brand-medium;
 
     & + .markdown-api-entry,
     &__subitem > div {
