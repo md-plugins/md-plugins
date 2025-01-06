@@ -118,7 +118,6 @@ export function getVueComponent(
   if (frontmatter.editLink !== false) {
     frontmatter.editLink = id.substring(id.indexOf('src/markdown/') + 13, id.length - 3)
   }
-  console.log('editLink:', frontmatter.editLink)
 
   const title = frontmatter.title || rendered.env.title || rendered.title || 'Generic Page'
   const desc = frontmatter.desc || false
