@@ -174,7 +174,7 @@ ul {
 }
 
 .markdown-heading {
-  color: $brand-primary;
+  color: $brand-light-text;
   word-break: break-word;
   letter-spacing: $letter-spacing-brand;
   padding: 0;
@@ -554,6 +554,10 @@ body.body--dark {
   .header-tabs,
   .q-tabs__content {
     background: $dark-bg;
+  }
+
+  .markdown-heading {
+    color: $brand-dark-text;
   }
 
   .markdown-heading .q-badge,

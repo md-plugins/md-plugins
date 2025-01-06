@@ -256,7 +256,7 @@ console.log('MarkdownPage props', props)
   }
 
   &__nav {
-    color: $brand-primary;
+    color: $brand-light-text;
 
     &--footer {
       margin: 68px 0 0;
@@ -281,7 +281,7 @@ body.body--light .markdown-page {
   &__related {
     color: $light-text;
     background: $brand-light;
-    border: 1px solid $brand-light; // match dark to avoid page reflow
+    border: 1px solid $light-text; // match dark to avoid page reflow
   }
 
   &__toc-container .q-item {
@@ -292,12 +292,12 @@ body.body--light .markdown-page {
 body.body--dark .markdown-page {
   &__related {
     color: $dark-text;
-    background: $dark-pill;
-    border: 1px solid $brand-primary;
+    background: $brand-dark;
+    border: 1px solid $dark-text;
   }
 
   &__nav-name {
-    color: $brand-primary;
+    color: $brand-dark-text;
   }
 
   &__toc-container .q-item {
