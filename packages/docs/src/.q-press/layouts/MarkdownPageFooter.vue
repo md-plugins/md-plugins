@@ -1,5 +1,5 @@
 <template>
-  <div v-if="useFooter" class="markdown-page-footer markdown-brand">
+  <div v-if="siteConfig.config.useFooter" class="markdown-page-footer markdown-brand">
     <template v-if="props.fullscreen">
       <nav class="markdown-page-footer__nav" v-once>
         <q-list v-for="entry in links" :key="entry.name" role="list">
@@ -31,45 +31,47 @@
     </template>
 
     <div
-      v-if="!!license"
+      v-if="!!siteConfig.license"
       class="markdown-page-footer__license row justify-center q-mt-md letter-spacing-225"
     >
       <q-btn
-        v-if="!!license.label && !!license.link"
+        v-if="!!siteConfig.license.label && !!siteConfig.license.link"
         no-caps
         flat
-        :href="license.link"
+        :href="siteConfig.license.link"
         target="_blank"
         class="header-btn text-weight-bold"
-        :label="license.label"
+        :label="siteConfig.license.label"
       />
-      <template v-if="!!privacy && !!privacy.label && !!privacy.link">
+      <template
+        v-if="!!siteConfig.privacy && !!siteConfig.privacy.label && !!siteConfig.privacy.link"
+      >
         <q-btn
           v-if="isPrivacyLocal"
           no-caps
           flat
-          :to="privacy.link"
+          :to="siteConfig.privacy.link"
           class="header-btn text-weight-bold"
-          :label="privacy.label"
+          :label="siteConfig.privacy.label"
         />
         <q-btn
           v-else
           no-caps
           flat
-          :href="privacy.link"
+          :href="siteConfig.privacy.link"
           target="_blank"
           class="header-btn text-weight-bold"
-          :label="privacy.label"
+          :label="siteConfig.privacy.label"
         />
       </template>
     </div>
 
     <div class="markdown-page-footer__copyright text-center q-pa-lg letter-spacing-100">
-      <div>
-        {{ line1 }}
+      <div v-if="siteConfig.copyright.line1">
+        {{ siteConfig.copyright.line1 }}
       </div>
-      <div v-if="line2">
-        {{ line2 }}
+      <div v-if="siteConfig.copyright.line2">
+        {{ siteConfig.copyright.line2 }}
       </div>
     </div>
   </div>
@@ -78,18 +80,10 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import siteConfig from '../../siteConfig'
-const {
-  sidebar,
-  config: { useFooter },
-  links: { footerLinks },
-  copyright: { line1, line2 },
-  license,
-  privacy,
-} = siteConfig
 import type { SiteMenuItem } from '../../siteConfig'
 
 const isPrivacyLocal = computed(() => {
-  return privacy?.link?.startsWith('/') || privacy?.link?.startsWith('.')
+  return siteConfig?.privacy?.link?.startsWith('/') || siteConfig?.privacy?.link?.startsWith('.')
 })
 
 /**
@@ -99,7 +93,7 @@ const isPrivacyLocal = computed(() => {
  */
 function getMenu(path: string): SiteMenuItem[] {
   const children: SiteMenuItem[] = []
-  const menuItem: SiteMenuItem | undefined = sidebar.find(
+  const menuItem: SiteMenuItem | undefined = siteConfig.sidebar.find(
     (item) => item.path === path,
   ) as SiteMenuItem
 
@@ -119,7 +113,7 @@ function getMenu(path: string): SiteMenuItem[] {
   return children
 }
 
-const links = footerLinks.flatMap((nav) => ({
+const links = siteConfig.links.footerLinks.flatMap((nav) => ({
   name: nav.name,
   children: [...(nav.children || []), ...((nav.extract !== void 0 && getMenu(nav.extract)) || [])],
 }))

@@ -1,11 +1,15 @@
 <template>
-  <q-header class="markdown-header header-toolbar markdown-brand" bordered :height-hint="128">
+  <q-header
+    class="markdown-header header-toolbar markdown-brand"
+    bordered
+    :height-hint="siteConfig.config.headerHeightHint || 128"
+  >
     <q-toolbar
-      v-if="usePrimaryHeader"
+      v-if="siteConfig.config.usePrimaryHeader"
       class="markdown-header__primary q-pl-lg q-pr-md no-wrap items-stretch gt-750"
     >
       <q-btn
-        v-if="!useSecondaryHeader"
+        v-if="!siteConfig.config.useSecondaryHeader"
         class="header-btn markdown-header__leftmost q-mr-xs lt-1300"
         flat
         round
@@ -19,7 +23,7 @@
       </q-btn>
 
       <router-link
-        v-if="showLogo"
+        v-if="siteConfig.logoConfig.showLogo"
         to="/"
         class="markdown-header__logo row items-center no-wrap cursor-pointer"
       >
@@ -32,8 +36,11 @@
         />
       </router-link>
 
-      <template v-if="showOnHeader">
-        <div v-if="showTitle" class="row items-center no-wrap cursor-pointer gt-750">
+      <template v-if="siteConfig.versionConfig.showOnHeader">
+        <div
+          v-if="siteConfig.versionConfig.showTitle"
+          class="row items-center no-wrap cursor-pointer gt-750"
+        >
           <q-btn
             to="/"
             no-caps
@@ -42,9 +49,11 @@
           >
             <div class="column">
               <div class="col text-weight-bold">
-                {{ title }}
+                {{ siteConfig.title }}
               </div>
-              <div v-if="showVersion" class="col text-weight-light">{{ version }}</div>
+              <div v-if="siteConfig.versionConfig.showVersion" class="col text-weight-light">
+                {{ siteConfig.version }}
+              </div>
             </div>
           </q-btn>
         </div>
@@ -54,7 +63,7 @@
 
       <MarkdownHeaderTextLinks
         class="markdown-header__links col text-size-16 gt-1000"
-        :menu="primaryHeaderLinks"
+        :menu="siteConfig.links.primaryHeaderLinks"
         mq-prefix="gt"
         nav-class="text-uppercase text-size-16 letter-spacing-300"
       />
@@ -69,7 +78,10 @@
       </div>
     </q-toolbar>
 
-    <q-toolbar v-if="useSecondaryHeader" class="markdown-header__secondary q-pl-lg q-pr-md no-wrap">
+    <q-toolbar
+      v-if="siteConfig.config.useSecondaryHeader"
+      class="markdown-header__secondary q-pl-lg q-pr-md no-wrap"
+    >
       <q-btn
         class="header-btn markdown-header__leftmost q-mr-xs lt-1300"
         flat
@@ -84,7 +96,7 @@
       </q-btn>
 
       <router-link
-        v-if="!usePrimaryHeader && showLogo"
+        v-if="!siteConfig.config.usePrimaryHeader && siteConfig.logoConfig.showLogo"
         to="/"
         class="markdown-header__logo row items-center no-wrap cursor-pointer"
       >
@@ -97,8 +109,11 @@
         />
       </router-link>
 
-      <template v-if="!usePrimaryHeader && showOnHeader">
-        <div v-if="showTitle" class="row items-center no-wrap cursor-pointer gt-1190">
+      <template v-if="!siteConfig.config.usePrimaryHeader && siteConfig.versionConfig.showOnHeader">
+        <div
+          v-if="siteConfig.versionConfig.showTitle"
+          class="row items-center no-wrap cursor-pointer gt-1190"
+        >
           <q-btn
             to="/"
             no-caps
@@ -107,9 +122,11 @@
           >
             <div class="column">
               <div class="col text-weight-bold">
-                {{ title }}
+                {{ siteConfig.title }}
               </div>
-              <div v-if="showVersion" class="col text-weight-light">{{ version }}</div>
+              <div v-if="siteConfig.versionConfig.showVersion" class="col text-weight-light">
+                {{ siteConfig.version }}
+              </div>
             </div>
           </q-btn>
         </div>
@@ -119,28 +136,28 @@
 
       <div class="markdown-header__links col row items-center no-wrap">
         <MarkdownHeaderTextLinks
-          :menu="secondaryHeaderLinks"
+          :menu="siteConfig.links.secondaryHeaderLinks"
           nav-class="text-size-14 letter-spacing-100"
           mq-prefix="gt"
         />
         <MarkdownHeaderTextLinks
-          v-if="useMoreLinks === true && hasMoreLinks"
-          :menu="moreLinks"
+          v-if="siteConfig.config.useMoreLinks === true && hasMoreLinks"
+          :menu="siteConfig.links.moreLinks"
           nav-class="text-size-14 letter-spacing-100 lt-1400"
           mq-prefix="lt"
         />
       </div>
 
-      <MarkdownHeaderIconLinks class="gt-1400" :menu="socialLinks" />
+      <MarkdownHeaderIconLinks class="gt-1400" :menu="siteConfig.links.socialLinks" />
 
       <MarkdownHeaderTextLinks
-        v-if="useVersionLinks === true"
-        :menu="versionLinks"
+        v-if="siteConfig.config.useVersionLinks === true"
+        :menu="siteConfig.links.versionLinks"
         nav-class="text-size-14 letter-spacing-100 markdown-header__version q-ml-sm"
       />
 
       <div
-        v-if="useToc && hasToc"
+        v-if="siteConfig.config.useToc && hasToc"
         class="markdown-header-icon-links q-ml-sm lt-md row no-wrap items-center"
       >
         <q-btn
@@ -158,7 +175,7 @@
       </div>
 
       <div
-        v-if="!usePrimaryHeader"
+        v-if="!siteConfig.config.usePrimaryHeader"
         class="markdown-header-icon-links q-ml-sm row no-wrap items-center"
       >
         <q-btn class="header-btn" type="a" flat round :icon="mdiCompare" @click="toggleDark" />
@@ -171,21 +188,6 @@
 import { computed } from 'vue'
 import { mdiCompare, mdiFolderPound } from '@quasar/extras/mdi-v7'
 import siteConfig from '../../siteConfig'
-const {
-  title,
-  version,
-  links: { primaryHeaderLinks, secondaryHeaderLinks, moreLinks, socialLinks, versionLinks },
-  config: { usePrimaryHeader, useSecondaryHeader, useVersionLinks, useToc, useMoreLinks },
-  logoConfig: { showLogo, logoLight, logoDark, logoAlt },
-  versionConfig: { showVersion, showTitle, showOnHeader },
-} = siteConfig
-
-console.log('primaryHeaderLinks', primaryHeaderLinks)
-console.log('secondaryHeaderLinks', secondaryHeaderLinks)
-console.log('moreLinks', moreLinks)
-console.log('socialLinks', socialLinks)
-console.log('versionLinks', versionLinks)
-console.log('logoConfig', showLogo, showTitle, showVersion, version)
 
 // import MarkdownSearch from './MarkdownSearch.vue'
 import MarkdownHeaderTextLinks from './MarkdownHeaderTextLinks.vue'
@@ -202,12 +204,12 @@ const { toggleDark, isDark } = useDark()
 const logo = computed(() => {
   if (isDark.value === true)
     return {
-      img: logoDark,
-      alt: logoAlt,
+      img: siteConfig.logoConfig.logoDark,
+      alt: siteConfig.logoConfig.logoAlt,
     }
   return {
-    img: logoLight,
-    alt: logoAlt,
+    img: siteConfig.logoConfig.logoLight,
+    alt: siteConfig.logoConfig.logoAlt,
   }
 })
 
@@ -216,10 +218,10 @@ const hasToc = computed(
   () =>
     route.meta.fullwidth !== true &&
     route.meta.fullscreen !== true &&
-    useToc &&
+    siteConfig.config.useToc &&
     markdownStore.toc.length !== 0,
 )
-const hasMoreLinks = computed(() => moreLinks.length > 0)
+const hasMoreLinks = computed(() => siteConfig.links.moreLinks.length > 0)
 </script>
 
 <style lang="scss">

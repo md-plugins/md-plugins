@@ -10,7 +10,7 @@
       <h2 class="hero-subtitle">(@md-plugins)</h2>
       <div class="row justify-center">
         <p class="hero-subtitle2" style="max-width: 660px">
-          {{ description }}
+          {{ siteConfig.description }}
         </p>
       </div>
 
@@ -103,8 +103,6 @@ import { QIcon } from 'quasar'
 import { fabGithub } from '@quasar/extras/fontawesome-v6'
 import { useRouter } from 'vue-router'
 import siteConfig from '../../siteConfig'
-
-const description = siteConfig.description
 
 const router = useRouter()
 

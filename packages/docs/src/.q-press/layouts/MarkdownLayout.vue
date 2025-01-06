@@ -7,7 +7,7 @@
         <router-view v-if="isFullscreen" key="page-fullscreen" />
         <div v-else :class="pageContentClass" key="page-standard">
           <div
-            v-if="config.useSidebar === true"
+            v-if="siteConfig.config.useSidebar === true"
             class="markdown-layout__menu-container row justify-center"
           >
             <q-scroll-area class="markdown-layout__menu q-ml-md">
@@ -27,8 +27,8 @@
     </q-page-scroller>
 
     <q-no-ssr>
-      <MarkdownDrawerSidebar v-if="config.useSidebar === true" />
-      <MarkdownDrawerToc v-if="config.useToc === true" />
+      <MarkdownDrawerSidebar v-if="siteConfig.config.useSidebar === true" />
+      <MarkdownDrawerToc v-if="siteConfig.config.useToc === true" />
     </q-no-ssr>
   </q-layout>
 </template>
@@ -48,7 +48,6 @@ import MarkdownPageSidebar from './MarkdownPageSidebar'
 import MarkdownPageFooter from './MarkdownPageFooter.vue'
 
 import siteConfig from '../../siteConfig'
-const { config } = siteConfig
 
 const { onPageScroll } = useScroll()
 

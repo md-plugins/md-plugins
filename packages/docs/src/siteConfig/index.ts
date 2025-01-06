@@ -95,8 +95,9 @@ export interface DocsConfig {
 }
 
 export interface UIConfig {
-  usePrimaryHeader: boolean
-  useSecondaryHeader: boolean
+  usePrimaryHeader: boolean // typically 72px
+  useSecondaryHeader: boolean // typically 55px
+  headerHeightHint: number // typically 128 for both headers
   useMoreLinks: boolean
   useFooter: boolean
   useSidebar: boolean
@@ -493,6 +494,7 @@ export default {
   config: {
     usePrimaryHeader: false,
     useSecondaryHeader: true,
+    headerHeightHint: 55,
     useMoreLinks: true,
     useFooter: true,
     // useFooterLinks: true,

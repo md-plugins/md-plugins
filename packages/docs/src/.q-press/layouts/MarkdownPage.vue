@@ -101,9 +101,6 @@ import MarkdownPageToc from './MarkdownPageToc.vue'
 import getMeta from '../assets/get-meta'
 import { useMarkdownStore } from '../../stores/markdown'
 import siteConfig from '../../siteConfig'
-const {
-  config: { useToc },
-} = siteConfig
 
 const props = defineProps({
   title: String,
@@ -151,7 +148,7 @@ const hasToc = computed(
     route.meta.fullwidth !== true &&
     route.meta.fullscreen !== true &&
     props.fullscreen !== true &&
-    useToc &&
+    siteConfig.config.useToc &&
     markdownStore.toc.length !== 0,
 )
 

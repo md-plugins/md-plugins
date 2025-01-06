@@ -5,13 +5,6 @@ import { h, ref, watch, onBeforeUpdate, withDirectives, type VNode } from 'vue'
 import { useRoute } from 'vue-router'
 
 import siteConfig from '../../siteConfig'
-const {
-  title,
-  version,
-  config,
-  sidebar,
-  versionConfig: { showVersion, showTitle, showOnSidebar },
-} = siteConfig
 
 import './MarkdownPageSidebar.scss'
 
@@ -189,22 +182,33 @@ export default {
     }
 
     function showDrawerVersion(): VNode | undefined {
-      if (showOnSidebar === true && (showVersion === true || showTitle === true)) {
+      if (
+        siteConfig.versionConfig.showOnSidebar === true &&
+        (siteConfig.versionConfig.showVersion === true ||
+          siteConfig.versionConfig.showTitle === true)
+      ) {
         return h(QItem, { class: 'markdown-layout__item non-selectable' }, () => [
-          showTitle && h(QItemSection, { class: 'text-right' }, () => title),
-          showVersion && h(QItemSection, { class: 'text-left' }, () => 'v' + version),
+          siteConfig.versionConfig.showTitle &&
+            h(QItemSection, { class: 'text-right' }, () => siteConfig.title),
+          siteConfig.versionConfig.showVersion &&
+            h(QItemSection, { class: 'text-left' }, () => 'v' + siteConfig.version),
         ])
       }
     }
 
     function showDrawerMenu(): VNode {
       return h(QList, { ref: rootRef, class: 'markdown-page-menu', dense: true }, () => [
-        sidebar.map((item) => getDrawerMenu(item, '/' + item.path, 0)),
+        siteConfig.sidebar.map((item) => getDrawerMenu(item, '/' + item.path, 0)),
       ])
     }
 
     return () => {
-      if (config.useSidebar === true && sidebar && Array.isArray(sidebar) && sidebar.length > 0) {
+      if (
+        siteConfig.config.useSidebar === true &&
+        siteConfig.sidebar &&
+        Array.isArray(siteConfig.sidebar) &&
+        siteConfig.sidebar.length > 0
+      ) {
         return h('div', { class: 'markdown-layout' }, [showDrawerVersion(), showDrawerMenu()])
       }
     }
