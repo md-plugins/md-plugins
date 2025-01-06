@@ -36,6 +36,9 @@ export default {
           if (entry.separator === true) {
             return h(QSeparator, { spaced: true })
           }
+          if (!entry.name) {
+            return null
+          }
 
           return h(
             QItem,

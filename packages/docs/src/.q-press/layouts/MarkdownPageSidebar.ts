@@ -95,12 +95,14 @@ export default {
             activeClass: 'markdown-layout__item--active',
           },
           () =>
-            menu.children?.map((item: MenuItem) =>
-              getDrawerMenu(
-                item,
-                path + (item.path !== void 0 ? '/' + item.path : ''),
-                level / 2 + 0.1,
-              ),
+            menu.children?.map(
+              (item: MenuItem) =>
+                item.name &&
+                getDrawerMenu(
+                  item,
+                  path + (item.path !== void 0 ? '/' + item.path : ''),
+                  level / 2 + 0.1,
+                ),
             ),
         )
       }
