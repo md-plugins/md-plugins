@@ -101,8 +101,8 @@
 
 body.body--light {
   .markdown-code {
-    color: $light-codeblock-text;
-    background-color: $light-codeblock-bg;
+    color: $brand-light-codeblock-text;
+    background-color: $brand-light-codeblock-bg;
   }
 
   .line-highlight:before {
@@ -114,10 +114,10 @@ body.body--light {
   }
 
   .c-lpref {
-    color: $light-codeblock-text;
+    color: $brand-light-codeblock-text;
     &:before {
       border-right-color: $separator-color;
-      background: $light-codeblock-bg;
+      background: $brand-light-codeblock-bg;
     }
   }
 
@@ -206,8 +206,8 @@ body.body--light {
 
 body.body--dark {
   .markdown-code {
-    color: $dark-codeblock-text;
-    background-color: $dark-codeblock-bg;
+    color: $brand-dark-codeblock-text;
+    background-color: $brand-dark-codeblock-bg;
   }
 
   .line-highlight:before {
@@ -219,10 +219,10 @@ body.body--dark {
   }
 
   .c-lpref {
-    color: $light-codeblock-text;
+    color: $brand-light-codeblock-text;
     &:before {
       border-right-color: $separator-dark-color;
-      background: $dark-codeblock-bg;
+      background: $brand-dark-codeblock-bg;
     }
   }
 

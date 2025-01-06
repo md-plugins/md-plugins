@@ -1,0 +1,67 @@
+// Custom Theme Variables
+$primary: #e74c3c; // Change primary color to red
+$secondary: #8e44ad; // Change secondary color to purple
+$accent: #f39c12; // Change accent color to orange
+
+$positive: #2ecc71; // Change positive color to green
+$negative: #e74c3c; // Change negative color to red
+$info: #3498db; // Change info color to blue
+$warning: #f1c40f; // Change warning color to yellow
+
+$brand-primary: #e74c3c; // Change brand primary color to red
+$brand-secondary: #8e44ad; // Change brand secondary color to purple
+$brand-accent: #f39c12; // Change brand accent color to orange
+$brand-dark: #2c3e50; // Change brand dark color to dark blue
+$brand-light: #ecf0f1; // Change brand light color to light grey
+$brand-medium: #95a5a6; // Change brand medium color to grey
+$brand-light-text: #2c3e50; // Change brand light text color to dark blue
+$brand-light-bg: #ecf0f1; // Change brand light background color to light grey
+$brand-dark-bg: #34495e; // Change brand dark background color to dark grey
+$brand-dark-text: #ecf0f1; // Change brand dark text color to light grey
+$brand-light-codeblock-bg: #ecf0f1; // Change brand light codeblock background color to light grey
+$brand-light-codeblock-text: #2c3e50; // Change brand light codeblock text color to dark blue
+$brand-dark-codeblock-bg: #2c3e50; // Change brand dark codeblock background color to dark blue
+$brand-dark-codeblock-text: #ecf0f1; // Change brand dark codeblock text color to light grey
+
+$header-btn-color--light: #c0392b; // Change header button color for light theme to red
+$header-btn-hover-color--light: #e74c3c; // Change header button hover color for light theme to red
+$header-btn-color--dark: #c0392b; // Change header button color for dark theme to purple
+$header-btn-hover-color--dark: #e74c3c; // Change header button hover color for dark theme to purple
+
+$light-pill: $brand-light;
+$light-text: $brand-light-text;
+$light-bg: $brand-light-bg;
+
+$dark-pill: scale-color($brand-dark, $lightness: 20%);
+$dark-text: $brand-dark-text;
+$dark-bg: $brand-dark-bg;
+
+$separator-color: $brand-accent;
+$separrator-color-dark: $brand-accent;
+
+$font-size: 16px;
+$font-size-brand: 16px;
+$font-weight-brand: 500;
+$font-weight-technical: 400;
+$letter-spacing-brand: 0.7px;
+
+$font-family-technical:
+  'Roboto',
+  -apple-system,
+  Avenir,
+  BlinkMacSystemFont,
+  'Segoe UI',
+  Helvetica,
+  Arial,
+  sans-serif;
+$font-family-examples: $font-family-technical;
+$font-family-brand: 'Montserrat', $font-family-technical;
+
+$shadow--large: 0 24px 24px 0 rgba(0, 179, 255, 0.24);
+$shadow--medium: 0 6px 6px 0 rgba($brand-primary, 0.38);
+$shadow--small: 0 6px 6px 0 rgba($brand-primary, 0.28);
+
+// also update QHeader :height-hint
+$header-height: 55px;
+$header-transition: 0.6s cubic-bezier(0.25, 0.8, 0.5, 1);
+$header-quick-transition: 0.28s ease-in-out;

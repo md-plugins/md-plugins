@@ -189,7 +189,7 @@ function navigate(path: string) {
 }
 
 .hero {
-  background: linear-gradient(135deg, $brand-primary, #35495e);
+  background: linear-gradient(135deg, $brand-primary, $brand-secondary);
   color: white;
   text-align: center;
   padding: 50px 20px;
@@ -265,7 +265,7 @@ body.body--dark .byline {
   padding: 20px;
   color: white;
   text-decoration: none;
-  background: linear-gradient(135deg, $brand-primary, #35495e);
+  background: linear-gradient(135deg, $brand-primary, $brand-secondary);
   border-radius: 10px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   transition:

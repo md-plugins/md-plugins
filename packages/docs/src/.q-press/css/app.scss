@@ -60,6 +60,20 @@ ul {
   margin: 0 0 16px;
 }
 
+.q-list,
+.q-item {
+  color: $brand-light-text !important;
+  background: $brand-light-bg !important;
+  border-color: rgba(0, 0, 0, 0.28);
+}
+
+.q-list--dark,
+.q-item--dark {
+  color: $brand-dark-text !important;
+  background: $brand-dark-bg !important;
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
 .markdown-token {
   display: inline-block;
   padding: 4px 6px;
@@ -86,9 +100,10 @@ ul {
   }
 
   &:not(.markdown-note--tip, .markdown-note--warning, .markdown-note--danger) {
-    background-color: $grey-2;
+    color: $brand-light-text;
+    background-color: $brand-light-bg;
     border-color: $separator-color;
-    .markdown-note__title,
+    // .markdown-note__title,
     .markdown-link,
     .markdown-token {
       color: $brand-primary;
@@ -99,6 +114,7 @@ ul {
   }
 
   &--tip {
+    color: scale-color($positive, $lightness: -40%) !important;
     background-color: scale-color($positive, $lightness: 85%);
     border-color: $positive;
     .markdown-note__title,
@@ -112,6 +128,7 @@ ul {
   }
 
   &--warning {
+    color: scale-color($warning, $lightness: -40%);
     background-color: scale-color($warning, $lightness: 85%);
     border-color: scale-color($warning, $lightness: -30%);
     .markdown-note__title,
@@ -125,6 +142,7 @@ ul {
   }
 
   &--danger {
+    color: scale-color($negative, $lightness: -40%);
     background-color: scale-color($negative, $lightness: 90%);
     border-color: $negative;
     .markdown-note__title,
@@ -517,8 +535,8 @@ $letter-spacing-list: 40, 100, 225, 263, 300, 375, 450;
 
 body.body--dark {
   .markdown-technical {
-    color: $dark-text;
-    background: #080e1a;
+    color: $brand-dark-text;
+    background: $brand-dark-bg;
   }
 
   .header-btn {
@@ -541,7 +559,7 @@ body.body--dark {
   .markdown-heading .q-badge,
   .header-badge {
     color: $brand-primary;
-    background: $dark-codeblock-bg;
+    background: $brand-dark-codeblock-bg;
   }
 
   .markdown-img {
@@ -552,7 +570,7 @@ body.body--dark {
   .markdown-note {
     &:not(.markdown-note--tip):not(.markdown-note--warning):not(.markdown-note--danger) {
       background-color: $dark-pill;
-      border-color: scale-color($brand-primary, $lightness: -50%);
+      border-color: scale-color($dark-pill, $lightness: 50%);
       .markdown-token {
         border-color: #ddd;
         color: #ddd;

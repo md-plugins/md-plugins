@@ -15,25 +15,30 @@ $brand-accent: #ea5e13;
 $brand-dark: #2c3e50;
 $brand-light: #f5f5f5;
 $brand-medium: #6b7f86;
+$brand-light-text: #4d4d4d;
+$brand-light-bg: #fefefe;
+$brand-dark-bg: #080e1a;
+$brand-dark-text: #cbcbcb;
+$brand-light-codeblock-bg: #f5f5f5;
+$brand-light-codeblock-text: #4d4d4d;
+$brand-dark-codeblock-bg: #121212;
+$brand-dark-codeblock-text: #e6e6e6;
 
 $header-btn-color--light: #757575;
 $header-btn-hover-color--light: #212121; // $grey-10
 $header-btn-color--dark: #929397;
 $header-btn-hover-color--dark: #fff;
 
-$light-pill: #f5f5f5; // $grey-2
-$light-text: #4d4d4d;
-$light-bg: #fefefe;
+$light-pill: $brand-light;
+$light-text: $brand-light-text;
+$light-bg: $brand-light-bg;
 
 $dark-pill: scale-color($brand-primary, $lightness: -80%);
-$dark-text: #cbcbcb;
-$dark-bg: $brand-dark;
+$dark-text: $brand-dark-text;
+$dark-bg: $brand-dark-bg;
 
-$light-codeblock-bg: #f5f5f5;
-$light-codeblock-text: #4d4d4d;
-
-$dark-codeblock-bg: #121212;
-$dark-codeblock-text: #e6e6e6;
+$separator-color: $brand-accent;
+$separrator-color-dark: $brand-accent;
 
 $font-size: 16px;
 $font-size-brand: 16px;
