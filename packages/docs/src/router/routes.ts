@@ -1,4 +1,3 @@
-import type { RouteRecordRaw } from 'vue-router'
 import mdPageList from 'src/markdown/listing'
 
 // const routeMap = {
@@ -8,7 +7,7 @@ import mdPageList from 'src/markdown/listing'
 //   },
 // }
 
-const routes: RouteRecordRaw[] = [
+const routes = [
   {
     path: '/',
     component: () => import('src/.q-press/layouts/MarkdownLayout.vue'),
@@ -16,22 +15,18 @@ const routes: RouteRecordRaw[] = [
       // Include the Landing Page route first
       ...Object.entries(mdPageList)
         .filter(([key]) => key.includes('landing-page.md'))
-        .map(
-          ([_key, component]) =>
-            ({
-              path: '',
-              name: 'Landing Page',
-              component,
-              meta: { fullscreen: true, dark: true },
-            }) as RouteRecordRaw,
-        ),
+        .map(([_key, component]) => ({
+          path: '',
+          name: 'Landing Page',
+          component,
+          meta: { fullscreen: true, dark: true },
+        })),
 
       // Now include all other routes, excluding the landing-page
       ...Object.keys(mdPageList)
         .filter((key) => !key.includes('landing-page.md')) // Exclude duplicates
         .map((key) => {
-          // @ts-expect-error Jeff - fix later
-          const acc: RouteRecordRaw = {
+          const acc = {
             path: '',
             component: mdPageList[key],
           }
