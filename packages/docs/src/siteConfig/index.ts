@@ -148,7 +148,7 @@ const footerLinks = [
 
 const gettingStartedMenu = {
   name: 'Getting Started',
-  mq: 430, // media query breakpoint
+  mq: 470, // media query breakpoint
   children: [{ name: 'Introduction', path: '/getting-started/introduction' }],
 }
 
@@ -242,7 +242,7 @@ const mdPluginsMenu = {
 
 const vitePluginsMenu = {
   name: 'Vite Plugins',
-  mq: 750, // media query breakpoint
+  mq: 780, // media query breakpoint
   children: [
     {
       name: 'viteMdPlugin',
@@ -263,7 +263,7 @@ const vitePluginsMenu = {
 
 const QuasarAppExts = {
   name: 'Quasar App Extensions',
-  mq: 900, // media query breakpoint
+  mq: 1020, // media query breakpoint
   children: [
     {
       name: 'viteMdPluginAppExt',
@@ -284,7 +284,7 @@ const QuasarAppExts = {
 
 const guidesMenu = {
   name: 'Guides',
-  mq: 860, // media query breakpoint
+  mq: 1100, // media query breakpoint
   children: [
     {
       name: 'FAQ',
@@ -299,7 +299,7 @@ const guidesMenu = {
 
 const otherMenu = {
   name: 'Other',
-  mq: 1000, // media query breakpoint
+  mq: 1190, // media query breakpoint
   children: [
     {
       name: 'Releases',
