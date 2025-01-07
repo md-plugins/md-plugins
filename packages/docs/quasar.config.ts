@@ -7,11 +7,14 @@ import type { Plugin } from 'vite'
 import { viteMdPlugin, type MenuItem } from '@md-plugins/vite-md-plugin'
 import { viteExamplesPlugin, viteManualChunks } from '@md-plugins/vite-examples-plugin'
 
+import siteConfig from './src/siteConfig'
+const { sidebar } = siteConfig
+
 export default defineConfig(async (ctx) => {
   // console.log('ctx', ctx)
   // Dynamically import siteConfig
-  const siteConfig = await import('./src/siteConfig')
-  const { sidebar } = siteConfig
+  // const siteConfig = await import('./src/siteConfig')
+  // const { sidebar } = siteConfig
 
   return {
     // https://v2.quasar.dev/quasar-cli-vite/prefetch-feature
