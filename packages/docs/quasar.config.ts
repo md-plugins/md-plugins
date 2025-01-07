@@ -11,7 +11,7 @@ export default defineConfig(async (ctx) => {
   // console.log('ctx', ctx)
   // Dynamically import siteConfig
   const siteConfig = await import('./src/siteConfig')
-  const { sidebar } = siteConfig.default
+  const { sidebar } = siteConfig
 
   return {
     // https://v2.quasar.dev/quasar-cli-vite/prefetch-feature
