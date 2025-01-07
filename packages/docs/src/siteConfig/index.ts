@@ -1,6 +1,6 @@
 import { fabGithub, fabXTwitter } from '@quasar/extras/fontawesome-v6'
 import { slugify } from '@md-plugins/shared'
-import { version } from '../../../../package.json'
+import { version } from 'src/../package.json'
 
 export interface SocialLink {
   name: string
@@ -353,7 +353,23 @@ export const moreLinks = [
   },
 ]
 
-export default {
+export const sidebar = [
+  {
+    name: gettingStartedMenu.name,
+    path: slugify(gettingStartedMenu.name),
+    expanded: false,
+    children: gettingStartedMenu.children.map((item) => ({
+      name: item.name,
+      path: slugify(item.name),
+    })),
+  },
+  processedMdPluginsMenu,
+  processedVitePluginsMenu,
+  processedQuasarAppExts,
+  processedGuidesMenu,
+]
+
+const config = {
   lang: 'en-US',
   title: '@md-plugins',
   description:
@@ -415,19 +431,8 @@ export default {
     footerLinks: [...footerLinks] as SiteMenuItem[],
     socialLinks: [...socialLinks.children] as SocialLink[],
   },
-  sidebar: [
-    {
-      name: gettingStartedMenu.name,
-      path: slugify(gettingStartedMenu.name),
-      expanded: false,
-      children: gettingStartedMenu.children.map((item) => ({
-        name: item.name,
-        path: slugify(item.name),
-      })),
-    },
-    processedMdPluginsMenu,
-    processedVitePluginsMenu,
-    processedQuasarAppExts,
-    processedGuidesMenu,
-  ],
+  sidebar,
 } as SiteConfig
+
+export { sidebar as menu }
+export default config
