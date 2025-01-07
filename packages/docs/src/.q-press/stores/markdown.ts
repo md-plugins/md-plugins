@@ -1,6 +1,6 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
 import { useRoute } from 'vue-router'
-import { useScroll } from 'src/composables/scroll'
+import { useScroll } from '../composables/scroll'
 import { useQuasar } from 'quasar'
 import type { TocItem } from '@md-plugins/md-plugin-headers'
 

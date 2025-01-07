@@ -99,7 +99,7 @@ import MarkdownLink from '../components/MarkdownLink.vue'
 import MarkdownPageToc from './MarkdownPageToc.vue'
 
 import getMeta from '../assets/get-meta'
-import { useMarkdownStore } from '../../stores/markdown'
+import { useMarkdownStore } from '../stores/markdown'
 import siteConfig from '../../siteConfig'
 
 const props = defineProps({

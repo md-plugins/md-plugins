@@ -1,7 +1,7 @@
 import { scroll } from 'quasar'
 import { watch, onMounted, onBeforeUnmount } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { useMarkdownStore } from 'src/stores/markdown'
+import { useMarkdownStore } from '../stores/markdown'
 const { setVerticalScrollPosition, getVerticalScrollPosition } = scroll
 
 export function useScroll() {

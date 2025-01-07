@@ -188,8 +188,8 @@ import MarkdownHeaderTextLinks from './MarkdownHeaderTextLinks.vue'
 import MarkdownHeaderIconLinks from './MarkdownHeaderIconLinks.vue'
 
 import { useRoute } from 'vue-router'
-import { useMarkdownStore } from 'src/stores/markdown'
-import { useDark } from 'src/composables/dark'
+import { useMarkdownStore } from 'src/.q-press/stores/markdown'
+import { useDark } from '../composables/dark'
 
 const markdownStore = useMarkdownStore()
 const route = useRoute()
