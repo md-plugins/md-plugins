@@ -65,7 +65,7 @@ const menu = [] // Define your navigation menu structure here
 const basePath = '/docs' // Base path prefix
 
 export default defineConfig({
-  plugins: [vue(), viteMdPlugin(basePath, menu)],
+  plugins: [vue(), viteMdPlugin({ path: basePath, menu })],
 })
 ```
 
@@ -94,7 +94,13 @@ build: {
   },
 
   vitePlugins: [
-    viteMdPlugin(ctx.appPaths.srcDir + '/markdown', menu),
+    [
+      viteMdPlugin,
+      {
+        path: ctx.appPaths.srcDir + '/markdown',
+        menu: sidebar as MenuItem[],
+      },
+    ],
     // ...
   ],
 },

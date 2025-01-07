@@ -4,14 +4,14 @@
 import { defineConfig } from '#q-app/wrappers'
 import type { Plugin } from 'vite'
 
-import siteConfig from './src/siteConfig'
-const { sidebar } = siteConfig
-
 import { viteMdPlugin, type MenuItem } from '@md-plugins/vite-md-plugin'
 import { viteExamplesPlugin, viteManualChunks } from '@md-plugins/vite-examples-plugin'
 
-export default defineConfig((ctx) => {
+export default defineConfig(async (ctx) => {
   // console.log('ctx', ctx)
+  // Dynamically import siteConfig
+  const siteConfig = await import('./src/siteConfig')
+  const { sidebar } = siteConfig.default
 
   return {
     // https://v2.quasar.dev/quasar-cli-vite/prefetch-feature
@@ -86,7 +86,13 @@ export default defineConfig((ctx) => {
       },
 
       vitePlugins: [
-        viteMdPlugin(ctx.appPaths.srcDir + '/markdown', sidebar as MenuItem[]),
+        [
+          viteMdPlugin,
+          {
+            path: ctx.appPaths.srcDir + '/markdown',
+            menu: sidebar as MenuItem[],
+          },
+        ],
         viteExamplesPlugin(ctx.prod, ctx.appPaths.srcDir + '/examples') as unknown as Plugin,
         [
           'vite-plugin-checker',

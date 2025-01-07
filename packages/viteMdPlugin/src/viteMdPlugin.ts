@@ -1,5 +1,5 @@
 import type { Plugin, ViteDevServer, ModuleNode } from 'vite'
-import type { MenuItem } from './types'
+import type { MenuItem, UserConfig } from './types'
 import { mdParse } from './md-parse'
 
 // Regex to match markdown files
@@ -17,11 +17,9 @@ let globalPrefix: string = ''
  * @throws Will throw an error if the markdown transformation process fails.
  */
 function transform(code: string, id: string): string | null {
-  // Skip files that are not markdown
   if (!mdRE.test(id)) return null
 
   try {
-    // Transform markdown to Vue SFC
     const result = mdParse(code, id, globalPrefix, globalMenu)
     return result.code
   } catch (err) {
@@ -43,8 +41,6 @@ function hotUpdate({
   modules: Array<any>
   timestamp: number
 }) {
-  // console.log('hotUpdate', file)
-  // console.log('modules', modules)
   if (mdRE.test(file)) {
     const invalidatedModules = new Set<ModuleNode>()
     for (const mod of modules) {
@@ -52,9 +48,8 @@ function hotUpdate({
     }
     server.ws.send({
       type: 'full-reload',
-      path: file, // '*',
+      path: file,
     })
-    // console.log('Invalidated modules', Array.from(invalidatedModules))
   }
   return []
 }
@@ -64,12 +59,11 @@ function hotUpdate({
  * This plugin is configured with a path prefix and a navigation menu structure.
  */
 const mdPlugins: Plugin = {
-  name: 'md-plugins:vitePlugin',
-  enforce: 'pre', // before vue
+  name: '@md-plugins/vite-md-plugin',
+  enforce: 'pre',
 
   transform,
 
-  // handleHotUpdate,
   hotUpdate,
 }
 
@@ -81,9 +75,22 @@ const mdPlugins: Plugin = {
  * @param menu - An array of MenuItem objects representing the navigation menu structure.
  * @returns A Vite plugin object with pre-configured settings for Markdown processing.
  */
-export function viteMdPlugin(path: string, menu: MenuItem[]): Plugin {
+function viteMdPlugin2(path: string, menu: MenuItem[]): Plugin {
   globalMenu = menu
   globalPrefix = path
 
   return mdPlugins
+}
+
+/**
+ * Creates a Vite plugin for processing Markdown files based on the provided user configuration.
+ * This function configures and returns a plugin that transforms Markdown content into Vue Single File Components (SFCs).
+ *
+ * @param userConfig - The configuration object for the Vite Markdown plugin.
+ * @param userConfig.path - The base path prefix to be used for routing or file resolution.
+ * @param userConfig.menu - An array of MenuItem objects representing the navigation menu structure.
+ * @returns A Vite Plugin object pre-configured with the provided settings for Markdown processing.
+ */
+export function viteMdPlugin(userConfig: UserConfig): Plugin {
+  return viteMdPlugin2(userConfig.path, userConfig.menu)
 }

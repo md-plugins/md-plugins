@@ -37,3 +37,8 @@ export interface RelatedItem {
   category: string
   path: string
 }
+
+export interface UserConfig {
+  path: string
+  menu: MenuItem[]
+}

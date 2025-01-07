@@ -24,14 +24,12 @@ interface MenuItem {
   external?: boolean
   expanded?: boolean
 }
-
 interface MenuNode {
   name: string
   path?: string
   external?: boolean
   children?: MenuNode[]
 }
-
 interface FlatMenuEntry {
   name: string
   category: string | null
@@ -39,28 +37,30 @@ interface FlatMenuEntry {
   prev?: FlatMenuEntry
   next?: FlatMenuEntry
 }
-
 type FlatMenu = Record<string, FlatMenuEntry>
-
 interface NavItem extends FlatMenuEntry {
   classes: string
 }
-
 interface RelatedItem {
   name: string
   category: string
   path: string
 }
+interface UserConfig {
+  path: string
+  menu: MenuItem[]
+}
 
 /**
- * Creates a Vite plugin for processing Markdown files.
- * This plugin transforms Markdown content into Vue Single File Components (SFCs).
+ * Creates a Vite plugin for processing Markdown files based on the provided user configuration.
+ * This function configures and returns a plugin that transforms Markdown content into Vue Single File Components (SFCs).
  *
- * @param path - The base path prefix to be used for routing or file resolution.
- * @param menu - An array of MenuItem objects representing the navigation menu structure.
- * @returns A Vite plugin object with pre-configured settings for Markdown processing.
+ * @param userConfig - The configuration object for the Vite Markdown plugin.
+ * @param userConfig.path - The base path prefix to be used for routing or file resolution.
+ * @param userConfig.menu - An array of MenuItem objects representing the navigation menu structure.
+ * @returns A Vite Plugin object pre-configured with the provided settings for Markdown processing.
  */
-declare function viteMdPlugin(path: string, menu: MenuItem[]): Plugin
+declare function viteMdPlugin(userConfig: UserConfig): Plugin
 
 export {
   type FlatMenu,
@@ -69,6 +69,7 @@ export {
   type MenuNode,
   type NavItem,
   type RelatedItem,
+  type UserConfig,
   viteMdPlugin,
 }
 ```
@@ -84,13 +85,13 @@ By default, the `viteMdPlugin` processes Markdown files and applies the configur
 ```typescript
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import { viteMdPlugin } from '@md-plugins/vite-md-plugin'
+import { viteMdPlugin, type MenuItem } from '@md-plugins/vite-md-plugin'
 
 const menu = [] // Define your navigation menu structure here
 const basePath = '/docs' // Base path prefix
 
 export default defineConfig({
-  plugins: [vue(), viteMdPlugin(basePath, menu)],
+  plugins: [vue(), viteMdPlugin({ path: basePath, menu })],
 })
 ```
 
@@ -114,7 +115,13 @@ export default defineConfig((ctx) => {
     },
 
     vitePlugins: [
-      viteMdPlugin(ctx.appPaths.srcDir + '/markdown', menu),
+      [
+        viteMdPlugin,
+        {
+          path: ctx.appPaths.srcDir + '/markdown',
+          menu: sidebar as MenuItem[],
+        },
+      ],
       // ...
     ],
   },
