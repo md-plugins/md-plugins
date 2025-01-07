@@ -5,12 +5,16 @@
   <img src="https://raw.githubusercontent.com/md-plugins/md-plugins/refs/heads/main/media/markdown-1024x1024.png" alt="md-plugins - Collection of Markdown-it! plugins for Vue and Quasar" width="300" style="border-radius: 50%;">
 </a>
 <br>
-Collection of Markdown-it! plugins for Vue and Quasar
+A collection of Markdown-it! plugins, Vite plugins, and App Extensions for Vue and Quasar.
 </p>
 
 **NOTE:** This monorepo is currently under development and not yet ready for production use.
 
-A collection of **Markdown-It plugins** and utilities designed for enhanced Markdown processing. This monorepo contains various plugins for handling specific Markdown features, as well as a Vite plugin for transforming Markdown into Vue Single File Components (SFCs) and another Vite pluin for handling raw SFC content.
+A collection of **Markdown-It plugins** and utilities designed for enhanced Markdown processing. This monorepo contains various plugins for handling specific Markdown features.
+
+A collection of **Vite plugins** for transforming Markdown into Vue Single File Components (SFCs) and for handling raw SFC content.
+
+A collection of **App Extensions** for Quasar Framework, providing enhanced Markdown support for Quasar applications.
 
 Inspired by [Quasar Framework](https://quasar.dev) documentation and [mdit-vue](https://github.com/mdit-vue/mdit-vue), this project aims to provide a comprehensive set of tools for working with Markdown content.
 
@@ -47,6 +51,8 @@ This monorepo provides:
 | `@md-plugins/shared`                | Shared utilities and types for the plugins.                                                                          | [README](packages/shared/README.md)                |
 | `viteMdPlugin`                      | Vite plugin for transforming Markdown into Vue SFCs.                                                                 | [README](packages/viteMdPlugin/README.md)          |
 | `viteExamplesPlugin`                | Vite plugin for loading and transforming example components and their raw source code for usage in your application. | [README](packages/viteExamplesPlugin/README.md)    |
+| `@md-plugins/vite-md-plugin`        | Quasar app extension for enhanced Markdown support in Quasar Applications.                                           | [README](packages/viteMdPluginAppExt/README.md)    |
+| `@md-plugins/qPress`                | The Ultimate Markdown Solution for Quasar Framework Applications.                                                    | [README](packages/qPress/README.md)                |
 
 ## Installation
 
