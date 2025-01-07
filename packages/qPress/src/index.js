@@ -6,10 +6,10 @@
  * Docs: https://quasar.dev/app-extensions/development-guide/index-api
  */
 
-import fse from 'fs-extra'
-import { viteMdPlugin } from '@md-plugins/vite-md-plugin'
+// import fse from 'fs-extra'
+// import { viteMdPlugin } from '@md-plugins/vite-md-plugin'
 
-async function extendConfig(config, api) {
+async function extendConfig(config /*, api*/) {
   // console.log('config', config)
   // console.log('api', api)
 
