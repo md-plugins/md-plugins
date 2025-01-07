@@ -281,6 +281,61 @@ importers:
         specifier: ^14.1.2
         version: 14.1.2
 
+  packages/qPress:
+    dependencies:
+      '@md-plugins/md-plugin-blockquote':
+        specifier: workspace:*
+        version: link:../md-plugin-blockquote
+      '@md-plugins/md-plugin-codeblocks':
+        specifier: workspace:*
+        version: link:../md-plugin-codeblocks
+      '@md-plugins/md-plugin-containers':
+        specifier: workspace:*
+        version: link:../md-plugin-containers
+      '@md-plugins/md-plugin-frontmatter':
+        specifier: workspace:*
+        version: link:../md-plugin-frontmatter
+      '@md-plugins/md-plugin-headers':
+        specifier: workspace:*
+        version: link:../md-plugin-headers
+      '@md-plugins/md-plugin-image':
+        specifier: workspace:*
+        version: link:../md-plugin-image
+      '@md-plugins/md-plugin-imports':
+        specifier: workspace:*
+        version: link:../md-plugin-imports
+      '@md-plugins/md-plugin-inlinecode':
+        specifier: workspace:*
+        version: link:../md-plugin-inlinecode
+      '@md-plugins/md-plugin-link':
+        specifier: workspace:*
+        version: link:../md-plugin-link
+      '@md-plugins/md-plugin-table':
+        specifier: workspace:*
+        version: link:../md-plugin-table
+      '@md-plugins/md-plugin-title':
+        specifier: workspace:*
+        version: link:../md-plugin-title
+      '@md-plugins/shared':
+        specifier: workspace:*
+        version: link:../shared
+      '@md-plugins/vite-md-plugin':
+        specifier: workspace:*
+        version: link:../viteMdPlugin
+    devDependencies:
+      '@types/markdown-it':
+        specifier: ^14.1.2
+        version: 14.1.2
+      fs-extra:
+        specifier: ^11.2.0
+        version: 11.2.0
+      markdown-it:
+        specifier: ^14.1.0
+        version: 14.1.0
+      vite:
+        specifier: ^6.0.7
+        version: 6.0.7(@types/node@22.10.5)(jiti@2.4.2)(sass-embedded@1.83.0)(terser@5.37.0)
+
   packages/shared:
     dependencies:
       markdown-it:
@@ -2927,6 +2982,7 @@ packages:
   rollup-plugin-visualizer@5.13.1:
     resolution: {integrity: sha512-vMg8i6BprL8aFm9DKvL2c8AwS8324EgymYQo9o6E26wgVvwMhsJxS37aNL6ZsU7X9iAcMYwdME7gItLfG5fwJg==}
     engines: {node: '>=18'}
+    deprecated: Contains unintended breaking changes
     hasBin: true
     peerDependencies:
       rolldown: 1.x
