@@ -1,6 +1,6 @@
 import { fabGithub, fabXTwitter } from '@quasar/extras/fontawesome-v6'
 import { slugify } from '@md-plugins/shared'
-import { version } from '../../package.json'
+import { version, productName } from '../../package.json'
 
 export interface SocialLink {
   name: string
@@ -371,7 +371,7 @@ export const sidebar = [
 
 const config = {
   lang: 'en-US',
-  title: '@md-plugins',
+  title: productName,
   description:
     'MD-Plugins is a collection of Markdown and Vite plugins that make it easy to build markdown user interfaces in Vue and Quasar applications.',
   theme: 'doc',
