@@ -1,6 +1,6 @@
 import { fabGithub, fabXTwitter } from '@quasar/extras/fontawesome-v6'
 import { slugify } from '@md-plugins/shared'
-import { version } from 'src/../package.json'
+import { version } from '../../package.json'
 
 export interface SocialLink {
   name: string
