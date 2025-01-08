@@ -1,6 +1,6 @@
 import { fabGithub, fabXTwitter } from '@quasar/extras/fontawesome-v6'
 import { slugify } from '@md-plugins/shared'
-import { version } from 'src/../package.json'
+import { version } from '../../package.json'
 
 export interface SocialLink {
   name: string
@@ -353,7 +353,23 @@ export const moreLinks = [
   },
 ]
 
-export default {
+export const sidebar = [
+  {
+    name: gettingStartedMenu.name,
+    path: slugify(gettingStartedMenu.name),
+    expanded: false,
+    children: gettingStartedMenu.children.map((item) => ({
+      name: item.name,
+      path: slugify(item.name),
+    })),
+  },
+  processedMdPluginsMenu,
+  processedVitePluginsMenu,
+  processedQuasarAppExts,
+  processedGuidesMenu,
+]
+
+const config = {
   lang: 'en-US',
   title: '@md-plugins',
   description:
@@ -361,7 +377,7 @@ export default {
   theme: 'doc',
   version: version,
   copyright: {
-    line1: `Copyright © 2020-${new Date().getFullYear()} MD-PLUGINS`,
+    line1: `Copyright © 2024-${new Date().getFullYear()} MD-PLUGINS`,
     line2: '',
   } as CopyrightConfig,
   githubEditRoot: 'https://github.com/md-plugins/md-plugins/edit/dev/packages/docs/src/markdown/',
@@ -415,19 +431,8 @@ export default {
     footerLinks: [...footerLinks] as SiteMenuItem[],
     socialLinks: [...socialLinks.children] as SocialLink[],
   },
-  sidebar: [
-    {
-      name: gettingStartedMenu.name,
-      path: slugify(gettingStartedMenu.name),
-      expanded: false,
-      children: gettingStartedMenu.children.map((item) => ({
-        name: item.name,
-        path: slugify(item.name),
-      })),
-    },
-    processedMdPluginsMenu,
-    processedVitePluginsMenu,
-    processedQuasarAppExts,
-    processedGuidesMenu,
-  ],
+  sidebar,
 } as SiteConfig
+
+export { sidebar as menu }
+export default config
