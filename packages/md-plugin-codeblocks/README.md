@@ -90,12 +90,14 @@ The `md-plugin-codeblocks` plugin supports the following options:
 
 The plugin supports magic comments for inline annotations:
 
+````markup
 ```js [numbered]
 // All lines will be numbered
 console.log('Line 1')
 console.log('Line 2')
 console.log('Line 3')
 ```
+````
 
 ### Line Highlighting and Annotations
 
