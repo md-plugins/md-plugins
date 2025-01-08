@@ -76,18 +76,27 @@
         <p>{{ plugin.desc }}</p>
       </div>
     </main>
-    <!--
+    <div class="row justify-center hero">
+      <div class="hero-title">Quasar App Extensions</div>
+    </div>
     <main class="content">
-      <q-card v-for="section in sections" :key="section.title" flat class="section">
-        <h2 class="text-h2">{{ section.title }}</h2>
-        <ul>
-          <li v-for="link in section.links" :key="link.text">
-            <router-link :to="link.url">{{ link.text }}</router-link>
-          </li>
-        </ul>
-      </q-card>
+      <div v-for="ext in appExtensions" :key="ext.name" class="section" @click="navigate(ext.path)">
+        <h2>{{ ext.name }}</h2>
+        <p>{{ ext.desc }}</p>
+      </div>
     </main>
-     -->
+    <q-separator />
+    <div class="byline">
+      <p>
+        Don't forget to check out the Q-Press app extension for Quasar to create beautiful
+        documentation sites.
+      </p>
+      <p>
+        This site is built with Q-Press! Install it, set it up, choose a theme and start your own
+        site!
+      </p>
+    </div>
+    <q-separator />
     <div class="byline">
       <p>
         We hope you find this documentation helpful. If you have any questions or need further
@@ -174,6 +183,19 @@ const vitePlugins = [
     name: 'Vite Examples Plugin',
     desc: 'Adds support for importing Vue files as raw source.',
     path: '/vite-plugins/viteexamplesplugin/overview',
+  },
+]
+
+const appExtensions = [
+  {
+    name: 'viteMdPluginAppExt',
+    desc: 'Adds support for creating Vue SFCs from Markdown files.',
+    path: '/quasar-app-extensions/vitemdpluginappext/overview',
+  },
+  {
+    name: 'Q-Press (app-ext)',
+    desc: 'Create beautiful documentation sites with Q-Press.',
+    path: '/quasar-app-extensions/qpress/overview',
   },
 ]
 
