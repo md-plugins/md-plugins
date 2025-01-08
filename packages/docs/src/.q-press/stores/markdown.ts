@@ -1,7 +1,6 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
 import { useRoute } from 'vue-router'
 import { useScroll } from '../composables/scroll'
-import { useQuasar } from 'quasar'
 import type { TocItem } from '@md-plugins/md-plugin-headers'
 
 export const useMarkdownStore = defineStore('markdown-store', {
@@ -20,20 +19,6 @@ export const useMarkdownStore = defineStore('markdown-store', {
     activeTocIndex: (state) => state.toc.findIndex((section) => section.id === state.activeToc),
   },
   actions: {
-    initDarkMode(): void {
-      const $q = useQuasar()
-      this.dark = $q.cookies.get('theme') !== 'light'
-    },
-    toggleDark() {
-      const $q = useQuasar()
-      const val = (this.dark = this.dark === false)
-      $q.cookies.set('theme', val ? 'dark' : 'light', {
-        path: '/',
-        sameSite: 'Strict',
-        expires: 400,
-      })
-    },
-
     toggleMenuDrawer() {
       this.menuDrawer = this.menuDrawer === false
     },
