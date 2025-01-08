@@ -377,7 +377,7 @@ const config = {
   theme: 'doc',
   version: version,
   copyright: {
-    line1: `Copyright © 2020-${new Date().getFullYear()} MD-PLUGINS`,
+    line1: `Copyright © 2024-${new Date().getFullYear()} MD-PLUGINS`,
     line2: '',
   } as CopyrightConfig,
   githubEditRoot: 'https://github.com/md-plugins/md-plugins/edit/dev/packages/docs/src/markdown/',
