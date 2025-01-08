@@ -1,8 +1,8 @@
 {
-  "name": "docs",
-  "version": "0.1.0-alpha.7",
+  "name": "mdplugins_docs",
+  "version": "0.1.0-alpha.8",
   "description": "Docs site for @md-plugins",
-  "productName": "@md-plugins docs",
+  "productName": "@md-plugins",
   "author": "Jeff <galbraith64@gmail.com>",
   "type": "module",
   "private": true,
