@@ -29,14 +29,42 @@ pnpm add @md-plugins/md-plugin-containers
 ```js
 import MarkdownIt from 'markdown-it'
 import { containersPlugin } from '@md-plugins/md-plugin-containers'
+import container from 'markdown-it-container'
 
 const md = new MarkdownIt()
-md.use(containersPlugin, {
-  containers: [
-    { type: 'note', defaultTitle: 'Note' },
-    { type: 'warning', defaultTitle: 'Warning' },
-  ],
-})
+
+const containers = [
+  { type: 'warning', defaultTitle: 'Warning' },
+  { type: 'tip', defaultTitle: 'Tip' },
+  { type: 'details', defaultTitle: 'Details' },
+]
+
+function createContainer(container, containerType, defaultTitle) {
+  const containerTypeLen = containerType.length
+
+  return [
+    container,
+    containerType,
+    {
+      render(tokens, idx) {
+        const token = tokens[idx]
+        const title = token.info.trim().slice(containerTypeLen).trim() || defaultTitle
+
+        if (containerType === 'details') {
+          return token.nesting === 1
+            ? `<details class="markdown-note markdown-note--${containerType}"><summary class="markdown-note__title">${title}</summary>\n`
+            : '</details>\n'
+        }
+
+        return token.nesting === 1
+          ? `<div class="markdown-note markdown-note--${containerType}"><p class="markdown-note__title">${title}</p>\n`
+          : '</div>\n'
+      },
+    },
+  ]
+}
+
+md.use(containersPlugin, containers, createContainer)
 
 const markdownContent = `
 :::note
@@ -81,35 +109,30 @@ The `md-plugin-containers` plugin supports the following options:
 You can define custom containers with their own styles or components:
 
 ```js
-md.use(containersPlugin, {
-  containers: [
-    { type: 'tip', defaultTitle: 'Tip' },
-    { type: 'important', defaultTitle: 'Important' },
-  ],
-})
-```
+function createContainer(container, containerType, defaultTitle) {
+  const containerTypeLen = containerType.length
 
-## Advanced Usage
+  return [
+    container,
+    containerType,
+    {
+      render(tokens, idx) {
+        const token = tokens[idx]
+        const title = token.info.trim().slice(containerTypeLen).trim() || defaultTitle
 
-### Custom Rendering Logic
+        if (containerType === 'details') {
+          return token.nesting === 1
+            ? `<details class="markdown-note markdown-note--${containerType}"><summary class="markdown-note__title">${title}</summary>\n`
+            : '</details>\n'
+        }
 
-Override the default rendering logic for containers:
-
-```js
-md.use(containersPlugin, {
-  containers: [{ type: 'note', defaultTitle: 'Note' }],
-  render(tokens, idx) {
-    const token = tokens[idx]
-    if (token.nesting === 1) {
-      // Opening tag
-      const title = token.info.trim() || 'Note'
-      return `<div class="custom-note"><strong>${title}:</strong>\n`
-    } else {
-      // Closing tag
-      return `</div>\n`
-    }
-  },
-})
+        return token.nesting === 1
+          ? `<div class="markdown-note markdown-note--${containerType}"><p class="markdown-note__title">${title}</p>\n`
+          : '</div>\n'
+      },
+    },
+  ]
+}
 ```
 
 ## Adding Titles

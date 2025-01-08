@@ -94,7 +94,7 @@ pnpm add @md-plugins/md-plugin-containers
 
 After installing the plugin, you need to configure it in your Markdown-It setup. Here's an example of how to do that:
 
-```javascript
+```js
 import MarkdownIt from 'markdown-it'
 import { containersPlugin } from '@md-plugins/md-plugin-containers'
 import container from 'markdown-it-container'
@@ -150,7 +150,7 @@ The Containers plugin accepts the following options:
 
 For more advanced configurations, you can combine the Containers plugin with other Markdown-It plugins to enhance your Markdown content further. Here's an example:
 
-```javascript
+```js
 import MarkdownIt from 'markdown-it'
 import { containersPlugin } from '@md-plugins/md-plugin-containers'
 import markdownItAnchor from 'markdown-it-anchor'
