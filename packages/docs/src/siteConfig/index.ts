@@ -277,6 +277,8 @@ const QuasarAppExts = {
       children: [
         { name: 'Overview', path: '/quasar-app-extensions/qpress/overview' },
         { name: 'Advanced', path: '/quasar-app-extensions/qpress/advanced' },
+        { name: 'Themes', path: '/quasar-app-extensions/qpress/themes' },
+        { name: 'Components', path: '/quasar-app-extensions/qpress/components' },
       ],
     },
   ],

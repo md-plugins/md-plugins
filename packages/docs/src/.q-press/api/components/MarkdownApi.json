@@ -22,11 +22,6 @@
       "category": "navigation"
     }
   },
-  "slots": {
-    "default": {
-      "desc": "Slot for custom content in the API documentation"
-    }
-  },
   "events": {
     "searchFieldClick": {
       "desc": "Emitted when the search field is clicked",

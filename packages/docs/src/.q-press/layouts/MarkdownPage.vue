@@ -50,7 +50,7 @@
     <slot />
 
     <div class="markdown-page__nav markdown-page__nav--footer" v-if="props.nav">
-      <div class="text-h6 q-pb-md">Ready for more?</div>
+      <div class="text-h6 q-pb-md markdown-heading">Ready for more?</div>
       <div class="q-gutter-sm flex">
         <router-link
           v-for="link in props.nav"

@@ -12,12 +12,5 @@
       ],
       "category": "content"
     }
-  },
-  "slots": {
-    "default": {
-      "desc": "Slot for custom content in the header icon links"
-    }
-  },
-  "events": {},
-  "methods": {}
+  }
 }

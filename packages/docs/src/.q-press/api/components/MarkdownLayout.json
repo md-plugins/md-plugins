@@ -26,11 +26,6 @@
       "category": "state"
     }
   },
-  "slots": {
-    "default": {
-      "desc": "Slot for the main content of the markdown layout"
-    }
-  },
   "events": {
     "scroll": {
       "desc": "Emitted when the page is scrolled",

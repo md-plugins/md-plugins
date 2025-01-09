@@ -1,5 +1,5 @@
 {
-  "type": "module",
+  "type": "plugin",
   "meta": {
     "docsUrl": "https://path-to-your-docs/scroll"
   },
@@ -30,6 +30,5 @@
         }
       }
     }
-  },
-  "types": {}
+  }
 }

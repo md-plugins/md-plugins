@@ -17,12 +17,5 @@
       ],
       "category": "content"
     }
-  },
-  "slots": {
-    "default": {
-      "desc": "Slot for custom content in the footer"
-    }
-  },
-  "events": {},
-  "methods": {}
+  }
 }

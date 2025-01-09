@@ -46,7 +46,7 @@ We will touch on this at a later date.
 :::
 
 ```markdown
-<script import>
+<script import >
 import AvatarApi from 'quasar/dist/api/QAvatar.json'
 </script>
 

@@ -23,11 +23,6 @@
       "category": "content"
     }
   },
-  "slots": {
-    "default": {
-      "desc": "Slot for custom content in the dark mode toggle"
-    }
-  },
   "events": {
     "update:mode": {
       "desc": "Emitted when the mode is toggled",
@@ -38,6 +33,5 @@
         }
       }
     }
-  },
-  "methods": {}
+  }
 }

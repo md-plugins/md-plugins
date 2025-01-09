@@ -29,12 +29,5 @@
       ],
       "category": "content"
     }
-  },
-  "slots": {
-    "default": {
-      "desc": "Slot for custom content inside the installation card"
-    }
-  },
-  "events": {},
-  "methods": {}
+  }
 }

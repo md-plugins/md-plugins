@@ -18,12 +18,5 @@
       "desc": "Flag to indicate if the GitHub button should be hidden",
       "category": "behavior"
     }
-  },
-  "slots": {
-    "default": {
-      "desc": "Slot for custom content inside the example card"
-    }
-  },
-  "events": {},
-  "methods": {}
+  }
 }

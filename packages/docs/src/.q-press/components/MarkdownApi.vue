@@ -363,7 +363,8 @@ const filteredApiCount = computed(() =>
 
 function parseApiFile(name, { type, behavior, meta, addedIn, ...api }) {
   nameBanner.value = `${name} API`
-  apiPath.value = meta.docsUrl.replace(/^https:\/\/v[\d]+\.quasar\.dev/, '')
+  debugger
+  apiPath.value = meta.docsUrl
 
   const { internal: _, ...apiSections } = api
   const tabs = Object.keys(apiSections)

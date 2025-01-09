@@ -29,12 +29,5 @@
       ],
       "category": "style"
     }
-  },
-  "slots": {
-    "default": {
-      "desc": "Slot for custom content in the header text links"
-    }
-  },
-  "events": {},
-  "methods": {}
+  }
 }
