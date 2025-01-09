@@ -363,7 +363,6 @@ const filteredApiCount = computed(() =>
 
 function parseApiFile(name, { type, behavior, meta, addedIn, ...api }) {
   nameBanner.value = `${name} API`
-  debugger
   apiPath.value = meta.docsUrl
 
   const { internal: _, ...apiSections } = api
