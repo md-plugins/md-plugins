@@ -572,7 +572,8 @@ body.body--dark {
   }
 
   .markdown-note {
-    &:not(.markdown-note--tip):not(.markdown-note--warning):not(.markdown-note--danger) {
+    &:not(.markdown-note--tip, .markdown-note--warning, .markdown-note--danger) {
+      color: scale-color($dark-pill, $lightness: 80%);
       background-color: $dark-pill;
       border-color: scale-color($dark-pill, $lightness: 50%);
       .markdown-token {
