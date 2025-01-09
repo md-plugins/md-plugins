@@ -14,6 +14,7 @@ const globalsPath = path.resolve(__dirname, '../../docs/src/q-press.globals.d.ts
 const qPressPath = path.resolve(__dirname, '../../docs/src/.q-press')
 const componentsPath = path.resolve(__dirname, '../../docs/src/components')
 const markdownPath = path.resolve(__dirname, '../../docs/src/markdown')
+const examplesPath = path.resolve(__dirname, '../../docs/src/examples')
 const siteConfigPath = path.resolve(__dirname, '../../docs/src/siteConfig')
 
 // The "update" folder only gets 'q-press.globals.d.ts' and the '_q-press' folder
@@ -28,4 +29,5 @@ fse.copySync(qPressPath, path.join(updatePath, 'src/_q-press'))
 
 fse.copySync(componentsPath, path.join(initPath, 'src/components'))
 fse.copySync(markdownPath, path.join(initPath, 'src/markdown'))
+fse.copySync(examplesPath, path.join(initPath, 'src/examples'))
 fse.copySync(siteConfigPath, path.join(initPath, 'src/siteConfig'))

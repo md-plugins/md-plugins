@@ -22,6 +22,7 @@ The Ultimate Markdown Solution for the Quasar Framework.
   - `src/q-press.global.d.ts`
   - `src/components`
   - `src/markdown`
+  - `src/examples`
   - `src/siteConfig`
 - Here is what gets installed on an **update** install:
   - `src/.q-press`
