@@ -98,6 +98,10 @@ function slugify(str: string): string
 - Converts a string into a URL-friendly slug.
 - Removes special characters and replaces spaces with hyphens.
 
+## Documentation
+
+In case this README falls out of date, please refer to the [documentation](https://md-plugins.netlify.app/md-plugins/shared/overview) for the latest information.
+
 ## License
 
 This package is licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.

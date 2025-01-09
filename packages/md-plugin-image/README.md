@@ -67,6 +67,10 @@ Run the tests to ensure the plugin behaves as expected:
 pnpm test
 ```
 
+## Documentation
+
+In case this README falls out of date, please refer to the [documentation](https://md-plugins.netlify.app/md-plugins/image/overview) for the latest information.
+
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE.md) file for details.

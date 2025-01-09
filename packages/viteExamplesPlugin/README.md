@@ -208,6 +208,10 @@ If the `targetFolder` is not defined when the plugin is initialized, an error wi
 throw new Error('targetFolder is not defined')
 ```
 
+## Documentation
+
+In case this README falls out of date, please refer to the [documentation](https://md-plugins.netlify.app/vite-plugins/viteexamplesplugin/overview) for the latest information.
+
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE.md) file for details.

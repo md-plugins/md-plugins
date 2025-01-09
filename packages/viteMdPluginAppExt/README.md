@@ -79,6 +79,10 @@ The `viteMdPluginAppExt` extension can be customized through various options. He
 - **`viteVuePluginOptions.include`**: Include Markdown files for Vite to transpile.
 - **`framework.autoImportVueExtensions`**: Enable auto-import for Markdown extensions.
 
+## Documentation
+
+In case this README falls out of date, please refer to the [documentation](https://md-plugins.netlify.app/quasar-app-extensions/vitemdpluginappext/overview) for the latest information.
+
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE.md) file for details.

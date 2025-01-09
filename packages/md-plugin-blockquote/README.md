@@ -68,6 +68,10 @@ To run the tests, use the following command:
 pnpm test
 ```
 
+## Documentation
+
+In case this README falls out of date, please refer to the [documentation](https://md-plugins.netlify.app/md-plugins/blockquote/overview) for the latest information.
+
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE.md) file for details.
