@@ -1,4 +1,4 @@
-import { defineBuildConfig } from 'unbuild';
+import { defineBuildConfig } from 'unbuild'
 
 export default defineBuildConfig({
   clean: true,
@@ -9,4 +9,4 @@ export default defineBuildConfig({
     inlineDependencies: false, // Inline all dependencies
   },
   outDir: 'dist', // Explicitly set the output directory if needed
-});
+})

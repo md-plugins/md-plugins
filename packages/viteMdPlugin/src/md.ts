@@ -1,56 +1,56 @@
-import type { Options } from 'markdown-it';
-import type Token from 'markdown-it/lib/token.mjs';
-import MarkdownIt from 'markdown-it';
+import type { Options } from 'markdown-it'
+import type Token from 'markdown-it/lib/token.mjs'
+import MarkdownIt from 'markdown-it'
 
-import type { MarkdownItEnv } from '@md-plugins/shared';
-import { frontmatterPlugin } from '@md-plugins/md-plugin-frontmatter';
-import { importsPlugin } from '@md-plugins/md-plugin-imports';
-import { headersPlugin } from '@md-plugins/md-plugin-headers';
-import { linkPlugin } from '@md-plugins/md-plugin-link';
-import { inlinecodePlugin } from '@md-plugins/md-plugin-inlinecode';
-import { imagePlugin } from '@md-plugins/md-plugin-image';
-import { codeblocksPlugin } from '@md-plugins/md-plugin-codeblocks';
-import { blockquotePlugin } from '@md-plugins/md-plugin-blockquote';
-import { tablePlugin } from '@md-plugins/md-plugin-table';
-import { titlePlugin } from '@md-plugins/md-plugin-title';
+import type { MarkdownItEnv } from '@md-plugins/shared'
+import { frontmatterPlugin } from '@md-plugins/md-plugin-frontmatter'
+import { importsPlugin } from '@md-plugins/md-plugin-imports'
+import { headersPlugin } from '@md-plugins/md-plugin-headers'
+import { linkPlugin } from '@md-plugins/md-plugin-link'
+import { inlinecodePlugin } from '@md-plugins/md-plugin-inlinecode'
+import { imagePlugin } from '@md-plugins/md-plugin-image'
+import { codeblocksPlugin } from '@md-plugins/md-plugin-codeblocks'
+import { blockquotePlugin } from '@md-plugins/md-plugin-blockquote'
+import { tablePlugin } from '@md-plugins/md-plugin-table'
+import { titlePlugin } from '@md-plugins/md-plugin-title'
 import type {
   ContainerDetails,
   CreateContainerFn,
   Container,
   ContainerOptions,
-} from '@md-plugins/md-plugin-containers';
-import { containersPlugin } from '@md-plugins/md-plugin-containers';
-import type { BlockquotePluginOptions } from '@md-plugins/md-plugin-blockquote';
-import type { CodeblockPluginOptions } from '@md-plugins/md-plugin-codeblocks';
-import type { FrontmatterPluginOptions } from '@md-plugins/md-plugin-frontmatter';
-import type { HeadersPluginOptions } from '@md-plugins/md-plugin-headers';
-import type { ImagePluginOptions } from '@md-plugins/md-plugin-image';
-import type { InlineCodePluginOptions } from '@md-plugins/md-plugin-inlinecode';
-import type { LinkPluginOptions } from '@md-plugins/md-plugin-link';
-import type { TablePluginOptions } from '@md-plugins/md-plugin-table';
+} from '@md-plugins/md-plugin-containers'
+import { containersPlugin } from '@md-plugins/md-plugin-containers'
+import type { BlockquotePluginOptions } from '@md-plugins/md-plugin-blockquote'
+import type { CodeblockPluginOptions } from '@md-plugins/md-plugin-codeblocks'
+import type { FrontmatterPluginOptions } from '@md-plugins/md-plugin-frontmatter'
+import type { HeadersPluginOptions } from '@md-plugins/md-plugin-headers'
+import type { ImagePluginOptions } from '@md-plugins/md-plugin-image'
+import type { InlineCodePluginOptions } from '@md-plugins/md-plugin-inlinecode'
+import type { LinkPluginOptions } from '@md-plugins/md-plugin-link'
+import type { TablePluginOptions } from '@md-plugins/md-plugin-table'
 
 export interface MarkdownOptions extends Options {
-  blockquote?: BlockquotePluginOptions;
-  codeblocks?: CodeblockPluginOptions;
-  frontmatter?: FrontmatterPluginOptions;
-  headers?: HeadersPluginOptions | boolean;
-  image?: ImagePluginOptions;
-  inlinecode?: InlineCodePluginOptions;
-  link?: LinkPluginOptions;
-  table?: TablePluginOptions;
+  blockquote?: BlockquotePluginOptions
+  codeblocks?: CodeblockPluginOptions
+  frontmatter?: FrontmatterPluginOptions
+  headers?: HeadersPluginOptions | boolean
+  image?: ImagePluginOptions
+  inlinecode?: InlineCodePluginOptions
+  link?: LinkPluginOptions
+  table?: TablePluginOptions
 }
 
-export type MarkdownRenderer = MarkdownIt;
+export type MarkdownRenderer = MarkdownIt
 
 export interface MarkdownRenderResult {
-  html: string;
-  frontmatter: Record<string, any>;
-  title: string;
-  env: MarkdownItEnv;
+  html: string
+  frontmatter: Record<string, any>
+  title: string
+  env: MarkdownItEnv
 }
 
 export interface MarkdownRendererResult {
-  render(code: string, env: MarkdownItEnv): MarkdownRenderResult;
+  render(code: string, env: MarkdownItEnv): MarkdownRenderResult
 }
 
 /**
@@ -67,36 +67,35 @@ export interface MarkdownRendererResult {
 const createContainer: CreateContainerFn = (
   container: Container,
   containerType: string,
-  defaultTitle: string
+  defaultTitle: string,
 ): [Container, string, ContainerOptions] => {
-  const containerTypeLen = containerType.length;
+  const containerTypeLen = containerType.length
 
   return [
     container,
     containerType,
     {
       render(tokens: Token[], idx: number): string {
-        const token = tokens[idx];
+        const token = tokens[idx]
         if (!token) {
-          return '';
+          return ''
         }
 
-        const title =
-          token.info.trim().slice(containerTypeLen).trim() || defaultTitle;
+        const title = token.info.trim().slice(containerTypeLen).trim() || defaultTitle
 
         if (containerType === 'details') {
           return token.nesting === 1
             ? `<details class="markdown-note markdown-note--${containerType}"><summary class="markdown-note__title">${title}</summary>\n`
-            : '</details>\n';
+            : '</details>\n'
         }
 
         return token.nesting === 1
           ? `<div class="markdown-note markdown-note--${containerType}"><p class="markdown-note__title">${title}</p>\n`
-          : '</div>\n';
+          : '</div>\n'
       },
     },
-  ];
-};
+  ]
+}
 
 /**
  * Creates a markdown renderer with customized plugins and configurations.
@@ -114,21 +113,19 @@ const createContainer: CreateContainerFn = (
  *          - title: Extracted title
  *          - env: The MarkdownIt environment object
  */
-function createMarkdownRenderer(
-  options: MarkdownOptions = {}
-): MarkdownRendererResult {
+function createMarkdownRenderer(options: MarkdownOptions = {}): MarkdownRendererResult {
   const md = new MarkdownIt({
     html: true,
     linkify: true,
     typographer: true,
     ...options,
     breaks: true,
-  });
+  })
 
-  md.use(frontmatterPlugin);
-  md.use(importsPlugin);
-  md.use(titlePlugin);
-  md.use(headersPlugin, { level: [2, 3] });
+  md.use(frontmatterPlugin)
+  md.use(importsPlugin)
+  md.use(titlePlugin)
+  md.use(headersPlugin, { level: [2, 3] })
 
   // md.use(tocPlugin)
 
@@ -137,12 +134,12 @@ function createMarkdownRenderer(
     { type: 'warning', defaultTitle: 'WARNING' },
     { type: 'danger', defaultTitle: 'WARNING' },
     { type: 'details', defaultTitle: 'Details' },
-  ];
+  ]
 
-  md.use(containersPlugin, containers, createContainer);
-  md.use(blockquotePlugin, { blockquoteClass: 'markdown-note' });
+  md.use(containersPlugin, containers, createContainer)
+  md.use(blockquotePlugin, { blockquoteClass: 'markdown-note' })
   md.use(tablePlugin, {
-    tableClass: 'markdown-page-table',
+    tableClass: 'markdown-table',
     tableHeaderClass: 'text-left',
     tableToken: 'q-markup-table',
     tableAttributes: [
@@ -150,24 +147,24 @@ function createMarkdownRenderer(
       [':flat', 'true'],
       [':bordered', 'true'],
     ],
-  });
+  })
 
   md.use(codeblocksPlugin, {
     containerComponent: 'MarkdownPrerender',
     copyButtonComponent: 'MarkdownCopyButton',
     pageScripts: [
-      "import MarkdownPrerender from 'components/md/MarkdownPrerender'",
-      "import MarkdownCopyButton from 'components/md/MarkdownCopyButton.vue'",
+      "import MarkdownPrerender from 'src/.q-press/components/MarkdownPrerender'",
+      "import MarkdownCopyButton from 'src/.q-press/components/MarkdownCopyButton.vue'",
     ],
-  });
-  md.use(linkPlugin); // needs fixing
-  md.use(inlinecodePlugin);
-  md.use(imagePlugin);
+  })
+  md.use(linkPlugin) // needs fixing
+  md.use(inlinecodePlugin)
+  md.use(imagePlugin)
 
   return {
     // env: Environment for storing metadata
     render(code: string, env: MarkdownItEnv = {}): MarkdownRenderResult {
-      const html = md.render(code, env);
+      const html = md.render(code, env)
 
       // NOTE: `env.content` holds the original markdown content
       //     : `env.html` holds the rendered HTML content
@@ -177,11 +174,11 @@ function createMarkdownRenderer(
         frontmatter: env.frontmatter || {}, // comes from md_plugin_frontmatter
         title: env.title || '', // comes from md_plugin_title
         env,
-      };
+      }
     },
-  };
+  }
 }
 
-const md: MarkdownRendererResult = createMarkdownRenderer();
+const md: MarkdownRendererResult = createMarkdownRenderer()
 
-export default md;
+export default md

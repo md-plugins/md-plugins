@@ -47,16 +47,16 @@ pnpm add @md-plugins/vite-md-plugin
 To use the `viteMdPlugin`, configure it in your Vite project:
 
 ```js
-import { defineConfig } from 'vite';
-import vue from '@vitejs/plugin-vue';
-import { viteMdPlugin } from 'vite-md-plugin';
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import { viteMdPlugin } from 'vite-md-plugin'
 
-const menu = []; // Define your navigation menu structure here
-const basePath = '/docs'; // Base path prefix
+const menu = [] // Define your navigation menu structure here
+const basePath = '/docs' // Base path prefix
 
 export default defineConfig({
-  plugins: [vue(), viteMdPlugin(basePath, menu)],
-});
+  plugins: [vue(), viteMdPlugin({ path: basePath, menu })],
+})
 ```
 
 ## Quasar Framework Configuration
@@ -67,7 +67,7 @@ If you’re using the Quasar Framework, additional configuration is needed to en
 
 ```js
 import { viteMdPlugin } from '@md-plugins/vite-md-plugin';
-import { menu } from './src/assets/menu'; // be sure to create this file
+import { menu } from './src/.q-press/assets/menu'; // be sure to create this file
 
 export default defineConfig((ctx) => {
   // ...
@@ -82,7 +82,13 @@ build: {
   },
 
   vitePlugins: [
-    viteMdPlugin(ctx.appPaths.srcDir + '/pages', menu),
+      [
+        viteMdPlugin,
+        {
+          path: ctx.appPaths.srcDir + '/markdown',
+          menu: sidebar as MenuItem[],
+        },
+      ],
     // ...
   ],
 },
@@ -102,7 +108,7 @@ The `viteMdPlugin` allows you to define a navigation structure that can be updat
 const menu = [
   { title: 'Home', path: '/home' },
   { title: 'About', path: '/about' },
-];
+]
 ```
 
 This menu is passed as a parameter to the plugin and can be used to build a dynamic sidebar or navigation bar in your application.
@@ -122,16 +128,16 @@ The `menu` parameter should conform to the following structure:
 
 ```ts
 export interface MenuItem {
-  name: string;
-  path?: string;
-  icon?: string;
-  iconColor?: string;
-  rightIcon?: string;
-  rightIconColor?: string;
-  badge?: string;
-  children?: MenuItem[];
-  external?: boolean;
-  expanded?: boolean;
+  name: string
+  path?: string
+  icon?: string
+  iconColor?: string
+  rightIcon?: string
+  rightIconColor?: string
+  badge?: string
+  children?: MenuItem[]
+  external?: boolean
+  expanded?: boolean
 }
 ```
 
@@ -142,6 +148,10 @@ To run the tests for this plugin, use the following command:
 ```bash
 pnpm test
 ```
+
+## Documentation
+
+In case this README falls out of date, please refer to the [documentation](https://md-plugins.netlify.app/vite-plugins/vitemdplugin/overview) for the latest information.
 
 ## License
 

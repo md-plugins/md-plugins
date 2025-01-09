@@ -4,15 +4,14 @@
 import { defineConfig } from '#q-app/wrappers'
 import type { Plugin } from 'vite'
 
-import siteConfig from './src/assets/siteConfig'
-const { sidebar } = siteConfig
-// console.log('sidebar', sidebar)
-
-import { viteMdPlugin } from '@md-plugins/vite-md-plugin'
+import { viteMdPlugin, type MenuItem } from '@md-plugins/vite-md-plugin'
 import { viteExamplesPlugin, viteManualChunks } from '@md-plugins/vite-examples-plugin'
 
-export default defineConfig((ctx) => {
+export default defineConfig(async (ctx) => {
   // console.log('ctx', ctx)
+  // Dynamically import siteConfig
+  const siteConfig = await import('./src/siteConfig')
+  const { sidebar } = siteConfig
 
   return {
     // https://v2.quasar.dev/quasar-cli-vite/prefetch-feature
@@ -53,7 +52,7 @@ export default defineConfig((ctx) => {
         // extendTsConfig (tsConfig) {}
       },
 
-      useFilenameHashes: false,
+      // useFilenameHashes: false,
       vueRouterMode: 'history', // available values: 'hash', 'history'
       // vueRouterBase,
       // vueDevtools,
@@ -63,7 +62,9 @@ export default defineConfig((ctx) => {
 
       // publicPath: '/',
       // analyze: true,
-      // env: {},
+      env: {
+        DOCS_BRANCH: 'dev',
+      },
       // rawDefine: {}
       // ignorePublicFolder: true,
       // minify: false,
@@ -72,9 +73,7 @@ export default defineConfig((ctx) => {
 
       extendViteConf(viteConf, { isClient }) {
         if (ctx.prod && isClient) {
-          if (!viteConf.build) {
-            viteConf.build = {}
-          }
+          viteConf.build = viteConf.build || {}
           viteConf.build.chunkSizeWarningLimit = 650
           viteConf.build.rollupOptions = {
             output: { manualChunks: viteManualChunks },
@@ -84,16 +83,20 @@ export default defineConfig((ctx) => {
 
       viteVuePluginOptions: {
         include: [/\.(vue|md)$/],
-        // template: {
-        //   compilerOptions: {
-        //     isPreTag: (tag) => tag === 'pre' || tag === 'q-markdown' || tag === 'QMarkdown',
-        //   },
-        // },
       },
 
       vitePlugins: [
-        viteMdPlugin(ctx.appPaths.srcDir + '/pages', sidebar) as Plugin,
-        viteExamplesPlugin(ctx.appPaths.srcDir + '/examples') as unknown as Plugin,
+        [
+          viteMdPlugin,
+          {
+            path: ctx.appPaths.srcDir + '/markdown',
+            menu: sidebar as MenuItem[],
+          },
+        ],
+        viteExamplesPlugin({
+          isProd: ctx.prod,
+          path: ctx.appPaths.srcDir + '/examples',
+        }) as unknown as Plugin,
         [
           'vite-plugin-checker',
           {
@@ -112,6 +115,7 @@ export default defineConfig((ctx) => {
     devServer: {
       // https: true,
       open: true, // opens browser window automatically
+      port: 9876,
     },
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#framework

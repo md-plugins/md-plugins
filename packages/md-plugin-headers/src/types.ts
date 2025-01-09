@@ -8,12 +8,12 @@ export interface HeadersPluginOptions {
    * Should use the same slugify function with markdown-it-anchor
    * to ensure the link is matched
    */
-  slugify?: (str: string) => string;
+  slugify?: (str: string) => string
 
   /**
    * A function for formatting header title
    */
-  format?: (str: string) => string;
+  format?: (str: string) => string
 
   /**
    * Heading level that going to be extracted
@@ -23,7 +23,7 @@ export interface HeadersPluginOptions {
    *
    * @default [2,3]
    */
-  level?: number[];
+  level?: number[]
 
   /**
    * Should allow headers inside nested blocks or not
@@ -32,14 +32,14 @@ export interface HeadersPluginOptions {
    *
    * @default false
    */
-  shouldAllowNested?: boolean;
+  shouldAllowNested?: boolean
 }
 
 export interface TocItem {
-  id: string;
-  title: string;
-  sub?: boolean; // subheading
-  deep?: boolean;
+  id: string
+  title: string
+  sub?: boolean // subheading
+  deep?: boolean
 }
 
 declare module '@md-plugins/shared' {
@@ -47,6 +47,6 @@ declare module '@md-plugins/shared' {
     /**
      * The toc that are extracted by `md-plugin-headers`
      */
-    toc?: TocItem[];
+    toc?: TocItem[]
   }
 }

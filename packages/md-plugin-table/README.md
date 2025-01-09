@@ -27,10 +27,10 @@ pnpm add @md-plugins/md-plugin-table
 ### Basic Setup
 
 ```js
-import MarkdownIt from 'markdown-it';
-import { tablePlugin } from '@md-plugins/md-plugin-table';
+import MarkdownIt from 'markdown-it'
+import { tablePlugin } from '@md-plugins/md-plugin-table'
 
-const md = new MarkdownIt();
+const md = new MarkdownIt()
 md.use(tablePlugin, {
   tableClass: 'custom-table-class',
   tableToken: 'custom-table-tag',
@@ -38,18 +38,18 @@ md.use(tablePlugin, {
     [':wrap-cells', 'true'],
     [':flat', 'true'],
   ],
-});
+})
 
 const markdownContent = `
 | Header 1 | Header 2 |
 |----------|----------|
 | Cell 1   | Cell 2   |
 | Cell 3   | Cell 4   |
-`;
+`
 
-const renderedOutput = md.render(markdownContent);
+const renderedOutput = md.render(markdownContent)
 
-console.log('Rendered Output:', renderedOutput);
+console.log('Rendered Output:', renderedOutput)
 ```
 
 ### Example Output
@@ -81,14 +81,14 @@ For the example above, the plugin produces the following output:
 
 The `md-plugin-table` plugin supports the following options:
 
-| Option           | Type   | Default               | Description                                        |
-| ---------------- | ------ | --------------------- | -------------------------------------------------- |
-| tableClass       | string | 'markdown-page-table' | CSS class for the `<table>` or custom tag.         |
-| tableToken       | string | 'q-markup-table'      | Tag name to replace the default `<table>` tag.     |
-| tableAttributes  | Array  | []                    | Array of attribute name-value pairs for the table. |
-| tableHeaderClass | string | 'text-left'           | CSS class for `<th>` elements.                     |
-| tableRowClass    | string | ''                    | CSS class for `<tr>` elements.                     |
-| tableCellClass   | string | ''                    | CSS class for `<td>` elements.                     |
+| Option           | Type   | Default          | Description                                        |
+| ---------------- | ------ | ---------------- | -------------------------------------------------- |
+| tableClass       | string | 'markdown-table' | CSS class for the `<table>` or custom tag.         |
+| tableToken       | string | 'q-markup-table' | Tag name to replace the default `<table>` tag.     |
+| tableAttributes  | Array  | []               | Array of attribute name-value pairs for the table. |
+| tableHeaderClass | string | 'text-left'      | CSS class for `<th>` elements.                     |
+| tableRowClass    | string | ''               | CSS class for `<tr>` elements.                     |
+| tableCellClass   | string | ''               | CSS class for `<td>` elements.                     |
 
 ## Advanced Usage
 
@@ -102,7 +102,7 @@ md.use(tablePlugin, {
   tableHeaderClass: 'custom-header',
   tableRowClass: 'custom-row',
   tableCellClass: 'custom-cell',
-});
+})
 ```
 
 Renered output:
@@ -134,15 +134,13 @@ md.use(tablePlugin, {
     [':bordered', 'true'],
     [':flat', 'true'],
   ],
-});
+})
 ```
 
 Rendered output:
 
 ```html
-<q-markup-table class="markdown-page-table" :bordered="true" :flat="true">
-  ...
-</q-markup-table>
+<q-markup-table class="markdown-table" :bordered="true" :flat="true"> ... </q-markup-table>
 ```
 
 ## Testing
@@ -152,6 +150,10 @@ Run the unit tests to ensure the plugin behaves as expected:
 ```bash
 pnpm test
 ```
+
+## Documentation
+
+In case this README falls out of date, please refer to the [documentation](https://md-plugins.netlify.app/md-plugins/table/overview) for the latest information.
 
 ## License
 

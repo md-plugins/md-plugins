@@ -1,6 +1,6 @@
 {
   "name": "@md-plugins/shared",
-  "version": "0.1.0-alpha.1",
+  "version": "0.1.0-alpha.10",
   "description": "Shared functions and utilities for md-plugins.",
   "keywords": [
     "markdown-it",
@@ -34,11 +34,16 @@
   ],
   "scripts": {
     "build": "unbuild",
-    "clean": "rm -rf dist",
+    "clean": "rm -rf dist/ node_modules/",
     "test": "vitest"
   },
   "dependencies": {
-    "@types/markdown-it": "^14.1.2",
+    "markdown-it": "^14.1.0"
+  },
+  "devDependencies": {
+    "@types/markdown-it": "^14.1.2"
+  },
+  "peerDependencies": {
     "markdown-it": "^14.1.0"
   },
   "publishConfig": {

@@ -1,6 +1,6 @@
 {
   "name": "@md-plugins/vite-md-plugin",
-  "version": "0.1.0-alpha.1",
+  "version": "0.1.0-alpha.10",
   "description": "A very opinionated Vite plugin for @md-plugins.",
   "keywords": [
     "markdown-it",
@@ -36,7 +36,7 @@
   ],
   "scripts": {
     "build": "unbuild",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist/ node_modules/"
   },
   "dependencies": {
     "@md-plugins/md-plugin-blockquote": "workspace:*",
@@ -50,14 +50,17 @@
     "@md-plugins/md-plugin-link": "workspace:*",
     "@md-plugins/md-plugin-table": "workspace:*",
     "@md-plugins/md-plugin-title": "workspace:*",
-    "@md-plugins/shared": "workspace:*",
+    "@md-plugins/shared": "workspace:*"
+  },
+  "devDependencies": {
     "@types/markdown-it": "^14.1.2",
+    "markdown-it": "^14.1.0",
+    "vite": "^6.0.7"
+  },
+  "peerDependencies": {
     "markdown-it": "^14.1.0"
   },
   "publishConfig": {
     "access": "public"
-  },
-  "devDependencies": {
-    "vite": "^6.0.6"
   }
 }

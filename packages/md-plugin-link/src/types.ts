@@ -4,18 +4,18 @@ export interface LinkPluginOptions {
    *
    * @default 'MarkdownLink'
    */
-  linkTag?: string;
+  linkTag?: string
   /**
    * The "to" keyword" for the internal link
    *
    * @default 'to'
    */
-  linkToKeyword?: string;
+  linkToKeyword?: string
   /**
    * add import statements to the page.
    *
    */
-  pageScript?: string;
+  pageScript?: string
 }
 
 declare module '@md-plugins/shared' {
@@ -23,6 +23,6 @@ declare module '@md-plugins/shared' {
     /**
      * An array of page script (import statements) to be included for tags.
      */
-    pageScripts?: Set<string>;
+    pageScripts?: Set<string>
   }
 }

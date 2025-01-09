@@ -26,21 +26,21 @@ pnpm add @md-plugins/md-plugin-image
 ### Basic Setup
 
 ```js
-import MarkdownIt from 'markdown-it';
-import { imagePlugin } from '@md-plugins/md-plugin-image';
+import MarkdownIt from 'markdown-it'
+import { imagePlugin } from '@md-plugins/md-plugin-image'
 
-const md = new MarkdownIt();
+const md = new MarkdownIt()
 md.use(imagePlugin, {
   imageClass: 'custom-image-class',
-});
+})
 
 const markdownContent = `
 ![Alt text](example.jpg)
-`;
+`
 
-const renderedOutput = md.render(markdownContent);
+const renderedOutput = md.render(markdownContent)
 
-console.log('Rendered Output:', renderedOutput);
+console.log('Rendered Output:', renderedOutput)
 ```
 
 ### Example Output
@@ -66,6 +66,10 @@ Run the tests to ensure the plugin behaves as expected:
 ```bash
 pnpm test
 ```
+
+## Documentation
+
+In case this README falls out of date, please refer to the [documentation](https://md-plugins.netlify.app/md-plugins/image/overview) for the latest information.
 
 ## License
 

@@ -1,7 +1,7 @@
-import eslintPlugin from '@typescript-eslint/eslint-plugin';
-import eslintParser from '@typescript-eslint/parser';
-import js from '@eslint/js';
-import globals from 'globals';
+import eslintPlugin from '@typescript-eslint/eslint-plugin'
+import eslintParser from '@typescript-eslint/parser'
+import js from '@eslint/js'
+import globals from 'globals'
 
 export default [
   {
@@ -10,7 +10,19 @@ export default [
      *
      * ESLint requires "ignores" key to be the only one in this object
      */
-    ignores: ['node_modules', 'eslint.config.mjs', 'dist/**/*'],
+    ignores: [
+      '**/node_modules',
+      '**/eslint.config.mjs',
+      '**/eslint.config.js',
+      '**/.quasar',
+      '**/dist',
+      '**/*.md',
+      'dist/*',
+      'src-capacitor/*',
+      'src-cordova/*',
+      '.quasar/*',
+      'quasar.config.*.temporary.compiled*',
+    ],
   },
   js.configs.recommended,
   {
@@ -54,4 +66,4 @@ export default [
       ],
     },
   },
-];
+]

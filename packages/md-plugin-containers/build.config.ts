@@ -1,4 +1,4 @@
-import { defineBuildConfig } from 'unbuild';
+import { defineBuildConfig } from 'unbuild'
 
 export default defineBuildConfig({
   clean: true,
@@ -10,9 +10,9 @@ export default defineBuildConfig({
   },
   hooks: {
     'build:done': () => {
-      console.log('Build completed!');
+      console.log('Build completed!')
     },
   },
   // Ensure dist is excluded
   externals: ['node_modules', 'dist'],
-});
+})

@@ -79,7 +79,7 @@ The `md-plugin-frontmatter` plugin supports the following options:
 | Option            | Type    | Default | Description                                                                                    |
 | ----------------- | ------- | ------- | ---------------------------------------------------------------------------------------------- |
 | grayMatterOptions | object  | {}      | Options for the gray-matter library. Refer to the gray-matter documentation.                   |
-| renderExcerpt     | boolean | true    | Whether to render the excerpt as HTML. If false, the raw Markdown is extracted as the excerpt. |
+| renderExcerpt     | boolean | false   | Whether to render the excerpt as HTML. If false, the raw Markdown is extracted as the excerpt. |
 
 ## Advanced Usage
 
@@ -92,7 +92,7 @@ md.use(frontmatterPlugin, {
   grayMatterOptions: {
     delimiters: '+++', // Use "+++" as the frontmatter delimiter
   },
-});
+})
 ```
 
 ## Testing
@@ -102,6 +102,10 @@ Run the unit tests with `Vitest` to ensure the plugin behaves as expected:
 ```bash
 pnpm test
 ```
+
+## Documentation
+
+In case this README falls out of date, please refer to the [documentation](https://md-plugins.netlify.app/md-plugins/frontmatter/overview) for the latest information.
 
 ## License
 

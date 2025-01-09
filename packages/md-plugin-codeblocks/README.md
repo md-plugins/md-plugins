@@ -29,25 +29,25 @@ pnpm add @md-plugins/md-plugin-codeblocks
 ### Basic Setup
 
 ```js
-import MarkdownIt from 'markdown-it';
-import { codeblocksPlugin } from '@md-plugins/md-plugin-codeblocks';
+import MarkdownIt from 'markdown-it'
+import { codeblocksPlugin } from '@md-plugins/md-plugin-codeblocks'
 
-const md = new MarkdownIt();
+const md = new MarkdownIt()
 md.use(codeblocksPlugin, {
   containerComponent: 'MarkdownPrerender',
   copyButtonComponent: '<MarkdownCopyButton',
   preClass: 'markdown-code',
   pageScripts: [
-    "import MarkdownPrerender from 'src/components/md/MarkdownPrerender'",
-    "import MarkdownCopyButton from 'src/components/md/MarkdownCopyButton.vue'",
+    "import MarkdownPrerender from 'src/.q-press/components/MarkdownPrerender'",
+    "import MarkdownCopyButton from 'src/.q-press/components/MarkdownCopyButton.vue'",
   ],
-});
+})
 ```
 
 ## Example Markdown Input
 
 ```javascript
-console.log('Hello, world!');
+console.log('Hello, world!')
 ```
 
 ### Example Output
@@ -81,7 +81,6 @@ The `md-plugin-codeblocks` plugin supports the following options:
 | copyButtonComponent | string | 'markdown-copy-button' | Custom copy button component.                                  |
 | preClass            | string | 'markdown-code'        | CSS class for the `<pre>` element.                             |
 | codeClass           | string | ''                     | CSS class for the `<code>` element.                            |
-| linePrefixClass     | string | 'line-'                | Prefix for classes used in line annotations.                   |
 | tabPanelTagName     | string | 'q-tab-panel'          | Tag name for the tab panels.                                   |
 | tabPanelTagClass    | string | 'q-pa-none'            | CSS class for the tab panels.                                  |
 
@@ -91,55 +90,56 @@ The `md-plugin-codeblocks` plugin supports the following options:
 
 The plugin supports magic comments for inline annotations:
 
+````markup
 ```js [numbered]
 // All lines will be numbered
-console.log('Line 1');
-console.log('Line 2');
-console.log('Line 3');
+console.log('Line 1')
+console.log('Line 2')
+console.log('Line 3')
 ```
+````
 
 ### Line Highlighting and Annotations
 
-````markdown
+````markup
 ```js [highlight=2]
-console.log('Line 1');
-console.log('Line 2'); // This line will be highlighted
-console.log('Line 3');
+console.log('Line 1')
+console.log('Line 2') // This line will be highlighted
+console.log('Line 3')
 ```
 ````
 
-````markdown
+````markup
 ```js
-console.log('Line 1');
-console.log('Line 2');
-[[highlight]]; // This line will be highlighted
-console.log('Line 3');
+console.log('Line 1')
+console.log('Line 2') [[highlight]] // This line will be highlighted
+console.log('Line 3')
 ```
 ````
 
-````markdown
+````markup
 ```js [add=2]
-console.log('Line 1');
-console.log('Line 2'); // This line will be accented and prefixed with a '+'
-console.log('Line 3');
+console.log('Line 1')
+console.log('Line 2') // This line will be accented and prefixed with a '+'
+console.log('Line 3')
 ```
 ````
 
-````markdown
+````markup
 ```js [rem=2]
-console.log('Line 1');
-console.log('Line 2'); // This line will be accented and prefixed with a '-'
-console.log('Line 3');
+console.log('Line 1')
+console.log('Line 2') // This line will be accented and prefixed with a '-'
+console.log('Line 3')
 ```
 ````
 
 #### Combining Annotations
 
-````markdown
+````markup
 ```js [numbered highlight=1 rem=2 add=3]
-console.log('Line 1'); // This line will be highlighted
-console.log('Line 2'); // This line will be accented and prefixed with a '-'
-console.log('Line 3'); // This line will be accented and prefixed
+console.log('Line 1') // This line will be highlighted
+console.log('Line 2') // This line will be accented and prefixed with a '-'
+console.log('Line 3') // This line will be accented and prefixed
 ```
 ````
 
@@ -147,7 +147,7 @@ console.log('Line 3'); // This line will be accented and prefixed
 
 Additonally, with the exception of `numbered`, you can use ranges to annotate multiple lines:
 
-```markdown
+```markup
 [highlight=1,10-11 add=4,7-9 rem=12-14]
 ```
 
@@ -155,7 +155,7 @@ Additonally, with the exception of `numbered`, you can use ranges to annotate mu
 
 Easily create tabbed interfaces for multiple code examples:
 
-````markdown
+````markup
 ```tabs
 <<|js Tab 1|>>
 console.log('Hello from Tab 1');
@@ -172,6 +172,10 @@ Run the unit tests with `Vitest`:
 ```bash
 pnpm test
 ```
+
+## Documentation
+
+In case this README falls out of date, please refer to the [documentation](https://md-plugins.netlify.app/md-plugins/codeblocks/overview) for the latest information.
 
 ## License
 

@@ -1,2 +1,2 @@
-export * from './md-plugin-frontmatter';
-export type * from './types';
+export * from './md-plugin-frontmatter'
+export type * from './types'

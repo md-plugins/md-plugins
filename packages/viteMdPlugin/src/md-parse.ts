@@ -1,12 +1,12 @@
-import md from './md.js';
-import type { MarkdownItEnv } from '@md-plugins/shared';
-import { getVueComponent } from './md-loader-utils.js';
-import type { MenuItem } from './types.js';
+import md from './md.js'
+import type { MarkdownItEnv } from '@md-plugins/shared'
+import { getVueComponent } from './md-loader-utils.js'
+import type { MenuItem } from './types.js'
 
-const markdownLinkRE = /<MarkdownLink /;
-const markdownApiRE = /<MarkdownApi /;
-const markdownInstallationRE = /<MarkdownInstallation /;
-const markdownTreeRE = /<MarkdownTree /;
+const markdownLinkRE = /<MarkdownLink /
+const markdownApiRE = /<MarkdownApi /
+const markdownInstallationRE = /<MarkdownInstallation /
+const markdownTreeRE = /<MarkdownTree /
 
 /**
  * Parses Markdown code and generates a Vue component with rendered HTML and metadata.
@@ -25,58 +25,45 @@ const markdownTreeRE = /<MarkdownTree /;
  * 5. Generates a Vue component using the `getVueComponent()` function, passing the rendered HTML, the original Markdown code, and the page ID.
  * 6. Returns an object containing the generated Vue component and a `null` source map (as no source map is provided).
  */
-export function mdParse(
-  code: string,
-  id: string,
-  prefix: string,
-  menu: MenuItem[]
-) {
+export function mdParse(code: string, id: string, prefix: string, menu: MenuItem[]) {
   const env: MarkdownItEnv = {
     frontmatter: {
       id: id,
     },
     pageScripts: new Set<string>(),
-  }; // Environment for storing metadata
+  } // Environment for storing metadata
 
   // pre-processing
-  env.pageScripts!.add(
-    "import MarkdownPage from 'src/layouts/MarkdownPage.vue'"
-  );
+  env.pageScripts!.add("import MarkdownPage from 'src/.q-press/layouts/MarkdownPage.vue'")
   if (markdownApiRE.test(code) === true) {
-    env.pageScripts!.add(
-      "import MarkdownApi from 'components/md/MarkdownApi.vue'"
-    );
+    env.pageScripts!.add("import MarkdownApi from 'src/.q-press/components/MarkdownApi.vue'")
   }
   if (markdownInstallationRE.test(code) === true) {
     env.pageScripts!.add(
-      "import MarkdownInstallation from 'components/md/MarkdownInstallation.vue'"
-    );
+      "import MarkdownInstallation from 'src/.q-press/components/MarkdownInstallation.vue'",
+    )
   }
   if (markdownTreeRE.test(code) === true) {
-    env.pageScripts!.add(
-      "import MarkdownTree from 'components/md/MarkdownTree.vue'"
-    );
+    env.pageScripts!.add("import MarkdownTree from 'src/.q-press/components/MarkdownTree.vue'")
   }
 
   // render the markdown code to HTML, gather all other info (ex: frontmatter, etc)
-  const results = md.render(code, env);
+  const results = md.render(code, env)
 
   // post-processing
   if (env.frontmatter!.examples !== void 0) {
     env.pageScripts!.add(
-      "import MarkdownExample from 'components/md/MarkdownExample.vue'"
-    );
+      "import MarkdownExample from 'src/.q-press/components/MarkdownExample.vue'",
+    )
   }
   if (markdownLinkRE.test(code) === true) {
-    env.pageScripts!.add(
-      "import MarkdownLink from 'components/md/MarkdownLink.vue'"
-    );
+    env.pageScripts!.add("import MarkdownLink from 'src/.q-press/components/MarkdownLink.vue'")
   }
 
-  const component = getVueComponent(results, code, id, prefix, menu);
+  const component = getVueComponent(results, code, id, prefix, menu)
 
   return {
     code: component,
     map: null, // No source map provided
-  };
+  }
 }

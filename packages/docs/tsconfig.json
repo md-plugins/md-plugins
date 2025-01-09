@@ -1,7 +1,9 @@
 {
   "extends": "./.quasar/tsconfig.json",
   "compilerOptions": {
+    "skipLibCheck": true, // Ignore type incompatibilities in node_modules
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true
   }
 }

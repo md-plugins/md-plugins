@@ -109,17 +109,15 @@ With the `toc` property in `env`, you can build a ToC dynamically:
 function generateToC(toc) {
   const list = toc
     .map((item) => {
-      const children = item.children
-        ? `<ul>${generateToC(item.children)}</ul>`
-        : '';
-      return `<li><a href="${item.link}">${item.title}</a>${children}</li>`;
+      const children = item.children ? `<ul>${generateToC(item.children)}</ul>` : ''
+      return `<li><a href="${item.link}">${item.title}</a>${children}</li>`
     })
-    .join('');
-  return `<ul>${list}</ul>`;
+    .join('')
+  return `<ul>${list}</ul>`
 }
 
-const tocHtml = generateToC(env.toc);
-console.log('Generated ToC:', tocHtml);
+const tocHtml = generateToC(env.toc)
+console.log('Generated ToC:', tocHtml)
 ```
 
 ### Custom Slugify Function
@@ -129,7 +127,7 @@ You can use your own slugification logic for header IDs:
 ```js
 md.use(headersPlugin, {
   slugify: (str) => encodeURIComponent(str.replace(/\s+/g, '_')),
-});
+})
 ```
 
 Whatever you use on the backend, should be the same logic on the frontend for slugification so that they match when using hash links.
@@ -141,7 +139,7 @@ Enable nested headers to include headers inside blockquotes or lists:
 ```js
 md.use(headersPlugin, {
   shouldAllowNested: true,
-});
+})
 ```
 
 ## Testing
@@ -149,6 +147,10 @@ md.use(headersPlugin, {
 ```bash
 pnpm test
 ```
+
+## Documentation
+
+In case this README falls out of date, please refer to the [documentation](https://md-plugins.netlify.app/md-plugins/headers/overview) for the latest information.
 
 ## License
 

@@ -1,6 +1,6 @@
-import type MarkdownIt from 'markdown-it';
-import type { CreateContainerFn, ContainerDetails } from './types';
-import container from 'markdown-it-container';
+import type MarkdownIt from 'markdown-it'
+import type { CreateContainerFn, ContainerDetails } from './types'
+import container from 'markdown-it-container'
 
 /**
  * Adds container support to a MarkdownIt instance.
@@ -53,24 +53,22 @@ import container from 'markdown-it-container';
 export function containersPlugin(
   md: MarkdownIt,
   containers: ContainerDetails[],
-  createContainer: CreateContainerFn
+  createContainer: CreateContainerFn,
 ): void {
   if (!Array.isArray(containers) || containers.length === 0) {
-    console.warn('No containers provided to containersPlugin.');
-    return;
+    console.warn('No containers provided to containersPlugin.')
+    return
   }
 
   if (typeof createContainer !== 'function') {
-    throw new Error(
-      'Invalid createContainer function provided to containersPlugin.'
-    );
+    throw new Error('Invalid createContainer function provided to containersPlugin.')
   }
 
   containers.forEach(({ type, defaultTitle }) => {
     try {
-      md.use(...createContainer(container, type, defaultTitle));
+      md.use(...createContainer(container, type, defaultTitle))
     } catch (error) {
-      console.error(`Failed to create container for type: ${type}`, error);
+      console.error(`Failed to create container for type: ${type}`, error)
     }
-  });
+  })
 }

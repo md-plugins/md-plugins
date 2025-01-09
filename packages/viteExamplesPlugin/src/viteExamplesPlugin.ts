@@ -1,13 +1,13 @@
-import type { Plugin } from 'vite';
-import { join } from 'node:path';
+import type { Plugin } from 'vite'
+import { join } from 'node:path'
 // import { fileURLToPath } from 'node:url';
-import { globSync } from 'tinyglobby';
+import { globSync } from 'tinyglobby'
 
-const moduleIdRE = /^examples:/;
-const resolvedIdPrefix = '\0examples:';
+const moduleIdRE = /^examples:/
+const resolvedIdPrefix = '\0examples:'
 
 // const targetFolder = fileURLToPath(new URL('../src/examples', import.meta.url));
-let targetFolder = '';
+let targetFolder = ''
 
 /**
  * Generates import statements for Vue example files in development mode.
@@ -22,13 +22,13 @@ let targetFolder = '';
  */
 function devLoad(id: string): string | undefined {
   if (id.startsWith(resolvedIdPrefix)) {
-    const query = `'/src/examples/${id.substring(id.indexOf(':') + 1)}/*.vue'`;
+    const query = `'/src/examples/${id.substring(id.indexOf(':') + 1)}/*.vue'`
     return (
       `export const code = import.meta.glob(${query}, { eager: true })` +
       `\nexport const source = import.meta.glob(${query}, { query: '?raw', import: 'default', eager: true })`
-    );
+    )
   }
-  return undefined;
+  return undefined
 }
 
 /**
@@ -44,27 +44,23 @@ function devLoad(id: string): string | undefined {
  */
 function prodLoad(id: string): string | undefined {
   if (id.startsWith(resolvedIdPrefix)) {
-    const exampleId = id.substring(id.indexOf(':') + 1);
-    const files = globSync('*.vue', { cwd: join(targetFolder, exampleId) });
+    const exampleId = id.substring(id.indexOf(':') + 1)
+    const files = globSync('*.vue', { cwd: join(targetFolder, exampleId) })
 
-    const importList = files.map((entry) =>
-      entry.substring(0, entry.length - 4)
-    );
+    const importList = files.map((entry) => entry.substring(0, entry.length - 4))
     const importStatements = importList
       .map(
         (entry) =>
           `import ${entry} from 'app/src/examples/${exampleId}/${entry}.vue'` +
-          `\nimport Raw${entry} from 'app/src/examples/${exampleId}/${entry}.vue?raw'`
+          `\nimport Raw${entry} from 'app/src/examples/${exampleId}/${entry}.vue?raw'`,
       )
-      .join('\n');
+      .join('\n')
 
-    const exportStatements = importList
-      .map((entry) => `${entry},Raw${entry}`)
-      .join(',');
+    const exportStatements = importList.map((entry) => `${entry},Raw${entry}`).join(',')
 
-    return importStatements + `\nexport {${exportStatements}}`;
+    return importStatements + `\nexport {${exportStatements}}`
   }
-  return undefined;
+  return undefined
 }
 
 /**
@@ -79,7 +75,7 @@ function prodLoad(id: string): string | undefined {
  */
 function vitePlugin(isProd: boolean): Plugin {
   if (!targetFolder) {
-    throw new Error('targetFolder is not defined');
+    throw new Error('targetFolder is not defined')
   }
 
   return {
@@ -88,13 +84,13 @@ function vitePlugin(isProd: boolean): Plugin {
 
     resolveId(id: string): string | undefined {
       if (moduleIdRE.test(id)) {
-        return '\0' + id;
+        return '\0' + id
       }
-      return undefined;
+      return undefined
     },
 
     load: isProd ? prodLoad : devLoad,
-  };
+  }
 }
 
 /**
@@ -104,13 +100,21 @@ function vitePlugin(isProd: boolean): Plugin {
  * that creates the actual Vite plugin. The returned plugin resolves and loads
  * example code based on the production or development environment.
  *
+ * @param isProd - A boolean indicating whether the Vite build is in production mode.
+ *                 This parameter determines whether the plugin will use the `prodLoad` or `devLoad` function for loading example code.
+ *
  * @param path - The path to the directory containing the example files.
  *               This path will be used as the target folder for resolving examples.
+ *               The `targetFolder` variable is set to this value before creating the Vite plugin.
  *
  * @returns A function that creates a Vite plugin.
+ *          The returned function takes a boolean parameter `isProd` and returns a Vite plugin object.
+ *          The plugin object has a `name`, `enforce`, `resolveId`, and `load` property.
+ *          The `resolveId` property resolves module IDs starting with "examples:" and returns a resolved ID.
+ *          The `load` property loads example code based on the production or development environment.
  */
-export function viteExamplesPlugin(path: string): (isProd: boolean) => Plugin {
-  targetFolder = path;
+export function viteExamplesPlugin({ isProd, path }: { isProd: boolean; path: string }): Plugin {
+  targetFolder = path
 
-  return vitePlugin;
+  return vitePlugin(isProd)
 }

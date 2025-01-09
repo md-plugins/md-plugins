@@ -15,7 +15,19 @@ export default [
      *
      * ESLint requires "ignores" key to be the only one in this object
      */
-    ignores: ['eslint.config.js', '**/*.md'],
+    ignores: [
+      '**/node_modules',
+      '**/eslint.config.mjs',
+      '**/eslint.config.js',
+      '**/.quasar',
+      '**/dist',
+      '**/*.md',
+      'dist/*',
+      'src-capacitor/*',
+      'src-cordova/*',
+      '.quasar/*',
+      'quasar.config.*.temporary.compiled*',
+    ],
   },
 
   ...pluginQuasar.configs.recommended(),
