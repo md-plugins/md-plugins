@@ -237,16 +237,10 @@ const hasMoreLinks = computed(() => siteConfig.links.moreLinks.length > 0)
 
   &__logo-img {
     border-radius: 50%;
-    //    transform: rotate(0deg);
-    //    transition: transform 0.8s ease-in-out;
   }
 
   &__logo {
     padding-right: 24px;
-
-    //    &:hover .markdown-header__logo-img {
-    //      transform: rotate(-360deg);
-    //    }
   }
 
   &__version {

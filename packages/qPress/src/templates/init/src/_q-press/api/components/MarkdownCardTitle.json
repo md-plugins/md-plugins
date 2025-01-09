@@ -22,11 +22,6 @@
       "category": "content"
     }
   },
-  "slots": {
-    "default": {
-      "desc": "Slot for custom content inside the title"
-    }
-  },
   "events": {
     "click": {
       "desc": "Emitted when the title is clicked",

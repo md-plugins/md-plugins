@@ -18,7 +18,7 @@ import AvatarApi from 'quasar/dist/api/QAvatar.json'
 
 ## Usage
 
-You will need to make sure you have the necessary components installed as outlined further fown in the [Installation](#installation) section.
+You will need to make sure you have the necessary components installed as outlined further down in the [Installation](#installation) section.
 
 In your `src` folder, you should have an `examples` folder. Each child folder should be a topic, like a `QAvatar` folder. In this folder, you will add your examples.
 
@@ -46,7 +46,7 @@ We will touch on this at a later date.
 :::
 
 ```markdown
-<script import>
+<script import >
 import AvatarApi from 'quasar/dist/api/QAvatar.json'
 </script>
 

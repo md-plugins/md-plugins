@@ -3,12 +3,6 @@
   "meta": {
     "docsUrl": "https://path-to-your-docs/markdown-page-toc"
   },
-  "props": {},
-  "slots": {
-    "default": {
-      "desc": "Slot for custom content in the Table of Contents"
-    }
-  },
   "events": {
     "click": {
       "desc": "Emitted when a Table of Contents item is clicked",
@@ -19,6 +13,5 @@
         }
       }
     }
-  },
-  "methods": {}
+  }
 }

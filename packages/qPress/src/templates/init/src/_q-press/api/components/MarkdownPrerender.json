@@ -21,12 +21,5 @@
       ],
       "category": "content"
     }
-  },
-  "slots": {
-    "default": {
-      "desc": "Slot for custom content inside the prerendered component"
-    }
-  },
-  "events": {},
-  "methods": {}
+  }
 }

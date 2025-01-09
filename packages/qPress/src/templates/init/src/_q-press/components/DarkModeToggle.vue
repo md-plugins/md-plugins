@@ -54,7 +54,7 @@ watch(
   width: 60px;
   height: 30px;
   background-color: $brand-light-bg;
-  border: $primary solid 1px;
+  border: $brand-primary solid 1px;
   border-radius: 15px;
   position: relative;
   overflow: hidden;
@@ -79,7 +79,7 @@ watch(
 }
 
 .toggle-icon {
-  color: $primary;
+  color: $brand-primary;
   font-size: 20px;
   width: 50%;
   text-align: center;

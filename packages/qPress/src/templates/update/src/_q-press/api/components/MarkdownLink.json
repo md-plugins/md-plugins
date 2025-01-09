@@ -19,7 +19,5 @@
     "default": {
       "desc": "Slot for custom content inside the link"
     }
-  },
-  "events": {},
-  "methods": {}
+  }
 }

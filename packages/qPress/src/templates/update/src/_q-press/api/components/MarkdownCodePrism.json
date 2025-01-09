@@ -25,12 +25,5 @@
       "required": true,
       "category": "content"
     }
-  },
-  "slots": {
-    "default": {
-      "desc": "Slot for custom content inside the code block"
-    }
-  },
-  "events": {},
-  "methods": {}
+  }
 }

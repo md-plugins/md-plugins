@@ -15,11 +15,6 @@
       "category": "content"
     }
   },
-  "slots": {
-    "default": {
-      "desc": "Slot for custom content inside the copy button"
-    }
-  },
   "events": {
     "copy": {
       "desc": "Emitted when the copy button is clicked",

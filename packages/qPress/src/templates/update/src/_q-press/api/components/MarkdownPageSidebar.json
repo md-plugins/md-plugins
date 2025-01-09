@@ -1,5 +1,5 @@
 {
-  "type": "component",
+  "type": "plugin",
   "meta": {
     "docsUrl": "https://path-to-your-docs/markdown-page-sidebar"
   },

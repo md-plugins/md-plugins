@@ -14,11 +14,6 @@
       "category": "style"
     }
   },
-  "slots": {
-    "default": {
-      "desc": "Slot for custom content in the header"
-    }
-  },
   "events": {
     "toggleMenuDrawer": {
       "desc": "Emitted when the menu button is clicked to toggle the menu drawer",
@@ -29,6 +24,5 @@
         }
       }
     }
-  },
-  "methods": {}
+  }
 }
