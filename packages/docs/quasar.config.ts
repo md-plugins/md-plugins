@@ -93,7 +93,10 @@ export default defineConfig(async (ctx) => {
             menu: sidebar as MenuItem[],
           },
         ],
-        viteExamplesPlugin(ctx.prod, ctx.appPaths.srcDir + '/examples') as unknown as Plugin,
+        viteExamplesPlugin({
+          isProd: ctx.prod,
+          path: ctx.appPaths.srcDir + '/examples',
+        }) as unknown as Plugin,
         [
           'vite-plugin-checker',
           {

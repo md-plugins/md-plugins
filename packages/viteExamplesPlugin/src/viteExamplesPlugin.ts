@@ -113,7 +113,7 @@ function vitePlugin(isProd: boolean): Plugin {
  *          The `resolveId` property resolves module IDs starting with "examples:" and returns a resolved ID.
  *          The `load` property loads example code based on the production or development environment.
  */
-export function viteExamplesPlugin(isProd: boolean, path: string): Plugin {
+export function viteExamplesPlugin({ isProd, path }: { isProd: boolean; path: string }): Plugin {
   targetFolder = path
 
   return vitePlugin(isProd)

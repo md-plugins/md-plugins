@@ -39,7 +39,10 @@ export default defineConfig(({ mode }) => {
   const isProduction = mode === 'production'
 
   return {
-    plugins: [vue(), viteExamplesPlugin(isProduction, '/absolute/path/to/examples')],
+    plugins: [
+      vue(),
+      viteExamplesPlugin({ isProd: isProduction, path: '/absolute/path/to/examples' }),
+    ],
   }
 })
 ```
@@ -51,13 +54,20 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { viteExamplesPlugin, viteManualChunks } from 'vite-examples-plugin'
 
-export default defineConfig({
-  plugins: [vue(), viteExamplesPlugin('/absolute/path/to/examples')],
-  build: {
-    chunkSizeWarningLimit: 650,
-    rollupOptions: {
-      output: {
-        manualChunks: viteManualChunks,
+export default defineConfig(({ mode }) => {
+  const isProduction = mode === 'production'
+
+  return {
+    plugins: [
+      vue(),
+      viteExamplesPlugin({ isProd: isProduction, path: '/absolute/path/to/examples' }),
+    ],
+    build: {
+      chunkSizeWarningLimit: 650,
+      rollupOptions: {
+        output: {
+          manualChunks: viteManualChunks,
+        },
       },
     },
   },
@@ -78,7 +88,7 @@ export default defineConfig((ctx) => {
 ```js
   build: {
     vitePlugins: [
-      viteExamplesPlugin(ctx.isProd, ctx.appPaths.srcDir + '/examples'),
+      viteExamplesPlugin({ isProd: ctx.isProd, path: ctx.appPaths.srcDir + '/examples' }),
       // ...
     ],
   },
