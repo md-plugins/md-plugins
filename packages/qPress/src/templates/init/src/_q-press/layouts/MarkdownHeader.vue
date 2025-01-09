@@ -74,7 +74,8 @@
         v-if="showThemeChanger"
         class="markdown-header-icon-links q-ml-sm row no-wrap items-center"
       >
-        <q-btn class="header-btn" type="a" flat round :icon="mdiCompare" @click="toggleDark" />
+        <!-- <q-btn class="header-btn" type="a" flat round :icon="mdiCompare" @click="toggleDark" /> -->
+        <DarkModeToggle />
       </div>
     </q-toolbar>
 
@@ -172,7 +173,8 @@
         v-if="!siteConfig.config.usePrimaryHeader"
         class="markdown-header-icon-links q-ml-sm row no-wrap items-center"
       >
-        <q-btn class="header-btn" type="a" flat round :icon="mdiCompare" @click="toggleDark" />
+        <!-- <q-btn class="header-btn" type="a" flat round :icon="mdiCompare" @click="toggleDark" /> -->
+        <DarkModeToggle />
       </div>
     </q-toolbar>
   </q-header>
@@ -180,20 +182,22 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { mdiCompare, mdiFolderPound } from '@quasar/extras/mdi-v7'
+import { mdiFolderPound } from '@quasar/extras/mdi-v7'
 import siteConfig from '../../siteConfig'
+
+import DarkModeToggle from '../components/DarkModeToggle.vue'
 
 // import MarkdownSearch from './MarkdownSearch.vue'
 import MarkdownHeaderTextLinks from './MarkdownHeaderTextLinks.vue'
 import MarkdownHeaderIconLinks from './MarkdownHeaderIconLinks.vue'
 
 import { useRoute } from 'vue-router'
-import { useMarkdownStore } from 'src/.q-press/stores/markdown'
+import { useMarkdownStore } from '../stores/markdown'
 import { useDark } from '../composables/dark'
 
 const markdownStore = useMarkdownStore()
 const route = useRoute()
-const { toggleDark, isDark } = useDark()
+const { isDark } = useDark()
 
 const logo = computed(() => {
   if (isDark.value === true)

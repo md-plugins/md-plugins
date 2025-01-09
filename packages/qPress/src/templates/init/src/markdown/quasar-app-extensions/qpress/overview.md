@@ -36,6 +36,7 @@ quasar ext add @md-plugins/q-press
   - `src/q-press.global.d.ts`
   - `src/components`
   - `src/markdown`
+  - `src/examples`
   - `src/siteConfig`
 - **Update Install:**
   - `src/.q-press`

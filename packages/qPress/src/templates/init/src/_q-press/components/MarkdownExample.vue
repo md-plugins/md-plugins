@@ -19,12 +19,20 @@
 
         <q-separator class="q-mx-xs" vertical inset />
 
-        <q-btn class="header-btn" dense flat round :icon="fabGithub" @click="openGitHub">
+        <q-btn
+          v-if="props.noGithub !== true"
+          class="header-btn"
+          dense
+          flat
+          round
+          :icon="fabGithub"
+          @click="openGitHub"
+        >
           <q-tooltip>View on GitHub</q-tooltip>
         </q-btn>
         <q-btn
           class="header-btn q-ml-xs"
-          v-if="props.noEdit === false"
+          v-if="props.noEdit !== true"
           dense
           flat
           round
@@ -105,9 +113,10 @@ import MarkdownCardTitle from './MarkdownCardTitle.vue'
 const props = defineProps({
   title: String,
   file: String,
-  noEdit: Boolean,
+  noEdit: Boolean, // no codepen edit
   scrollable: Boolean,
   overflow: Boolean,
+  noGithub: Boolean,
 })
 
 const examples = inject('_markdown_examples_')

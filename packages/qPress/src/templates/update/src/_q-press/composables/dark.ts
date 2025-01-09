@@ -10,13 +10,14 @@ export function useDark() {
 
   function initDark() {
     markdownStore.dark = $q.cookies.get('theme') !== 'light'
+    $q.dark.set(markdownStore.dark)
   }
 
   function toggleDark() {
-    const val = !markdownStore.dark
-    markdownStore.dark = val
+    $q.dark.toggle()
+    markdownStore.dark = $q.dark.isActive
 
-    $q.cookies.set('theme', val ? 'dark' : 'light', {
+    $q.cookies.set('theme', markdownStore.dark ? 'dark' : 'light', {
       path: '/',
       sameSite: 'Strict',
       expires: 400,

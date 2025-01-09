@@ -67,15 +67,21 @@ function getStringType(type: any): string {
 const NAME_PROP_COLOR = ['orange-8', 'brand-primary', 'green-5', 'purple-5']
 const NAME_PROP_COLOR_LEN = NAME_PROP_COLOR.length
 
-function getDiv(col: number, propName: string, propValue?: string, slot?: any) {
+function getDiv(col: number, propName: string, propValue?: string, slot?: any): VNode {
   return h('div', { class: `markdown-api-entry__item col-xs-12 col-sm-${col}` }, [
     h('div', { class: 'markdown-api-entry__type' }, propName),
     propValue !== void 0 ? h('div', { class: 'markdown-api-entry__value' }, propValue) : slot,
   ])
 }
 
-function getNameDiv(prop: any, label: string, level: number, suffix?: string, prefix?: string) {
-  const child = []
+function getNameDiv(
+  prop: any,
+  label: string,
+  level: number,
+  suffix?: string,
+  prefix?: string,
+): VNode {
+  const child: VNode[] = []
 
   if (prefix !== void 0) {
     child.push(h('div', { class: 'markdown-api-entry__type q-mr-xs' }, prefix))
@@ -116,7 +122,7 @@ function getExpandable(
   isExpandable: boolean,
   key: string,
   getDetails: () => any[],
-) {
+): VNode[] {
   if (isExpandable === true) {
     const expanded = openState.value[key] === true
     const child = [
@@ -149,8 +155,8 @@ function getPropDetails(
   masterKey: string,
   prop: any,
   level: number,
-): any[] {
-  const details = []
+): VNode[] {
+  const details: VNode[] = []
 
   if (prop.sync === true) {
     details.push(getDiv(3, 'Note', 'Required to be used with v-model!'))
@@ -191,9 +197,9 @@ function getPropDetails(
   }
 
   if (prop.definition !== void 0) {
-    const nodes = []
+    const nodes: VNode[] = []
     for (const propName in prop.definition) {
-      nodes.push(getProp(openState, masterKey, prop.definition[propName], propName, level))
+      nodes.push(...getProp(openState, masterKey, prop.definition[propName], propName, level))
     }
 
     details.push(
@@ -202,10 +208,10 @@ function getPropDetails(
   }
 
   if (prop.params !== void 0 && prop.params !== null) {
-    const nodes = []
+    const nodes: VNode[] = []
 
     for (const propName in prop.params) {
-      nodes.push(getProp(openState, masterKey, prop.params[propName], propName, level))
+      nodes.push(...getProp(openState, masterKey, prop.params[propName], propName, level))
     }
 
     details.push(
@@ -227,9 +233,9 @@ function getPropDetails(
   }
 
   if (prop.scope !== void 0) {
-    const nodes = []
+    const nodes: VNode[] = []
     for (const propName in prop.scope) {
-      nodes.push(getProp(openState, masterKey, prop.scope[propName], propName, level))
+      nodes.push(...getProp(openState, masterKey, prop.scope[propName], propName, level))
     }
 
     details.push(
@@ -262,7 +268,7 @@ function getProp(
   propName: string | undefined,
   level: number,
   onlyChildren?: boolean,
-) {
+): VNode[] {
   const configToggle = useConfigToggle(openState)
   if (configToggle.enabled && configToggle.type === 'configFile' && prop.configFileType === null) {
     return [] // empty array
@@ -274,7 +280,7 @@ function getProp(
       : prop.type
     : prop.type
   const type = getStringType(rawType)
-  const child = []
+  const child: VNode[] = []
 
   if (propName !== void 0) {
     const suffix =
@@ -313,10 +319,10 @@ const describe: Record<string, any> = {}
 
 const describePropsLike =
   (masterKey: string) => (openState: Ref<Record<string, boolean>>, props: any) => {
-    const child = []
+    const child: VNode[] = []
 
     for (const propName in props) {
-      child.push(getProp(openState, masterKey, props[propName], propName, 0))
+      child.push(...getProp(openState, masterKey, props[propName], propName, 0))
     }
 
     return child
@@ -325,8 +331,8 @@ describe.props = describePropsLike('props')
 describe.computedProps = describePropsLike('computedProps')
 describe.slots = describePropsLike('slots')
 
-describe.events = (openState: Ref<Record<string, boolean>>, events: any) => {
-  const child: Array<ReturnType<typeof h>> = []
+describe.events = (openState: Ref<Record<string, boolean>>, events: any): VNode[] => {
+  const child: VNode[] = []
 
   if (events === void 0) {
     return child
@@ -346,10 +352,10 @@ describe.events = (openState: Ref<Record<string, boolean>>, events: any) => {
           event.params !== void 0 && event.params !== null,
           masterKey,
           () => {
-            const params = []
+            const params: VNode[] = []
 
             for (const paramName in event.params) {
-              params.push(getProp(openState, masterKey, event.params[paramName], paramName, 1))
+              params.push(...getProp(openState, masterKey, event.params[paramName], paramName, 1))
             }
 
             return [
@@ -370,7 +376,7 @@ describe.events = (openState: Ref<Record<string, boolean>>, events: any) => {
 }
 
 describe.methods = (openState: Ref<Record<string, boolean>>, methods: any) => {
-  const child = []
+  const child: VNode[] = []
 
   for (const methodName in methods) {
     const method = methods[methodName]
@@ -393,12 +399,12 @@ describe.methods = (openState: Ref<Record<string, boolean>>, methods: any) => {
         method.params !== void 0 || method.returns !== void 0,
         masterKey,
         () => {
-          const nodes = []
+          const nodes: VNode[] = []
 
           if (method.params !== void 0 && method.params !== null) {
-            const props = []
+            const props: VNode[] = []
             for (const paramName in method.params) {
-              props.push(getProp(openState, masterKey, method.params[paramName], paramName, 1))
+              props.push(...getProp(openState, masterKey, method.params[paramName], paramName, 1))
             }
             nodes.push(
               getDiv(
@@ -434,7 +440,7 @@ describe.methods = (openState: Ref<Record<string, boolean>>, methods: any) => {
   return child
 }
 
-describe.value = (openState: Ref<Record<string, boolean>>, value: any) => {
+describe.value = (openState: Ref<Record<string, boolean>>, value: any): VNode[] => {
   return [
     h(
       'div',
@@ -446,7 +452,7 @@ describe.value = (openState: Ref<Record<string, boolean>>, value: any) => {
   ]
 }
 
-describe.arg = (openState: Ref<Record<string, boolean>>, arg: any) => {
+describe.arg = (openState: Ref<Record<string, boolean>>, arg: any): VNode[] => {
   return [
     h(
       'div',
@@ -458,8 +464,8 @@ describe.arg = (openState: Ref<Record<string, boolean>>, arg: any) => {
   ]
 }
 
-describe.modifiers = (openState: Ref<Record<string, boolean>>, modifiers: any) => {
-  const child = []
+describe.modifiers = (openState: Ref<Record<string, boolean>>, modifiers: any): VNode[] => {
+  const child: VNode[] = []
 
   for (const modifierName in modifiers) {
     const modifier = modifiers[modifierName]
@@ -476,7 +482,7 @@ describe.modifiers = (openState: Ref<Record<string, boolean>>, modifiers: any) =
   return child
 }
 
-describe.injection = (_: Ref<Record<string, boolean>>, injection: any) => {
+describe.injection = (_: Ref<Record<string, boolean>>, injection: any): VNode[] => {
   return [h('div', { class: 'markdown-api-entry row' }, [getNameDiv(injection, injection, 0)])]
 }
 
@@ -490,7 +496,7 @@ function useConfigToggle(openState: Ref<Record<string, boolean>>) {
   }
 }
 
-describe.quasarConfOptions = (openState: Ref<Record<string, boolean>>, conf: any) => {
+describe.quasarConfOptions = (openState: Ref<Record<string, boolean>>, conf: any): VNode[] => {
   const configToggle = useConfigToggle(openState)
 
   if (configToggle.enabled === false) {

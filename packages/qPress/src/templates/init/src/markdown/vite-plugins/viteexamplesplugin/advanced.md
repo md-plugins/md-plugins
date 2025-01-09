@@ -34,7 +34,7 @@ import { Plugin } from 'vite'
  *          The `resolveId` property resolves module IDs starting with "examples:" and returns a resolved ID.
  *          The `load` property loads example code based on the production or development environment.
  */
-declare function viteExamplesPlugin(isProd: boolean, path: string): Plugin
+declare function viteExamplesPlugin({ isProd, path }: { isProd: boolean; path: string }): Plugin
 
 /**
  * A function to determine the manual chunk name for a given module ID.
@@ -78,7 +78,10 @@ export default defineConfig(({ mode }) => {
   const isProduction = mode === 'production'
 
   return {
-    plugins: [vue(), viteExamplesPlugin(isProduction, '/absolute/path/to/examples')],
+    plugins: [
+      vue(),
+      viteExamplesPlugin({ isProd: isProduction, path: '/absolute/path/to/examples' }),
+    ],
     build: {
       chunkSizeWarningLimit: 650,
       rollupOptions: {
@@ -114,7 +117,7 @@ export default defineConfig(({ mode }) => {
       },
 
       vitePlugins: [
-        viteExamplesPlugin(isProduction, '/absolute/path/to/examples'),
+        viteExamplesPlugin({ isProd: isProduction, path: '/absolute/path/to/examples' }),
         // ...
       ],
     },
