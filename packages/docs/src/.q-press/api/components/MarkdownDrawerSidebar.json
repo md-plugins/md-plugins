@@ -1,0 +1,24 @@
+{
+  "type": "component",
+  "meta": {
+    "docsUrl": "https://path-to-your-docs/markdown-drawer-toc"
+  },
+  "props": {},
+  "slots": {
+    "default": {
+      "desc": "Slot for custom content in the drawer"
+    }
+  },
+  "events": {
+    "toggleTocDrawer": {
+      "desc": "Emitted when the close button is clicked to toggle the Table of Contents drawer",
+      "params": {
+        "evt": {
+          "type": "Event",
+          "desc": "JS event object"
+        }
+      }
+    }
+  },
+  "methods": {}
+}
