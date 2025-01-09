@@ -228,7 +228,7 @@ Update your `App.vue`:
 },
 ```
 
-If you don't have a `.prettierignore` file, create one in the root of yur project and add the following:
+If you don't have a `.prettierignore` file, create one in the root of your project and add the following:
 
 ```bash
 - Ignore all Markdown files:
