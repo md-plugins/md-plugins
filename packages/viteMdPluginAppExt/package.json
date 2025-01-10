@@ -1,6 +1,6 @@
 {
   "name": "@md-plugins/quasar-app-extension-vite-md-plugin",
-  "version": "0.1.0-alpha.10",
+  "version": "0.1.0-alpha.11",
   "description": "A Quasar app-ext for @md-plugins/viteMdPlugin",
   "author": "Jeff <galbraith64@gmail.com>",
   "license": "MIT",

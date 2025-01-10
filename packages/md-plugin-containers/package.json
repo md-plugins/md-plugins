@@ -1,6 +1,6 @@
 {
   "name": "@md-plugins/md-plugin-containers",
-  "version": "0.1.0-alpha.10",
+  "version": "0.1.0-alpha.11",
   "description": "A markdown-it plugin for handling custom containers.",
   "keywords": [
     "markdown-it",
