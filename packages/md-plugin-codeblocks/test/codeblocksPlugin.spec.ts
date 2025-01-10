@@ -24,7 +24,7 @@ console.log('Hello, world!');
     expect(renderedHTML).toContain('</MarkdownPrerender>')
 
     // Check for syntax highlighting
-    expect(renderedHTML).toContain('<pre v-pre class="markdown-code language-js">')
+    expect(renderedHTML).toContain('<pre v-pre class="markdown-code">')
     expect(renderedHTML).toContain('<code>')
     expect(renderedHTML).toContain('console<span class="token punctuation">.')
     expect(renderedHTML).toContain('<span class="token string">\'Hello, world!\'</span>')
@@ -51,7 +51,7 @@ console.log('Hello, world!');
     const renderedHTML = md.render(markdownInput)
 
     expect(renderedHTML).toContain('<MarkdownPrerender>')
-    expect(renderedHTML).toContain('<pre v-pre class="markdown-code language-markup">')
+    expect(renderedHTML).toContain('<pre v-pre class="markdown-code">')
     expect(renderedHTML).toContain('<MarkdownCopyButton')
   })
 
@@ -136,7 +136,7 @@ some random code
 
     const renderedHTML = md.render(markdownInput)
 
-    expect(renderedHTML).toContain('<pre v-pre class="markdown-code language-markup">')
+    expect(renderedHTML).toContain('<pre v-pre class="markdown-code">')
     expect(renderedHTML).toContain('<code>')
   })
 
@@ -189,10 +189,10 @@ console.log('Normal Line');
 
     // Verify the content of empty tabs contains a <pre> block and copy button
     expect(renderedHTML).toContain(
-      '<q-tab-panel class="q-pa-none" name="Empty Tab"><pre v-pre class="markdown-code language-js"><code></code></pre><MarkdownCopyButton /></q-tab-panel>',
+      '<q-tab-panel class="q-pa-none" name="Empty Tab"><pre v-pre class="markdown-code"><code></code></pre><MarkdownCopyButton /></q-tab-panel>',
     )
     expect(renderedHTML).toContain(
-      '<q-tab-panel class="q-pa-none" name="Another Empty Tab"><pre v-pre class="markdown-code language-js"><code></code></pre><MarkdownCopyButton /></q-tab-panel>',
+      '<q-tab-panel class="q-pa-none" name="Another Empty Tab"><pre v-pre class="markdown-code"><code></code></pre><MarkdownCopyButton /></q-tab-panel>',
     )
   })
 })
