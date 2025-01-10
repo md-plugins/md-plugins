@@ -49,11 +49,11 @@
     <div class="row justify-center hero">
       <div class="hero-title">Markdown-It! Plugins</div>
     </div>
-    <main class="content">
+    <main class="content grid-container">
       <div
         v-for="plugin in mdPlugins"
         :key="plugin.name"
-        class="section"
+        class="section grid-item"
         @click="navigate(plugin.path)"
       >
         <q-card flat style="background: transparent">
@@ -65,11 +65,11 @@
     <div class="row justify-center hero">
       <div class="hero-title">Vite Plugins</div>
     </div>
-    <main class="content">
+    <main class="content grid-container">
       <div
         v-for="plugin in vitePlugins"
         :key="plugin.name"
-        class="section"
+        class="section grid-item"
         @click="navigate(plugin.path)"
       >
         <h2>{{ plugin.name }}</h2>
@@ -79,8 +79,13 @@
     <div class="row justify-center hero">
       <div class="hero-title">Quasar App Extensions</div>
     </div>
-    <main class="content">
-      <div v-for="ext in appExtensions" :key="ext.name" class="section" @click="navigate(ext.path)">
+    <main class="content grid-container">
+      <div
+        v-for="ext in appExtensions"
+        :key="ext.name"
+        class="section grid-item"
+        @click="navigate(ext.path)"
+      >
         <h2>{{ ext.name }}</h2>
         <p>{{ ext.desc }}</p>
       </div>
@@ -279,6 +284,21 @@ body.body--dark .byline {
   flex-wrap: wrap;
   justify-content: center;
   padding: 20px;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 10px;
+  width: 100%;
+  max-width: 100%;
+  justify-content: center;
+  align-content: center;
+}
+
+.grid-item {
+  // aspect-ratio: 1 / 1;
+  cursor: pointer;
 }
 
 .section {
