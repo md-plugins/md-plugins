@@ -531,8 +531,6 @@ Lorem ipsum dolor sit amet, **consectetur adipiscing** elit, sed do _eiusmod_ te
 
 Lorem ipsum dolor sit amet, **consectetur adipiscing** elit, sed do _eiusmod_ tempor incididunt ut labore et dolore magna aliqua.
 
-<!-- <MarkdownInstallation plugins="AppFullscreen" /> -->
-
 <script import>
 import MarkdownExampleApi from 'src/.q-press/api/components/MarkdownExample.json'
 import MarkdownPageApi from 'src/.q-press/api/components/MarkdownPage.json'

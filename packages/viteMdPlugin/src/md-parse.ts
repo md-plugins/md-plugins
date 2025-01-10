@@ -5,7 +5,6 @@ import type { MenuItem } from './types.js'
 
 const markdownLinkRE = /<MarkdownLink /
 const markdownApiRE = /<MarkdownApi /
-const markdownInstallationRE = /<MarkdownInstallation /
 const markdownTreeRE = /<MarkdownTree /
 
 /**
@@ -19,7 +18,7 @@ const markdownTreeRE = /<MarkdownTree /
  *
  * The function performs the following steps:
  * 1. Creates an environment object to store metadata about the page, including the page ID and a set of page scripts to be imported.
- * 2. Pre-processes the Markdown code to check for the presence of various custom components (MarkdownApi, MarkdownInstallation, MarkdownTree) and adds them to the set of page scripts.
+ * 2. Pre-processes the Markdown code to check for the presence of various custom components (MarkdownApi, MarkdownTree) and adds them to the set of page scripts.
  * 3. Renders the Markdown code to HTML using the `md.render()` function, passing the environment object as a second argument.
  * 4. Post-processes the environment object, checking for the presence of examples and the MarkdownLink component, and adding them to the set of page scripts.
  * 5. Generates a Vue component using the `getVueComponent()` function, passing the rendered HTML, the original Markdown code, and the page ID.
@@ -37,11 +36,6 @@ export function mdParse(code: string, id: string, prefix: string, menu: MenuItem
   env.pageScripts!.add("import MarkdownPage from 'src/.q-press/layouts/MarkdownPage.vue'")
   if (markdownApiRE.test(code) === true) {
     env.pageScripts!.add("import MarkdownApi from 'src/.q-press/components/MarkdownApi.vue'")
-  }
-  if (markdownInstallationRE.test(code) === true) {
-    env.pageScripts!.add(
-      "import MarkdownInstallation from 'src/.q-press/components/MarkdownInstallation.vue'",
-    )
   }
   if (markdownTreeRE.test(code) === true) {
     env.pageScripts!.add("import MarkdownTree from 'src/.q-press/components/MarkdownTree.vue'")

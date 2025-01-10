@@ -7,7 +7,6 @@ import type MarkdownIt from 'markdown-it'
 const titleRE = /<\/?[^>]+(>|$)/g
 const apiRE = /^<MarkdownApi /
 const apiNameRE = /(?:file|name)="([^"]+)"/
-const installationRE = /^<MarkdownInstallation(?:\s+title="([^"]*)")?\s*/
 const exampleRE = /^<MarkdownExample(?:\s+title="([^"]*)")?\s*/
 
 function parseContent(
@@ -100,13 +99,7 @@ export const headersPlugin: PluginWithOptions<HeadersPluginOptions> = (
       }
     }
 
-    let match = token.content.match(installationRE)
-    if (match !== null) {
-      const title = match[1] ?? 'Installation'
-      env.toc.push({ id: slugify(title), title, deep: true })
-    }
-
-    match = token.content.match(exampleRE)
+    const match = token.content.match(exampleRE)
     if (match !== null) {
       const title = match[1] ?? 'Example'
       env.toc.push({ id: slugify(title), title, deep: true })

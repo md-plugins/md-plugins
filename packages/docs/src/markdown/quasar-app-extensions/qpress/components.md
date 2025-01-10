@@ -25,7 +25,6 @@ import MarkdownHeaderApi from 'src/.q-press/api/components/MarkdownHeader.json'
 import MarkdownHeaderIconLinksApi from 'src/.q-press/api/components/MarkdownHeaderIconLinks.json'
 import MarkdownHeaderMenuApi from 'src/.q-press/api/components/MarkdownHeaderMenu.json'
 import MarkdownHeaderTextLinksApi from 'src/.q-press/api/components/MarkdownHeaderTextLinks.json'
-import MarkdownInstallationApi from 'src/.q-press/api/components/MarkdownInstallation.json'
 
 import MarkdownLayoutApi from 'src/.q-press/api/components/MarkdownLayout.json'
 import MarkdownLinkApi from 'src/.q-press/api/components/MarkdownLink.json'
@@ -56,7 +55,6 @@ import MarkdownPrerenderApi from 'src/.q-press/api/components/MarkdownPrerender.
 <MarkdownApi :api="MarkdownHeaderIconLinksApi" name="MarkdownHeaderIconLinks"/>
 <MarkdownApi :api="MarkdownHeaderMenuApi" name="MarkdownHeaderMenu"/>
 <MarkdownApi :api="MarkdownHeaderTextLinksApi" name="MarkdownHeaderTextLinks"/>
-<MarkdownApi :api="MarkdownInstallationApi" name="MarkdownInstallation"/>
 
 <MarkdownApi :api="MarkdownLayoutApi" name="MarkdownLayout"/>
 <MarkdownApi :api="MarkdownLinkApi" name="MarkdownLink"/>
