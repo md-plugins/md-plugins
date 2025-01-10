@@ -249,14 +249,17 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
       })
       .join('\n')
 
-    const langClass = lang === 'css' ? ' language-css' : ` language-${lang}`
+    // langClass is causing interference with numbers, add, rem, etc
+    // commenting out for now
+    // const langClass = lang === 'css' ? ' language-css' : ` language-${lang}`
 
     const preAttrs = maxheight !== void 0 ? ` style="max-height:${maxheight}"` : ''
 
     const langProp = customCopyLangList.includes(lang) === true ? ` lang="${lang}"` : ''
 
     return (
-      `<pre v-pre class="${preClass}${langClass}"${preAttrs}>` +
+      // `<pre v-pre class="${preClass}${langClass}"${preAttrs}>` +
+      `<pre v-pre class="${preClass}"${preAttrs}>` +
       renderCodeBlock(html, codeClass) +
       `</pre><${copyButtonComponent}${langProp} />`
     )
