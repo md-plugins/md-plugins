@@ -44,7 +44,7 @@ The Ultimate Markdown Solution for the Quasar Framework.
 
 1. Modify your `src/css/quasar.variables.scss`
 
-- import a Q-Press theme (`default`, `sunrise`, `newspaper`, `tawny`, your own or a 3rd-party theme)
+- import a Q-Press theme (`default`, `sunrise`, `newspaper`, `tawny`, `mystic`, your own or a 3rd-party theme)
 - `@import '../.q-press/css/themes/sunrise.scss';`
 
 2. Modify your `src/css/app.scss`

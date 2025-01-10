@@ -70,7 +70,7 @@ pnpm i prismjs
 
 ### Modify `src/css/quasar.variables.scss`
 
-Import a Q-Press theme (`default`, `sunrise`, `newspaper`, `tawny`, your own or a 3rd-party theme):
+Import a Q-Press theme (`default`, `sunrise`, `newspaper`, `tawny`, `mystic`, your own or a 3rd-party theme):
 
 ```scss
 @import '../.q-press/css/themes/sunrise.scss';
