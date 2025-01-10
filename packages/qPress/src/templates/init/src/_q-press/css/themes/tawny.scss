@@ -1,34 +1,34 @@
 @use 'sass:color';
 
 // Tawny Theme Variables
-$primary: #8b4513; // SaddleBrown
-$secondary: #a0522d; // Sienna
-$accent: #d2691e; // Chocolate
+$primary: #8b4513;
+$secondary: #a0522d;
+$accent: #d2691e;
 
-$positive: #cd853f; // Peru
-$negative: #8b0000; // DarkRed
-$info: #deb887; // BurlyWood
-$warning: #f4a460; // SandyBrown
+$positive: #2ecc71;
+$negative: #ff1732;
+$info: #10a0ff;
+$warning: #ffd52d;
 
-$brand-primary: #8b4513; // SaddleBrown
-$brand-secondary: #a0522d; // Sienna
-$brand-accent: #d2691e; // Chocolate
-$brand-dark: #5c4033; // DarkBrown
-$brand-light: #f5f5dc; // Beige
-$brand-medium: #c19a6b; // Camel
-$brand-light-text: #5c4033; // DarkBrown
-$brand-light-bg: #f5f5dc; // Beige
-$brand-dark-bg: #3e2723; // DarkerBrown
-$brand-dark-text: #f5f5dc; // Beige
-$brand-light-codeblock-bg: #f5f5dc; // Beige
-$brand-light-codeblock-text: #5c4033; // DarkBrown
-$brand-dark-codeblock-bg: #3e2723; // DarkerBrown
-$brand-dark-codeblock-text: #f5f5dc; // Beige
+$brand-primary: #8b4513;
+$brand-secondary: #a0522d;
+$brand-accent: #d2691e;
+$brand-dark: #5c4033;
+$brand-light: #f5f5dc;
+$brand-medium: #c19a6b;
+$brand-light-text: #5c4033;
+$brand-light-bg: #f5f5dc;
+$brand-dark-bg: #3e2723;
+$brand-dark-text: #f5f5dc;
+$brand-light-codeblock-bg: #fdfdfd;
+$brand-light-codeblock-text: #5c4033;
+$brand-dark-codeblock-bg: #5c4033;
+$brand-dark-codeblock-text: #f5f5dc;
 
-$header-btn-color--light: #8b4513; // SaddleBrown
-$header-btn-hover-color--light: #a0522d; // Sienna
-$header-btn-color--dark: #d2691e; // Chocolate
-$header-btn-hover-color--dark: #cd853f; // Peru
+$header-btn-color--light: #8b4513;
+$header-btn-hover-color--light: #a0522d;
+$header-btn-color--dark: #d2691e;
+$header-btn-hover-color--dark: #cd853f;
 
 $light-pill: $brand-light;
 $light-text: $brand-light-text;

@@ -1,33 +1,38 @@
 @use 'sass:color';
 
-$primary: #214466;
-$secondary: #266660;
-$accent: #853394;
+// Mystic Theme Variables
+$primary: #8a2be2;
+$secondary: #00ced1;
+$accent: #ff4500;
 
 $positive: #2ecc71;
 $negative: #ff1732;
 $info: #10a0ff;
 $warning: #ffd52d;
 
-$brand-primary: #00bfff;
-$brand-secondary: #4b555c;
-$brand-accent: #ea5e13;
-$brand-dark: #2c3e50;
-$brand-light: #f5f5f5;
-$brand-medium: #6b7f86;
-$brand-light-text: #4d4d4d;
-$brand-light-bg: #fefefe;
-$brand-dark-bg: #080e1a;
-$brand-dark-text: #cbcbcb;
-$brand-light-codeblock-bg: #f5f5f5;
-$brand-light-codeblock-text: #4d4d4d;
-$brand-dark-codeblock-bg: #121212;
-$brand-dark-codeblock-text: #e6e6e6;
+$brand-primary: #8a2be2;
+$brand-secondary: #00ced1;
+$brand-accent: #ff4500;
+$brand-dark: #8d66da;
+$brand-light: #e6e6fa;
+$brand-medium: #9370db;
+$brand-light-text: #4b0082;
+$brand-light-bg: #e6e6fa;
+$brand-dark-bg: #171122;
+$brand-dark-text: #e6e6fa;
 
-$header-btn-color--light: #757575;
-$header-btn-hover-color--light: #212121;
-$header-btn-color--dark: #929397;
-$header-btn-hover-color--dark: #fff;
+$brand-light-codeblock-bg: #f8f8ff;
+$brand-light-codeblock-text: #9370db;
+$brand-dark-codeblock-bg: #4b0082;
+$brand-dark-codeblock-text: #e6e6fa;
+
+$header-btn-color--light: #8a2be2;
+$header-btn-hover-color--light: #ff4500;
+$header-btn-color--dark: #00ced1;
+$header-btn-hover-color--dark: #9370db;
+
+$light-pill: $brand-light;
+$light-text: $brand-light-text;
 
 $light-pill: $brand-light;
 $light-text: $brand-light-text;

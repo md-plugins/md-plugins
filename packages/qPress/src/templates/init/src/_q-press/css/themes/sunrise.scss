@@ -1,32 +1,34 @@
-// Custom Theme Variables
-$primary: #e74c3c; // Change primary color to red
-$secondary: #8e44ad; // Change secondary color to purple
-$accent: #f39c12; // Change accent color to orange
+@use 'sass:color';
 
-$positive: #2ecc71; // Change positive color to green
-$negative: #e74c3c; // Change negative color to red
-$info: #3498db; // Change info color to blue
-$warning: #f1c40f; // Change warning color to yellow
+// Sunrise Theme Variables
+$primary: #e74c3c;
+$secondary: #8e44ad;
+$accent: #f39c12;
 
-$brand-primary: #e74c3c; // Change brand primary color to red
-$brand-secondary: #5186bb; // Change brand secondary color to purple
-$brand-accent: #f39c12; // Change brand accent color to orange
-$brand-dark: #2c3e50; // Change brand dark color to dark blue
-$brand-light: #ecf0f1; // Change brand light color to light grey
-$brand-medium: #95a5a6; // Change brand medium color to grey
-$brand-light-text: #2c3e50; // Change brand light text color to dark blue
-$brand-light-bg: #ecf0f1; // Change brand light background color to light grey
-$brand-dark-bg: #34495e; // Change brand dark background color to dark grey
-$brand-dark-text: #ecf0f1; // Change brand dark text color to light grey
-$brand-light-codeblock-bg: #ecf0f1; // Change brand light codeblock background color to light grey
-$brand-light-codeblock-text: #2c3e50; // Change brand light codeblock text color to dark blue
-$brand-dark-codeblock-bg: #2c3e50; // Change brand dark codeblock background color to dark blue
-$brand-dark-codeblock-text: #ecf0f1; // Change brand dark codeblock text color to light grey
+$positive: #2ecc71;
+$negative: #ff1732;
+$info: #10a0ff;
+$warning: #ffd52d;
 
-$header-btn-color--light: #c0392b; // Change header button color for light theme to red
-$header-btn-hover-color--light: #e74c3c; // Change header button hover color for light theme to red
-$header-btn-color--dark: #c0392b; // Change header button color for dark theme to purple
-$header-btn-hover-color--dark: #e74c3c; // Change header button hover color for dark theme to purple
+$brand-primary: #e74c3c;
+$brand-secondary: #5186bb;
+$brand-accent: #f39c12;
+$brand-dark: #2c3e50;
+$brand-light: #ecf0f1;
+$brand-medium: #95a5a6;
+$brand-light-text: #2c3e50;
+$brand-light-bg: #ecf0f1;
+$brand-dark-bg: #34495e;
+$brand-dark-text: #ecf0f1;
+$brand-light-codeblock-bg: #ecf0f1;
+$brand-light-codeblock-text: #2c3e50;
+$brand-dark-codeblock-bg: #2c3e50;
+$brand-dark-codeblock-text: #ecf0f1;
+
+$header-btn-color--light: #c0392b;
+$header-btn-hover-color--light: #e74c3c;
+$header-btn-color--dark: #c0392b;
+$header-btn-hover-color--dark: #e74c3c;
 
 $light-pill: $brand-light;
 $light-text: $brand-light-text;
