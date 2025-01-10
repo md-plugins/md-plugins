@@ -486,6 +486,7 @@ echo 'This line will be removed' # Line 5
 
 ````markup
 ```tabs Examples
+<<| javascript [numbered highlight=2,4 add=3 rem=5] javascript |>>
 console.log('Hello, world!'); // Line 1
 const a = 10; // Line 2
 const b = 20; // Line 3

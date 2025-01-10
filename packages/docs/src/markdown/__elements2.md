@@ -338,10 +338,20 @@ const x = {
 }
 ```
 
-<MarkdownInstallation plugins="AppFullscreen" />
+<!-- <MarkdownInstallation plugins="AppFullscreen" /> -->
 
 <script import>
 import AvatarApi from 'quasar/dist/api/QAvatar.json'
 </script>
 
 <MarkdownApi :api="AvatarApi" name="QAvatar"/>
+
+<script import>
+import MarkdownExampleApi from 'src/.q-press/api/components/MarkdownExample.json'
+import MarkdownPageApi from 'src/.q-press/api/components/MarkdownPage.json'
+</script>
+
+<MarkdownApi :api="MarkdownExampleApi" name="MarkdownExample"/>
+<MarkdownApi :api="MarkdownPageApi" name="MarkdownPage"/>
+
+<MarkdownExample title="Title for example card" file="BasicExample" />

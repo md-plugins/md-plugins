@@ -88,7 +88,7 @@ Import Q-Press styles:
 
 ### Modify `quasar.config.ts`
 
-```typescript
+```ts [maxheight=400px]
 import { defineConfig } from '#q-app/wrappers'
 import type { Plugin } from 'vite'
 import { viteMdPlugin, type MenuItem } from '@md-plugins/vite-md-plugin'
@@ -118,7 +118,7 @@ export default defineConfig(async (ctx) => {
 
 ### Modify `src/routes/routes.ts`
 
-```typescript
+```ts [maxheight=400px]
 import mdPageList from 'src/markdown/listing'
 
 const routes = [
