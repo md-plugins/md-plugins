@@ -8,13 +8,11 @@
 A collection of Markdown-it! plugins, Vite plugins, and App Extensions for Vue and Quasar.
 </p>
 
-**NOTE:** This monorepo is currently under development and not yet ready for production use.
-
 A collection of **Markdown-It plugins** and utilities designed for enhanced Markdown processing. This monorepo contains various plugins for handling specific Markdown features.
 
 A collection of **Vite plugins** for transforming Markdown into Vue Single File Components (SFCs) and for handling raw SFC content.
 
-A collection of **App Extensions** for Quasar Framework, providing enhanced Markdown support for Quasar applications.
+A collection of **App Extensions** for Quasar Framework, providing enhanced Markdown support for Quasar applications, including **Q-Press**. The **Q-Press** App Extension is a powerful tool for Quasar developers that simplifies the integration of Markdown content into Quasar applications. It leverages the capabilities of Vite and various Markdown plugins to transform Markdown files into Vue components, enabling a seamless and efficient workflow for content management.
 
 Inspired by [Quasar Framework](https://quasar.dev) documentation and [mdit-vue](https://github.com/mdit-vue/mdit-vue), this project aims to provide a comprehensive set of tools for working with Markdown content.
 

@@ -40,10 +40,9 @@
       </div>
     </header>
     <div class="byline">
-      <p>Discover the power of Markdown Plugins and enhance your documentation experience!</p>
       <p>
-        <strong>NOTE:</strong> MD-Plugins are currently in development and not suitable for
-        production.
+        Markdown Plugins go beyond the standard Markdown syntax.<br />Discover the power of Markdown
+        Plugins and enhance your documentation experience!
       </p>
     </div>
     <div class="row justify-center hero">
