@@ -1,7 +1,7 @@
 {
   "name": "mdplugins_docs",
   "version": "0.1.0-alpha.11",
-  "description": "Docs site for @md-plugins",
+  "description": "Docs site for @md-plugins, the home of Q-Press!",
   "productName": "@md-plugins",
   "author": "Jeff <galbraith64@gmail.com>",
   "type": "module",
