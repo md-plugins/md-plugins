@@ -146,13 +146,13 @@ const footerLinks = [
   },
 ]
 
-const gettingStartedMenu = {
+const gettingStartedMenu: SiteMenuItem = {
   name: 'Getting Started',
   mq: 470, // media query breakpoint
   children: [{ name: 'Introduction', path: '/getting-started/introduction' }],
 }
 
-const mdPluginsMenu = {
+const mdPluginsMenu: SiteMenuItem = {
   name: 'MD Plugins',
   mq: 600, // media query breakpoint
   children: [
@@ -240,7 +240,7 @@ const mdPluginsMenu = {
   ],
 }
 
-const vitePluginsMenu = {
+const vitePluginsMenu: SiteMenuItem = {
   name: 'Vite Plugins',
   mq: 780, // media query breakpoint
   children: [
@@ -261,7 +261,7 @@ const vitePluginsMenu = {
   ],
 }
 
-const QuasarAppExts = {
+const QuasarAppExts: SiteMenuItem = {
   name: 'Quasar App Extensions',
   mq: 1020, // media query breakpoint
   children: [
@@ -278,13 +278,14 @@ const QuasarAppExts = {
         { name: 'Overview', path: '/quasar-app-extensions/qpress/overview' },
         { name: 'Advanced', path: '/quasar-app-extensions/qpress/advanced' },
         { name: 'Themes', path: '/quasar-app-extensions/qpress/themes' },
+        { name: 'Site Config', path: '/quasar-app-extensions/qpress/site-config' },
         { name: 'Components', path: '/quasar-app-extensions/qpress/components' },
       ],
     },
   ],
 }
 
-const guidesMenu = {
+const guidesMenu: SiteMenuItem = {
   name: 'Guides',
   mq: 1100, // media query breakpoint
   children: [
@@ -299,7 +300,7 @@ const guidesMenu = {
   ],
 }
 
-const otherMenu = {
+const otherMenu: SiteMenuItem = {
   name: 'Other',
   mq: 1190, // media query breakpoint
   children: [
@@ -314,28 +315,28 @@ const processedMdPluginsMenu = {
   name: mdPluginsMenu.name,
   path: slugify(mdPluginsMenu.name),
   expanded: false,
-  children: mdPluginsMenu.children.map(processMenuItem),
+  children: mdPluginsMenu.children ? mdPluginsMenu.children.map(processMenuItem) : [],
 }
 
 const processedVitePluginsMenu = {
   name: vitePluginsMenu.name,
   path: slugify(vitePluginsMenu.name),
   expanded: false,
-  children: vitePluginsMenu.children.map(processMenuItem),
+  children: vitePluginsMenu.children ? vitePluginsMenu.children.map(processMenuItem) : [],
 }
 
 const processedQuasarAppExts = {
   name: QuasarAppExts.name,
   path: slugify(QuasarAppExts.name),
   expanded: false,
-  children: QuasarAppExts.children.map(processMenuItem),
+  children: QuasarAppExts.children ? QuasarAppExts.children.map(processMenuItem) : [],
 }
 
 const processedGuidesMenu = {
   name: guidesMenu.name,
   path: slugify(guidesMenu.name),
   expanded: false,
-  children: guidesMenu.children.map(processMenuItem),
+  children: guidesMenu.children ? guidesMenu.children.map(processMenuItem) : [],
 }
 
 const secondaryToolbarLinks = [
@@ -347,7 +348,7 @@ const secondaryToolbarLinks = [
   otherMenu,
 ]
 
-export const moreLinks = [
+export const moreLinks: SiteMenuItem[] = [
   {
     name: 'More',
     // children: [...primaryToolbarLinks, { separator: true }, ...secondaryToolbarLinks, socialLinks],
@@ -360,10 +361,12 @@ export const sidebar = [
     name: gettingStartedMenu.name,
     path: slugify(gettingStartedMenu.name),
     expanded: false,
-    children: gettingStartedMenu.children.map((item) => ({
-      name: item.name,
-      path: slugify(item.name),
-    })),
+    children: gettingStartedMenu.children
+      ? gettingStartedMenu.children.map((item) => ({
+          name: item.name,
+          path: slugify(item.name),
+        }))
+      : [],
   },
   processedMdPluginsMenu,
   processedVitePluginsMenu,
@@ -419,17 +422,7 @@ const config = {
   links: {
     primaryHeaderLinks: [] as SiteMenuItem[], // [...primaryToolbarLinks],
     secondaryHeaderLinks: [...secondaryToolbarLinks] as SiteMenuItem[],
-    moreLinks: [
-      {
-        name: 'More',
-        children: [
-          // ...primaryToolbarLinks,
-          // { separator: true },
-          ...secondaryToolbarLinks,
-          socialLinks,
-        ],
-      },
-    ] as SiteMenuItem[],
+    moreLinks,
     footerLinks: [...footerLinks] as SiteMenuItem[],
     socialLinks: [...socialLinks.children] as SocialLink[],
   },
