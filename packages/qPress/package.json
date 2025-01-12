@@ -30,7 +30,7 @@
     "npm": ">= 5.6.0",
     "yarn": ">= 1.6.0"
   },
-  "devDependencies": {
+  "dependencies": {
     "@md-plugins/md-plugin-blockquote": "workspace:*",
     "@md-plugins/md-plugin-codeblocks": "workspace:*",
     "@md-plugins/md-plugin-containers": "workspace:*",
@@ -45,8 +45,11 @@
     "@md-plugins/shared": "workspace:*",
     "@md-plugins/vite-md-plugin": "workspace:*",
     "@types/markdown-it": "^14.1.2",
+    "markdown-it": "^14.1.0"
+  },
+  "devDependencies": {
+    "@types/markdown-it": "^14.1.2",
     "fs-extra": "^11.2.0",
-    "markdown-it": "^14.1.0",
     "vite": "^6.0.7"
   },
   "peerDependencies": {
