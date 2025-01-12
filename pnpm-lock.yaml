@@ -344,7 +344,7 @@ importers:
         version: 6.0.7(@types/node@22.10.5)(jiti@2.4.2)(sass-embedded@1.83.0)(terser@5.37.0)
 
   packages/viteMdPlugin:
-    devDependencies:
+    dependencies:
       '@md-plugins/md-plugin-blockquote':
         specifier: workspace:*
         version: link:../md-plugin-blockquote
@@ -381,12 +381,13 @@ importers:
       '@md-plugins/shared':
         specifier: workspace:*
         version: link:../shared
-      '@types/markdown-it':
-        specifier: ^14.1.2
-        version: 14.1.2
       markdown-it:
         specifier: ^14.1.0
         version: 14.1.0
+    devDependencies:
+      '@types/markdown-it':
+        specifier: ^14.1.2
+        version: 14.1.2
       vite:
         specifier: ^6.0.7
         version: 6.0.7(@types/node@22.10.5)(jiti@2.4.2)(sass-embedded@1.83.0)(terser@5.37.0)
