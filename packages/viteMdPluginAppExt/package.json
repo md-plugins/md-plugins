@@ -25,7 +25,7 @@
     "md-plugins",
     "viteMdPlugin"
   ],
-  "dependencies": {
+  "devDependencies": {
     "@md-plugins/vite-md-plugin": "workspace:*"
   }
 }
