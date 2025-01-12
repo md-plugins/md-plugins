@@ -6,7 +6,7 @@ export default defineBuildConfig({
   entries: ['src/index'],
   rollup: {
     emitCJS: false, // Generates CommonJS modules
-    inlineDependencies: false, // Inline all dependencies
+    inlineDependencies: false,
   },
   outDir: 'dist', // Explicitly set the output directory if needed
 })
