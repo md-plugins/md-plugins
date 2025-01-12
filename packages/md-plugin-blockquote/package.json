@@ -1,6 +1,6 @@
 {
   "name": "@md-plugins/md-plugin-blockquote",
-  "version": "0.1.0-alpha.14",
+  "version": "0.1.0-alpha.15",
   "description": "A markdown-it plugin for Blockquotes with custom styles.",
   "keywords": [
     "markdown-it",
