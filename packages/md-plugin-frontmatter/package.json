@@ -37,12 +37,10 @@
     "clean": "rm -rf dist/ node_modules/",
     "test": "vitest"
   },
-  "dependencies": {
+  "devDependencies": {
     "@md-plugins/shared": "workspace:*",
     "gray-matter": "^4.0.3",
-    "markdown-it": "^14.1.0"
-  },
-  "devDependencies": {
+    "markdown-it": "^14.1.0",
     "@types/markdown-it": "^14.1.2"
   },
   "peerDependencies": {

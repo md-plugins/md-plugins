@@ -37,15 +37,13 @@
     "clean": "rm -rf dist/ node_modules/",
     "test": "vitest"
   },
-  "dependencies": {
-    "@md-plugins/shared": "workspace:*",
-    "markdown-it": "^14.1.0",
-    "markdown-it-container": "^4.0.0"
-  },
   "publishConfig": {
     "access": "public"
   },
   "devDependencies": {
+    "@md-plugins/shared": "workspace:*",
+    "markdown-it": "^14.1.0",
+    "markdown-it-container": "^4.0.0",
     "@types/markdown-it-container": "^2.0.10",
     "@types/markdown-it": "^14.1.2"
   },

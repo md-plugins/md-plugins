@@ -37,11 +37,9 @@
     "clean": "rm -rf dist/ node_modules/",
     "test": "vitest"
   },
-  "dependencies": {
-    "@md-plugins/shared": "workspace:*",
-    "markdown-it": "^14.1.0"
-  },
   "devDependencies": {
+    "@md-plugins/shared": "workspace:*",
+    "markdown-it": "^14.1.0",
     "@types/markdown-it": "^14.1.2"
   },
   "peerDependencies": {

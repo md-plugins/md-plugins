@@ -37,15 +37,13 @@
     "clean": "rm -rf dist/ node_modules/",
     "test": "vitest"
   },
-  "dependencies": {
-    "@md-plugins/shared": "workspace:*",
-    "markdown-it": "^14.1.0",
-    "prismjs": "^1.29.0"
-  },
   "publishConfig": {
     "access": "public"
   },
   "devDependencies": {
+    "@md-plugins/shared": "workspace:*",
+    "markdown-it": "^14.1.0",
+    "prismjs": "^1.29.0",
     "@types/markdown-it": "^14.1.2",
     "@types/prismjs": "^1.26.5"
   },
