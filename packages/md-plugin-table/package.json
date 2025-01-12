@@ -1,6 +1,6 @@
 {
   "name": "@md-plugins/md-plugin-table",
-  "version": "0.1.0-alpha.15",
+  "version": "0.1.0-alpha.16",
   "description": "A markdown-it plugin for handling tables with custom tag and styles.",
   "keywords": [
     "markdown-it",
