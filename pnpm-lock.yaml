@@ -125,7 +125,7 @@ importers:
         version: 2.2.0(typescript@5.7.2)
 
   packages/md-plugin-blockquote:
-    dependencies:
+    devDependencies:
       '@md-plugins/shared':
         specifier: workspace:*
         version: link:../shared
@@ -137,152 +137,142 @@ importers:
         version: 14.1.0
 
   packages/md-plugin-codeblocks:
-    dependencies:
+    devDependencies:
       '@md-plugins/shared':
         specifier: workspace:*
         version: link:../shared
-      markdown-it:
-        specifier: ^14.1.0
-        version: 14.1.0
-      prismjs:
-        specifier: ^1.29.0
-        version: 1.29.0
-    devDependencies:
       '@types/markdown-it':
         specifier: ^14.1.2
         version: 14.1.2
       '@types/prismjs':
         specifier: ^1.26.5
         version: 1.26.5
-
-  packages/md-plugin-containers:
-    dependencies:
-      '@md-plugins/shared':
-        specifier: workspace:*
-        version: link:../shared
       markdown-it:
         specifier: ^14.1.0
         version: 14.1.0
-      markdown-it-container:
-        specifier: ^4.0.0
-        version: 4.0.0
+      prismjs:
+        specifier: ^1.29.0
+        version: 1.29.0
+
+  packages/md-plugin-containers:
     devDependencies:
+      '@md-plugins/shared':
+        specifier: workspace:*
+        version: link:../shared
       '@types/markdown-it':
         specifier: ^14.1.2
         version: 14.1.2
       '@types/markdown-it-container':
         specifier: ^2.0.10
         version: 2.0.10
+      markdown-it:
+        specifier: ^14.1.0
+        version: 14.1.0
+      markdown-it-container:
+        specifier: ^4.0.0
+        version: 4.0.0
 
   packages/md-plugin-frontmatter:
-    dependencies:
+    devDependencies:
       '@md-plugins/shared':
         specifier: workspace:*
         version: link:../shared
+      '@types/markdown-it':
+        specifier: ^14.1.2
+        version: 14.1.2
       gray-matter:
         specifier: ^4.0.3
         version: 4.0.3
       markdown-it:
         specifier: ^14.1.0
         version: 14.1.0
-    devDependencies:
-      '@types/markdown-it':
-        specifier: ^14.1.2
-        version: 14.1.2
 
   packages/md-plugin-headers:
-    dependencies:
+    devDependencies:
       '@md-plugins/shared':
         specifier: workspace:*
         version: link:../shared
-      markdown-it:
-        specifier: ^14.1.0
-        version: 14.1.0
-    devDependencies:
       '@types/markdown-it':
         specifier: ^14.1.2
         version: 14.1.2
+      markdown-it:
+        specifier: ^14.1.0
+        version: 14.1.0
 
   packages/md-plugin-image:
-    dependencies:
+    devDependencies:
       '@md-plugins/shared':
         specifier: workspace:*
         version: link:../shared
-      markdown-it:
-        specifier: ^14.1.0
-        version: 14.1.0
-    devDependencies:
       '@types/markdown-it':
         specifier: ^14.1.2
         version: 14.1.2
+      markdown-it:
+        specifier: ^14.1.0
+        version: 14.1.0
 
   packages/md-plugin-imports:
-    dependencies:
+    devDependencies:
       '@md-plugins/shared':
         specifier: workspace:*
         version: link:../shared
-      markdown-it:
-        specifier: ^14.1.0
-        version: 14.1.0
-    devDependencies:
       '@types/markdown-it':
         specifier: ^14.1.2
         version: 14.1.2
+      markdown-it:
+        specifier: ^14.1.0
+        version: 14.1.0
 
   packages/md-plugin-inlinecode:
-    dependencies:
+    devDependencies:
       '@md-plugins/shared':
         specifier: workspace:*
         version: link:../shared
-      markdown-it:
-        specifier: ^14.1.0
-        version: 14.1.0
-    devDependencies:
       '@types/markdown-it':
         specifier: ^14.1.2
         version: 14.1.2
+      markdown-it:
+        specifier: ^14.1.0
+        version: 14.1.0
 
   packages/md-plugin-link:
-    dependencies:
+    devDependencies:
       '@md-plugins/shared':
         specifier: workspace:*
         version: link:../shared
-      markdown-it:
-        specifier: ^14.1.0
-        version: 14.1.0
-    devDependencies:
       '@types/markdown-it':
         specifier: ^14.1.2
         version: 14.1.2
+      markdown-it:
+        specifier: ^14.1.0
+        version: 14.1.0
 
   packages/md-plugin-table:
-    dependencies:
+    devDependencies:
       '@md-plugins/shared':
         specifier: workspace:*
         version: link:../shared
-      markdown-it:
-        specifier: ^14.1.0
-        version: 14.1.0
-    devDependencies:
       '@types/markdown-it':
         specifier: ^14.1.2
         version: 14.1.2
+      markdown-it:
+        specifier: ^14.1.0
+        version: 14.1.0
 
   packages/md-plugin-title:
-    dependencies:
+    devDependencies:
       '@md-plugins/shared':
         specifier: workspace:*
         version: link:../shared
-      markdown-it:
-        specifier: ^14.1.0
-        version: 14.1.0
-    devDependencies:
       '@types/markdown-it':
         specifier: ^14.1.2
         version: 14.1.2
+      markdown-it:
+        specifier: ^14.1.0
+        version: 14.1.0
 
   packages/qPress:
-    dependencies:
+    devDependencies:
       '@md-plugins/md-plugin-blockquote':
         specifier: workspace:*
         version: link:../md-plugin-blockquote
@@ -322,7 +312,6 @@ importers:
       '@md-plugins/vite-md-plugin':
         specifier: workspace:*
         version: link:../viteMdPlugin
-    devDependencies:
       '@types/markdown-it':
         specifier: ^14.1.2
         version: 14.1.2
@@ -337,14 +326,13 @@ importers:
         version: 6.0.7(@types/node@22.10.5)(jiti@2.4.2)(sass-embedded@1.83.0)(terser@5.37.0)
 
   packages/shared:
-    dependencies:
-      markdown-it:
-        specifier: ^14.1.0
-        version: 14.1.0
     devDependencies:
       '@types/markdown-it':
         specifier: ^14.1.2
         version: 14.1.2
+      markdown-it:
+        specifier: ^14.1.0
+        version: 14.1.0
 
   packages/viteExamplesPlugin:
     devDependencies:
@@ -356,7 +344,7 @@ importers:
         version: 6.0.7(@types/node@22.10.5)(jiti@2.4.2)(sass-embedded@1.83.0)(terser@5.37.0)
 
   packages/viteMdPlugin:
-    dependencies:
+    devDependencies:
       '@md-plugins/md-plugin-blockquote':
         specifier: workspace:*
         version: link:../md-plugin-blockquote
@@ -393,7 +381,6 @@ importers:
       '@md-plugins/shared':
         specifier: workspace:*
         version: link:../shared
-    devDependencies:
       '@types/markdown-it':
         specifier: ^14.1.2
         version: 14.1.2
@@ -405,7 +392,7 @@ importers:
         version: 6.0.7(@types/node@22.10.5)(jiti@2.4.2)(sass-embedded@1.83.0)(terser@5.37.0)
 
   packages/viteMdPluginAppExt:
-    dependencies:
+    devDependencies:
       '@md-plugins/vite-md-plugin':
         specifier: workspace:*
         version: link:../viteMdPlugin
