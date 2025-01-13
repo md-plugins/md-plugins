@@ -68,6 +68,16 @@ pnpm i prismjs
 
 ## Configuration
 
+### Modify `tsconfig.json`
+
+Add the `resolveJsonModule: true` to your `tsconfig.json` file in your route folder:
+
+```json
+  "compilerOptions": {
+    "resolveJsonModule": true
+  }
+```
+
 ### Modify `src/css/quasar.variables.scss`
 
 Import a Q-Press theme (`default`, `sunrise`, `newspaper`, `tawny`, `mystic`, your own or a 3rd-party theme):
@@ -206,6 +216,16 @@ Update your `App.vue`:
     varsIgnorePattern: '^_',
   },
 ],
+```
+
+:::
+
+:::details Q. I see linting issues regarding `any`, what should I do?
+
+**A.** In your `eslint.config.js` file, add/replace the following in your rules:
+
+```js
+'@typescript-eslint/no-explicit-any': 'off',
 ```
 
 :::

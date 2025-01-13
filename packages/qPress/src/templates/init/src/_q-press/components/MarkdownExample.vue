@@ -110,6 +110,8 @@ import MarkdownCode from './MarkdownCode.vue'
 import MarkdownCodepen from './MarkdownCodepen.vue'
 import MarkdownCardTitle from './MarkdownCardTitle.vue'
 
+import siteConfig from '../../siteConfig'
+
 const props = defineProps({
   title: String,
   file: String,
@@ -167,7 +169,7 @@ function parseComponent(comp) {
 
 function openGitHub() {
   openURL(
-    `https://github.com/quasarframework/quasar/tree/${process.env.DOCS_BRANCH}/docs/src/examples/${examples.name}/${props.file}.vue`,
+    `${siteConfig.githubEditRootSrc}/examples/${examples.name}/${props.file}.vue`,
   )
 }
 
