@@ -63,7 +63,7 @@ npm i prismjs
 <<| bash yarn |>>
 yarn add prismjs
 <<| bash pnpm |>>
-pnpm i prismjs
+pnpm add prismjs
 ```
 
 ## Configuration

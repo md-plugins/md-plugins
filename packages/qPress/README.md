@@ -38,7 +38,7 @@ The Ultimate Markdown Solution for the Quasar Framework.
 
 - `npm i prismjs`
 - `yarn add prismjs`
-- `pnpm i prismjs`
+- `pnpm add prismjs`
 
 ## Modifications
 
@@ -57,48 +57,51 @@ The Ultimate Markdown Solution for the Quasar Framework.
   @import '../.q-press/css/prism-theme.scss';
   ```
 
+````
+
 3. Modify your `quasar.config.ts`
 
-```ts
+- ```ts
 import { viteMdPlugin, type MenuItem } from '@md-plugins/vite-md-plugin'
 
 export default defineConfig(async (ctx) => {
-  // Dynamically import siteConfig
-  const siteConfig = await import('./src/siteConfig')
-  const { sidebar } = siteConfig
-  return {
-    build: {
-      vitePlugins: [
-        // add this plugin
-        [
-          viteMdPlugin,
-          {
-            path: ctx.appPaths.srcDir + '/markdown',
-            menu: sidebar as MenuItem[],
-          },
-        ],
-        // ...
-```
+// Dynamically import siteConfig
+const siteConfig = await import('./src/siteConfig')
+const { sidebar } = siteConfig
+return {
+  build: {
+    vitePlugins: [
+      // add this plugin
+      [
+        viteMdPlugin,
+        {
+          path: ctx.appPaths.srcDir + '/markdown',
+          menu: sidebar as MenuItem[],
+        },
+      ],
+      // ...
+````
 
 4. Modify your `src/routes/routes.ts`
 
-```ts
-import mdPageList from 'src/markdown/listing'
+- ```ts
+  import mdPageList from 'src/markdown/listing'
+  ```
 
 const routes = [
-  {
-    path: '/',
-    component: () => import('src/.q-press/layouts/MarkdownLayout.vue'),
-    children: [
-      // Include the Landing Page route first
-      ...Object.entries(mdPageList)
-        .filter(([key]) => key.includes('landing-page.md'))
-        .map(([_key, component]) => ({
-          path: '',
-          name: 'Landing Page',
-          component,
-          meta: { fullscreen: true, dark: true },
-        })),
+{
+path: '/',
+component: () => import('src/.q-press/layouts/MarkdownLayout.vue'),
+children: [
+// Include the Landing Page route first
+...Object.entries(mdPageList)
+.filter(([key]) => key.includes('landing-page.md'))
+.map(([_key, component]) => ({
+path: '',
+name: 'Landing Page',
+component,
+meta: { fullscreen: true, dark: true },
+})),
 
       // Now include all other routes, excluding the landing-page
       ...Object.keys(mdPageList)
@@ -121,22 +124,24 @@ const routes = [
           return acc
         }),
     ],
-  },
 
-  // Always leave this as last one,
-  // but you can also remove it
-  {
-    path: '/:catchAll(.*)*',
-    component: () => import('pages/ErrorNotFound.vue'),
-  },
+},
+
+// Always leave this as last one,
+// but you can also remove it
+{
+path: '/:catchAll(._)_',
+component: () => import('pages/ErrorNotFound.vue'),
+},
 ]
 
 export default routes
-```
+
+````
 
 5. Set up for Dark mode support, update your App.vue
 
-```ts
+  - ```ts
 <template>
   <router-view />
 </template>
@@ -146,7 +151,7 @@ import { useDark } from 'src/.q-press/composables/dark'
 const { initDark } = useDark()
 initDark()
 </script>
-```
+````
 
 ## Running the App
 
