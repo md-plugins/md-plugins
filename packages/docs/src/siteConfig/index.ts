@@ -77,7 +77,7 @@ export interface SiteConfig {
   theme: string
   version: string
   copyright: CopyrightConfig
-  githubEditRoot: string
+  githubEditRootSrc: string // src folder for github edit links (appended with 'markdown' and 'examples')
   license: LicenseConfig
   privacy: PrivacyConfig
   logoConfig: LogoConfig
@@ -385,7 +385,7 @@ const config = {
     line1: `Copyright © 2024-${new Date().getFullYear()} MD-PLUGINS`,
     line2: '',
   } as CopyrightConfig,
-  githubEditRoot: 'https://github.com/md-plugins/md-plugins/edit/dev/packages/docs/src/markdown/',
+  githubEditRootSrc: 'https://github.com/md-plugins/md-plugins/edit/dev/packages/docs/src/',
   license: {
     label: 'MIT License',
     link: 'https://github.com/md-plugins/md-plugins/blob/dev/LICENSE.md',
