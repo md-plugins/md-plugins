@@ -1,12 +1,5 @@
 import mdPageList from 'src/markdown/listing'
 
-// const routeMap = {
-//   './components/components.md': {
-//     path: 'components',
-//     meta: { fullwidth: true, dark: true },
-//   },
-// }
-
 const routes = [
   {
     path: '/',
@@ -30,11 +23,6 @@ const routes = [
             path: '',
             component: mdPageList[key],
           }
-
-          // const route = routeMap[key as keyof typeof routeMap]
-          // if (route !== undefined) {
-          //   Object.assign(acc, route)
-          // }
 
           if (acc.path === '') {
             // Remove '.md' from the end of the filename
