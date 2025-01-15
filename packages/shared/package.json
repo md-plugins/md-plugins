@@ -1,6 +1,6 @@
 {
   "name": "@md-plugins/shared",
-  "version": "0.1.0-alpha.18",
+  "version": "0.1.0-alpha.19",
   "description": "Shared functions and utilities for md-plugins.",
   "keywords": [
     "markdown-it",
