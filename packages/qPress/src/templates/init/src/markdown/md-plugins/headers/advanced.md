@@ -164,7 +164,7 @@ By default, the `headers` plugin applies specific CSS classes to different level
 
 ```scss
 .markdown-h1 {
-  font-size: 2.4em;
+  font-size: 2.4em !important;
   font-weight: 700;
   margin: 0 0 1em !important;
   display: flex;
@@ -172,19 +172,19 @@ By default, the `headers` plugin applies specific CSS classes to different level
 }
 
 .markdown-h2 {
-  font-size: 1.8em;
+  font-size: 1.8em !important;
   font-weight: 600;
   padding-bottom: 8px !important;
   border-bottom: 1px solid $separator-color;
 }
 
 .markdown-h3 {
-  font-size: 1.6em;
+  font-size: 1.6em !important;
   font-weight: 500;
 }
 
 .markdown-h4 {
-  font-size: 1.4em;
+  font-size: 1.4em !important;
   font-weight: 500;
   &:before {
     content: '» ';
@@ -193,7 +193,7 @@ By default, the `headers` plugin applies specific CSS classes to different level
 }
 
 .markdown-h5 {
-  font-size: 1em;
+  font-size: 1em !important;
   font-weight: 500;
   &:before {
     content: '»» ';
@@ -202,7 +202,7 @@ By default, the `headers` plugin applies specific CSS classes to different level
 }
 
 .markdown-h6 {
-  font-size: 1em;
+  font-size: 1em !important;
   font-weight: 400;
   &:before {
     content: '»»» ';
@@ -212,19 +212,19 @@ By default, the `headers` plugin applies specific CSS classes to different level
 
 @media (max-width: 850px) {
   .markdown-h1 {
-    font-size: 1.7em;
+    font-size: 1.7em !important;
   }
   .markdown-h2 {
-    font-size: 1.4em;
+    font-size: 1.4em !important;
   }
   .markdown-h3 {
-    font-size: 1.3em;
+    font-size: 1.3em !important;
   }
   .markdown-h4 {
-    font-size: 1.2em;
+    font-size: 1.2em !important;
   }
   .markdown-h5 {
-    font-size: 1.1em;
+    font-size: 1.1em !important;
   }
 }
 ```
