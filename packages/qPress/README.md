@@ -11,6 +11,7 @@ The Ultimate Markdown Solution for the Quasar Framework.
 - **Markdown Components**
 - **siteConfig**
 - **CSS Themes**
+- **Automatic Routing**
 
 ## Installation
 
@@ -45,7 +46,9 @@ The Ultimate Markdown Solution for the Quasar Framework.
 1. Modify your `src/css/quasar.variables.scss`
 
 - import a Q-Press theme (`default`, `sunrise`, `newspaper`, `tawny`, `mystic`, your own or a 3rd-party theme)
-- `@import '../.q-press/css/themes/sunrise.scss';`
+- ```ts
+  @import '../.q-press/css/themes/sunrise.scss';
+  ```
 
 2. Modify your `src/css/app.scss`
 
@@ -57,101 +60,98 @@ The Ultimate Markdown Solution for the Quasar Framework.
   @import '../.q-press/css/prism-theme.scss';
   ```
 
-````
-
 3. Modify your `quasar.config.ts`
 
 - ```ts
-import { viteMdPlugin, type MenuItem } from '@md-plugins/vite-md-plugin'
+  import { viteMdPlugin, type MenuItem } from '@md-plugins/vite-md-plugin'
 
-export default defineConfig(async (ctx) => {
-// Dynamically import siteConfig
-const siteConfig = await import('./src/siteConfig')
-const { sidebar } = siteConfig
-return {
+
+  export default defineConfig(async (ctx) => {
+  // Dynamically import siteConfig
+  const siteConfig = await import('./src/siteConfig')
+  const { sidebar } = siteConfig
+  return {
   build: {
-    vitePlugins: [
-      // add this plugin
-      [
-        viteMdPlugin,
-        {
-          path: ctx.appPaths.srcDir + '/markdown',
-          menu: sidebar as MenuItem[],
-        },
-      ],
-      // ...
-````
+  vitePlugins: [
+  // add this plugin
+  [
+  viteMdPlugin,
+  {
+  path: ctx.appPaths.srcDir + '/markdown',
+  menu: sidebar as MenuItem[],
+  },
+  ],
+  // ...
+  ```
 
 4. Modify your `src/routes/routes.ts`
 
 - ```ts
   import mdPageList from 'src/markdown/listing'
-  ```
 
-const routes = [
-{
-path: '/',
-component: () => import('src/.q-press/layouts/MarkdownLayout.vue'),
-children: [
-// Include the Landing Page route first
-...Object.entries(mdPageList)
-.filter(([key]) => key.includes('landing-page.md'))
-.map(([_key, component]) => ({
-path: '',
-name: 'Landing Page',
-component,
-meta: { fullscreen: true, dark: true },
-})),
-
-      // Now include all other routes, excluding the landing-page
-      ...Object.keys(mdPageList)
-        .filter((key) => !key.includes('landing-page.md')) // Exclude duplicates
-        .map((key) => {
-          const acc = {
+  const routes = [
+    {
+      path: '/',
+      component: () => import('src/.q-press/layouts/MarkdownLayout.vue'),
+      children: [
+        // Include the Landing Page route first
+        ...Object.entries(mdPageList)
+          .filter(([key]) => key.includes('landing-page.md'))
+          .map(([_key, component]) => ({
             path: '',
-            component: mdPageList[key],
-          }
+            name: 'Landing Page',
+            component,
+            meta: { fullscreen: true, dark: true },
+          })),
 
-          if (acc.path === '') {
-            // Remove '.md' from the end of the filename
-            const parts = key.substring(1, key.length - 3).split('/')
-            const len = parts.length
-            const path = parts[len - 2] === parts[len - 1] ? parts.slice(0, len - 1) : parts
+        // Now include all other routes, excluding the landing-page
+        ...Object.keys(mdPageList)
+          .filter((key) => !key.includes('landing-page.md')) // Exclude duplicates
+          .map((key) => {
+            const acc = {
+              path: '',
+              component: mdPageList[key],
+            }
 
-            acc.path = path.join('/')
-          }
+            if (acc.path === '') {
+              // Remove '.md' from the end of the filename
+              const parts = key.substring(1, key.length - 3).split('/')
+              const len = parts.length
+              const path = parts[len - 2] === parts[len - 1] ? parts.slice(0, len - 1) : parts
 
-          return acc
-        }),
-    ],
+              acc.path = path.join('/')
+            }
 
-},
+            return acc
+          }),
+      ],
+    },
 
-// Always leave this as last one,
-// but you can also remove it
-{
-path: '/:catchAll(._)_',
-component: () => import('pages/ErrorNotFound.vue'),
-},
-]
+    // Always leave this as last one,
+    // but you can also remove it
+    {
+      path: '/:catchAll(._)_',
+      component: () => import('pages/ErrorNotFound.vue'),
+    },
+  ]
 
-export default routes
-
-````
+  export default routes
+  ```
 
 5. Set up for Dark mode support, update your App.vue
 
-  - ```ts
-<template>
-  <router-view />
-</template>
+- ```ts
+  <template>
+    <router-view />
+  </template>
 
-<script setup lang="ts">
-import { useDark } from 'src/.q-press/composables/dark'
-const { initDark } = useDark()
-initDark()
-</script>
-````
+
+  <script setup lang="ts">
+  import { useDark } from 'src/.q-press/composables/dark'
+  const { initDark } = useDark()
+  initDark()
+  </script>
+  ```
 
 ## Running the App
 
@@ -161,11 +161,11 @@ All you need to do now is change the configuration and landing page to make it y
 
 ## Configuration
 
-### `src/siteConfig/index.ts`
+### Modify `src/siteConfig/index.ts`
 
 1. Make any appropriate changes to the `siteConfig.ts` file
 
-### `src/components/LandingPage/LandingPage.vue`
+### Modify `src/components/LandingPage/LandingPage.vue`
 
 1. Update the `LandingPage.vue` file to include your own content
 
@@ -233,3 +233,11 @@ In case this README falls out of date, please refer to the [documentation](https
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE.md) file for details.
+
+```
+
+```
+
+```
+
+```
