@@ -196,6 +196,35 @@ Update your `App.vue`:
 </script>
 ```
 
+### Set Up for Meta Tags
+
+This is optional, but it's recommended to set up meta tags for SEO and social media sharing, and especially for SSR.
+
+Update your `App.vue`:
+
+```ts
+<template>
+  <router-view />
+</template>
+
+<script setup lang="ts">
+// don't forget to add the Quasar 'Meta' plugin into your quasar.config file!
+import { useMeta } from 'quasar'
+import getMeta from 'src/.q-press/assets/get-meta'
+
+// You can use the `getMeta` function to get the meta tags for your page and provide default values
+useMeta({
+  title: 'MD-Plugins for Vue and Quasar',
+  titleTemplate: (title) => `${title} | MD-Plugins`,
+
+  meta: getMeta(
+    'MD-Plugins - Build markdown user interfaces in record time',
+    'MD-Plugins is a collection of Markdown and Vite plugins that make it easy to build markdown user interfaces in Vue and Quasar applications.',
+  ),
+})
+</script>
+```
+
 ## FAQ
 
 :::details Q. I have errors in my`routes.ts` file, what should I do?
