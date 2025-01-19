@@ -100,7 +100,7 @@ export default {
                 item.name &&
                 getDrawerMenu(
                   item,
-                  path + (item.path !== void 0 ? '/' + item.path : ''),
+                  (path + (item.path !== void 0 ? '/' + item.path : '')).replace(/\/{2,}/g, '/'),
                   level / 2 + 0.1,
                 ),
             ),
