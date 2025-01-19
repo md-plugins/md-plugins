@@ -1,6 +1,6 @@
 {
   "name": "@md-plugins/md-plugin-title",
-  "version": "0.1.0-alpha.20",
+  "version": "0.1.0-alpha.21",
   "description": "A markdown-it plugin for getting Title information.",
   "keywords": [
     "markdown-it",
