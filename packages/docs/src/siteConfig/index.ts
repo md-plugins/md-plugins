@@ -208,8 +208,8 @@ const mdPluginsMenu: SiteMenuItem = {
     {
       name: 'Inline Code',
       children: [
-        { name: 'Overview', path: '/md-plugins/inlinecode/overview' },
-        { name: 'Advanced', path: '/md-plugins/inlinecode/advanced' },
+        { name: 'Overview', path: '/md-plugins/inline-code/overview' },
+        { name: 'Advanced', path: '/md-plugins/inline-code/advanced' },
       ],
     },
     {
