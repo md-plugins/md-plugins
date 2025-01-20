@@ -1,7 +1,7 @@
 <template>
   <q-card class="markdown-example q-my-lg" flat bordered>
     <div class="header-toolbar row items-center q-pr-sm">
-      <MarkdownCardTitle :title="props.title" prefix="example--" />
+      <MarkdownCardTitle :title="props.title" prefix="example-" />
 
       <q-space />
 
@@ -168,9 +168,7 @@ function parseComponent(comp) {
 }
 
 function openGitHub() {
-  openURL(
-    `${siteConfig.githubEditRootSrc}/examples/${examples.name}/${props.file}.vue`,
-  )
+  openURL(`${siteConfig.githubEditRootSrc}/examples/${examples.name}/${props.file}.vue`)
 }
 
 function openCodepen() {
