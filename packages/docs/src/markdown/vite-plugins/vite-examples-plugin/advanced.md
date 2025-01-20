@@ -2,7 +2,7 @@
 title: ViteExamplesPlugin Advanced Topics
 desc: ViteExamplesPlugin advanced topics for Vite.
 related:
-  - vite-plugins/vitemdplugin/advanced
+  - vite-plugins/vite-md-plugin/advanced
 ---
 
 ## ViteExamplesPlugin

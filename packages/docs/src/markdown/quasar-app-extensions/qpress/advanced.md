@@ -3,7 +3,7 @@ title: Q-Press Advanced Topics
 desc: Advanced Topics for the Q-Press App-Extension.
 examples: QAvatar
 related:
-  - vite-plugins/viteexamplesplugin/overview
+  - vite-plugins/vite-examples-plugin/overview
 ---
 
 If you plan on having `api` and `examples` support in your markdown files, we will discuss making the necessary updates to support that. If you don't know what `api` and `examples` are, here are examples for Quasar's `QAvatar` component:

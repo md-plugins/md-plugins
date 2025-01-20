@@ -151,7 +151,7 @@ pnpm test
 
 ## Documentation
 
-In case this README falls out of date, please refer to the [documentation](https://md-plugins.netlify.app/vite-plugins/vitemdplugin/overview) for the latest information.
+In case this README falls out of date, please refer to the [documentation](https://md-plugins.netlify.app/vite-plugins/vite-md-plugin/overview) for the latest information.
 
 ## License
 

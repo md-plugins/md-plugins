@@ -210,7 +210,7 @@ throw new Error('targetFolder is not defined')
 
 ## Documentation
 
-In case this README falls out of date, please refer to the [documentation](https://md-plugins.netlify.app/vite-plugins/viteexamplesplugin/overview) for the latest information.
+In case this README falls out of date, please refer to the [documentation](https://md-plugins.netlify.app/vite-plugins/vite-examples-plugin/overview) for the latest information.
 
 ## License
 

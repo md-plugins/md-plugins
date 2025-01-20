@@ -81,7 +81,7 @@ The `viteMdPluginAppExt` extension can be customized through various options. He
 
 ## Documentation
 
-In case this README falls out of date, please refer to the [documentation](https://md-plugins.netlify.app/quasar-app-extensions/vitemdpluginappext/overview) for the latest information.
+In case this README falls out of date, please refer to the [documentation](https://md-plugins.netlify.app/quasar-app-extensions/vite-md-plugin-app-ext/overview) for the latest information.
 
 ## License
 

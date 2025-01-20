@@ -2,7 +2,7 @@
 title: ViteMdPluginAppExt App Extension
 desc: Overview of the ViteMdPluginAppExt for Quasar.
 related:
-  - vite-plugins/vitemdplugin/overview
+  - vite-plugins/vite-md-plugin/overview
   - quasar-app-extensions/qpress/overview
 ---
 

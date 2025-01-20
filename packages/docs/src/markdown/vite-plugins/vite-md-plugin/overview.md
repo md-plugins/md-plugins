@@ -2,8 +2,8 @@
 title: Vite Markdown Plugin
 desc: Vite plugin for transforming Markdown content into Vue Single File Components.
 related:
-  - vite-plugins/viteexamplesplugin/overview
-  - quasar-app-extensions/vitemdpluginappext/overview
+  - vite-plugins/vite-examples-plugin/overview
+  - quasar-app-extensions/vite-md-plugin-app-ext/overview
 ---
 
 Welcome to the Vite Markdown Plugin documentation! This guide will provide you with an overview of the Vite Markdown plugin and its features.
