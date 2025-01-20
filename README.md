@@ -8,6 +8,42 @@
 A collection of Markdown-it! plugins, Vite plugins, and App Extensions for Vue and Quasar.
 </p>
 
+<p><strong>Markdown-it! Plugins</strong></p>
+
+![@md-plugins/md-plugin-blockquote](https://img.shields.io/npm/v/@md-plugins/md-plugin-blockquote?label=@md-plugins/md-plugin-blockquote)
+![@md-plugins/md-plugin-codeblocks](https://img.shields.io/npm/v/@md-plugins/md-plugin-codeblocks?label=@md-plugins/md-plugin-codeblocks)
+![@md-plugins/md-plugin-containers](https://img.shields.io/npm/v/@md-plugins/md-plugin-containers?label=@md-plugins/md-plugin-containers)
+![@md-plugins/md-plugin-frontmatter](https://img.shields.io/npm/v/@md-plugins/md-plugin-frontmatter?label=@md-plugins/md-plugin-frontmatter)
+![@md-plugins/md-plugin-headers](https://img.shields.io/npm/v/@md-plugins/md-plugin-headers?label=@md-plugins/md-plugin-headers)
+![@md-plugins/md-plugin-image](https://img.shields.io/npm/v/@md-plugins/md-plugin-image?label=@md-plugins/md-plugin-image)
+![@md-plugins/md-plugin-imports](https://img.shields.io/npm/v/@md-plugins/md-plugin-imports?label=@md-plugins/md-plugin-imports)
+![@md-plugins/md-plugin-inlinecode](https://img.shields.io/npm/v/@md-plugins/md-plugin-inlinecode?label=@md-plugins/md-plugin-inlinecode)
+![@md-plugins/md-plugin-link](https://img.shields.io/npm/v/@md-plugins/md-plugin-link?label=@md-plugins/md-plugin-link)
+![@md-plugins/md-plugin-table](https://img.shields.io/npm/v/@md-plugins/md-plugin-table?label=@md-plugins/md-plugin-table)
+![@md-plugins/md-plugin-title](https://img.shields.io/npm/v/@md-plugins/md-plugin-title?label=@md-plugins/md-plugin-title)
+![@md-plugins/md-plugin-shared](https://img.shields.io/npm/v/@md-plugins/md-plugin-shared?label=@md-plugins/md-plugin-shared)
+
+<p><strong>Vite Plugins</strong></p>
+
+![@md-plugins/vite-md-plugin](https://img.shields.io/npm/v/@md-plugins/vite-md-plugin?label=@md-plugins/vite-md-plugin)
+![@md-plugins/vite-examples-plugin](https://img.shields.io/npm/v/@md-plugins/vite-examples-plugin?label=@md-plugins/vite-examples-plugin)
+
+<p><strong>Quasar App Extensions</strong></p>
+
+![@md-plugins/quasar-app-extension-vite-md-plugin](https://img.shields.io/npm/v/@md-plugins/quasar-app-extension-vite-md-plugin?label=@md-plugins/quasar-app-extension-vite-md-plugin)
+![@md-plugins/quasar-app-extension-q-press](https://img.shields.io/npm/v/@md-plugins/quasar-app-extension-q-press?label=@md-plugins/quasar-app-extension-q-press)
+
+[![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/md-plugins/md-plugins)]()
+[![GitHub repo size in bytes](https://img.shields.io/github/repo-size/md-plugins/md-plugins)]()
+
+[![npm](https://img.shields.io/npm/dt/@md-plugins/quasar-app-extension-qpress)](https://www.npmjs.com/package/@md-plugins/quasar-app-extension-qpress)
+![@md-plugins/quasar-app-extension-qpress](https://img.shields.io/npm/dm/@md-plugins/quasar-app-extension-qpress)
+
+<span class="badge-paypal"><a href="https://paypal.me/hawkeye64" title="Donate to this project using Paypal"><img src="https://img.shields.io/badge/paypal-donate-yellow.svg" alt="PayPal donate button" /></a></span>
+
+[![Discord](https://img.shields.io/badge/discord-join%20server-738ADB?style=for-the-badge&logo=discord&logoColor=738ADB)](https://chat.quasar.dev)
+[![X](https://img.shields.io/badge/follow-@jgalbraith64-1DA1F2?style=for-the-badge&logo=x&logoColor=1DA1F2)](https://twitter.com/jgalbraith64)
+
 A collection of **Markdown-It plugins** and utilities designed for enhanced Markdown processing. This monorepo contains various plugins for handling specific Markdown features.
 
 A collection of **Vite plugins** for transforming Markdown into Vue Single File Components (SFCs) and for handling raw SFC content.
