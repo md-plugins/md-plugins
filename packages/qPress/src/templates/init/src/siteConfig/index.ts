@@ -247,15 +247,15 @@ const vitePluginsMenu: SiteMenuItem = {
     {
       name: 'viteMdPlugin',
       children: [
-        { name: 'Overview', path: '/vite-plugins/vitemdplugin/overview' },
-        { name: 'Advanced', path: '/vite-plugins/vitemdplugin/advanced' },
+        { name: 'Overview', path: '/vite-plugins/vite-md-plugin/overview' },
+        { name: 'Advanced', path: '/vite-plugins/vite-md-plugin/advanced' },
       ],
     },
     {
       name: 'viteExamplesPlugin',
       children: [
-        { name: 'Overview', path: '/vite-plugins/viteexamplesplugin/overview' },
-        { name: 'Advanced', path: '/vite-plugins/viteexamplesplugin/advanced' },
+        { name: 'Overview', path: '/vite-plugins/vite-examples-plugin/overview' },
+        { name: 'Advanced', path: '/vite-plugins/vite-examples-plugin/advanced' },
       ],
     },
   ],
@@ -268,8 +268,8 @@ const QuasarAppExts: SiteMenuItem = {
     {
       name: 'viteMdPluginAppExt',
       children: [
-        { name: 'Overview', path: '/quasar-app-extensions/vitemdpluginappext/overview' },
-        { name: 'Advanced', path: '/quasar-app-extensions/vitemdpluginappext/advanced' },
+        { name: 'Overview', path: '/quasar-app-extensions/vite-md-plugin-app-ext/overview' },
+        { name: 'Advanced', path: '/quasar-app-extensions/vite-md-plugin-app-ext/advanced' },
       ],
     },
     {

@@ -181,12 +181,12 @@ const vitePlugins = [
   {
     name: 'Vite MD Plugin',
     desc: 'Adds support for creating Vue SFCs from Markdown files.',
-    path: '/vite-plugins/vitemdplugin/overview',
+    path: '/vite-plugins/vite-md-plugin/overview',
   },
   {
     name: 'Vite Examples Plugin',
     desc: 'Adds support for importing Vue files as raw source.',
-    path: '/vite-plugins/viteexamplesplugin/overview',
+    path: '/vite-plugins/vite-examples-plugin/overview',
   },
 ]
 
@@ -194,7 +194,7 @@ const appExtensions = [
   {
     name: 'viteMdPluginAppExt',
     desc: 'Adds support for creating Vue SFCs from Markdown files.',
-    path: '/quasar-app-extensions/vitemdpluginappext/overview',
+    path: '/quasar-app-extensions/vite-md-plugin-app-ext/overview',
   },
   {
     name: 'Q-Press (app-ext)',

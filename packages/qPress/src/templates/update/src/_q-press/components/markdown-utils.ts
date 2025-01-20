@@ -1,4 +1,3 @@
-/* global document navigator location */
 import { Notify } from 'quasar'
 import { slugify } from '@md-plugins/shared'
 

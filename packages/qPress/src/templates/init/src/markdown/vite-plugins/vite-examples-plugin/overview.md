@@ -2,7 +2,7 @@
 title: Vite Examples Plugin
 desc: Vite Examples plugin for enhanced functionality.
 related:
-  - vite-plugins/vitemdplugin/overview
+  - vite-plugins/vite-md-plugin/overview
 ---
 
 Welcome to the Vite Examples Plugin documentation! This guide will provide you with an overview of the Vite Examples plugins and their features.
