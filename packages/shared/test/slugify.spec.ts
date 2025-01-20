@@ -8,7 +8,9 @@ describe('slugify', () => {
 
   it('should handle special characters', () => {
     expect(slugify('Hello @ World!')).toBe('hello-world')
+    expect(slugify('Hello@World!')).toBe('hello-world')
     expect(slugify('C# Programming')).toBe('c-programming')
+    expect(slugify('Hello*World')).toBe('hello-world')
   })
 
   it('should replace & with "-and-"', () => {
@@ -38,9 +40,23 @@ describe('slugify', () => {
     expect(slugify('1 2 3 Go')).toBe('_1-2-3-go')
   })
 
+  it('should handle camelCase and PascalCase', () => {
+    expect(slugify('camelCase')).toBe('camel-case')
+    expect(slugify('PascalCase')).toBe('pascal-case')
+  })
+
+  it('should replace underscores with hyphens', () => {
+    expect(slugify('Hello_World')).toBe('hello-world')
+  })
+
   it('should handle complex cases', () => {
     expect(slugify('!!Complex__Test Case!!')).toBe('complex-test-case')
     expect(slugify('A   B   C---D')).toBe('a-b-c-d')
+    expect(slugify('Hello--World!!')).toBe('hello-world')
+    expect(slugify('Hello__World')).toBe('hello-world')
+    expect(slugify('Hello   World')).toBe('hello-world')
+    expect(slugify('Hello_World!')).toBe('hello-world')
+    expect(slugify('Hello@World#')).toBe('hello-world')
   })
 
   it('should handle empty strings', () => {

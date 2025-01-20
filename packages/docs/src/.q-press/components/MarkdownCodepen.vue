@@ -138,7 +138,7 @@ const computedTitle = computed(() => {
 })
 
 const slugifiedTitle = computed(() => {
-  return 'example--' + slugify(props.title)
+  return slugify('example-' + props.title)
 })
 
 const options = computed(() => {

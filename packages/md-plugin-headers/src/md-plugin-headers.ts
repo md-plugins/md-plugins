@@ -102,7 +102,7 @@ export const headersPlugin: PluginWithOptions<HeadersPluginOptions> = (
     const match = token.content.match(exampleRE)
     if (match !== null) {
       const title = match[1] ?? 'Example'
-      env.toc.push({ id: 'example--' + slugify(title), title, deep: true })
+      env.toc.push({ id: slugify('example-' + title), title, deep: true })
     }
 
     if (typeof originalHtmlBlock === 'function') {
