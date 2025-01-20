@@ -36,17 +36,26 @@ describe('slugify', () => {
   })
 
   it('should ensure slugs do not start with a number', () => {
-    expect(slugify('123Test')).toBe('_123test')
+    expect(slugify('-123Test')).toBe('_123-test')
+    expect(slugify('_123Test')).toBe('_123-test')
     expect(slugify('1 2 3 Go')).toBe('_1-2-3-go')
+    expect(slugify('123Test')).toBe('_123-test')
   })
 
   it('should handle camelCase and PascalCase', () => {
     expect(slugify('camelCase')).toBe('camel-case')
     expect(slugify('PascalCase')).toBe('pascal-case')
+    expect(slugify('camel10Case')).toBe('camel-10-case')
+    expect(slugify('Pascal10Case')).toBe('pascal-10-case')
   })
 
   it('should replace underscores with hyphens', () => {
     expect(slugify('Hello_World')).toBe('hello-world')
+  })
+
+  it('should insert hyphens before and after numbers', () => {
+    expect(slugify('hour24Format')).toBe('hour-24-format')
+    expect(slugify('version2.0')).toBe('version-2-0')
   })
 
   it('should handle complex cases', () => {
@@ -57,6 +66,7 @@ describe('slugify', () => {
     expect(slugify('Hello   World')).toBe('hello-world')
     expect(slugify('Hello_World!')).toBe('hello-world')
     expect(slugify('Hello@World#')).toBe('hello-world')
+    expect(slugify('I ♥ Dogs')).toBe('i-dogs')
   })
 
   it('should handle empty strings', () => {
