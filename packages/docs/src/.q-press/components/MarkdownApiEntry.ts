@@ -129,7 +129,9 @@ const NAME_PROP_COLOR_LEN = NAME_PROP_COLOR.length
 function getDiv(col: number, propName: string, propValue?: string, slot?: any): VNode {
   return h('div', { class: `markdown-api-entry__item col-xs-12 col-sm-${col}` }, [
     h('div', { class: 'markdown-api-entry__type' }, propName),
-    propValue !== void 0 ? h('div', { class: 'markdown-api-entry__value' }, propValue) : slot,
+    propValue !== void 0
+      ? h('div', { class: 'markdown-api-entry__value' }, parseForInlineCode(propValue))
+      : slot,
   ])
 }
 
@@ -224,7 +226,7 @@ function getExpandable(
             },
           }),
         ]),
-        h('div', { class: 'markdown-api-entry__value' }, desc),
+        h('div', { class: 'markdown-api-entry__value' }, parseForInlineCode(desc)),
       ]),
     ]
 
@@ -232,6 +234,26 @@ function getExpandable(
   } else {
     return [getDiv(12, 'Description', desc)]
   }
+}
+
+/**
+ * Parses a string for inline code segments and converts them into VNodes with special styling.
+ *
+ * This function splits the input string by backticks and creates VNodes for code segments.
+ * Text outside of backticks is left as plain strings.
+ *
+ * @param code - The input string containing potential inline code segments delimited by backticks.
+ * @returns An array of VNodes and strings, where code segments are wrapped in styled span elements.
+ */
+function parseForInlineCode(code: string) {
+  const parts = code.split(/(`[^`]+`)/g)
+  return parts.map((part) => {
+    if (part.startsWith('`') && part.endsWith('`')) {
+      return h('span', { class: 'markdown-token' }, part.slice(1, -1))
+    } else {
+      return part
+    }
+  })
 }
 
 /**
