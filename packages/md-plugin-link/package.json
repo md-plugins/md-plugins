@@ -1,6 +1,6 @@
 {
   "name": "@md-plugins/md-plugin-link",
-  "version": "0.1.0-alpha.23",
+  "version": "0.1.0-alpha.24",
   "description": "A markdown-it plugin for handling links.",
   "keywords": [
     "markdown-it",

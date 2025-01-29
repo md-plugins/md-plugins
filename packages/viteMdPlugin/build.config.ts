@@ -7,7 +7,7 @@ export default defineBuildConfig({
   failOnWarn: false,
   externals: [
     /node_modules/, // Exclude all dependencies in node_modules
-    /^@md-plugins\//, // Specifically exclude all @md-plugins/* packages
+    // /^@md-plugins\//, // Specifically exclude all @md-plugins/* packages
     'markdown-it',
     'vite',
   ],
