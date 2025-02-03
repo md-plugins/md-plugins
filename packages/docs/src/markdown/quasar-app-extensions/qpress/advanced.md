@@ -42,7 +42,7 @@ In your markdown file, you can add the following to create an `api` card:
 
 ::: tip
 The API format conforms to Quasar's API format.
-We will touch on this at a later date.
+We will touch on this at a later date. For now, you can look at the Api folder in the .q-press folder.
 :::
 
 ```markdown
