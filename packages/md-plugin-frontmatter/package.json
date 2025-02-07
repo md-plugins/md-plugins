@@ -1,6 +1,6 @@
 {
   "name": "@md-plugins/md-plugin-frontmatter",
-  "version": "0.1.0-alpha.24",
+  "version": "0.1.0-alpha.25",
   "description": "A markdown-it plugin for handling frontmatter in markdown files.",
   "keywords": [
     "markdown-it",
