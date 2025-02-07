@@ -70,7 +70,7 @@ pnpm add prismjs
 
 ### Modify `tsconfig.json`
 
-Add the `resolveJsonModule: true` to your `tsconfig.json` file in your route folder:
+Add the `resolveJsonModule: true` to your `tsconfig.json` file in your root folder:
 
 ```json
   "compilerOptions": {

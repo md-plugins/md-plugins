@@ -141,6 +141,12 @@ const slugifiedTitle = computed(() => {
   return slugify('example-' + props.title)
 })
 
+/**
+ * Computed property that returns the options for the component.
+ * This property is reactive and will update whenever its dependencies change.
+ *
+ * @returns {Object} The options object for the component.
+ */
 const options = computed(() => {
   const data = {
     title: computedTitle.value,
@@ -164,6 +170,11 @@ ${html.value}
   return JSON.stringify(data)
 })
 
+/**
+ * Opens a specific part of the application.
+ *
+ * @param {string} whichParts - The parts of the application to open.
+ */
 function open(whichParts) {
   def.parts = whichParts
 
