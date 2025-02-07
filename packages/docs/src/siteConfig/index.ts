@@ -112,7 +112,7 @@ const socialLinks = {
       path: 'https://twitter.com/md_plugins',
       external: true,
     },
-  ],
+  ] as SocialLink[],
 }
 
 const netlifyLink = {
@@ -348,7 +348,7 @@ const secondaryToolbarLinks = [
   otherMenu,
 ]
 
-export const moreLinks: SiteMenuItem[] = [
+export const moreLinks = [
   {
     name: 'More',
     // children: [...primaryToolbarLinks, { separator: true }, ...secondaryToolbarLinks, socialLinks],
