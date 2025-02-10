@@ -55,12 +55,12 @@ The official NPM name is `@md-plugins/md-plugin-link`.
 You can install the Link plugin using npm, yarn, or pnpm. Choose your preferred method below:
 
 ```tabs
-<<| bash npm |>>
-npm install @md-plugins/md-plugin-link
-<<| bash yarn |>>
-yarn add @md-plugins/md-plugin-link
 <<| bash pnpm |>>
 pnpm add @md-plugins/md-plugin-link
+<<| bash yarn |>>
+yarn add @md-plugins/md-plugin-link
+<<| bash npm |>>
+npm install @md-plugins/md-plugin-link
 ```
 
 ## Configuration

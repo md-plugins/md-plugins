@@ -396,22 +396,22 @@ export function containersPlugin(
 ### Tabs
 
 ```tabs
-<<| bash npm |>>
-npm install @md-plugins/md-plugin-codeblocks
-<<| bash yarn |>>
-yarn add @md-plugins/md-plugin-codeblocks
 <<| bash pnpm |>>
 pnpm add @md-plugins/md-plugin-codeblocks
+<<| bash yarn |>>
+yarn add @md-plugins/md-plugin-codeblocks
+<<| bash npm |>>
+npm install @md-plugins/md-plugin-codeblocks
 ```
 
 ````markup
 ```tabs
-<<| bash npm |>>
-npm install @md-plugins/md-plugin-codeblocks
-<<| bash yarn |>>
-yarn add @md-plugins/md-plugin-codeblocks
 <<| bash pnpm |>>
 pnpm add @md-plugins/md-plugin-codeblocks
+<<| bash yarn |>>
+yarn add @md-plugins/md-plugin-codeblocks
+<<| bash npm |>>
+npm install @md-plugins/md-plugin-codeblocks
 ```
 ````
 
@@ -516,12 +516,12 @@ The official NPM name is `@md-plugins/md-plugin-codeblocks`.
 You can install the Codeblocks plugin using npm, yarn, or pnpm. Choose your preferred method below:
 
 ```tabs
-<<| bash npm |>>
-npm install @md-plugins/md-plugin-codeblocks
-<<| bash yarn |>>
-yarn add @md-plugins/md-plugin-codeblocks
 <<| bash pnpm |>>
 pnpm add @md-plugins/md-plugin-codeblocks
+<<| bash yarn |>>
+yarn add @md-plugins/md-plugin-codeblocks
+<<| bash npm |>>
+npm install @md-plugins/md-plugin-codeblocks
 ```
 
 ## Configuration

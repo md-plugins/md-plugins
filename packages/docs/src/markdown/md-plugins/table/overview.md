@@ -104,12 +104,12 @@ The official NPM name is `@md-plugins/md-plugin-table`.
 You can install the Table plugin using npm, yarn, or pnpm. Choose your preferred method below:
 
 ```tabs
-<<| bash npm |>>
-npm install @md-plugins/md-plugin-table
-<<| bash yarn |>>
-yarn add @md-plugins/md-plugin-table
 <<| bash pnpm |>>
 pnpm add @md-plugins/md-plugin-table
+<<| bash yarn |>>
+yarn add @md-plugins/md-plugin-table
+<<| bash npm |>>
+npm install @md-plugins/md-plugin-table
 ```
 
 ## Configuration

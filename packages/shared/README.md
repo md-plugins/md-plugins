@@ -14,12 +14,12 @@ The `@md-plugins/shared` package provides common utilities, types, and helpers u
 Install the plugin via your preferred package manager:
 
 ```bash
-# With npm:
-npm install @md-plugins/shared
-# Or with Yarn:
-yarn add @md-plugins/shared
-# Or with pnpm:
+# with pnpm:
 pnpm add @md-plugins/shared
+# with Yarn:
+yarn add @md-plugins/shared
+# with npm:
+npm install @md-plugins/shared
 ```
 
 ## Usage

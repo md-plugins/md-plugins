@@ -16,12 +16,12 @@ A **Markdown-It** plugin that enhances code block rendering by providing syntax 
 Install the plugin via your preferred package manager:
 
 ```bash
-# With npm:
-npm install @md-plugins/md-plugin-codeblocks
-# Or with Yarn:
-yarn add @md-plugins/md-plugin-codeblocks
-# Or with pnpm:
+# with pnpm:
 pnpm add @md-plugins/md-plugin-codeblocks
+# with Yarn:
+yarn add @md-plugins/md-plugin-codeblocks
+# with npm:
+npm install @md-plugins/md-plugin-codeblocks
 ```
 
 ## Usage

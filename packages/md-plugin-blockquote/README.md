@@ -12,12 +12,12 @@ A **Markdown-It** plugin that enhances blockquote rendering by adding customizab
 Install the plugin via your preferred package manager:
 
 ```bash
-# With npm:
-npm install @md-plugins/md-plugin-blockquote
-# Or with Yarn:
-yarn add @md-plugins/md-plugin-blockquote
-# Or with pnpm:
+# with pnpm:
 pnpm add @md-plugins/md-plugin-blockquote
+# with Yarn:
+yarn add @md-plugins/md-plugin-blockquote
+# with npm:
+npm install @md-plugins/md-plugin-blockquote
 ```
 
 ## Usage

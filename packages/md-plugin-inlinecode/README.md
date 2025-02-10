@@ -13,12 +13,12 @@ A **Markdown-It** plugin that enhances inline code rendering by adding customiza
 Install the plugin via your preferred package manager:
 
 ```bash
-# With npm:
-npm install @md-plugins/md-plugin-inlinecode
-# Or with Yarn:
-yarn add @md-plugins/md-plugin-inlinecode
-# Or with pnpm:
+# with pnpm:
 pnpm add @md-plugins/md-plugin-inlinecode
+# with Yarn:
+yarn add @md-plugins/md-plugin-inlinecode
+# with npm:
+npm install @md-plugins/md-plugin-inlinecode
 ```
 
 ## Usage

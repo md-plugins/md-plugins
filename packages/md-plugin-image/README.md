@@ -13,12 +13,12 @@ A **Markdown-It** plugin that enhances image rendering by adding customizable CS
 Install the plugin via your preferred package manager:
 
 ```bash
-# With npm:
-npm install @md-plugins/md-plugin-image
-# Or with Yarn:
-yarn add @md-plugins/md-plugin-image
-# Or with pnpm:
+# with pnpm:
 pnpm add @md-plugins/md-plugin-image
+# with Yarn:
+yarn add @md-plugins/md-plugin-image
+# with npm:
+npm install @md-plugins/md-plugin-image
 ```
 
 ## Usage

@@ -14,14 +14,12 @@ A Vite plugin that facilitates handling Vue example files in both development an
 Install the plugin via your preferred package manager:
 
 ```bash
-# npm
-npm install @md-plugins/vite-examples-plugin
-
-# yarn
-yarn add @md-plugins/vite-examples-plugin
-
-# pnpm
+# with pnpm
 pnpm add @md-plugins/vite-examples-plugin
+# with yarn
+yarn add @md-plugins/vite-examples-plugin
+# with npm
+npm install @md-plugins/vite-examples-plugin
 ```
 
 ## Usage

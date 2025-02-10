@@ -17,12 +17,12 @@ A **Markdown-It** plugin that extracts and processes headers from Markdown conte
 Install the plugin via your preferred package manager:
 
 ```bash
-# With npm:
-npm install @md-plugins/md-plugin-headers
-# Or with Yarn:
-yarn add @md-plugins/md-plugin-headers
-# Or with pnpm:
+# with pnpm:
 pnpm add @md-plugins/md-plugin-headers
+# with Yarn:
+yarn add @md-plugins/md-plugin-headers
+# with npm:
+npm install @md-plugins/md-plugin-headers
 ```
 
 ## Usage

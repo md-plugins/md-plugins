@@ -15,12 +15,12 @@ A **Markdown-It** plugin that extracts and processes frontmatter from Markdown c
 Install the plugin via your preferred package manager:
 
 ```bash
-# With npm:
-npm install @md-plugins/md-plugin-frontmatter
-# Or with Yarn:
-yarn add @md-plugins/md-plugin-frontmatter
-# Or with pnpm:
+# with pnpm:
 pnpm add @md-plugins/md-plugin-frontmatter
+# with Yarn:
+yarn add @md-plugins/md-plugin-frontmatter
+# with npm:
+npm install @md-plugins/md-plugin-frontmatter
 ```
 
 ## Usage

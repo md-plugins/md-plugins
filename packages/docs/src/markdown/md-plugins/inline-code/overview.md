@@ -36,12 +36,12 @@ The official NPM name is `@md-plugins/md-plugin-inlinecode`.
 You can install the Inlinecode plugin using npm, yarn, or pnpm. Choose your preferred method below:
 
 ```tabs
-<<| bash npm |>>
-npm install @md-plugins/md-plugin-inlinecode
-<<| bash yarn |>>
-yarn add @md-plugins/md-plugin-inlinecode
 <<| bash pnpm |>>
 pnpm add @md-plugins/md-plugin-inlinecode
+<<| bash yarn |>>
+yarn add @md-plugins/md-plugin-inlinecode
+<<| bash npm |>>
+npm install @md-plugins/md-plugin-inlinecode
 ```
 
 ## Configuration

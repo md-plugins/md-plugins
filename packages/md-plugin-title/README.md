@@ -14,12 +14,12 @@ A **Markdown-It** plugin that extracts the first `<h1>` title from Markdown cont
 Install the plugin via your preferred package manager:
 
 ```bash
-# With npm:
-npm install @md-plugins/md-plugin-title
-# Or with Yarn:
-yarn add @md-plugins/md-plugin-title
-# Or with pnpm:
+# with pnpm:
 pnpm add @md-plugins/md-plugin-title
+# with Yarn:
+yarn add @md-plugins/md-plugin-title
+# with npm:
+npm install @md-plugins/md-plugin-title
 ```
 
 ## Usage

@@ -16,12 +16,12 @@ The imports are stored in the `pageScripts` property of the Markdown-It environm
 Install the plugin via your preferred package manager:
 
 ```bash
-# With npm:
-npm install @md-plugins/md-plugin-imports
-# Or with Yarn:
-yarn add @md-plugins/md-plugin-imports
-# Or with pnpm:
+# with pnpm:
 pnpm add @md-plugins/md-plugin-imports
+# with Yarn:
+yarn add @md-plugins/md-plugin-imports
+# with npm:
+npm install @md-plugins/md-plugin-imports
 ```
 
 ## Usage

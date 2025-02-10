@@ -14,12 +14,12 @@ A **Markdown-It** plugin that customizes the rendering of tables in Markdown. Th
 Install the plugin via your preferred package manager:
 
 ```bash
-# With npm:
-npm install @md-plugins/md-plugin-table
-# Or with Yarn:
-yarn add @md-plugins/md-plugin-table
-# Or with pnpm:
+# with pnpm:
 pnpm add @md-plugins/md-plugin-table
+# with Yarn:
+yarn add @md-plugins/md-plugin-table
+# with npm:
+npm install @md-plugins/md-plugin-table
 ```
 
 ## Usage

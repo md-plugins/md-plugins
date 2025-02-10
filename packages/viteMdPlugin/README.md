@@ -32,12 +32,12 @@ The `viteMdPlugin` is built on top of the following plugins:
 Install the plugin via your preferred package manager:
 
 ```bash
-# With npm:
-npm install @md-plugins/vite-md-plugin
-# Or with Yarn:
-yarn add @md-plugins/vite-md-plugin
-# Or with pnpm:
+# with pnpm:
 pnpm add @md-plugins/vite-md-plugin
+# with Yarn:
+yarn add @md-plugins/vite-md-plugin
+# with npm:
+npm install @md-plugins/vite-md-plugin
 ```
 
 ## Usage
