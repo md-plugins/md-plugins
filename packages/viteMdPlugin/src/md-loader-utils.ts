@@ -32,7 +32,7 @@ export function splitRenderedContent(mdPageContent: string) {
  */
 function createNav(id: string, env: MarkdownItEnv, flatMenu?: FlatMenu): void {
   if (flatMenu) {
-    const menuItem: FlatMenuEntry = flatMenu[id]
+    const menuItem: FlatMenuEntry | undefined = flatMenu[id]
     const nav: NavItem[] = []
 
     if (menuItem !== void 0) {

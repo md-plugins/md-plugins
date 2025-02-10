@@ -26,7 +26,7 @@ describe('resolveHeadersFromTokens', () => {
     shouldAllowNested: false,
     shouldEscapeText: false,
     slugify: (str: string) => str.toLowerCase().replace(/\s+/g, '-'),
-    format: undefined,
+    // format: undefined,
   }
 
   it('should resolve headers from tokens', () => {
