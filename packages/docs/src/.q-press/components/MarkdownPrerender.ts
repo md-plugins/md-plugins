@@ -8,10 +8,12 @@ export default defineComponent({
     title: {
       type: String as PropType<string>,
       required: false,
+      default: undefined,
     },
     tabs: {
       type: Array as PropType<string[]>,
       required: false,
+      default: undefined,
     },
   },
 
