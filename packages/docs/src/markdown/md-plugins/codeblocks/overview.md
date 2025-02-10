@@ -84,7 +84,7 @@ export function containersPlugin(
 
   containers.forEach(({ type, defaultTitle }) => {
     try {
-      md.use(...createContainer(container, type, defaultTitle))
+      md.use(...createContainer(container, type, defaultTitle, md))
     } catch (error) {
       console.error(`Failed to create container for type: ${type}`, error)
     }
@@ -110,7 +110,7 @@ export function containersPlugin(
 
   containers.forEach(({ type, defaultTitle }) => {
     try {
-      md.use(...createContainer(container, type, defaultTitle))
+      md.use(...createContainer(container, type, defaultTitle, md))
     } catch (error) {
       console.error(`Failed to create container for type: ${type}`, error)
     }
@@ -138,7 +138,7 @@ export function containersPlugin(
 
   containers.forEach(({ type, defaultTitle }) => {
     try {
-      md.use(...createContainer(container, type, defaultTitle))
+      md.use(...createContainer(container, type, defaultTitle, md))
     } catch (error) {
       console.error(`Failed to create container for type: ${type}`, error)
     }
@@ -164,7 +164,7 @@ export function containersPlugin(
 
   containers.forEach(({ type, defaultTitle }) => {
     try {
-      md.use(...createContainer(container, type, defaultTitle))
+      md.use(...createContainer(container, type, defaultTitle, md))
     } catch (error) {
       console.error(`Failed to create container for type: ${type}`, error)
     }
@@ -192,7 +192,7 @@ export function containersPlugin(
 
   containers.forEach(({ type, defaultTitle }) => {
     try {
-      md.use(...createContainer(container, type, defaultTitle))
+      md.use(...createContainer(container, type, defaultTitle, md))
     } catch (error) {
       console.error(`Failed to create container for type: ${type}`, error)
     }
@@ -218,7 +218,7 @@ export function containersPlugin(
 
   containers.forEach(({ type, defaultTitle }) => {
     try {
-      md.use(...createContainer(container, type, defaultTitle))
+      md.use(...createContainer(container, type, defaultTitle, md))
     } catch (error) {
       console.error(`Failed to create container for type: ${type}`, error)
     }
@@ -246,7 +246,7 @@ export function containersPlugin(
 
   containers.forEach(({ type, defaultTitle }) => { [[! highlight]]
     try {
-      md.use(...createContainer(container, type, defaultTitle))
+      md.use(...createContainer(container, type, defaultTitle, md))
     } catch (error) {
       console.error(`Failed to create container for type: ${type}`, error)
     }
@@ -274,7 +274,7 @@ export function containersPlugin(
 
   containers.forEach(({ type, defaultTitle }) => { [[! highlight]]
     try {
-      md.use(...createContainer(container, type, defaultTitle))
+      md.use(...createContainer(container, type, defaultTitle, md))
     } catch (error) {
       console.error(`Failed to create container for type: ${type}`, error)
     }
@@ -302,7 +302,7 @@ export function containersPlugin(
 
   containers.forEach(({ type, defaultTitle }) => {
     try {
-      md.use(...createContainer(container, type, defaultTitle))
+      md.use(...createContainer(container, type, defaultTitle, md))
     } catch (error) {
       console.error(`Failed to create container for type: ${type}`, error)
     }
@@ -328,7 +328,7 @@ export function containersPlugin(
 
   containers.forEach(({ type, defaultTitle }) => {
     try {
-      md.use(...createContainer(container, type, defaultTitle))
+      md.use(...createContainer(container, type, defaultTitle, md))
     } catch (error) {
       console.error(`Failed to create container for type: ${type}`, error)
     }
@@ -356,7 +356,7 @@ export function containersPlugin(
 
   containers.forEach(({ type, defaultTitle }) => {
     try {
-      md.use(...createContainer(container, type, defaultTitle))
+      md.use(...createContainer(container, type, defaultTitle, md))
     } catch (error) {
       console.error(`Failed to create container for type: ${type}`, error) [[! rem]]
     }
@@ -384,12 +384,96 @@ export function containersPlugin(
 
   containers.forEach(({ type, defaultTitle }) => {
     try {
-      md.use(...createContainer(container, type, defaultTitle))
+      md.use(...createContainer(container, type, defaultTitle, md))
     } catch (error) {
       console.error(`Failed to create container for type: ${type}`, error) [[! rem]]
     }
   })
 }
+```
+````
+
+### Code Block Diff
+
+```diff
+  function createContainer(
+    container: Container,
+    containerType: string,
+    defaultTitle: string
++    md: MarkdownIt
+  ): [Container, string, ContainerOptions] {
+    const containerTypeLen = containerType.length;
+
+    return [
+      container,
+      containerType,
+      {
+        render(tokens: Token[], idx: number): string {
+          const token = tokens[idx];
+-          const title = token.info.trim().slice(containerTypeLen).trim() || defaultTitle;
++          // Get the title from token info or use defaultTitle
++          const rawTitle = token.info.trim().slice(containerTypeLen).trim() || defaultTitle
+
++        // Process the title as inline markdown
++        const titleHtml = md ? md.renderInline(rawTitle) : rawTitle
+
+          if (containerType === 'details') {
+            return token.nesting === 1
+-              ? `<details class="markdown-note markdown-note--${containerType}"><summary class="markdown-note__title">${title}/<summary>\n`
++              ? `<details class="markdown-note markdown-note--${containerType}"><summary class="markdown-note__title">${titleHtml}</summary>\n`
+              : '</details>\n';
+          }
+
+          return token.nesting === 1
+-            ? `<div class="markdown-note markdown-note--${containerType}"><p class="markdown-note__title">${title}</p>\n`
++            ? `<div class="markdown-note markdown-note--${containerType}"><p class="markdown-note__title">${titleHtml}</p>\n`
+            : '</div>\n';
+        },
+      },
+    ];
+  }
+```
+
+Look for the `+` and `-` on individual lines at the far-left.
+
+````markup
+```diff
+  function createContainer(
+    container: Container,
+    containerType: string,
+    defaultTitle: string
++    md: MarkdownIt
+  ): [Container, string, ContainerOptions] {
+    const containerTypeLen = containerType.length;
+
+    return [
+      container,
+      containerType,
+      {
+        render(tokens: Token[], idx: number): string {
+          const token = tokens[idx];
+-          const title = token.info.trim().slice(containerTypeLen).trim() || defaultTitle;
++          // Get the title from token info or use defaultTitle
++          const rawTitle = token.info.trim().slice(containerTypeLen).trim() || defaultTitle
+
++        // Process the title as inline markdown
++        const titleHtml = md ? md.renderInline(rawTitle) : rawTitle
+
+          if (containerType === 'details') {
+            return token.nesting === 1
+-              ? `<details class="markdown-note markdown-note--${containerType}"><summary class="markdown-note__title">${title}/<summary>\n`
++              ? `<details class="markdown-note markdown-note--${containerType}"><summary class="markdown-note__title">${titleHtml}</summary>\n`
+              : '</details>\n';
+          }
+
+          return token.nesting === 1
+-            ? `<div class="markdown-note markdown-note--${containerType}"><p class="markdown-note__title">${title}</p>\n`
++            ? `<div class="markdown-note markdown-note--${containerType}"><p class="markdown-note__title">${titleHtml}</p>\n`
+            : '</div>\n';
+        },
+      },
+    ];
+  }
 ```
 ````
 
@@ -570,6 +654,12 @@ The Codeblocks plugin accepts the following options:
 - **codeClass**: The class to be used for the code tag. Default is `markdown-code`.
 - **pageScripts**: An array of page scripts to be included.
 - **langList**: Optional Prism languages configuration array. Each item can have a name, optional aliases, and customCopy boolean.
+
+When `defaultLang` is `markup`, the plugin will use the `markup` language for code blocks which means no highlighting will be applied.
+
+::: tip
+You can use `markup` to display other code blocks as they will not be processed.
+:::
 
 ## Advanced Configuration
 
