@@ -45,7 +45,7 @@ const replace = (name) =>
     return text.join('\n')
   }
 
-const props = defineProps({ title: String })
+const props = defineProps({ title: { type: String, required: true } })
 
 const active = ref(false)
 const formRef = ref(null)

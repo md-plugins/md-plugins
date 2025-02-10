@@ -15,18 +15,16 @@ import Token from 'markdown-it/lib/token.mjs'
 import container from 'markdown-it-container'
 
 type Container = typeof container
-
 type CreateContainerFn = (
   container: Container,
   type: string,
   defaultTitle: string,
+  md: MarkdownIt,
 ) => [Container, string, any?]
-
 interface ContainerDetails {
   type: string
   defaultTitle: string
 }
-
 interface ContainerOptions {
   render(tokens: Token[], idx: number): string
 }
@@ -51,6 +49,7 @@ interface ContainerOptions {
  *   container: Container,
  *   containerType: string,
  *   defaultTitle: string
+ *   md: MarkdownIt,
  * ): [Container, string, ContainerOptions] {
  *   const containerTypeLen = containerType.length;
  *
@@ -60,17 +59,20 @@ interface ContainerOptions {
  *     {
  *       render(tokens: Token[], idx: number): string {
  *         const token = tokens[idx];
- *         const title =
- *           token.info.trim().slice(containerTypeLen).trim() || defaultTitle;
+ *         // Get the title from token info or use defaultTitle
+ *         const rawTitle = token.info.trim().slice(containerTypeLen).trim() || defaultTitle
+ *
+ *         // Process the title as inline markdown
+ *         const titleHtml = md ? md.renderInline(rawTitle) : rawTitle
  *
  *         if (containerType === 'details') {
  *           return token.nesting === 1
- *             ? `<details class="markdown-note markdown-note--${containerType}"><summary class="markdown-note__title">${title}</summary>\n`
+ *             ? `<details class="markdown-note markdown-note--${containerType}"><summary class="markdown-note__title">${titleHtml}</summary>\n`
  *             : '</details>\n';
  *         }
  *
  *         return token.nesting === 1
- *           ? `<div class="markdown-note markdown-note--${containerType}"><p class="markdown-note__title">${title}</p>\n`
+ *           ? `<div class="markdown-note markdown-note--${containerType}"><p class="markdown-note__title">${titleHtml}</p>\n`
  *           : '</div>\n';
  *       },
  *     },
@@ -254,6 +256,7 @@ const createContainer: CreateContainerFn = (
   container: Container,
   containerType: string,
   defaultTitle: string,
+  md: MarkdownIt,
 ): [Container, string, ContainerOptions] => {
   const containerTypeLen = containerType.length
 
@@ -267,16 +270,20 @@ const createContainer: CreateContainerFn = (
           return ''
         }
 
-        const title = token.info.trim().slice(containerTypeLen).trim() || defaultTitle
+        // Get the title from token info or use defaultTitle
+        const rawTitle = token.info.trim().slice(containerTypeLen).trim() || defaultTitle
+
+        // Process the title as inline markdown
+        const titleHtml = md ? md.renderInline(rawTitle) : rawTitle
 
         if (containerType === 'details') {
           return token.nesting === 1
-            ? `<details class="markdown-note markdown-note--${containerType}"><summary class="markdown-note__title">${title}</summary>\n`
+            ? `<details class="markdown-note markdown-note--${containerType}"><summary class="markdown-note__title">${titleHtml}</summary>\n`
             : '</details>\n'
         }
 
         return token.nesting === 1
-          ? `<div class="markdown-note markdown-note--${containerType}"><p class="markdown-note__title">${title}</p>\n`
+          ? `<div class="markdown-note markdown-note--${containerType}"><p class="markdown-note__title">${titleHtml}</p>\n`
           : '</div>\n'
       },
     },

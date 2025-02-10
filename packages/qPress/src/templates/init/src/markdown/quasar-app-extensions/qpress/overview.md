@@ -47,23 +47,23 @@ quasar ext add @md-plugins/q-press
 1. **Install `markdown-it` and `@types/markdown-it` in your project devDependencies:**
 
 ```tabs
-<<| bash npm |>>
-npm i -D markdown-it @types/markdown-it
-<<| bash yarn |>>
-yarn add -D markdown-it @types/markdown-it
 <<| bash pnpm |>>
 pnpm i -D markdown-it @types/markdown-it
+<<| bash yarn |>>
+yarn add -D markdown-it @types/markdown-it
+<<| bash npm |>>
+npm i -D markdown-it @types/markdown-it
 ```
 
 2. **Add `prismjs` to your project dependencies:**
 
 ```tabs
-<<| bash npm |>>
-npm i prismjs
-<<| bash yarn |>>
-yarn add prismjs
 <<| bash pnpm |>>
 pnpm add prismjs
+<<| bash yarn |>>
+yarn add prismjs
+<<| bash npm |>>
+npm i prismjs
 ```
 
 ## Configuration
@@ -129,6 +129,7 @@ export default defineConfig(async (ctx) => {
 ### Modify `src/routes/routes.ts`
 
 ```ts [maxheight=400px]
+import type { RouteRecordRaw } from 'vue-router'
 import mdPageList from 'src/markdown/listing'
 
 const routes = [
@@ -175,7 +176,7 @@ const routes = [
     path: '/:catchAll(.*)*',
     component: () => import('pages/ErrorNotFound.vue'),
   },
-]
+] as RouteRecordRaw[]
 
 export default routes
 ```

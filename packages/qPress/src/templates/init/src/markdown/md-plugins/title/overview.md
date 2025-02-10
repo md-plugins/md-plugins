@@ -42,12 +42,12 @@ The official NPM name is `@md-plugins/md-plugin-title`.
 You can install the Title plugin using npm, yarn, or pnpm. Choose your preferred method below:
 
 ```tabs
-<<| bash npm |>>
-npm install @md-plugins/md-plugin-title
-<<| bash yarn |>>
-yarn add @md-plugins/md-plugin-title
 <<| bash pnpm |>>
 pnpm add @md-plugins/md-plugin-title
+<<| bash yarn |>>
+yarn add @md-plugins/md-plugin-title
+<<| bash npm |>>
+npm install @md-plugins/md-plugin-title
 ```
 
 ## Configuration

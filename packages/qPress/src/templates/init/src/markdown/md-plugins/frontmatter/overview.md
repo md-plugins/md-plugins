@@ -57,12 +57,12 @@ The official NPM name is `@md-plugins/md-plugin-frontmatter`.
 You can install the Frontmatter plugin using npm, yarn, or pnpm. Choose your preferred method below:
 
 ```tabs
-<<| bash npm |>>
-npm install @md-plugins/md-plugin-frontmatter
-<<| bash yarn |>>
-yarn add @md-plugins/md-plugin-frontmatter
 <<| bash pnpm |>>
 pnpm add @md-plugins/md-plugin-frontmatter
+<<| bash yarn |>>
+yarn add @md-plugins/md-plugin-frontmatter
+<<| bash npm |>>
+npm install @md-plugins/md-plugin-frontmatter
 ```
 
 ## Configuration

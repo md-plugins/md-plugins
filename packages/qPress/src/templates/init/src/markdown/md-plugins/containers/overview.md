@@ -61,6 +61,16 @@ This is a details container.
 :::
 ```
 
+::: details with bold **Title** and `inlinecode` block
+This is a details container.
+:::
+
+```markup
+::: details with bold **Title** and `inlinecode` block
+This is a details container.
+:::
+```
+
 ### Container with Custom Title
 
 ::: warning Custom Warning Title
@@ -82,12 +92,12 @@ The official NPM name is `@md-plugins/md-plugin-containers`.
 You can install the Containers plugin using npm, yarn, or pnpm. Choose your preferred method below:
 
 ```tabs
-<<| bash npm |>>
-npm install @md-plugins/md-plugin-containers
-<<| bash yarn |>>
-yarn add @md-plugins/md-plugin-containers
 <<| bash pnpm |>>
 pnpm add @md-plugins/md-plugin-containers
+<<| bash yarn |>>
+yarn add @md-plugins/md-plugin-containers
+<<| bash npm |>>
+npm install @md-plugins/md-plugin-containers
 ```
 
 ## Configuration
@@ -98,34 +108,54 @@ After installing the plugin, you need to configure it in your Markdown-It setup.
 import MarkdownIt from 'markdown-it'
 import { containersPlugin } from '@md-plugins/md-plugin-containers'
 import container from 'markdown-it-container'
+import type {
+  ContainerDetails,
+  CreateContainerFn,
+  Container,
+  ContainerOptions,
+} from '@md-plugins/md-plugin-containers'
 
 const md = new MarkdownIt()
 
-const containers = [
-  { type: 'warning', defaultTitle: 'Warning' },
-  { type: 'tip', defaultTitle: 'Tip' },
-  { type: 'details', defaultTitle: 'Details' },
-]
+  const containers: ContainerDetails[] = [
+    { type: 'tip', defaultTitle: 'TIP' },
+    { type: 'warning', defaultTitle: 'WARNING' },
+    { type: 'danger', defaultTitle: 'WARNING' },
+    { type: 'details', defaultTitle: 'Details' },
+  ]
 
-function createContainer(container, containerType, defaultTitle) {
+const createContainer: CreateContainerFn = (
+  container: Container,
+  containerType: string,
+  defaultTitle: string,
+  md: MarkdownIt,
+): [Container, string, ContainerOptions] => {
   const containerTypeLen = containerType.length
 
   return [
     container,
     containerType,
     {
-      render(tokens, idx) {
+      render(tokens: Token[], idx: number): string {
         const token = tokens[idx]
-        const title = token.info.trim().slice(containerTypeLen).trim() || defaultTitle
+        if (!token) {
+          return ''
+        }
+
+        // Get the title from token info or use defaultTitle
+        const rawTitle = token.info.trim().slice(containerTypeLen).trim() || defaultTitle
+
+        // Process the title as inline markdown
+        const titleHtml = md ? md.renderInline(rawTitle) : rawTitle
 
         if (containerType === 'details') {
           return token.nesting === 1
-            ? `<details class="markdown-note markdown-note--${containerType}"><summary class="markdown-note__title">${title}</summary>\n`
+            ? `<details class="markdown-note markdown-note--${containerType}"><summary class="markdown-note__title">${titleHtml}</summary>\n`
             : '</details>\n'
         }
 
         return token.nesting === 1
-          ? `<div class="markdown-note markdown-note--${containerType}"><p class="markdown-note__title">${title}</p>\n`
+          ? `<div class="markdown-note markdown-note--${containerType}"><p class="markdown-note__title">${titleHtml}</p>\n`
           : '</div>\n'
       },
     },
