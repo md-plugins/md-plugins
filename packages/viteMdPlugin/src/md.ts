@@ -62,12 +62,14 @@ export interface MarkdownRendererResult {
  * @param container - The container object to be configured.
  * @param containerType - The type of the container (e.g., 'tip', 'warning', 'details').
  * @param defaultTitle - The default title to use if no specific title is provided in the markdown.
+ * @param md - The MarkdownIt instance used for rendering.
  * @returns A tuple containing the configured container, the container type, and rendering options.
  */
 const createContainer: CreateContainerFn = (
   container: Container,
   containerType: string,
   defaultTitle: string,
+  md: MarkdownIt,
 ): [Container, string, ContainerOptions] => {
   const containerTypeLen = containerType.length
 
@@ -81,16 +83,20 @@ const createContainer: CreateContainerFn = (
           return ''
         }
 
-        const title = token.info.trim().slice(containerTypeLen).trim() || defaultTitle
+        // Get the title from token info or use defaultTitle
+        const rawTitle = token.info.trim().slice(containerTypeLen).trim() || defaultTitle
+
+        // Process the title as inline markdown
+        const titleHtml = md ? md.renderInline(rawTitle) : rawTitle
 
         if (containerType === 'details') {
           return token.nesting === 1
-            ? `<details class="markdown-note markdown-note--${containerType}"><summary class="markdown-note__title">${title}</summary>\n`
+            ? `<details class="markdown-note markdown-note--${containerType}"><summary class="markdown-note__title">${titleHtml}</summary>\n`
             : '</details>\n'
         }
 
         return token.nesting === 1
-          ? `<div class="markdown-note markdown-note--${containerType}"><p class="markdown-note__title">${title}</p>\n`
+          ? `<div class="markdown-note markdown-note--${containerType}"><p class="markdown-note__title">${titleHtml}</p>\n`
           : '</div>\n'
       },
     },
@@ -136,7 +142,7 @@ function createMarkdownRenderer(options: MarkdownOptions = {}): MarkdownRenderer
     { type: 'details', defaultTitle: 'Details' },
   ]
 
-  md.use(containersPlugin, containers, createContainer)
+  md.use(containersPlugin, containers, createContainer, md)
   md.use(blockquotePlugin, { blockquoteClass: 'markdown-note' })
   md.use(tablePlugin, {
     tableClass: 'markdown-table',
