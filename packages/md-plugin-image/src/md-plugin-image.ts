@@ -25,21 +25,26 @@ export const imagePlugin = (md: MarkdownIt, { imageClass = 'markdown-image' } = 
     const widthMatch = content.match(/width="(\d+)"/)
     const heightMatch = content.match(/height="(\d+)"/)
 
-    if (widthMatch) {
-      token.attrSet('width', widthMatch[1])
+    if (widthMatch && widthMatch.length > 1) {
+      token.attrSet('width', widthMatch[1] as string)
       content = content.replace(widthMatch[0], '').trim() // Remove width from content
     }
-    if (heightMatch) {
-      token.attrSet('height', heightMatch[1])
+    if (heightMatch && heightMatch.length > 1) {
+      token.attrSet('height', heightMatch[1] as string)
       content = content.replace(heightMatch[0], '').trim() // Remove height from content
     }
 
     // Add or update the 'alt' attribute
     if (content) {
       const altIndex = token.attrIndex('alt')
-      if (altIndex >= 0 && token.attrs) {
+      if (
+        altIndex >= 0 &&
+        token.attrs &&
+        token.attrs[altIndex] &&
+        token.attrs[altIndex].length > 1
+      ) {
         const altValue = token.attrs[altIndex][1] // Get the current 'alt' value
-        if (!altValue) {
+        if (!altValue && altIndex) {
           token.attrs[altIndex][1] = content // Set 'alt' if empty
         }
       } else {

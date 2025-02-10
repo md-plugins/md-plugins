@@ -105,7 +105,7 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
           },
           content: [],
         }
-      } else if (currentTabName !== null) {
+      } else if (currentTabName) {
         tabMap[currentTabName].content.push(line)
       }
     }
@@ -119,7 +119,7 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
           const props = tabMap[tabName]
           return (
             `<${tabPanelTagName} class="${tabPanelTagClass}" name="${tabName}">` +
-            getHighlightedContent(props.content.join('\n'), props.attrs) +
+            getHighlightedContent(props!.content.join('\n'), props.attrs) +
             `</${tabPanelTagName}>`
           )
         })
@@ -175,9 +175,11 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
 
     for (const type of magicCommentList) {
       const target = props[type]
+      if (target === void 0 || target.length === 0) continue
 
       for (const value of target) {
         let [from, to] = value.split('-').map((i) => parseInt(i, 10))
+        if (from === void 0) continue
         if (to === void 0) to = from
 
         for (let i = from; i <= to; i++) {
@@ -197,7 +199,7 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
     hasRemOrAdd === true &&
       lines.forEach((_, lineIndex) => {
         const target = acc[lineIndex]
-
+        if (target === void 0) return
         target.prefix.push(
           target.classList.includes(`line-add`) === true
             ? '+'
@@ -216,7 +218,7 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
 
   function getPrismHighlightedContent(rawContent: string, lang: string) {
     const content = rawContent.trim()
-    return prism.highlight(content, prism.languages[lang], lang)
+    return prism.highlight(content, prism.languages[lang] as Prism.Grammar, lang)
   }
 
   function getHighlightedContent(rawContent: string, attrs: { [key: string]: any }) {
@@ -230,11 +232,12 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
     }
 
     const html = prism
-      .highlight(content, prism.languages[lang], lang)
+      .highlight(content, prism.languages[lang] as Prism.Grammar, lang)
       .split('\n')
       .map((line, lineIndex) => {
         const target = lineList[lineIndex]
 
+        if (target === void 0) return line
         let lineHtml = ''
         lineHtml +=
           target.classList.length !== 0
@@ -273,7 +276,7 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
 
     for (const attr of attrList) {
       const [key, value] = attr.split('=')
-      acc[key.trim()] = value?.trim() || true
+      acc[(key as string).trim()] = value?.trim() || true
     }
 
     return acc
@@ -292,7 +295,7 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
     const { lang, attrs, title } = match.groups || {}
     const acc: { lang: string; title: string | null; tabs?: any } = {
       ...parseAttrs(attrs?.trim() || null),
-      lang,
+      lang: lang as string,
       title: title?.trim() || null,
     }
 

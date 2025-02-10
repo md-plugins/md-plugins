@@ -39,12 +39,13 @@ export const frontmatterPlugin: PluginWithOptions<FrontmatterPluginOptions> = (
     }
 
     // render and extract excerpt
-    env.excerpt =
+    env.excerpt = (
       renderExcerpt && data.excerpt
         ? // render the excerpt with original markdown-it render method.
           render(data.excerpt, env)
         : // use the raw excerpt directly
           excerpt
+    ) as string
 
     return render(content, env)
   }

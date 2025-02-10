@@ -1,3 +1,4 @@
+import type { RouteRecordRaw } from 'vue-router'
 import mdPageList from 'src/markdown/listing'
 
 const routes = [
@@ -44,6 +45,6 @@ const routes = [
     path: '/:catchAll(.*)*',
     component: () => import('pages/ErrorNotFound.vue'),
   },
-]
+] as RouteRecordRaw[]
 
 export default routes
