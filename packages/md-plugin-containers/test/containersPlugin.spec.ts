@@ -16,6 +16,7 @@ function createContainer(
   container: Container,
   containerType: string,
   defaultTitle: string,
+  md: MarkdownIt,
 ): [Container, string, ContainerOptions] {
   const containerTypeLen = containerType.length
 
@@ -25,21 +26,29 @@ function createContainer(
     {
       render(tokens: Token[], idx: number): string {
         const token = tokens[idx]
-        const title = token.info.trim().slice(containerTypeLen).trim() || defaultTitle
+        if (!token) {
+          return ''
+        }
+        // Get the title from token info or use defaultTitle
+        const rawTitle = token.info.trim().slice(containerTypeLen).trim() || defaultTitle
+
+        // Process the title as inline markdown
+        const titleHtml = md ? md.renderInline(rawTitle) : rawTitle
 
         if (containerType === 'details') {
           return token.nesting === 1
-            ? `<details class="markdown-note markdown-note--${containerType}"><summary class="markdown-note__title">${title}</summary>\n`
+            ? `<details class="markdown-note markdown-note--${containerType}"><summary class="markdown-note__title">${titleHtml}</summary>\n`
             : '</details>\n'
         }
 
         return token.nesting === 1
-          ? `<div class="markdown-note markdown-note--${containerType}"><p class="markdown-note__title">${title}</p>\n`
+          ? `<div class="markdown-note markdown-note--${containerType}"><p class="markdown-note__title">${titleHtml}</p>\n`
           : '</div>\n'
       },
     },
   ]
 }
+
 describe('containersPlugin', () => {
   it('registers and renders a custom container type', () => {
     const md = new MarkdownIt()
@@ -69,6 +78,7 @@ This is a tip block.
 
     expect(renderedHTML).toBe(expectedOutput)
   })
+
   it('renders a container with a custom title', () => {
     const md = new MarkdownIt()
 
@@ -134,6 +144,28 @@ This is a details block.
 <details class="markdown-note markdown-note--details"><summary class="markdown-note__title">Summary Title</summary>
 <p>This is a details block.</p>
 </details>
+    `.trim()
+
+    const renderedHTML = md.render(markdownInput).trim()
+
+    expect(renderedHTML).toBe(expectedOutput)
+  })
+
+  it('renders a container title with inline code correctly', () => {
+    const md = new MarkdownIt()
+
+    containersPlugin(md, containers, createContainer)
+
+    const markdownInput = `
+::: tip \`inline code\` in title
+This is a tip block with inline code in the title.
+:::
+    `.trim()
+
+    const expectedOutput = `
+<div class="markdown-note markdown-note--tip"><p class="markdown-note__title"><code>inline code</code> in title</p>
+<p>This is a tip block with inline code in the title.</p>
+</div>
     `.trim()
 
     const renderedHTML = md.render(markdownInput).trim()

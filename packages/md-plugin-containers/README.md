@@ -14,12 +14,12 @@ A **Markdown-It** plugin that provides custom container support for enhanced Mar
 Install the plugin via your preferred package manager:
 
 ```bash
-# With npm:
-npm install @md-plugins/md-plugin-containers
-# Or with Yarn:
-yarn add @md-plugins/md-plugin-containers
-# Or with pnpm:
+# with pnpm:
 pnpm add @md-plugins/md-plugin-containers
+# with Yarn:
+yarn add @md-plugins/md-plugin-containers
+# with npm:
+npm install @md-plugins/md-plugin-containers
 ```
 
 ## Usage
@@ -30,34 +30,54 @@ pnpm add @md-plugins/md-plugin-containers
 import MarkdownIt from 'markdown-it'
 import { containersPlugin } from '@md-plugins/md-plugin-containers'
 import container from 'markdown-it-container'
+import type {
+  ContainerDetails,
+  CreateContainerFn,
+  Container,
+  ContainerOptions,
+} from '@md-plugins/md-plugin-containers'
 
 const md = new MarkdownIt()
 
-const containers = [
-  { type: 'warning', defaultTitle: 'Warning' },
-  { type: 'tip', defaultTitle: 'Tip' },
-  { type: 'details', defaultTitle: 'Details' },
-]
+  const containers: ContainerDetails[] = [
+    { type: 'tip', defaultTitle: 'TIP' },
+    { type: 'warning', defaultTitle: 'WARNING' },
+    { type: 'danger', defaultTitle: 'WARNING' },
+    { type: 'details', defaultTitle: 'Details' },
+  ]
 
-function createContainer(container, containerType, defaultTitle) {
+const createContainer: CreateContainerFn = (
+  container: Container,
+  containerType: string,
+  defaultTitle: string,
+  md: MarkdownIt,
+): [Container, string, ContainerOptions] => {
   const containerTypeLen = containerType.length
 
   return [
     container,
     containerType,
     {
-      render(tokens, idx) {
+      render(tokens: Token[], idx: number): string {
         const token = tokens[idx]
-        const title = token.info.trim().slice(containerTypeLen).trim() || defaultTitle
+        if (!token) {
+          return ''
+        }
+
+        // Get the title from token info or use defaultTitle
+        const rawTitle = token.info.trim().slice(containerTypeLen).trim() || defaultTitle
+
+        // Process the title as inline markdown
+        const titleHtml = md ? md.renderInline(rawTitle) : rawTitle
 
         if (containerType === 'details') {
           return token.nesting === 1
-            ? `<details class="markdown-note markdown-note--${containerType}"><summary class="markdown-note__title">${title}</summary>\n`
+            ? `<details class="markdown-note markdown-note--${containerType}"><summary class="markdown-note__title">${titleHtml}</summary>\n`
             : '</details>\n'
         }
 
         return token.nesting === 1
-          ? `<div class="markdown-note markdown-note--${containerType}"><p class="markdown-note__title">${title}</p>\n`
+          ? `<div class="markdown-note markdown-note--${containerType}"><p class="markdown-note__title">${titleHtml}</p>\n`
           : '</div>\n'
       },
     },
@@ -67,11 +87,11 @@ function createContainer(container, containerType, defaultTitle) {
 md.use(containersPlugin, containers, createContainer)
 
 const markdownContent = `
-:::note
-This is a note.
+::: tip
+This is a tip.
 :::
 
-:::warning
+::: warning
 This is a warning!
 :::
 `
@@ -86,12 +106,14 @@ console.log('Rendered Output:', renderedOutput)
 The rendered output will look like this:
 
 ```html
-<div class="note">
-  <p>This is a note.</p>
+<div class="markdown-note markdown-note--tip">
+  <p class="markdown-note__title">TIP</p>
+  <p>This is a tip container.</p>
 </div>
 
-<div class="warning">
-  <p>This is a warning!</p>
+<div class="markdown-note markdown-note--warning">
+  <p class="markdown-note__title">WARNING</p>
+  <p>This is a warning container.</p>
 </div>
 ```
 
@@ -99,17 +121,19 @@ The rendered output will look like this:
 
 The `md-plugin-containers` plugin supports the following options:
 
-| Option     | Type                                          | Default | Description                                             |
-| ---------- | --------------------------------------------- | ------- | ------------------------------------------------------- |
-| containers | Array<{ type: string; defaultTitle: string }> | []      | List of containers with their types and default titles. |
-| render     | Function                                      | null    | Custom rendering function for containers.               |
+| Option       | Type                                          | Default | Description                                             |
+| ------------ | --------------------------------------------- | ------- | ------------------------------------------------------- |
+| containers   | Array<{ type: string; defaultTitle: string }> | []      | List of containers with their types and default titles. |
+| render       | Function                                      | null    | Custom rendering function for containers.               |
+| defaultTitle | string                                        | null    | Default title for containers.                           |
+| md           | MarkdownIt                                    | null    | Markdown-It instance for rendering.                     |
 
 ## Defining Custom Containers
 
 You can define custom containers with their own styles or components:
 
 ```js
-function createContainer(container, containerType, defaultTitle) {
+function createContainer(container, containerType, defaultTitle, md) {
   const containerTypeLen = containerType.length
 
   return [
@@ -118,16 +142,19 @@ function createContainer(container, containerType, defaultTitle) {
     {
       render(tokens, idx) {
         const token = tokens[idx]
-        const title = token.info.trim().slice(containerTypeLen).trim() || defaultTitle
+        const rawTitle = token.info.trim().slice(containerTypeLen).trim() || defaultTitle
+
+        // Process the title as inline markdown
+        const titleHtml = md ? md.renderInline(rawTitle) : rawTitle
 
         if (containerType === 'details') {
           return token.nesting === 1
-            ? `<details class="markdown-note markdown-note--${containerType}"><summary class="markdown-note__title">${title}</summary>\n`
+            ? `<details class="markdown-note markdown-note--${containerType}"><summary class="markdown-note__title">${titleHtml}</summary>\n`
             : '</details>\n'
         }
 
         return token.nesting === 1
-          ? `<div class="markdown-note markdown-note--${containerType}"><p class="markdown-note__title">${title}</p>\n`
+          ? `<div class="markdown-note markdown-note--${containerType}"><p class="markdown-note__title">${titleHtml}</p>\n`
           : '</div>\n'
       },
     },
@@ -140,7 +167,7 @@ function createContainer(container, containerType, defaultTitle) {
 Containers can include titles by default or allow custom titles to be specified:
 
 ```markup
-:::note Custom Note Title
+::: note Custom Note Title
 This is a custom note with a title.
 :::
 ```
@@ -159,8 +186,8 @@ Rendered Output:
 Containers can be nested if your rendering logic supports it:
 
 ```markup
-:::note Outer Note
-:::warning Inner Warning
+::: note Outer Note
+::: warning Inner Warning
 Be cautious!
 ::::::
 ```
