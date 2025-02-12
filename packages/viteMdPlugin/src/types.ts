@@ -1,3 +1,28 @@
+import type { Options } from 'markdown-it'
+import type { BlockquotePluginOptions } from '@md-plugins/md-plugin-blockquote'
+import type { CodeblockPluginOptions } from '@md-plugins/md-plugin-codeblocks'
+import type { FrontmatterPluginOptions } from '@md-plugins/md-plugin-frontmatter'
+import type { HeadersPluginOptions } from '@md-plugins/md-plugin-headers'
+import type { ImagePluginOptions } from '@md-plugins/md-plugin-image'
+import type { InlineCodePluginOptions } from '@md-plugins/md-plugin-inlinecode'
+import type { LinkPluginOptions } from '@md-plugins/md-plugin-link'
+import type { TablePluginOptions } from '@md-plugins/md-plugin-table'
+
+export interface MarkdownOptions extends Options {
+  html?: boolean
+  linkify?: boolean
+  typographer?: boolean
+  breaks?: boolean
+  blockquote?: BlockquotePluginOptions
+  codeblocks?: CodeblockPluginOptions
+  frontmatter?: FrontmatterPluginOptions
+  headers?: HeadersPluginOptions | boolean
+  image?: ImagePluginOptions
+  inlinecode?: InlineCodePluginOptions
+  link?: LinkPluginOptions
+  table?: TablePluginOptions
+}
+
 export interface MenuItem {
   name: string
   path?: string
@@ -41,4 +66,5 @@ export interface RelatedItem {
 export interface UserConfig {
   path: string
   menu: MenuItem[]
+  config?: MarkdownOptions
 }

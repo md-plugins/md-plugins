@@ -1,7 +1,9 @@
-import md from './md.js'
+// import md from './md.js'
 import type { MarkdownItEnv } from '@md-plugins/shared'
 import { getVueComponent } from './md-loader-utils.js'
-import type { MenuItem } from './types.js'
+import type { MenuItem, MarkdownOptions } from './types.js'
+import { createMarkdownRenderer } from './md'
+import { flattenOptions, type MarkdownParserOptions } from './flat-options.js'
 
 const markdownLinkRE = /<MarkdownLink /
 const markdownApiRE = /<MarkdownApi /
@@ -24,7 +26,13 @@ const markdownTreeRE = /<MarkdownTree /
  * 5. Generates a Vue component using the `getVueComponent()` function, passing the rendered HTML, the original Markdown code, and the page ID.
  * 6. Returns an object containing the generated Vue component and a `null` source map (as no source map is provided).
  */
-export function mdParse(code: string, id: string, prefix: string, menu: MenuItem[]) {
+export function mdParse(
+  code: string,
+  id: string,
+  prefix: string,
+  menu: MenuItem[],
+  options: MarkdownOptions = {},
+): { code: string } {
   const env: MarkdownItEnv = {
     frontmatter: {
       id: id,
@@ -40,6 +48,11 @@ export function mdParse(code: string, id: string, prefix: string, menu: MenuItem
   if (markdownTreeRE.test(code) === true) {
     env.pageScripts!.add("import MarkdownTree from 'src/.q-press/components/MarkdownTree.vue'")
   }
+
+  const flatOptions: MarkdownParserOptions = flattenOptions(options)
+
+  // create the markdown renderer and pass options
+  const md = createMarkdownRenderer(flatOptions)
 
   // render the markdown code to HTML, gather all other info (ex: frontmatter, etc)
   const results = md.render(code, env)
@@ -58,6 +71,5 @@ export function mdParse(code: string, id: string, prefix: string, menu: MenuItem
 
   return {
     code: component,
-    map: null, // No source map provided
   }
 }

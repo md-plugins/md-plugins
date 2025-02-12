@@ -20,25 +20,7 @@ import type {
   ContainerOptions,
 } from '@md-plugins/md-plugin-containers'
 import { containersPlugin } from '@md-plugins/md-plugin-containers'
-import type { BlockquotePluginOptions } from '@md-plugins/md-plugin-blockquote'
-import type { CodeblockPluginOptions } from '@md-plugins/md-plugin-codeblocks'
-import type { FrontmatterPluginOptions } from '@md-plugins/md-plugin-frontmatter'
-import type { HeadersPluginOptions } from '@md-plugins/md-plugin-headers'
-import type { ImagePluginOptions } from '@md-plugins/md-plugin-image'
-import type { InlineCodePluginOptions } from '@md-plugins/md-plugin-inlinecode'
-import type { LinkPluginOptions } from '@md-plugins/md-plugin-link'
-import type { TablePluginOptions } from '@md-plugins/md-plugin-table'
-
-export interface MarkdownOptions extends Options {
-  blockquote?: BlockquotePluginOptions
-  codeblocks?: CodeblockPluginOptions
-  frontmatter?: FrontmatterPluginOptions
-  headers?: HeadersPluginOptions | boolean
-  image?: ImagePluginOptions
-  inlinecode?: InlineCodePluginOptions
-  link?: LinkPluginOptions
-  table?: TablePluginOptions
-}
+import type { MarkdownParserOptions } from './flat-options'
 
 export type MarkdownRenderer = MarkdownIt
 
@@ -119,7 +101,9 @@ const createContainer: CreateContainerFn = (
  *          - title: Extracted title
  *          - env: The MarkdownIt environment object
  */
-function createMarkdownRenderer(options: MarkdownOptions = {}): MarkdownRendererResult {
+export function createMarkdownRenderer(
+  options: MarkdownParserOptions = {},
+): MarkdownRendererResult {
   const md = new MarkdownIt({
     html: true,
     linkify: true,
@@ -128,10 +112,10 @@ function createMarkdownRenderer(options: MarkdownOptions = {}): MarkdownRenderer
     breaks: true,
   })
 
-  md.use(frontmatterPlugin)
+  md.use(frontmatterPlugin, { ...options })
   md.use(importsPlugin)
   md.use(titlePlugin)
-  md.use(headersPlugin, { level: [2, 3] })
+  md.use(headersPlugin, { level: [2, 3], ...options })
 
   // md.use(tocPlugin)
 
@@ -143,7 +127,7 @@ function createMarkdownRenderer(options: MarkdownOptions = {}): MarkdownRenderer
   ]
 
   md.use(containersPlugin, containers, createContainer, md)
-  md.use(blockquotePlugin, { blockquoteClass: 'markdown-note' })
+  md.use(blockquotePlugin, { blockquoteClass: 'markdown-note', ...options })
   md.use(tablePlugin, {
     tableClass: 'markdown-table',
     tableHeaderClass: 'text-left',
@@ -153,6 +137,7 @@ function createMarkdownRenderer(options: MarkdownOptions = {}): MarkdownRenderer
       [':flat', 'true'],
       [':bordered', 'true'],
     ],
+    ...options,
   })
 
   md.use(codeblocksPlugin, {
@@ -162,10 +147,11 @@ function createMarkdownRenderer(options: MarkdownOptions = {}): MarkdownRenderer
       "import MarkdownPrerender from 'src/.q-press/components/MarkdownPrerender'",
       "import MarkdownCopyButton from 'src/.q-press/components/MarkdownCopyButton.vue'",
     ],
+    ...options,
   })
-  md.use(linkPlugin) // needs fixing
-  md.use(inlinecodePlugin)
-  md.use(imagePlugin)
+  md.use(linkPlugin, { ...options })
+  md.use(inlinecodePlugin, { ...options })
+  md.use(imagePlugin, { ...options })
 
   return {
     // env: Environment for storing metadata
@@ -184,7 +170,3 @@ function createMarkdownRenderer(options: MarkdownOptions = {}): MarkdownRenderer
     },
   }
 }
-
-const md: MarkdownRendererResult = createMarkdownRenderer()
-
-export default md

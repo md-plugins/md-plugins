@@ -1,5 +1,5 @@
 import type { Plugin, ViteDevServer, ModuleNode } from 'vite'
-import type { MenuItem, UserConfig } from './types'
+import type { MenuItem, UserConfig, MarkdownOptions } from './types'
 import { mdParse } from './md-parse'
 
 // Regex to match markdown files
@@ -7,6 +7,7 @@ const mdRE = /\.md$/
 
 let globalMenu: MenuItem[] = []
 let globalPrefix: string = ''
+let globalConfig: MarkdownOptions = {}
 
 /**
  * Transforms markdown content into Vue Single File Component (SFC) format.
@@ -20,7 +21,7 @@ function transform(code: string, id: string): string | null {
   if (!mdRE.test(id)) return null
 
   try {
-    const result = mdParse(code, id, globalPrefix, globalMenu)
+    const result = mdParse(code, id, globalPrefix, globalMenu, globalConfig)
     return result.code
   } catch (err) {
     console.error(`Error processing Markdown file: ${id}`, err)
@@ -73,11 +74,13 @@ const mdPlugins: Plugin = {
  *
  * @param path - The base path prefix to be used for routing or file resolution.
  * @param menu - An array of MenuItem objects representing the navigation menu structure.
+ * @param config - Additional configuration options for the Markdown processing.
  * @returns A Vite plugin object with pre-configured settings for Markdown processing.
  */
-function viteMdPlugin2(path: string, menu: MenuItem[]): Plugin {
+function viteMdPlugin2(path: string, menu: MenuItem[], config: MarkdownOptions): Plugin {
   globalMenu = menu
   globalPrefix = path
+  globalConfig = config
 
   return mdPlugins
 }
@@ -89,8 +92,9 @@ function viteMdPlugin2(path: string, menu: MenuItem[]): Plugin {
  * @param userConfig - The configuration object for the Vite Markdown plugin.
  * @param userConfig.path - The base path prefix to be used for routing or file resolution.
  * @param userConfig.menu - An array of MenuItem objects representing the navigation menu structure.
+ * @param userConfig.config - Additional configuration options for the Markdown processing.
  * @returns A Vite Plugin object pre-configured with the provided settings for Markdown processing.
  */
 export function viteMdPlugin(userConfig: UserConfig): Plugin {
-  return viteMdPlugin2(userConfig.path, userConfig.menu)
+  return viteMdPlugin2(userConfig.path, userConfig.menu, userConfig.config || {})
 }
