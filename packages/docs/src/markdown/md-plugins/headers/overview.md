@@ -82,6 +82,8 @@ md.use(headersPlugin, {
   slugify: (str) => str.toLowerCase().replace(/\s+/g, '-'), // Optional: Customize slugification
   format: (str) => str.toUpperCase(), // Optional: Customize header formatting
   shouldAllowNested: true, // Optional: Allow headers inside nested blocks
+  shouldAllowApi = true, // Optional: Allow headers from api title
+  shouldAllowExample = true, // Optional: Allow headers from example title
 })
 
 // Now you can use the Headers plugin in your Markdown content
@@ -98,6 +100,8 @@ The Headers plugin accepts the following options:
 - **level**: Heading levels to be extracted. Should be a subset of markdown-it-anchor's level option to ensure the slug exists. Default is `[2, 3]`.
 
 - **shouldAllowNested**: Should allow headers inside nested blocks or not. Default is `false`.
+- **shouldAllowApi**: Should allow headers from api title or not. Default is `true`.
+- **shouldAllowExample**: Should allow headers from example title or not. Default is `true`.
 
 ## Advanced Configuration
 
@@ -116,6 +120,8 @@ md.use(headersPlugin, {
   slugify: (str) => str.toLowerCase().replace(/\s+/g, '-'), // Customize slugification
   format: (str) => str.toUpperCase(), // Customize header formatting
   shouldAllowNested: true, // Allow headers inside nested blocks
+  shouldAllowApi = true, // Optional: Allow headers from api blocks
+  shouldAllowExample = true, // Optional: Allow headers from example blocks
 })
   .use(markdownItAnchor)
   .use(markdownItToc)

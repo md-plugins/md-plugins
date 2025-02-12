@@ -2,6 +2,8 @@
 
 The Ultimate Markdown Solution for the Quasar Framework.
 
+See the [documentation](https://md-plugins.netlify.app/quasar-app-extensions/qpress/overview) for more information.
+
 ## Features
 
 - **Markdown**
@@ -63,25 +65,25 @@ The Ultimate Markdown Solution for the Quasar Framework.
 3. Modify your `quasar.config.ts`
 
 - ```ts
-  import { viteMdPlugin, type MenuItem } from '@md-plugins/vite-md-plugin'
-
+  import { viteMdPlugin, type MenuItem, type MarkdownOptions } from '@md-plugins/vite-md-plugin'
 
   export default defineConfig(async (ctx) => {
-  // Dynamically import siteConfig
-  const siteConfig = await import('./src/siteConfig')
-  const { sidebar } = siteConfig
-  return {
-  build: {
-  vitePlugins: [
-  // add this plugin
-  [
-  viteMdPlugin,
-  {
-  path: ctx.appPaths.srcDir + '/markdown',
-  menu: sidebar as MenuItem[],
-  },
-  ],
-  // ...
+    // Dynamically import siteConfig
+    const siteConfig = await import('./src/siteConfig')
+    const { sidebar } = siteConfig
+    return {
+      build: {
+        vitePlugins: [
+          // add this plugin
+          [
+            viteMdPlugin,
+            {
+              path: ctx.appPaths.srcDir + '/markdown',
+              menu: sidebar as MenuItem[],
+              // options: myOptions as MarkdownOptions
+            },
+          ],
+          // ...
   ```
 
 4. Modify your `src/routes/routes.ts`
@@ -89,58 +91,53 @@ The Ultimate Markdown Solution for the Quasar Framework.
 - ```ts
   import type { RouteRecordRaw } from 'vue-router'
   import mdPageList from 'src/markdown/listing'
+  const routes = [
+    {
+      path: '/',
+      component: () => import('src/.q-press/layouts/MarkdownLayout.vue'),
+      children: [
+        // Include the Landing Page route first
+        ...Object.entries(mdPageList)
+          .filter(([key]) => key.includes('landing-page.md'))
+          .map(([_key, component]) => ({
+            path: '',
+            name: 'Landing Page',
+            component,
+            meta: { fullscreen: true, dark: true },
+          })),
+
+        // Now include all other routes, excluding the landing-page
+        ...Object.keys(mdPageList)
+          .filter((key) => !key.includes('landing-page.md')) // Exclude duplicates
+          .map((key) => {
+            const acc = {
+              path: '',
+              component: mdPageList[key],
+            }
+
+            if (acc.path === '') {
+              // Remove '.md' from the end of the filename
+              const parts = key.substring(1, key.length - 3).split('/')
+              const len = parts.length
+              const path = parts[len - 2] === parts[len - 1] ? parts.slice(0, len - 1) : parts
+
+              acc.path = path.join('/')
+            }
+
+            return acc
+          }),
+      ],
+    },
+    // Always leave this as last one,
+    // but you can also remove it
+    {
+      path: '/:catchAll(._)_',
+      component: () => import('pages/ErrorNotFound.vue'),
+    },
+  ] as RouteRecordRaw[]
+
+  export default routes
   ```
-
-const routes = [
-{
-path: '/',
-component: () => import('src/.q-press/layouts/MarkdownLayout.vue'),
-children: [
-// Include the Landing Page route first
-...Object.entries(mdPageList)
-.filter(([key]) => key.includes('landing-page.md'))
-.map(([_key, component]) => ({
-path: '',
-name: 'Landing Page',
-component,
-meta: { fullscreen: true, dark: true },
-})),
-
-    // Now include all other routes, excluding the landing-page
-    ...Object.keys(mdPageList)
-      .filter((key) => !key.includes('landing-page.md')) // Exclude duplicates
-      .map((key) => {
-        const acc = {
-          path: '',
-          component: mdPageList[key],
-        }
-
-        if (acc.path === '') {
-          // Remove '.md' from the end of the filename
-          const parts = key.substring(1, key.length - 3).split('/')
-          const len = parts.length
-          const path = parts[len - 2] === parts[len - 1] ? parts.slice(0, len - 1) : parts
-
-          acc.path = path.join('/')
-        }
-
-        return acc
-      }),
-    ],
-
-},
-
-// Always leave this as last one,
-// but you can also remove it
-{
-path: '/:catchAll(._)_',
-component: () => import('pages/ErrorNotFound.vue'),
-},
-] as RouteRecordRaw[]
-
-export default routes
-
-````
 
 5. Set up for Dark mode support, update your App.vue
 
@@ -149,13 +146,12 @@ export default routes
     <router-view />
   </template>
 
-
   <script setup lang="ts">
-  import { useDark } from 'src/.q-press/composables/dark'
-  const { initDark } = useDark()
-  initDark()
+    import { useDark } from 'src/.q-press/composables/dark'
+    const { initDark } = useDark()
+    initDark()
   </script>
-````
+  ```
 
 ## Running the App
 

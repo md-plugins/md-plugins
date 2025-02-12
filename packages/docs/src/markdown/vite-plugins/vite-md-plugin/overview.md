@@ -99,6 +99,7 @@ build: {
       {
         path: ctx.appPaths.srcDir + '/markdown',
         menu: sidebar as MenuItem[],
+        // options: myOptions as MarkdownOptions
       },
     ],
     // ...

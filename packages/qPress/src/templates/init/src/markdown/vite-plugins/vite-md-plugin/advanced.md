@@ -102,7 +102,7 @@ If you’re using the Quasar Framework with Vite, additional configuration is ne
 1. Update `quasar.config.(js|ts)`:
 
 ```typescript
-import { viteMdPlugin } from '@md-plugins/vite-md-plugin';
+import { viteMdPlugin, type MenuItem, type MarkdownOptions } from '@md-plugins/vite-md-plugin'
 import { menu } from './src/assets/menu'; // be sure to create this file
 
 export default defineConfig((ctx) => {
@@ -120,6 +120,7 @@ export default defineConfig((ctx) => {
         {
           path: ctx.appPaths.srcDir + '/markdown',
           menu: sidebar as MenuItem[],
+          // options: myOptions as MarkdownOptions
         },
       ],
       // ...

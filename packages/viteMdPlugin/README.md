@@ -1,5 +1,7 @@
 # @md-plugins/viteMdPlugin
 
+See the [documentation](https://md-plugins.netlify.app/vite-plugins/vite-md-plugin/overview) for more details.
+
 An **opinionated Vite plugin** that transforms Markdown files into Vue Single File Components (SFCs). This plugin integrates Markdown processing directly into your Vite-based Vue project, enabling seamless Markdown-to-Vue workflows.
 
 ## Features
@@ -65,38 +67,32 @@ If you’re using the Quasar Framework, additional configuration is needed to en
 
 1. Update `quasar.config.(js|ts)`:
 
-```js
-import { viteMdPlugin } from '@md-plugins/vite-md-plugin';
-import { menu } from './src/.q-press/assets/menu'; // be sure to create this file
+- ```js
+      import { viteMdPlugin } from '@md-plugins/vite-md-plugin'
+      import { menu } from './src/.q-press/assets/menu' // be sure to create this file
 
-export default defineConfig((ctx) => {
-  // ...
-```
-
-```js
-build: {
-  vueRouterMode: 'history', // Required for proper hash link handling
-
-  viteVuePluginOptions: {
-    include: [/\.(vue|md)$/], // Include Markdown files
-  },
-
-  vitePlugins: [
-      [
-        viteMdPlugin,
-        {
-          path: ctx.appPaths.srcDir + '/markdown',
-          menu: sidebar as MenuItem[],
+      export default defineConfig((ctx) => {
+      // ...
+      build: {
+        vueRouterMode: 'history', // Required for proper hash link handling
+        viteVuePluginOptions: {
+          include: [/\.(vue|md)$/], // Include Markdown files
         },
-      ],
-    // ...
-  ],
-},
-
-framework: {
-  autoImportVueExtensions: ['vue', 'md'], // Enable auto-import for Markdown extensions
-},
-```
+       vitePlugins: [
+         [
+          viteMdPlugin,
+          {
+           path: ctx.appPaths.srcDir + '/markdown',
+            menu: sidebar as MenuItem[],
+          },
+        ],
+        // ...
+        ],
+      },
+      framework: {
+        autoImportVueExtensions: ['vue', 'md'], // Enable auto-import for Markdown extensions
+      },
+  ```
 
 2. Ensure that your routes and hash links are compatible with Vue Router's history mode.
 

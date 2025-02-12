@@ -101,7 +101,7 @@ Import Q-Press styles:
 ```ts [maxheight=400px]
 import { defineConfig } from '#q-app/wrappers'
 import type { Plugin } from 'vite'
-import { viteMdPlugin, type MenuItem } from '@md-plugins/vite-md-plugin'
+import { viteMdPlugin, type MenuItem, type MarkdownOptions } from '@md-plugins/vite-md-plugin'
 
 export default defineConfig(async (ctx) => {
   // Dynamically import siteConfig
@@ -117,6 +117,7 @@ export default defineConfig(async (ctx) => {
           {
             path: ctx.appPaths.srcDir + '/markdown',
             menu: sidebar as MenuItem[],
+            // options: myOptions as MarkdownOptions
           },
         ],
         // other plugins...

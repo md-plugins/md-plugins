@@ -118,9 +118,10 @@ The following classes are in SCSS format.
   }
 
   &:not(.markdown-note--tip, .markdown-note--warning, .markdown-note--danger) {
-    background-color: $grey-2;
+    color: $brand-light-text;
+    background-color: $brand-light-bg;
     border-color: $separator-color;
-    .markdown-note__title,
+    // .markdown-note__title,
     .markdown-link,
     .markdown-token {
       color: $brand-primary;
@@ -128,9 +129,14 @@ The following classes are in SCSS format.
     .markdown-token {
       border-color: $brand-primary;
     }
+    & strong {
+      font-weight: 700;
+      color: scale-color($brand-light-text, $lightness: 90%);
+    }
   }
 
   &--tip {
+    color: scale-color($positive, $lightness: -40%) !important;
     background-color: scale-color($positive, $lightness: 85%);
     border-color: $positive;
     .markdown-note__title,
@@ -141,9 +147,14 @@ The following classes are in SCSS format.
     .markdown-token {
       border-color: scale-color($positive, $lightness: -40%);
     }
+    & strong {
+      font-weight: 700;
+      color: scale-color($positive, $lightness: 90%);
+    }
   }
 
   &--warning {
+    color: scale-color($warning, $lightness: -40%);
     background-color: scale-color($warning, $lightness: 85%);
     border-color: scale-color($warning, $lightness: -30%);
     .markdown-note__title,
@@ -154,9 +165,14 @@ The following classes are in SCSS format.
     .markdown-token {
       border-color: scale-color($warning, $lightness: -40%);
     }
+    & strong {
+      font-weight: 700;
+      color: scale-color($warning, $lightness: 90%);
+    }
   }
 
   &--danger {
+    color: scale-color($negative, $lightness: -40%);
     background-color: scale-color($negative, $lightness: 90%);
     border-color: $negative;
     .markdown-note__title,
@@ -166,6 +182,11 @@ The following classes are in SCSS format.
     }
     .markdown-token {
       border-color: $negative;
+    }
+
+    & strong {
+      font-weight: 700;
+      color: scale-color($negative, $lightness: 90%);
     }
   }
 
