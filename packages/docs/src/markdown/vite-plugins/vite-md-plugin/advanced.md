@@ -11,6 +11,30 @@ The `viteMdPlugin` is a powerful tool for integrating Markdown processing into y
 
 ```ts
 import { Plugin } from 'vite'
+import { Options } from 'markdown-it'
+import { BlockquotePluginOptions } from '@md-plugins/md-plugin-blockquote'
+import { CodeblockPluginOptions } from '@md-plugins/md-plugin-codeblocks'
+import { FrontmatterPluginOptions } from '@md-plugins/md-plugin-frontmatter'
+import { HeadersPluginOptions } from '@md-plugins/md-plugin-headers'
+import { ImagePluginOptions } from '@md-plugins/md-plugin-image'
+import { InlineCodePluginOptions } from '@md-plugins/md-plugin-inlinecode'
+import { LinkPluginOptions } from '@md-plugins/md-plugin-link'
+import { TablePluginOptions } from '@md-plugins/md-plugin-table'
+
+interface MarkdownOptions extends Options {
+  html?: boolean
+  linkify?: boolean
+  typographer?: boolean
+  breaks?: boolean
+  blockquote?: BlockquotePluginOptions
+  codeblocks?: CodeblockPluginOptions
+  frontmatter?: FrontmatterPluginOptions
+  headers?: HeadersPluginOptions | boolean
+  image?: ImagePluginOptions
+  inlinecode?: InlineCodePluginOptions
+  link?: LinkPluginOptions
+  table?: TablePluginOptions
+}
 
 interface MenuItem {
   name: string
@@ -24,12 +48,14 @@ interface MenuItem {
   external?: boolean
   expanded?: boolean
 }
+
 interface MenuNode {
   name: string
   path?: string
   external?: boolean
   children?: MenuNode[]
 }
+
 interface FlatMenuEntry {
   name: string
   category: string | null
@@ -37,18 +63,23 @@ interface FlatMenuEntry {
   prev?: FlatMenuEntry
   next?: FlatMenuEntry
 }
+
 type FlatMenu = Record<string, FlatMenuEntry>
+
 interface NavItem extends FlatMenuEntry {
   classes: string
 }
+
 interface RelatedItem {
   name: string
   category: string
   path: string
 }
+
 interface UserConfig {
   path: string
   menu: MenuItem[]
+  config?: MarkdownOptions
 }
 
 /**
@@ -58,6 +89,7 @@ interface UserConfig {
  * @param userConfig - The configuration object for the Vite Markdown plugin.
  * @param userConfig.path - The base path prefix to be used for routing or file resolution.
  * @param userConfig.menu - An array of MenuItem objects representing the navigation menu structure.
+ * @param userConfig.config - Additional configuration options for the Markdown processing.
  * @returns A Vite Plugin object pre-configured with the provided settings for Markdown processing.
  */
 declare function viteMdPlugin(userConfig: UserConfig): Plugin
@@ -65,6 +97,7 @@ declare function viteMdPlugin(userConfig: UserConfig): Plugin
 export {
   type FlatMenu,
   type FlatMenuEntry,
+  type MarkdownOptions,
   type MenuItem,
   type MenuNode,
   type NavItem,
@@ -177,6 +210,38 @@ export interface MenuItem {
 }
 ```
 
+#### `config`
+
+- **Type**: `MarkdownOptions`
+- **Description**: Additional configuration options for the Markdown processing.
+
+````ts
+import { Options } from 'markdown-it';
+import { BlockquotePluginOptions } from '@md-plugins/md-plugin-blockquote';
+import { CodeblockPluginOptions } from '@md-plugins/md-plugin-codeblocks';
+import { FrontmatterPluginOptions } from '@md-plugins/md-plugin-frontmatter';
+import { HeadersPluginOptions } from '@md-plugins/md-plugin-headers';
+import { ImagePluginOptions } from '@md-plugins/md-plugin-image';
+import { InlineCodePluginOptions } from '@md-plugins/md-plugin-inlinecode';
+import { LinkPluginOptions } from '@md-plugins/md-plugin-link';
+import { TablePluginOptions } from '@md-plugins/md-plugin-table';
+
+interface MarkdownOptions extends Options {
+    html?: boolean;
+    linkify?: boolean;
+    typographer?: boolean;
+    breaks?: boolean;
+    blockquote?: BlockquotePluginOptions;
+    codeblocks?: CodeblockPluginOptions;
+    frontmatter?: FrontmatterPluginOptions;
+    headers?: HeadersPluginOptions | boolean;
+    image?: ImagePluginOptions;
+    inlinecode?: InlineCodePluginOptions;
+    link?: LinkPluginOptions;
+    table?: TablePluginOptions;
+}
+```
+
 ### Example Configuration
 
 Here is an example of how you can configure the `viteMdPlugin` with custom options:
@@ -196,7 +261,7 @@ const basePath = '/docs'
 export default defineConfig({
   plugins: [vue(), viteMdPlugin(basePath, menu)],
 })
-```
+````
 
 ### Using the Plugin
 
@@ -218,7 +283,7 @@ When you build your project, the `viteMdPlugin` will process this Markdown file 
 
 ## Advanced
 
-If you need to change the behavior of `viteMdPlugin`, you can create your own Vite plugin and use that instead. Look at the source to see how it can be done.
+If you need to change the behavior of `viteMdPlugin`, you can make behavioral changes via the `MarkdownOptions`, or you can create your own Vite plugin and use that instead. Look at the source to see how it can be done.
 
 ## Conclusion
 
