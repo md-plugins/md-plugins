@@ -33,6 +33,24 @@ export interface HeadersPluginOptions {
    * @default false
    */
   shouldAllowNested?: boolean
+
+  /**
+   * Should allow API headers
+   *
+   * If set to `true`, headers for `<MarkdownAPI>` title would also be extracted.
+   *
+   * @default true
+   */
+  shouldAllowApi?: boolean
+
+  /**
+   * Should allow Example headers
+   *
+   * If set to `true`, headers for `<MarkdownExample>` title would also be extracted.
+   *
+   * @default true
+   */
+  shouldAllowExample?: boolean
 }
 
 export interface TocItem {

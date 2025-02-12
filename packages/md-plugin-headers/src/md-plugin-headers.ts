@@ -29,7 +29,9 @@ export const headersPlugin: PluginWithOptions<HeadersPluginOptions> = (
   {
     level = [2, 3],
     slugify = defaultSlugify,
-    format
+    format,
+    shouldAllowApi = true,
+    shouldAllowExample = true,
   }: HeadersPluginOptions = {},
 ): void => {
   const originalHeadingOpen = md.renderer.rules.heading_open
@@ -91,7 +93,7 @@ export const headersPlugin: PluginWithOptions<HeadersPluginOptions> = (
 
     // TODO: Jeff - RE's should be an array prop ({ RE: string | RegExp[], postfix?: string, children: [] })
     // where if RE matches, then children are run through the same process
-    if (apiRE.test(token.content)) {
+    if (shouldAllowApi && apiRE.test(token.content)) {
       const match = apiNameRE.exec(token.content)
       if (match !== null) {
         const title = `${match[1]} API`
@@ -99,10 +101,12 @@ export const headersPlugin: PluginWithOptions<HeadersPluginOptions> = (
       }
     }
 
-    const match = token.content.match(exampleRE)
-    if (match !== null) {
-      const title = match[1] ?? 'Example'
-      env.toc.push({ id: slugify('example-' + title), title, deep: true })
+    if (shouldAllowExample && apiRE.test(token.content)) {
+      const match = token.content.match(exampleRE)
+      if (match !== null) {
+        const title = match[1] ?? 'Example'
+        env.toc.push({ id: slugify('example-' + title), title, deep: true })
+      }
     }
 
     if (typeof originalHtmlBlock === 'function') {
