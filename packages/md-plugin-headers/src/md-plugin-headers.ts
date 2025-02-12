@@ -101,7 +101,7 @@ export const headersPlugin: PluginWithOptions<HeadersPluginOptions> = (
       }
     }
 
-    if (shouldAllowExample && apiRE.test(token.content)) {
+    if (shouldAllowExample && exampleRE.test(token.content)) {
       const match = token.content.match(exampleRE)
       if (match !== null) {
         const title = match[1] ?? 'Example'
