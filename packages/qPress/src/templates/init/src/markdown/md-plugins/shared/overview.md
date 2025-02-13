@@ -44,7 +44,6 @@ declare const htmlUnescape: (str: string) => string
 interface MarkdownItEnv {
   plugins?: Record<string, unknown>
 }
-
 interface MarkdownItHeader {
   /**
    * The slug of the header
@@ -73,6 +72,16 @@ interface MarkdownItHeader {
    */
   children: MarkdownItHeader[]
 }
+type ResolvePluginOptionsFn = <T extends object, K extends keyof any>(
+  options:
+    | T
+    | {
+        [P in K]?: T
+      }
+    | undefined,
+  key: K,
+  defaults: T,
+) => T
 
 interface ResolveTitleOptions {
   /**
@@ -90,7 +99,6 @@ interface ResolveTitleOptions {
    */
   shouldEscapeText: boolean
 }
-
 /**
  * Resolve header title from markdown-it token
  *
@@ -103,7 +111,7 @@ declare const resolveTitleFromToken: (
 
 interface ResolveHeadersOptions extends ResolveTitleOptions {
   /**
-   * Heading level that is going to be resolved; ie: `1` to `6`
+   * Heading level that going to be resolved
    */
   level: number[]
   /**
@@ -123,7 +131,6 @@ interface ResolveHeadersOptions extends ResolveTitleOptions {
    */
   format?: (str: string) => string | undefined
 }
-
 /**
  * Resolve headers from markdown-it tokens
  */
@@ -144,14 +151,27 @@ declare const resolveHeadersFromTokens: (
  */
 declare const slugify: (str: string) => string
 
+declare function resolvePluginOptions<T extends object, K extends keyof any>(
+  options:
+    | T
+    | {
+        [key in K]?: T
+      }
+    | undefined,
+  key: K,
+  defaults: T,
+): T
+
 export {
   type MarkdownItEnv,
   type MarkdownItHeader,
   type ResolveHeadersOptions,
+  type ResolvePluginOptionsFn,
   type ResolveTitleOptions,
   htmlEscape,
   htmlUnescape,
   resolveHeadersFromTokens,
+  resolvePluginOptions,
   resolveTitleFromToken,
   slugify,
 }
