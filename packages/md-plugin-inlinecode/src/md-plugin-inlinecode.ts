@@ -1,19 +1,31 @@
 import type { MarkdownItEnv } from '@md-plugins/shared'
 import type MarkdownIt from 'markdown-it'
-import type { PluginWithOptions } from 'markdown-it'
-import type { Options } from 'markdown-it'
+import type { PluginWithOptions, Options } from 'markdown-it'
 import type Renderer from 'markdown-it/lib/renderer.mjs'
 import type Token from 'markdown-it/lib/token.mjs'
 import type { InlineCodePluginOptions } from './types'
 import { escapeHtml } from 'markdown-it/lib/common/utils.mjs'
+import { resolvePluginOptions } from '@md-plugins/shared'
+
+// Default options for the inline code plugin.
+const DEFAULT_INLINECODE_PLUGIN_OPTIONS: InlineCodePluginOptions = {
+  inlineCodeClass: 'markdown-token',
+}
 
 /**
  * Adds a class to inline code.
  */
 export const inlinecodePlugin: PluginWithOptions<InlineCodePluginOptions> = (
   md: MarkdownIt,
-  { inlineCodeClass = 'markdown-token' }: InlineCodePluginOptions = {},
+  options?: InlineCodePluginOptions | { inlinecodePlugin?: InlineCodePluginOptions },
 ): void => {
+  // Resolve and merge plugin options.
+  const { inlineCodeClass } = resolvePluginOptions<InlineCodePluginOptions, 'inlinecodePlugin'>(
+    options,
+    'inlinecodePlugin',
+    DEFAULT_INLINECODE_PLUGIN_OPTIONS,
+  )
+
   md.renderer.rules.code_inline = (
     tokens: Token[],
     idx: number,
@@ -28,7 +40,7 @@ export const inlinecodePlugin: PluginWithOptions<InlineCodePluginOptions> = (
 
     const existingClass = token.attrGet('class') || ''
     const combinedClass = [existingClass, inlineCodeClass]
-      .filter(Boolean) // remove falsey values
+      .filter(Boolean) // Remove falsy values.
       .join(' ')
 
     token.attrSet('class', combinedClass)

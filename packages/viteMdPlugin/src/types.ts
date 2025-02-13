@@ -1,4 +1,5 @@
 import type { Options } from 'markdown-it'
+import type { MarkdownItEnv } from '@md-plugins/shared'
 import type { BlockquotePluginOptions } from '@md-plugins/md-plugin-blockquote'
 import type { CodeblockPluginOptions } from '@md-plugins/md-plugin-codeblocks'
 import type { FrontmatterPluginOptions } from '@md-plugins/md-plugin-frontmatter'
@@ -13,14 +14,16 @@ export interface MarkdownOptions extends Options {
   linkify?: boolean
   typographer?: boolean
   breaks?: boolean
-  blockquote?: BlockquotePluginOptions
-  codeblocks?: CodeblockPluginOptions
-  frontmatter?: FrontmatterPluginOptions
-  headers?: HeadersPluginOptions | boolean
-  image?: ImagePluginOptions
-  inlinecode?: InlineCodePluginOptions
-  link?: LinkPluginOptions
-  table?: TablePluginOptions
+  blockquotePlugin?: BlockquotePluginOptions
+  codeblockPlugin?: CodeblockPluginOptions
+  frontmatterPlugin?: FrontmatterPluginOptions
+  headersPlugin?: HeadersPluginOptions | boolean
+  imagePlugin?: ImagePluginOptions
+  inlineCodePlugin?: InlineCodePluginOptions
+  linkPlugin?: LinkPluginOptions
+  tablePlugin?: TablePluginOptions
+  preProcess?: (env: MarkdownItEnv) => void
+  postProcess?: (env: MarkdownItEnv) => void
 }
 
 export interface MenuItem {

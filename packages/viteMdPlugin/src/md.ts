@@ -1,4 +1,3 @@
-import type { Options } from 'markdown-it'
 import type Token from 'markdown-it/lib/token.mjs'
 import MarkdownIt from 'markdown-it'
 
@@ -20,7 +19,7 @@ import type {
   ContainerOptions,
 } from '@md-plugins/md-plugin-containers'
 import { containersPlugin } from '@md-plugins/md-plugin-containers'
-import type { MarkdownParserOptions } from './flat-options'
+import type { MarkdownOptions } from './types'
 
 export type MarkdownRenderer = MarkdownIt
 
@@ -101,15 +100,13 @@ const createContainer: CreateContainerFn = (
  *          - title: Extracted title
  *          - env: The MarkdownIt environment object
  */
-export function createMarkdownRenderer(
-  options: MarkdownParserOptions = {},
-): MarkdownRendererResult {
+export function createMarkdownRenderer(options: MarkdownOptions = {}): MarkdownRendererResult {
   const md = new MarkdownIt({
     html: true,
     linkify: true,
     typographer: true,
-    ...options,
     breaks: true,
+    ...options,
   })
 
   md.use(frontmatterPlugin, { ...options })

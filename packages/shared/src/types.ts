@@ -37,3 +37,9 @@ export interface MarkdownItHeader {
    */
   children: MarkdownItHeader[]
 }
+
+export type ResolvePluginOptionsFn = <T extends object, K extends keyof any>(
+  options: T | { [P in K]?: T } | undefined,
+  key: K,
+  defaults: T,
+) => T

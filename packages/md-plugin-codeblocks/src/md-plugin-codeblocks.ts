@@ -5,6 +5,7 @@ import type { MarkdownItEnv } from '@md-plugins/shared'
 import type { CodeblockPluginOptions, Lang } from './types'
 import prism from 'prismjs'
 import loadLanguages from 'prismjs/components/index.js'
+import { resolvePluginOptions } from '@md-plugins/shared'
 
 /**
  * A list of default programming languages supported by Prism.
@@ -25,27 +26,53 @@ const defaultLangList: Lang[] = [
   { name: 'diff' }, // special grammars
 ]
 
+/** Default options for the codeblocks plugin */
+const DEFAULT_CODEBLOCK_PLUGIN_OPTIONS: CodeblockPluginOptions = {
+  defaultLang: 'markup',
+  containerComponent: 'MarkdownPrerender',
+  copyButtonComponent: 'MarkdownCopyButton',
+  preClass: 'markdown-code',
+  codeClass: '',
+  tabPanelTagName: 'q-tab-panel',
+  tabPanelTagClass: 'q-pa-none',
+  pageScripts: [
+    "import MarkdownPrerender from 'src/.q-press/components/MarkdownPrerender'",
+    "import MarkdownCopyButton from 'src/.q-press/components/MarkdownCopyButton.vue'",
+  ],
+  langList: defaultLangList,
+}
+
 export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
   md: MarkdownIt,
-  {
-    defaultLang = 'markup',
-    containerComponent = 'MarkdownPrerender',
-    copyButtonComponent = 'MarkdownCopyButton',
-    preClass = 'markdown-code',
-    codeClass = '',
-    tabPanelTagName = 'q-tab-panel',
-    tabPanelTagClass = 'q-pa-none',
-    pageScripts = [
-      "import MarkdownPrerender from 'src/.q-press/components/MarkdownPrerender'", // ts file
-      "import MarkdownCopyButton from 'src/.q-press/components/MarkdownCopyButton.vue'",
-    ],
-    langList = defaultLangList,
-  }: CodeblockPluginOptions = {},
+  options?: CodeblockPluginOptions | { codeblocksPlugin?: CodeblockPluginOptions },
 ): void => {
-  const customCopyLangList = langList.filter((l) => l.customCopy === true).map((l) => l.name)
+  // Resolve and merge plugin options (supports both global and direct usage)
+  const resolvedOptions = resolvePluginOptions<CodeblockPluginOptions, 'codeblocksPlugin'>(
+    options,
+    'codeblocksPlugin',
+    DEFAULT_CODEBLOCK_PLUGIN_OPTIONS,
+  )
 
+  // Provide fallback values during destructuring so that langList and pageScripts are always defined.
+  const {
+    defaultLang = DEFAULT_CODEBLOCK_PLUGIN_OPTIONS.defaultLang,
+    containerComponent = DEFAULT_CODEBLOCK_PLUGIN_OPTIONS.containerComponent,
+    copyButtonComponent = DEFAULT_CODEBLOCK_PLUGIN_OPTIONS.copyButtonComponent,
+    preClass = DEFAULT_CODEBLOCK_PLUGIN_OPTIONS.preClass,
+    codeClass = DEFAULT_CODEBLOCK_PLUGIN_OPTIONS.codeClass,
+    tabPanelTagName = DEFAULT_CODEBLOCK_PLUGIN_OPTIONS.tabPanelTagName,
+    tabPanelTagClass = DEFAULT_CODEBLOCK_PLUGIN_OPTIONS.tabPanelTagClass,
+    pageScripts = DEFAULT_CODEBLOCK_PLUGIN_OPTIONS.pageScripts,
+    langList = defaultLangList,
+  } = resolvedOptions
+
+  // Load the languages defined in the options
   loadLanguages(langList.map((l) => l.name))
 
+  // Create a custom copy-language list
+  const customCopyLangList = langList.filter((l) => l.customCopy === true).map((l) => l.name)
+
+  // Build a regular expression to match a language from the list (or its aliases)
   const langMatch = langList.map((l) => l.aliases || l.name).join('|')
 
   /**
@@ -157,7 +184,7 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
     return acc
   }
 
-  function parseCodeLine(content: string, attrs: { [key: string]: any }) {
+  function parseCodeLine(content: string, attrs: { [key: string]: any }): CodeLineProps[] {
     const lines = content.split('\n')
 
     const acc: CodeLineProps[] = lines.map(() => ({
@@ -201,9 +228,9 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
         const target = acc[lineIndex]
         if (target === void 0) return
         target.prefix.push(
-          target.classList.includes(`line-add`) === true
+          target.classList.includes(`line-add`)
             ? '+'
-            : target.classList.includes(`line-rem`) === true
+            : target.classList.includes(`line-rem`)
               ? '-'
               : ' ',
         )
@@ -216,12 +243,12 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
     return `<code${codeClass ? ` class="${codeClass}"` : ''}>${html}</code>`
   }
 
-  function getPrismHighlightedContent(rawContent: string, lang: string) {
+  function getPrismHighlightedContent(rawContent: string, lang: string): string {
     const content = rawContent.trim()
     return prism.highlight(content, prism.languages[lang] as Prism.Grammar, lang)
   }
 
-  function getHighlightedContent(rawContent: string, attrs: { [key: string]: any }) {
+  function getHighlightedContent(rawContent: string, attrs: { [key: string]: any }): string {
     const { lang, maxheight } = attrs
 
     let content = rawContent.trim()
@@ -268,7 +295,7 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
     )
   }
 
-  function parseAttrs(rawAttrs: string | null) {
+  function parseAttrs(rawAttrs: string | null): { [key: string]: any } {
     if (rawAttrs === null) return {}
 
     const acc: { [key: string]: any } = {}
@@ -282,7 +309,7 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
     return acc
   }
 
-  function parseDefinitionLine(token: Token) {
+  function parseDefinitionLine(token: Token): { lang: string; title: string | null; tabs?: any } {
     const match = token.info.trim().match(definitionLineRE)
 
     if (match === null) {
@@ -311,17 +338,17 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
     idx: number,
     _options: Options,
     env: MarkdownItEnv,
-  ) => {
+  ): string => {
     const token = tokens[idx]
     if (!token) {
       return ''
     }
 
     if (token.info === '') {
-      token.info = defaultLang
+      token.info = defaultLang ?? 'markup'
     }
 
-    if (pageScripts.length > 0) {
+    if (pageScripts && pageScripts.length > 0) {
       env.pageScripts = env.pageScripts || new Set<string>()
       for (const script of pageScripts) {
         env.pageScripts.add(script)
@@ -331,7 +358,9 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
     const attrs = parseDefinitionLine(token)
 
     return (
-      `<${containerComponent}${attrs.title !== null ? ` title="${attrs.title}"` : ''}${attrs.tabs !== void 0 ? ` :tabs="${attrs.tabs.param}"` : ''}>` +
+      `<${containerComponent}${attrs.title !== null ? ` title="${attrs.title}"` : ''}${
+        attrs.tabs !== void 0 ? ` :tabs="${attrs.tabs.param}"` : ''
+      }>` +
       (attrs.tabs !== void 0 ? attrs.tabs.content : getHighlightedContent(token.content, attrs)) +
       `</${containerComponent}>`
     )

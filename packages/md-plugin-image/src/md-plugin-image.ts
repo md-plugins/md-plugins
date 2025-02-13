@@ -1,11 +1,26 @@
 import type { MarkdownItEnv } from '@md-plugins/shared'
-import type { PluginWithOptions } from 'markdown-it'
+import type { PluginWithOptions, Options } from 'markdown-it'
 import type { ImagePluginOptions } from './types'
 import type MarkdownIt from 'markdown-it'
 import type Token from 'markdown-it/lib/token.mjs'
-import type { Options } from 'markdown-it'
+import { resolvePluginOptions } from '@md-plugins/shared'
 
-export const imagePlugin = (md: MarkdownIt, { imageClass = 'markdown-image' } = {}) => {
+// Define default options for the image plugin.
+const DEFAULT_IMAGE_PLUGIN_OPTIONS: ImagePluginOptions = {
+  imageClass: 'markdown-image',
+}
+
+export const imagePlugin: PluginWithOptions<ImagePluginOptions> = (
+  md: MarkdownIt,
+  options?: ImagePluginOptions | { imagePlugin?: ImagePluginOptions },
+): void => {
+  // Resolve and merge plugin options.
+  const { imageClass } = resolvePluginOptions<ImagePluginOptions, 'imagePlugin'>(
+    options,
+    'imagePlugin',
+    DEFAULT_IMAGE_PLUGIN_OPTIONS,
+  )
+
   const originalImageRender = md.renderer.rules.image
 
   md.renderer.rules.image = (
@@ -14,27 +29,27 @@ export const imagePlugin = (md: MarkdownIt, { imageClass = 'markdown-image' } = 
     options: Options,
     env: MarkdownItEnv,
     self,
-  ) => {
+  ): string => {
     const token = tokens[idx]
     if (!token) {
       return self.renderToken(tokens, idx, options)
     }
 
-    // Extract width and height from the token content if present
+    // Extract width and height from the token content if present.
     let content = token.content
     const widthMatch = content.match(/width="(\d+)"/)
     const heightMatch = content.match(/height="(\d+)"/)
 
     if (widthMatch && widthMatch.length > 1) {
-      token.attrSet('width', widthMatch[1] as string)
+      token.attrSet('width', widthMatch[1])
       content = content.replace(widthMatch[0], '').trim() // Remove width from content
     }
     if (heightMatch && heightMatch.length > 1) {
-      token.attrSet('height', heightMatch[1] as string)
+      token.attrSet('height', heightMatch[1])
       content = content.replace(heightMatch[0], '').trim() // Remove height from content
     }
 
-    // Add or update the 'alt' attribute
+    // Add or update the 'alt' attribute.
     if (content) {
       const altIndex = token.attrIndex('alt')
       if (
@@ -52,7 +67,7 @@ export const imagePlugin = (md: MarkdownIt, { imageClass = 'markdown-image' } = 
       }
     }
 
-    // Add or update the class
+    // Add or update the class.
     const existingClass = token.attrGet('class') || ''
     const combinedClass = [existingClass, imageClass].filter(Boolean).join(' ')
     token.attrSet('class', combinedClass)
@@ -66,7 +81,7 @@ export const imagePlugin = (md: MarkdownIt, { imageClass = 'markdown-image' } = 
       })
     }
 
-    // Call the original render method
+    // Call the original render method.
     return originalImageRender
       ? originalImageRender(tokens, idx, options, env, self)
       : self.renderToken(tokens, idx, options)
