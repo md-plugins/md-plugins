@@ -63,6 +63,9 @@ importers:
       '@eslint/js':
         specifier: ^9.20.0
         version: 9.20.0
+      '@md-plugins/md-plugin-headers':
+        specifier: 0.1.0-alpha.29
+        version: 0.1.0-alpha.29(markdown-it@14.1.0)
       '@md-plugins/shared':
         specifier: 0.1.0-alpha.29
         version: 0.1.0-alpha.29(markdown-it@14.1.0)
@@ -712,6 +715,11 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.25':
     resolution: {integrity: sha512-vNk6aEwybGtawWmy/PzwnGDOjCkLWSD2wqvjGGAgOAwCGWySYXfYoxt00IJkTF+8Lb57DwOb3Aa0o9CApepiYQ==}
+
+  '@md-plugins/md-plugin-headers@0.1.0-alpha.29':
+    resolution: {integrity: sha512-7sYacLbHFaxlIKEFa49kmrY7rjip7BDWQqYBHkhh1EF70FCrvN3yOFFG1qZkQDOjxw5zJwvJLpKIrTnvVsjN3w==}
+    peerDependencies:
+      markdown-it: ^14.1.0
 
   '@md-plugins/shared@0.1.0-alpha.29':
     resolution: {integrity: sha512-dUewY0m3hDCGM+s46G7inDmowSVKTDOMbOLH6gSPrfz9tXXESEHDm/Pmy42qg/LnWk+9CsrtyXPS8yGTTg1rvg==}
@@ -3918,6 +3926,10 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
+
+  '@md-plugins/md-plugin-headers@0.1.0-alpha.29(markdown-it@14.1.0)':
+    dependencies:
+      markdown-it: 14.1.0
 
   '@md-plugins/shared@0.1.0-alpha.29(markdown-it@14.1.0)':
     dependencies:

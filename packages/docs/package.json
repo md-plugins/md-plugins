@@ -26,6 +26,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.20.0",
+    "@md-plugins/md-plugin-headers": "0.1.0-alpha.29",
     "@md-plugins/shared": "0.1.0-alpha.29",
     "@md-plugins/vite-examples-plugin": "workspace:*",
     "@md-plugins/vite-md-plugin": "workspace:*",
