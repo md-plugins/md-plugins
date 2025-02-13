@@ -1,9 +1,7 @@
-// import md from './md.js'
 import type { MarkdownItEnv } from '@md-plugins/shared'
 import { getVueComponent } from './md-loader-utils.js'
 import type { MenuItem, MarkdownOptions } from './types.js'
 import { createMarkdownRenderer } from './md'
-import { flattenOptions, type MarkdownParserOptions } from './flat-options.js'
 
 const markdownLinkRE = /<MarkdownLink /
 const markdownApiRE = /<MarkdownApi /
@@ -16,15 +14,10 @@ const markdownTreeRE = /<MarkdownTree /
  * @param id - The unique identifier for the page.
  * @param prefix - The prefix to be used in the generated Vue component.
  * @param menu - An array of MenuItem objects representing the navigation menu.
- * @returns An object containing the generated Vue component code and a null source map.
+ * @returns An object containing the generated Vue component code.
  *
- * The function performs the following steps:
- * 1. Creates an environment object to store metadata about the page, including the page ID and a set of page scripts to be imported.
- * 2. Pre-processes the Markdown code to check for the presence of various custom components (MarkdownApi, MarkdownTree) and adds them to the set of page scripts.
- * 3. Renders the Markdown code to HTML using the `md.render()` function, passing the environment object as a second argument.
- * 4. Post-processes the environment object, checking for the presence of examples and the MarkdownLink component, and adding them to the set of page scripts.
- * 5. Generates a Vue component using the `getVueComponent()` function, passing the rendered HTML, the original Markdown code, and the page ID.
- * 6. Returns an object containing the generated Vue component and a `null` source map (as no source map is provided).
+ * Note: The preProcess and postProcess hooks are called synchronously. If a waitable (async)
+ * function is passed, its returned promise is not awaited.
  */
 export function mdParse(
   code: string,
@@ -34,42 +27,47 @@ export function mdParse(
   options: MarkdownOptions = {},
 ): { code: string } {
   const env: MarkdownItEnv = {
-    frontmatter: {
-      id: id,
-    },
+    frontmatter: { id },
     pageScripts: new Set<string>(),
-  } // Environment for storing metadata
+  }
 
-  // pre-processing
+  // Pre-processing: add default page scripts and detect custom components.
   env.pageScripts!.add("import MarkdownPage from 'src/.q-press/layouts/MarkdownPage.vue'")
-  if (markdownApiRE.test(code) === true) {
+  if (markdownApiRE.test(code)) {
     env.pageScripts!.add("import MarkdownApi from 'src/.q-press/components/MarkdownApi.vue'")
   }
-  if (markdownTreeRE.test(code) === true) {
+  if (markdownTreeRE.test(code)) {
     env.pageScripts!.add("import MarkdownTree from 'src/.q-press/components/MarkdownTree.vue'")
   }
 
-  const flatOptions: MarkdownParserOptions = flattenOptions(options)
+  // Call the preProcess hook if provided. (Note: This is synchronous.)
+  if (typeof options.preProcess === 'function') {
+    options.preProcess(env)
+  }
 
-  // create the markdown renderer and pass options
-  const md = createMarkdownRenderer(flatOptions)
+  // Create the markdown renderer, passing along options.
+  const md = createMarkdownRenderer(options)
 
-  // render the markdown code to HTML, gather all other info (ex: frontmatter, etc)
+  // Render the markdown code.
   const results = md.render(code, env)
 
-  // post-processing
-  if (env.frontmatter!.examples !== void 0) {
+  // Post-processing: add page scripts based on the rendered content.
+  if (env.frontmatter!.examples !== undefined) {
     env.pageScripts!.add(
       "import MarkdownExample from 'src/.q-press/components/MarkdownExample.vue'",
     )
   }
-  if (markdownLinkRE.test(code) === true) {
+  if (markdownLinkRE.test(code)) {
     env.pageScripts!.add("import MarkdownLink from 'src/.q-press/components/MarkdownLink.vue'")
   }
 
+  // Call the postProcess hook if provided.
+  if (typeof options.postProcess === 'function') {
+    options.postProcess(env)
+  }
+
+  // Generate the Vue component.
   const component = getVueComponent(results, code, id, prefix, menu)
 
-  return {
-    code: component,
-  }
+  return { code: component }
 }
