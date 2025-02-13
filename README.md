@@ -21,7 +21,7 @@ A collection of Markdown-it! plugins, Vite plugins, and App Extensions for Vue a
 ![@md-plugins/md-plugin-link](https://img.shields.io/npm/v/@md-plugins/md-plugin-link?label=@md-plugins/md-plugin-link)
 ![@md-plugins/md-plugin-table](https://img.shields.io/npm/v/@md-plugins/md-plugin-table?label=@md-plugins/md-plugin-table)
 ![@md-plugins/md-plugin-title](https://img.shields.io/npm/v/@md-plugins/md-plugin-title?label=@md-plugins/md-plugin-title)
-![@md-plugins/md-plugin-shared](https://img.shields.io/npm/v/@md-plugins/md-plugin-shared?label=@md-plugins/md-plugin-shared)
+![@md-plugins/shared](https://img.shields.io/npm/v/@md-plugins/shared?label=@md-plugins/shared)
 
 <p><strong>Vite Plugins</strong></p>
 
