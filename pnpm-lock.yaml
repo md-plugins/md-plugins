@@ -63,6 +63,9 @@ importers:
       '@eslint/js':
         specifier: ^9.20.0
         version: 9.20.0
+      '@md-plugins/shared':
+        specifier: 0.1.0-alpha.29
+        version: 0.1.0-alpha.29(markdown-it@14.1.0)
       '@md-plugins/vite-examples-plugin':
         specifier: workspace:*
         version: link:../viteExamplesPlugin
@@ -709,6 +712,11 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.25':
     resolution: {integrity: sha512-vNk6aEwybGtawWmy/PzwnGDOjCkLWSD2wqvjGGAgOAwCGWySYXfYoxt00IJkTF+8Lb57DwOb3Aa0o9CApepiYQ==}
+
+  '@md-plugins/shared@0.1.0-alpha.29':
+    resolution: {integrity: sha512-dUewY0m3hDCGM+s46G7inDmowSVKTDOMbOLH6gSPrfz9tXXESEHDm/Pmy42qg/LnWk+9CsrtyXPS8yGTTg1rvg==}
+    peerDependencies:
+      markdown-it: ^14.1.0
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -3910,6 +3918,10 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
+
+  '@md-plugins/shared@0.1.0-alpha.29(markdown-it@14.1.0)':
+    dependencies:
+      markdown-it: 14.1.0
 
   '@nodelib/fs.scandir@2.1.5':
     dependencies:
