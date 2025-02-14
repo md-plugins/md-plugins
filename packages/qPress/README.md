@@ -233,11 +233,3 @@ In case this README falls out of date, please refer to the [documentation](https
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE.md) file for details.
-
-```
-
-```
-
-```
-
-```
