@@ -118,7 +118,7 @@ const socialLinks = {
 const netlifyLink = {
   path: 'https://www.netlify.com',
   external: true,
-  image: 'https://www.netlify.com/img/global/badges/netlify-color-accent.svg',
+  image: 'https://www.netlify.com/assets/badges/netlify-badge-color-accent.svg',
   name: 'Deploys by Netlify',
   maxWidth: '120px',
 }
@@ -131,6 +131,7 @@ const SponsorsLinks = {
       path: netlifyLink.path,
       external: netlifyLink.external,
       image: netlifyLink.image,
+      maxWidth: netlifyLink.maxWidth,
     },
   ],
 }
