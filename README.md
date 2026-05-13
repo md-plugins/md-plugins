@@ -10,28 +10,28 @@ A collection of Markdown-it! plugins, Vite plugins, and App Extensions for Vue a
 
 <p><strong>Markdown-it! Plugins</strong></p>
 
-![@md-plugins/md-plugin-blockquote](https://img.shields.io/npm/v/@md-plugins/md-plugin-blockquote?label=@md-plugins/md-plugin-blockquote)
-![@md-plugins/md-plugin-codeblocks](https://img.shields.io/npm/v/@md-plugins/md-plugin-codeblocks?label=@md-plugins/md-plugin-codeblocks)
-![@md-plugins/md-plugin-containers](https://img.shields.io/npm/v/@md-plugins/md-plugin-containers?label=@md-plugins/md-plugin-containers)
-![@md-plugins/md-plugin-frontmatter](https://img.shields.io/npm/v/@md-plugins/md-plugin-frontmatter?label=@md-plugins/md-plugin-frontmatter)
-![@md-plugins/md-plugin-headers](https://img.shields.io/npm/v/@md-plugins/md-plugin-headers?label=@md-plugins/md-plugin-headers)
-![@md-plugins/md-plugin-image](https://img.shields.io/npm/v/@md-plugins/md-plugin-image?label=@md-plugins/md-plugin-image)
-![@md-plugins/md-plugin-imports](https://img.shields.io/npm/v/@md-plugins/md-plugin-imports?label=@md-plugins/md-plugin-imports)
-![@md-plugins/md-plugin-inlinecode](https://img.shields.io/npm/v/@md-plugins/md-plugin-inlinecode?label=@md-plugins/md-plugin-inlinecode)
-![@md-plugins/md-plugin-link](https://img.shields.io/npm/v/@md-plugins/md-plugin-link?label=@md-plugins/md-plugin-link)
-![@md-plugins/md-plugin-table](https://img.shields.io/npm/v/@md-plugins/md-plugin-table?label=@md-plugins/md-plugin-table)
-![@md-plugins/md-plugin-title](https://img.shields.io/npm/v/@md-plugins/md-plugin-title?label=@md-plugins/md-plugin-title)
-![@md-plugins/shared](https://img.shields.io/npm/v/@md-plugins/shared?label=@md-plugins/shared)
+![@md-plugins/md-plugin-blockquote](https://img.shields.io/npm/v/@md-plugins/md-plugin-blockquote/beta?label=@md-plugins/md-plugin-blockquote@beta)
+![@md-plugins/md-plugin-codeblocks](https://img.shields.io/npm/v/@md-plugins/md-plugin-codeblocks/beta?label=@md-plugins/md-plugin-codeblocks@beta)
+![@md-plugins/md-plugin-containers](https://img.shields.io/npm/v/@md-plugins/md-plugin-containers/beta?label=@md-plugins/md-plugin-containers@beta)
+![@md-plugins/md-plugin-frontmatter](https://img.shields.io/npm/v/@md-plugins/md-plugin-frontmatter/beta?label=@md-plugins/md-plugin-frontmatter@beta)
+![@md-plugins/md-plugin-headers](https://img.shields.io/npm/v/@md-plugins/md-plugin-headers/beta?label=@md-plugins/md-plugin-headers@beta)
+![@md-plugins/md-plugin-image](https://img.shields.io/npm/v/@md-plugins/md-plugin-image/beta?label=@md-plugins/md-plugin-image@beta)
+![@md-plugins/md-plugin-imports](https://img.shields.io/npm/v/@md-plugins/md-plugin-imports/beta?label=@md-plugins/md-plugin-imports@beta)
+![@md-plugins/md-plugin-inlinecode](https://img.shields.io/npm/v/@md-plugins/md-plugin-inlinecode/beta?label=@md-plugins/md-plugin-inlinecode@beta)
+![@md-plugins/md-plugin-link](https://img.shields.io/npm/v/@md-plugins/md-plugin-link/beta?label=@md-plugins/md-plugin-link@beta)
+![@md-plugins/md-plugin-table](https://img.shields.io/npm/v/@md-plugins/md-plugin-table/beta?label=@md-plugins/md-plugin-table@beta)
+![@md-plugins/md-plugin-title](https://img.shields.io/npm/v/@md-plugins/md-plugin-title/beta?label=@md-plugins/md-plugin-title@beta)
+![@md-plugins/shared](https://img.shields.io/npm/v/@md-plugins/shared/beta?label=@md-plugins/shared@beta)
 
 <p><strong>Vite Plugins</strong></p>
 
-![@md-plugins/vite-md-plugin](https://img.shields.io/npm/v/@md-plugins/vite-md-plugin?label=@md-plugins/vite-md-plugin)
-![@md-plugins/vite-examples-plugin](https://img.shields.io/npm/v/@md-plugins/vite-examples-plugin?label=@md-plugins/vite-examples-plugin)
+![@md-plugins/vite-md-plugin](https://img.shields.io/npm/v/@md-plugins/vite-md-plugin/beta?label=@md-plugins/vite-md-plugin@beta)
+![@md-plugins/vite-examples-plugin](https://img.shields.io/npm/v/@md-plugins/vite-examples-plugin/beta?label=@md-plugins/vite-examples-plugin@beta)
 
 <p><strong>Quasar App Extensions</strong></p>
 
-![@md-plugins/quasar-app-extension-vite-md-plugin](https://img.shields.io/npm/v/@md-plugins/quasar-app-extension-vite-md-plugin?label=@md-plugins/quasar-app-extension-vite-md-plugin)
-![@md-plugins/quasar-app-extension-q-press](https://img.shields.io/npm/v/@md-plugins/quasar-app-extension-q-press?label=@md-plugins/quasar-app-extension-q-press)
+![@md-plugins/quasar-app-extension-vite-md-plugin](https://img.shields.io/npm/v/@md-plugins/quasar-app-extension-vite-md-plugin/beta?label=@md-plugins/quasar-app-extension-vite-md-plugin@beta)
+![@md-plugins/quasar-app-extension-q-press](https://img.shields.io/npm/v/@md-plugins/quasar-app-extension-q-press/beta?label=@md-plugins/quasar-app-extension-q-press@beta)
 
 [![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/md-plugins/md-plugins)]()
 [![GitHub repo size in bytes](https://img.shields.io/github/repo-size/md-plugins/md-plugins)]()
@@ -63,10 +63,22 @@ This monorepo provides:
 
 ## Table of Contents
 
+- [Current Release](#current-release)
 - [Plugins](#plugins)
 - [Installation](#installation)
 - [Development](#development)
 - [License](#license)
+
+## Current Release
+
+The active release line is `0.1.0-beta.0`, published on npm with the `beta` dist-tag. The npm `latest` dist-tag still points at the previous `0.1.0-alpha.29` packages, so install from `beta` when testing the Quasar CLI Vite 3 compatible release.
+
+The `0.1.0` beta line targets Quasar Vite projects using `@quasar/app-vite` `^3.0.0-beta.12`, Node.js `>=22.13`, and `pnpm@11.1.0`.
+
+```bash
+pnpm add @md-plugins/vite-md-plugin@beta
+pnpm add @md-plugins/quasar-app-extension-q-press@beta
+```
 
 ## Plugins
 
