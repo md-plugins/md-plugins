@@ -6,11 +6,11 @@ desc: Q-Press App-Extension for Quasar.
 The Q-Press App Extension is a powerful tool for Quasar developers that simplifies the integration of Markdown content into Quasar applications. It leverages the capabilities of Vite and various Markdown plugins to transform Markdown files into Vue components, enabling a seamless and efficient workflow for content management.
 
 ::: warning
-Q-Press is for Quasar Vite projects at this time. Typescript processing is also required. Do not use if you are using Webpack or have a Javascript-only project.
+Q-Press is for Quasar Vite projects using `@quasar/app-vite` `^3.0.0-beta.12` at this time. TypeScript processing is also required. Do not use if you are using Webpack or have a JavaScript-only project.
 :::
 
 ::: tip
-This website is built with **Q-Press**! When you install the App-Extension, you will be able have this website up and running in minutes. Later, you can make adjustments to the `src/siteConfig` and add your own markdown files in the `src/markdown` folder to make it your own.
+This website is built with **Q-Press**! When you install the App-Extension, you will be able to have this website up and running in minutes. Later, you can make adjustments to the `src/siteConfig` and add your own markdown files in the `src/markdown` folder to make it your own.
 :::
 
 ## Key Features
@@ -33,14 +33,14 @@ quasar ext add @md-plugins/q-press
 
 - **New Install:**
   - `src/.q-press`
-  - `src/q-press.global.d.ts`
+  - `src/q-press.globals.d.ts`
   - `src/components`
   - `src/markdown`
   - `src/examples`
   - `src/siteConfig`
 - **Update Install:**
   - `src/.q-press`
-  - `src/q-press.global.d.ts`
+  - `src/q-press.globals.d.ts`
 
 ### Additional Dependencies
 
@@ -283,14 +283,14 @@ If you don't have a `.prettierignore` file, create one in the root of your proje
 
 ```bash
 # Ignore all Markdown files:
-\*_/_.md
+**/*.md
 ```
 
 :::
 
 ## Updating
 
-When you update, only the `src/.q-press` folder will be updated as well as the file `src/q-press.global.d.ts`. If you want to re-install everything, just remove the `src/siteConfig` folder.
+When you update, only the `src/.q-press` folder will be updated as well as the file `src/q-press.globals.d.ts`. If you want to re-install everything, just remove the `src/siteConfig` folder.
 
 To make it easier to update, you can use the following command:
 

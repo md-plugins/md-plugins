@@ -682,7 +682,7 @@ md.use(codeblocksPlugin, {
   preClass: 'markdown-pre', // Customize the class for the pre tag
   codeClass: 'markdown-code', // Customize the class for the code tag
   pageScripts: [
-    "import MarkdownPrerender from 'src/.q-presss/components/MarkdownPrerender'", // ts file
+    "import MarkdownPrerender from 'src/.q-press/components/MarkdownPrerender'", // ts file
     "import MarkdownCopyButton from 'src/.q-press/components/MarkdownCopyButton.vue'",
   ], // Include page scripts
   langList: [

@@ -37,6 +37,10 @@
     "unbuild": "^3.6.1",
     "vitest": "^4.1.6"
   },
+  "engines": {
+    "node": ">=22.13",
+    "pnpm": ">=11.1.0"
+  },
   "packageManager": "pnpm@11.1.0",
   "access": "private"
 }

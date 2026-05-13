@@ -51,7 +51,7 @@ To use the `viteMdPlugin`, configure it in your Vite project:
 ```js
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import { viteMdPlugin } from 'vite-md-plugin'
+import { viteMdPlugin } from '@md-plugins/vite-md-plugin'
 
 const menu = [] // Define your navigation menu structure here
 const basePath = '/docs' // Base path prefix
@@ -68,30 +68,28 @@ If you’re using the Quasar Framework, additional configuration is needed to en
 1. Update `quasar.config.(js|ts)`:
 
 - ```js
-      import { viteMdPlugin } from '@md-plugins/vite-md-plugin'
-      import { menu } from './src/.q-press/assets/menu' // be sure to create this file
+  import { viteMdPlugin, type MenuItem, type MarkdownOptions } from '@md-plugins/vite-md-plugin'
+  import { menu } from './src/assets/menu' // be sure to create this file
 
-      export default defineConfig((ctx) => {
-      // ...
-      build: {
-        vueRouterMode: 'history', // Required for proper hash link handling
-        viteVuePluginOptions: {
-          include: [/\.(vue|md)$/], // Include Markdown files
-        },
-       vitePlugins: [
-         [
-          viteMdPlugin,
-          {
-           path: ctx.appPaths.srcDir + '/markdown',
-            menu: sidebar as MenuItem[],
-          },
-        ],
+  export default defineConfig((ctx) => {
+    // ...
+    build: {
+      vueRouterMode: 'history', // Required for proper hash link handling
+      viteVuePluginOptions: {
+        include: [/\.(vue|md)$/], // Include Markdown files
+      },
+      vitePlugins: [
+        viteMdPlugin({
+          path: ctx.appPaths.srcDir + '/markdown',
+          menu: menu as MenuItem[],
+          // config: myOptions as MarkdownOptions,
+        }),
         // ...
-        ],
-      },
-      framework: {
-        autoImportVueExtensions: ['vue', 'md'], // Enable auto-import for Markdown extensions
-      },
+      ],
+    },
+    framework: {
+      autoImportVueExtensions: ['vue', 'md'], // Enable auto-import for Markdown extensions
+    },
   ```
 
 2. Ensure that your routes and hash links are compatible with Vue Router's history mode.
@@ -102,8 +100,8 @@ The `viteMdPlugin` allows you to define a navigation structure that can be updat
 
 ```js
 const menu = [
-  { title: 'Home', path: '/home' },
-  { title: 'About', path: '/about' },
+  { name: 'Home', path: '/home' },
+  { name: 'About', path: '/about' },
 ]
 ```
 
@@ -113,10 +111,10 @@ This menu is passed as a parameter to the plugin and can be used to build a dyna
 
 The `viteMdPlugin` accepts the following parameters:
 
-| Parameter | Type       | Description                                                                                |
-| --------- | ---------- | ------------------------------------------------------------------------------------------ |
-| path      | string     | The base path prefix for routing or file resolution.                                       |
-| menu      | MenuItem[] | An array representing the navigation menu structure. Each item should have title and path. |
+| Parameter | Type       | Description                                                                               |
+| --------- | ---------- | ----------------------------------------------------------------------------------------- |
+| path      | string     | The base path prefix for routing or file resolution.                                      |
+| menu      | MenuItem[] | An array representing the navigation menu structure. Each item should have name and path. |
 
 ## MenuItem Type
 

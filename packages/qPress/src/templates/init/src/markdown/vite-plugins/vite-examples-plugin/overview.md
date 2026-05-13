@@ -59,7 +59,7 @@ To use the Vite Examples plugin with Vite, you can configure it as follows:
 ```typescript
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import { viteExamplesPlugin, viteManualChunks } from 'vite-examples-plugin'
+import { viteExamplesPlugin, viteManualChunks } from '@md-plugins/vite-examples-plugin'
 
 export default defineConfig(({ mode }) => {
   const isProduction = mode === 'production'

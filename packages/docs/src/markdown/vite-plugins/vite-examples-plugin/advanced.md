@@ -72,7 +72,7 @@ Here is an example of how you can configure the `viteExamplesPlugin` with custom
 ```typescript
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import { viteExamplesPlugin } from 'vite-examples-plugin'
+import { viteExamplesPlugin } from '@md-plugins/vite-examples-plugin'
 
 export default defineConfig(({ mode }) => {
   const isProduction = mode === 'production'
@@ -103,7 +103,7 @@ If you’re using the Quasar Framework with Vite, additional configuration is ne
 1. **Update `quasar.config.(js|ts)`**:
 
 ```typescript
-import { viteExamplesPlugin } from 'vite-examples-plugin'
+import { viteExamplesPlugin } from '@md-plugins/vite-examples-plugin'
 
 export default defineConfig(({ mode }) => {
   const isProduction = mode === 'production'

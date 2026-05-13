@@ -24,8 +24,6 @@
     "@md-plugins/vite-md-plugin": "workspace:*"
   },
   "engines": {
-    "node": ">= 20",
-    "npm": ">= 5.6.0",
-    "yarn": ">= 1.6.0"
+    "node": ">=20"
   }
 }

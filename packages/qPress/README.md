@@ -4,6 +4,8 @@ The Ultimate Markdown Solution for the Quasar Framework.
 
 See the [documentation](https://md-plugins.netlify.app/quasar-app-extensions/qpress/overview) for more information.
 
+> Q-Press currently targets Quasar Vite projects using `@quasar/app-vite` `^3.0.0-beta.12`. TypeScript processing is required.
+
 ## Features
 
 - **Markdown**
@@ -22,14 +24,14 @@ See the [documentation](https://md-plugins.netlify.app/quasar-app-extensions/qpr
 - `quasar ext add @md-plugins/q-press`
 - Here is what gets installed on a **new** install:
   - `src/.q-press`
-  - `src/q-press.global.d.ts`
+  - `src/q-press.globals.d.ts`
   - `src/components`
   - `src/markdown`
   - `src/examples`
   - `src/siteConfig`
 - Here is what gets installed on an **update** install:
   - `src/.q-press`
-  - `src/q-press.global.d.ts`
+  - `src/q-press.globals.d.ts`
 
 2. Install `markdown-it` and `@types/markdown-it` in your project devDependencies
 
@@ -70,7 +72,7 @@ See the [documentation](https://md-plugins.netlify.app/quasar-app-extensions/qpr
   export default defineConfig(async (ctx) => {
     // Dynamically import siteConfig
     const siteConfig = await import('./src/siteConfig')
-    const { sidebar } = siteConfig
+    const { sidebar } = siteConfig.default
     return {
       build: {
         vitePlugins: [
@@ -131,7 +133,7 @@ See the [documentation](https://md-plugins.netlify.app/quasar-app-extensions/qpr
     // Always leave this as last one,
     // but you can also remove it
     {
-      path: '/:catchAll(._)_',
+      path: '/:catchAll(.*)*',
       component: () => import('pages/ErrorNotFound.vue'),
     },
   ] as RouteRecordRaw[]
@@ -155,7 +157,7 @@ See the [documentation](https://md-plugins.netlify.app/quasar-app-extensions/qpr
 
 ## Running the App
 
-This is a Quasar app, so all you have to do is `quasar dev` and `quasar dev`. You can test it out now and you will have running the `MD-Plugins` web site.
+This is a Quasar app, so all you have to do is run `quasar dev`. You can test it out now and you will have the `MD-Plugins` web site running.
 
 All you need to do now is change the configuration and landing page to make it your own.
 
@@ -190,7 +192,7 @@ A. In your `eslint.config.js` file, add/replace the following in your rules:
       ],
 ```
 
-Q. Everytime I save a markdown file, `prettier` changes it so that it breaks. How can I prevent this?
+Q. Every time I save a markdown file, `prettier` changes it so that it breaks. How can I prevent this?
 A. This is both a `prettier` and `eslint` issue. In `eslint.config.js`, add the following to the top of the file, right after `export default [`:
 
 ```js
@@ -218,7 +220,7 @@ If you don't have a `.prettierignore` file, create one and add the following:
 
 ## Updating
 
-When you update, only the `src/.q-press` folder will be updated as well as the file `src/q-press.global.d.ts`. If you want to re-install everything, just remove the `src/siteConfig` folder.
+When you update, only the `src/.q-press` folder will be updated as well as the file `src/q-press.globals.d.ts`. If you want to re-install everything, just remove the `src/siteConfig` folder.
 
 To make it easier to update, you can use the following command:
 

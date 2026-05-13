@@ -40,11 +40,10 @@ async function extendConfig(config /*, api*/) {
   // const path = api.resolve.src('siteConfig')
   // if (fse.pathExistsSync(path) && fse.pathExistsSync(markdownPath)) {
   //   const siteConfig = await import(path)
-  //   const { sidebar } = siteConfig
+  //   const { sidebar } = siteConfig.default || siteConfig
 
-  //   // viteMdPlugin(ctx.appPaths.srcDir + '/markdown', sidebar as MenuItem[]),
-  //   // add vite-md-plugin to quiasar.config.js
-  //   config.vite.plugins.push([viteMdPlugin, { path: markdownPath, menu: sidebar }])
+  //   // add vite-md-plugin to quasar.config.js
+  //   config.vite.plugins.push(viteMdPlugin({ path: markdownPath, menu: sidebar }))
   // }
 }
 

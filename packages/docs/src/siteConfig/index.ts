@@ -290,6 +290,10 @@ const guidesMenu: SiteMenuItem = {
   mq: 1100, // media query breakpoint
   children: [
     {
+      name: 'Upgrade Guide',
+      path: '/guides/upgrade-guide',
+    },
+    {
       name: 'FAQ',
       path: '/guides/faq',
     },

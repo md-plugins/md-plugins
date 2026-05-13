@@ -31,7 +31,7 @@ To use the `viteExamplesPlugin`, configure it in your Vite project:
 ```typescript
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import { viteExamplesPlugin, viteManualChunks } from 'vite-examples-plugin'
+import { viteExamplesPlugin, viteManualChunks } from '@md-plugins/vite-examples-plugin'
 
 export default defineConfig(({ mode }) => {
   const isProduction = mode === 'production'
@@ -50,7 +50,7 @@ export default defineConfig(({ mode }) => {
 ```js
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import { viteExamplesPlugin, viteManualChunks } from 'vite-examples-plugin'
+import { viteExamplesPlugin, viteManualChunks } from '@md-plugins/vite-examples-plugin'
 
 export default defineConfig(({ mode }) => {
   const isProduction = mode === 'production'
@@ -77,7 +77,7 @@ export default defineConfig(({ mode }) => {
 1. Update `quasar.config.(js|ts)`:
 
 ```js
-import { viteExamplesPlugin } from '@md-plugin/vite-examples-plugin';
+import { viteExamplesPlugin } from '@md-plugins/vite-examples-plugin'
 
 export default defineConfig((ctx) => {
   // ...

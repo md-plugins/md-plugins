@@ -8,6 +8,10 @@ related:
 
 The `viteMdPluginAppExt` is a [Quasar App Extension](https://quasar.dev/app-extensions/introduction) that integrates the `viteMdPlugin` into your Quasar project. This extension allows you to use Markdown files as Vue components, enabling a seamless integration of Markdown content into your Quasar application.
 
+::: warning
+This app extension targets Quasar Vite projects using `@quasar/app-vite` `^3.0.0-beta.12`.
+:::
+
 ## Key Features
 
 - **Markdown as Vue Components**: Transform Markdown files into Vue components, allowing you to write and manage content in Markdown while leveraging the power of Vue and Quasar.
@@ -46,16 +50,16 @@ framework: {
 To install the `viteMdPluginAppExt` extension, use the following command:
 
 ```bash
-pnpm add @md-plugins/vite-md-plugin-app-ext
+quasar ext add @md-plugins/vite-md-plugin
 ```
 
 ## Usage
 
 After installing the extension, you need to configure it in your Quasar project. Here are the steps to get started:
 
-1. **Import `@md-plugins/vite-md-plugin`:**
+1. **Import `viteMdPlugin`:**
 
-   Update your `quasar.config.js` or `quasar.config.ts` to include the `@md-plugins/vite-md-plugin` extension:
+   Update your `quasar.config.js` or `quasar.config.ts` to include the `@md-plugins/vite-md-plugin` package:
 
    ```js
    import { viteMdPlugin, type MenuItem } from '@md-plugins/vite-md-plugin'
@@ -72,7 +76,10 @@ After installing the extension, you need to configure it in your Quasar project.
 
    ```js
    vitePlugins: [
-     viteMdPlugin(ctx.appPaths.srcDir + '/markdown', sidebar as MenuItem[]),
+     viteMdPlugin({
+       path: ctx.appPaths.srcDir + '/markdown',
+       menu: sidebar as MenuItem[],
+     }),
      // ...
    ]
    ```
