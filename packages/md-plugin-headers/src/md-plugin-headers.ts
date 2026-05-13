@@ -41,7 +41,6 @@ export const headersPlugin: PluginWithOptions<HeadersPluginOptions> = (
     format = DEFAULT_HEADERS_PLUGIN_OPTIONS.format,
     shouldAllowApi = DEFAULT_HEADERS_PLUGIN_OPTIONS.shouldAllowApi,
     shouldAllowExample = DEFAULT_HEADERS_PLUGIN_OPTIONS.shouldAllowExample,
-    shouldAllowNested = DEFAULT_HEADERS_PLUGIN_OPTIONS.shouldAllowNested,
   } = resolvePluginOptions<HeadersPluginOptions, 'headersPlugin'>(
     options,
     'headersPlugin',

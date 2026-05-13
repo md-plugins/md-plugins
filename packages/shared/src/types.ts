@@ -1,4 +1,3 @@
-/// // eslint-disable-next-line typescript-eslint/no-empty-object-type
 export interface MarkdownItEnv {
   plugins?: Record<string, unknown>
   // empty interface to allow for env to be extended with module augmentation

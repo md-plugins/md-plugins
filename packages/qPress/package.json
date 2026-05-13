@@ -1,34 +1,32 @@
 {
   "name": "@md-plugins/quasar-app-extension-q-press",
-  "version": "0.1.0-alpha.29",
+  "version": "0.1.0-beta.0",
   "description": "QPress - The Ultimate Markdown Solution for Quasar Framework",
-  "author": "hawkeye64 <galbraith64@gmail.com>",
   "keywords": [
-    "markdown-it",
-    "quasarframework",
-    "quasar",
     "markdown",
+    "markdown-it",
     "q-press",
+    "quasar",
+    "quasarframework",
     "vite"
   ],
   "homepage": "https://github.com/md-plugins",
   "bugs": {
     "url": "https://github.com/md-plugins/md-plugins/issues"
   },
+  "license": "MIT",
+  "author": "hawkeye64 <galbraith64@gmail.com>",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/md-plugins/md-plugins.git"
   },
-  "license": "MIT",
   "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "node ./scripts/build.js",
     "test": "echo \"No test specified\" && exit 0"
-  },
-  "engines": {
-    "node": ">= 12.2.0",
-    "npm": ">= 5.6.0",
-    "yarn": ">= 1.6.0"
   },
   "dependencies": {
     "@md-plugins/md-plugin-blockquote": "workspace:*",
@@ -45,17 +43,19 @@
     "@md-plugins/shared": "workspace:*",
     "@md-plugins/vite-md-plugin": "workspace:*",
     "@types/markdown-it": "^14.1.2",
-    "markdown-it": "^14.1.0"
+    "fs-extra": "^11.3.4",
+    "markdown-it": "^14.1.1"
   },
   "devDependencies": {
     "@types/markdown-it": "^14.1.2",
-    "fs-extra": "^11.3.0",
-    "vite": "^6.1.0"
+    "vite": "^8.0.3"
   },
   "peerDependencies": {
     "markdown-it": "^14.1.0"
   },
-  "publishConfig": {
-    "access": "public"
+  "engines": {
+    "node": ">= 12.2.0",
+    "npm": ">= 5.6.0",
+    "yarn": ">= 1.6.0"
   }
 }

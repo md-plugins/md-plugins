@@ -141,7 +141,7 @@ export function getVueComponent(
   // console.log('related:', related)
 
   const { mdContent, userScripts } = splitRenderedContent(rendered.html)
-  // prettier-ignore
+  // oxfmt-ignore
   const pageScripts = [
     ...Array.from(rendered.env.pageScripts || []),
     ...Array.from(userScripts || []),
@@ -168,7 +168,7 @@ ${
   examples !== false
     ? `
 import { provide } from 'vue'
-provide('_markdown_examples_', process.env.CLIENT
+	provide('_markdown_examples_', import.meta.env.QUASAR_CLIENT
   ? { name: '${examples}', list: import('examples:${examples}') }
   : { name: '${examples}' })
 `

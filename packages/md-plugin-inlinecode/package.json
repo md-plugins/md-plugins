@@ -1,24 +1,29 @@
 {
   "name": "@md-plugins/md-plugin-inlinecode",
-  "version": "0.1.0-alpha.29",
+  "version": "0.1.0-beta.0",
   "description": "A markdown-it plugin for handling inline code.",
   "keywords": [
     "markdown-it",
     "quasarframework",
-    "vue",
-    "types"
+    "types",
+    "vue"
   ],
   "homepage": "https://github.com/md-plugins",
   "bugs": {
     "url": "https://github.com/md-plugins/md-plugins/issues"
   },
+  "license": "MIT",
+  "author": "hawkeye64 <galbraith64@gmail.com>",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/md-plugins/md-plugins.git"
   },
-  "license": "MIT",
-  "author": "hawkeye64 <galbraith64@gmail.com>",
+  "files": [
+    "./dist"
+  ],
   "type": "module",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "import": {
@@ -27,11 +32,9 @@
       }
     }
   },
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
-  "files": [
-    "./dist"
-  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "unbuild",
     "clean": "rm -rf dist/ node_modules/",
@@ -39,13 +42,10 @@
   },
   "devDependencies": {
     "@md-plugins/shared": "workspace:*",
-    "markdown-it": "^14.1.0",
-    "@types/markdown-it": "^14.1.2"
+    "@types/markdown-it": "^14.1.2",
+    "markdown-it": "^14.1.1"
   },
   "peerDependencies": {
     "markdown-it": "^14.1.0"
-  },
-  "publishConfig": {
-    "access": "public"
   }
 }

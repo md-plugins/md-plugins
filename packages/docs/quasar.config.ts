@@ -1,11 +1,13 @@
 // Configuration for your app
 // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file
 
-import { defineConfig } from '#q-app/wrappers'
+import { defineConfig } from '#q-app'
 import type { Plugin } from 'vite'
 
 import { viteMdPlugin, type MenuItem } from '@md-plugins/vite-md-plugin'
 import { viteExamplesPlugin, viteManualChunks } from '@md-plugins/vite-examples-plugin'
+
+type QuasarConfig = Awaited<ReturnType<ReturnType<typeof defineConfig>>>
 
 export default defineConfig(async (ctx) => {
   // console.log('ctx', ctx)
@@ -62,10 +64,10 @@ export default defineConfig(async (ctx) => {
 
       // publicPath: '/',
       // analyze: true,
-      env: {
+      defineEnv: {
         DOCS_BRANCH: 'dev',
       },
-      // rawDefine: {}
+      // define: {}
       // ignorePublicFolder: true,
       // minify: false,
       // polyfillModulePreload: true,
@@ -101,10 +103,6 @@ export default defineConfig(async (ctx) => {
           'vite-plugin-checker',
           {
             vueTsc: true,
-            eslint: {
-              lintCommand: 'eslint -c ./eslint.config.js "./src*/**/*.{ts,js,mjs,cjs,vue}"',
-              useFlatConfig: true,
-            },
           },
           { server: false },
         ],
@@ -251,5 +249,5 @@ export default defineConfig(async (ctx) => {
        */
       extraScripts: [],
     },
-  }
+  } as QuasarConfig
 })

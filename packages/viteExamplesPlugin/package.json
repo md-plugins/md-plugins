@@ -1,26 +1,31 @@
 {
   "name": "@md-plugins/vite-examples-plugin",
-  "version": "0.1.0-alpha.29",
+  "version": "0.1.0-beta.0",
   "description": "A Vite plugin for @md-plugins for handling imported examples in markdown files.",
   "keywords": [
     "markdown-it",
     "quasarframework",
-    "vue",
     "utils",
     "vite",
-    "vite-plugin"
+    "vite-plugin",
+    "vue"
   ],
   "homepage": "https://github.com/md-plugins",
   "bugs": {
     "url": "https://github.com/md-plugins/md-plugins/issues"
   },
+  "license": "MIT",
+  "author": "hawkeye64 <galbraith64@gmail.com>",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/md-plugins/md-plugins.git"
   },
-  "license": "MIT",
-  "author": "hawkeye64 <galbraith64@gmail.com>",
+  "files": [
+    "./dist"
+  ],
   "type": "module",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "import": {
@@ -29,20 +34,17 @@
       }
     }
   },
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
-  "files": [
-    "./dist"
-  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "unbuild",
     "clean": "rm -rf dist/ node_modules/"
   },
-  "publishConfig": {
-    "access": "public"
+  "dependencies": {
+    "tinyglobby": "^0.2.16"
   },
   "devDependencies": {
-    "tinyglobby": "^0.2.10",
-    "vite": "^6.1.0"
+    "vite": "^8.0.12"
   }
 }

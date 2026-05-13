@@ -1,6 +1,6 @@
 const andRE = /&/g
 const rCombining = /[\u0300-\u036F]/g
-// eslint-disable-next-line no-control-regex
+// oxlint-disable-next-line no-control-regex
 const rControl = /[\u0000-\u001f]/g
 const rSpecial = /[\s~`!@#$%^&*()\-_+=[\]{}|\\;:"'“”‘’<>,.?/]+/g
 

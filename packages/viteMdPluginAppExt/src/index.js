@@ -1,4 +1,3 @@
-/*global console*/
 /**
  * Quasar App Extension index/runner script
  * (runs on each dev/build)
@@ -9,7 +8,7 @@
 function extendConfig(config) {
   // make sure 'vueRouterMode' has 'history' mode
   if (config.build.vueRouterMode !== 'history') {
-    console.log('Changing vueRouterMode to "history" - required for hash links to work correctly')
+    console.warn('Changing vueRouterMode to "history" - required for hash links to work correctly')
     config.build.vueRouterMode = 'history'
   }
 
@@ -31,7 +30,7 @@ export default function (api) {
   }
 
   api.compatibleWith('quasar', '^2.0.0')
-  api.compatibleWith('@quasar/app-vite', '^2.0.0')
+  api.compatibleWith('@quasar/app-vite', '^3.0.0-beta.12')
 
   // here we extend /quasar.config, so we can add some Vite/Vue stuff
   api.extendQuasarConf(extendConfig)

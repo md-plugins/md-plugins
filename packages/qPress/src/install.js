@@ -1,4 +1,3 @@
-/*global console*/
 /**
  * Quasar App Extension install script
  *
@@ -14,7 +13,7 @@ export default async function (api) {
   }
 
   api.compatibleWith('quasar', '^2.0.0')
-  api.compatibleWith('@quasar/app-vite', '^2.0.0')
+  api.compatibleWith('@quasar/app-vite', '^3.0.0-beta.12')
 
   // project must have pinia installed
   if ((await api.getStorePackageName()) !== 'pinia') {
@@ -35,15 +34,15 @@ export default async function (api) {
   const path = api.resolve.src('siteConfig')
   if (fse.pathExistsSync(path)) {
     // this is an update scenario
-    console.log('-------------------------------------')
-    console.log("Update only for 'src/.q-press' folder")
-    console.log('-------------------------------------')
+    console.warn('-------------------------------------')
+    console.warn("Update only for 'src/.q-press' folder")
+    console.warn('-------------------------------------')
     api.render('./templates/update')
   } else {
     // this is a project initial setup
-    console.log('--------------------------------------------')
-    console.log('Initial setup. Be sure to read the\ndocumentation on the manual set up required.')
-    console.log('--------------------------------------------')
+    console.warn('--------------------------------------------')
+    console.warn('Initial setup. Be sure to read the\ndocumentation on the manual set up required.')
+    console.warn('--------------------------------------------')
     api.render('./templates/init')
   }
 }

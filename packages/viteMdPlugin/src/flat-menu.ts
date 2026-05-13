@@ -1,5 +1,4 @@
 import { join } from 'node:path'
-import { fileURLToPath, URL } from 'node:url'
 import type { MenuItem, FlatMenu, FlatMenuEntry, RelatedItem } from './types'
 
 let prev: FlatMenuEntry | null = null

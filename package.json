@@ -1,20 +1,8 @@
 {
   "name": "@md-plugins/mono-repo",
-  "version": "0.1.0-alpha.29",
-  "description": "",
-  "main": "index.js",
+  "version": "0.1.0-beta.0",
   "private": true,
-  "scripts": {
-    "build": "pnpm -r --stream build",
-    "dev": "vitest",
-    "check-types": "tsc --noEmit --skipLibCheck",
-    "deep": "ncu --deep",
-    "clean": "pnpm -r --stream clean",
-    "format": "prettier --write .",
-    "lint": "eslint . && prettier --check .",
-    "ci:publish": "pnpm -r publish --access public --publish-branch dev",
-    "test": "vitest run"
-  },
+  "description": "",
   "keywords": [
     "markdown",
     "markdown-it",
@@ -22,20 +10,33 @@
     "quasarframework",
     "vue"
   ],
-  "access": "private",
-  "author": "",
   "license": "MIT",
-  "packageManager": "pnpm@10.3.0",
+  "author": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "pnpm -r --stream build",
+    "dev": "vitest",
+    "check-types": "pnpm check-types:packages && pnpm --filter mdplugins_docs check-types",
+    "check-types:packages": "tsc -p tsconfig.json --noEmit --skipLibCheck",
+    "deep": "ncu --deep",
+    "clean": "pnpm -r --stream clean",
+    "format": "oxfmt",
+    "format:check": "oxfmt --check",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
+    "ci:publish": "pnpm -r publish --access public --publish-branch dev",
+    "ci:publish:beta": "pnpm -r publish --access public --publish-branch v0.1-beta --tag beta",
+    "test": "vitest run"
+  },
   "devDependencies": {
-    "@eslint/js": "^9.20.0",
-    "@types/node": "^22.13.2",
-    "@typescript-eslint/eslint-plugin": "^8.24.0",
-    "@vitest/coverage-istanbul": "^3.0.5",
-    "eslint": "^9.20.1",
-    "globals": "^15.15.0",
-    "prettier": "^3.5.1",
-    "typescript": "~5.7.3",
-    "unbuild": "^3.3.1",
-    "vitest": "^3.0.5"
-  }
+    "@types/node": "^25.7.0",
+    "@vitest/coverage-istanbul": "^4.1.6",
+    "oxfmt": "^0.49.0",
+    "oxlint": "^1.64.0",
+    "typescript": "~5.9.3",
+    "unbuild": "^3.6.1",
+    "vitest": "^4.1.6"
+  },
+  "packageManager": "pnpm@11.1.0",
+  "access": "private"
 }

@@ -2,6 +2,7 @@ import MarkdownIt from 'markdown-it'
 import type { PluginWithOptions, Options } from 'markdown-it'
 import type Token from 'markdown-it/lib/token.mjs'
 import type { MarkdownItEnv } from '@md-plugins/shared'
+import type { Grammar } from 'prismjs'
 import type { CodeblockPluginOptions, Lang } from './types'
 import prism from 'prismjs'
 import loadLanguages from 'prismjs/components/index.js'
@@ -223,7 +224,7 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
       })
     }
 
-    hasRemOrAdd === true &&
+    if (hasRemOrAdd === true) {
       lines.forEach((_, lineIndex) => {
         const target = acc[lineIndex]
         if (target === void 0) return
@@ -235,6 +236,7 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
               : ' ',
         )
       })
+    }
 
     return acc
   }
@@ -245,7 +247,7 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
 
   function getPrismHighlightedContent(rawContent: string, lang: string): string {
     const content = rawContent.trim()
-    return prism.highlight(content, prism.languages[lang] as Prism.Grammar, lang)
+    return prism.highlight(content, prism.languages[lang] as Grammar, lang)
   }
 
   function getHighlightedContent(rawContent: string, attrs: { [key: string]: any }): string {
@@ -258,8 +260,7 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
       content = content.trim().replace(magicCommentGlobalRE, '')
     }
 
-    const html = prism
-      .highlight(content, prism.languages[lang] as Prism.Grammar, lang)
+    const html = getPrismHighlightedContent(content, lang)
       .split('\n')
       .map((line, lineIndex) => {
         const target = lineList[lineIndex]

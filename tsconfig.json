@@ -1,7 +1,7 @@
 {
   "extends": "./tsconfig.base.json",
   "include": ["packages/**/*", "vitest.config.ts"],
-  "exclude": ["node_modules", "dist", "packages/qPress/src/templates"],
+  "exclude": ["node_modules", "dist", "packages/docs", "packages/qPress/src/templates"],
   "compilerOptions": {
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,

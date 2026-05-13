@@ -27,6 +27,9 @@ function transform(code: string, id: string): string | null {
     console.error(`Error processing Markdown file: ${id}`, err)
     throw new Error(
       `Markdown transform failed: ${err instanceof Error ? err.message : String(err)}`,
+      {
+        cause: err,
+      },
     )
   }
 }
