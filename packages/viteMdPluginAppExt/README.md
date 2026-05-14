@@ -17,6 +17,8 @@ The `viteMdPluginAppExt` extension provides a convenient way to use Markdown fil
 
 This App-Extension (app-ext) is for convenience only. For more granular control, you can use the `viteMdPlugin` directly in your Vite configuration. For more information, refer to the [viteMdPlugin documentation](https://github.com/md-plugins/md-plugins/tree/dev/packages/viteMdPlugin).
 
+> Current beta release: `0.1.0-beta.1`.
+>
 > This app extension currently targets Quasar Vite projects using `@quasar/app-vite` `>=3.0.0-beta.14`.
 
 ## Installation
