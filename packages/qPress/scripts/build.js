@@ -10,6 +10,7 @@ const __dirname = path.dirname(__filename)
 // Construct full paths
 const initPath = path.resolve(__dirname, '../src/templates/init')
 const updatePath = path.resolve(__dirname, '../src/templates/update')
+const distTemplatesPath = path.resolve(__dirname, '../dist/templates')
 const globalsPath = path.resolve(__dirname, '../../docs/src/q-press.globals.d.ts')
 const qPressPath = path.resolve(__dirname, '../../docs/src/.q-press')
 const componentsPath = path.resolve(__dirname, '../../docs/src/components')
@@ -20,6 +21,7 @@ const siteConfigPath = path.resolve(__dirname, '../../docs/src/siteConfig')
 // The "update" folder only gets 'q-press.globals.d.ts' and the '_q-press' folder
 fse.removeSync(initPath)
 fse.removeSync(updatePath)
+fse.removeSync(distTemplatesPath)
 
 fse.copySync(globalsPath, path.join(initPath, 'src/q-press.globals.d.ts'))
 fse.copySync(globalsPath, path.join(updatePath, 'src/q-press.globals.d.ts'))
@@ -31,3 +33,6 @@ fse.copySync(componentsPath, path.join(initPath, 'src/components'))
 fse.copySync(markdownPath, path.join(initPath, 'src/markdown'))
 fse.copySync(examplesPath, path.join(initPath, 'src/examples'))
 fse.copySync(siteConfigPath, path.join(initPath, 'src/siteConfig'))
+
+// Keep rendered templates next to the compiled install script for published packages.
+fse.copySync(path.resolve(__dirname, '../src/templates'), distTemplatesPath)

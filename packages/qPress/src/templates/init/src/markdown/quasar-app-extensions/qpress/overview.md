@@ -223,6 +223,35 @@ useMeta({
 
 ## FAQ
 
+:::details Q. I upgraded an existing Q-Press project and now the browser says `process is not defined`. What changed?
+
+**A.** Q-Press `0.1.0-beta` targets Quasar CLI Vite 3, so browser-side code must use `import.meta.env` instead of `process.env`.
+
+If you copied older Q-Press internals into your app, update the common cases below:
+
+```ts
+process.env.CLIENT            // old
+import.meta.env.QUASAR_CLIENT // new
+
+process.env.DEV               // old
+import.meta.env.DEV           // new
+
+process.env.FS_QUASAR_FOLDER      // old
+import.meta.env.QCLI_FS_QUASAR_FOLDER // new
+
+process.env.SEARCH_INDEX      // old
+import.meta.env.QCLI_SEARCH_INDEX // new
+```
+
+If your project was generated from an older Q-Press version, rerun the extension update after upgrading:
+
+```bash
+quasar ext invoke @md-plugins/q-press
+```
+
+Choose `Overwrite All` if you want the generated `src/.q-press` files to match the current beta templates.
+:::
+
 :::details Q. I have errors in my`routes.ts` file, what should I do?
 
 **A.** You can remove the following line: `import type { RouteRecordRaw } from 'vue-router'` and also remove the `type` keyword from the `routes` variable (`: RouteRecordRaw[]`).
