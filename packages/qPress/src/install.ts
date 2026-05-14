@@ -5,7 +5,7 @@
  */
 
 import { defineInstallScript } from '@quasar/app-vite'
-import fse from 'fs-extra'
+import { existsSync } from 'node:fs'
 
 export default defineInstallScript(async (api) => {
   // verify this is a Vite project
@@ -33,13 +33,14 @@ export default defineInstallScript(async (api) => {
   }
 
   const path = api.resolve.src('siteConfig')
-  if (fse.pathExistsSync(path)) {
+  if (existsSync(path)) {
     // this is an update scenario
     console.warn('-------------------------------------')
     console.warn("Update only for 'src/.q-press' folder")
     console.warn('-------------------------------------')
     api.render('./templates/update')
-  } else {
+  }
+  else {
     // this is a project initial setup
     console.warn('--------------------------------------------')
     console.warn('Initial setup. Be sure to read the\ndocumentation on the manual set up required.')
