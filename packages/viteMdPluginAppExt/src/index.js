@@ -5,6 +5,8 @@
  * Docs: https://quasar.dev/app-extensions/development-guide/index-api
  */
 
+import { defineIndexScript } from '@quasar/app-vite'
+
 function extendConfig(config) {
   // make sure 'vueRouterMode' has 'history' mode
   if (config.build.vueRouterMode !== 'history') {
@@ -23,15 +25,15 @@ function extendConfig(config) {
   config.framework.autoImportVueExtensions = Array.from(extensions)
 }
 
-export default function (api) {
+export default defineIndexScript((api) => {
   // verify this is a Vite project
   if (!api.hasVite) {
     throw new Error('This extension requires Vite')
   }
 
   api.compatibleWith('quasar', '^2.0.0')
-  api.compatibleWith('@quasar/app-vite', '^3.0.0-beta.12')
+  api.compatibleWith('@quasar/app-vite', '>=3.0.0-beta.13')
 
   // here we extend /quasar.config, so we can add some Vite/Vue stuff
   api.extendQuasarConf(extendConfig)
-}
+})

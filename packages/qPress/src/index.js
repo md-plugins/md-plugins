@@ -5,6 +5,8 @@
  * Docs: https://quasar.dev/app-extensions/development-guide/index-api
  */
 
+import { defineIndexScript } from '@quasar/app-vite'
+
 // import fse from 'fs-extra'
 // import { viteMdPlugin } from '@md-plugins/vite-md-plugin'
 
@@ -47,15 +49,15 @@ async function extendConfig(config /*, api*/) {
   // }
 }
 
-export default function (api) {
+export default defineIndexScript((api) => {
   // verify this is a Vite project
   if (!api.hasVite) {
     throw new Error('This extension requires Vite')
   }
 
   api.compatibleWith('quasar', '^2.0.0')
-  api.compatibleWith('@quasar/app-vite', '^3.0.0-beta.12')
+  api.compatibleWith('@quasar/app-vite', '>=3.0.0-beta.13')
 
   // here we extend /quasar.config, so we can add some Vite/Vue stuff
   api.extendQuasarConf(extendConfig)
-}
+})

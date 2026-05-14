@@ -6,7 +6,7 @@ desc: Q-Press App-Extension for Quasar.
 The Q-Press App Extension is a powerful tool for Quasar developers that simplifies the integration of Markdown content into Quasar applications. It leverages the capabilities of Vite and various Markdown plugins to transform Markdown files into Vue components, enabling a seamless and efficient workflow for content management.
 
 ::: warning
-Q-Press is for Quasar Vite projects using `@quasar/app-vite` `^3.0.0-beta.12` at this time. TypeScript processing is also required. Do not use if you are using Webpack or have a JavaScript-only project.
+Q-Press is for Quasar Vite projects using `@quasar/app-vite` `>=3.0.0-beta.13` at this time. TypeScript processing is also required. Do not use if you are using Webpack or have a JavaScript-only project.
 :::
 
 ::: tip
@@ -68,15 +68,9 @@ npm i prismjs
 
 ## Configuration
 
-### Modify `tsconfig.json`
+### Verify `tsconfig.json`
 
-Add the `resolveJsonModule: true` to your `tsconfig.json` file in your root folder:
-
-```json
-  "compilerOptions": {
-    "resolveJsonModule": true
-  }
-```
+Quasar CLI Vite 3 already generates a `tsconfig.json` with JSON module support. If you are migrating an older app, run `quasar prepare` after upgrading so the generated TypeScript config is refreshed.
 
 ### Modify `src/css/quasar.variables.scss`
 
@@ -99,7 +93,7 @@ Import Q-Press styles:
 ### Modify `quasar.config.ts`
 
 ```ts [maxheight=400px]
-import { defineConfig } from '#q-app'
+import { defineConfig } from '@quasar/app-vite'
 import type { Plugin } from 'vite'
 import { viteMdPlugin, type MenuItem, type MarkdownOptions } from '@md-plugins/vite-md-plugin'
 

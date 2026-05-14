@@ -9,7 +9,7 @@ related:
 The `viteMdPluginAppExt` is a [Quasar App Extension](https://quasar.dev/app-extensions/introduction) that integrates the `viteMdPlugin` into your Quasar project. This extension allows you to use Markdown files as Vue components, enabling a seamless integration of Markdown content into your Quasar application.
 
 ::: warning
-This app extension targets Quasar Vite projects using `@quasar/app-vite` `^3.0.0-beta.12`.
+This app extension targets Quasar Vite projects using `@quasar/app-vite` `>=3.0.0-beta.13`.
 :::
 
 ## Key Features

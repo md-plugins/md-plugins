@@ -4,16 +4,17 @@
  * Docs: https://quasar.dev/app-extensions/development-guide/install-api
  */
 
+import { defineInstallScript } from '@quasar/app-vite'
 import fse from 'fs-extra'
 
-export default async function (api) {
+export default defineInstallScript(async (api) => {
   // verify this is a Vite project
   if (!api.hasVite) {
     throw new Error('This extension requires Vite')
   }
 
   api.compatibleWith('quasar', '^2.0.0')
-  api.compatibleWith('@quasar/app-vite', '^3.0.0-beta.12')
+  api.compatibleWith('@quasar/app-vite', '>=3.0.0-beta.13')
 
   // project must have pinia installed
   if ((await api.getStorePackageName()) !== 'pinia') {
@@ -45,4 +46,4 @@ export default async function (api) {
     console.warn('--------------------------------------------')
     api.render('./templates/init')
   }
-}
+})
