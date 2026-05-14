@@ -32,7 +32,7 @@ export default defineIndexScript((api) => {
   }
 
   api.compatibleWith('quasar', '^2.0.0')
-  api.compatibleWith('@quasar/app-vite', '>=3.0.0-beta.13')
+  api.compatibleWith('@quasar/app-vite', '>=3.0.0-beta.14')
 
   // here we extend /quasar.config, so we can add some Vite/Vue stuff
   api.extendQuasarConf(extendConfig)
