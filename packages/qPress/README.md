@@ -62,8 +62,6 @@ See the [documentation](https://md-plugins.netlify.app/quasar-app-extensions/qpr
 
 - ```scss
   @import '../.q-press/css/app.scss';
-  @import '../.q-press/css/fonts.scss';
-  @import '../.q-press/css/prism-theme.scss';
   ```
 
 3. Modify your `quasar.config.ts`

@@ -86,8 +86,6 @@ Import Q-Press styles:
 
 ```scss
 @import '../.q-press/css/app.scss';
-@import '../.q-press/css/fonts.scss';
-@import '../.q-press/css/prism-theme.scss';
 ```
 
 ### Modify `quasar.config.ts`
