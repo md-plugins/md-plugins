@@ -21,10 +21,10 @@
   },
   "devDependencies": {
     "@md-plugins/vite-md-plugin": "workspace:*",
-    "@quasar/app-vite": "3.0.0-beta.14"
+    "@quasar/app-vite": "3.0.0-beta.18"
   },
   "peerDependencies": {
-    "@quasar/app-vite": ">=3.0.0-beta.14"
+    "@quasar/app-vite": ">=3.0.0-beta.18"
   },
   "engines": {
     "node": ">=22.13",

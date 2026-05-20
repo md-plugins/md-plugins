@@ -14,7 +14,7 @@ export default defineInstallScript(async (api) => {
   }
 
   api.compatibleWith('quasar', '^2.0.0')
-  api.compatibleWith('@quasar/app-vite', '>=3.0.0-beta.14')
+  api.compatibleWith('@quasar/app-vite', '>=3.0.0-beta.18')
 
   // project must have pinia installed
   if ((await api.getStorePackageName()) !== 'pinia') {
@@ -39,8 +39,7 @@ export default defineInstallScript(async (api) => {
     console.warn("Update only for 'src/.q-press' folder")
     console.warn('-------------------------------------')
     api.render('./templates/update')
-  }
-  else {
+  } else {
     // this is a project initial setup
     console.warn('--------------------------------------------')
     console.warn('Initial setup. Be sure to read the\ndocumentation on the manual set up required.')
