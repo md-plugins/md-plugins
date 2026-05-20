@@ -84,10 +84,15 @@ export default defineConfig(({ mode }) => {
     ],
     build: {
       chunkSizeWarningLimit: 650,
-      rollupOptions: {
+      rolldownOptions: {
         output: {
-          manualChunks: {
-            vendor: ['vue', 'vite'],
+          codeSplitting: {
+            groups: [
+              {
+                name: (moduleId) =>
+                  /node_modules[\\/](vue|vite)[\\/]/.test(moduleId) ? 'vendor' : null,
+              },
+            ],
           },
         },
       },

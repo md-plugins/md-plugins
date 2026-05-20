@@ -62,9 +62,15 @@ export default defineConfig(({ mode }) => {
     ],
     build: {
       chunkSizeWarningLimit: 650,
-      rollupOptions: {
+      rolldownOptions: {
         output: {
-          manualChunks: viteManualChunks,
+          codeSplitting: {
+            groups: [
+              {
+                name: (moduleId) => viteManualChunks(moduleId) ?? null,
+              },
+            ],
+          },
         },
       },
     },
@@ -105,8 +111,14 @@ import { viteExamplesPlugin, viteManualChunks } from '@md-plugins/vite-examples-
       if (ctx.prod && isClient) {
         viteConf.build = viteConf.build || {}
         viteConf.build.chunkSizeWarningLimit = 650
-        viteConf.build.rollupOptions = {
-          output: { manualChunks: viteManualChunks },
+        viteConf.build.rolldownOptions = viteConf.build.rolldownOptions || {}
+        viteConf.build.rolldownOptions.output = viteConf.build.rolldownOptions.output || {}
+        viteConf.build.rolldownOptions.output.codeSplitting = {
+          groups: [
+            {
+              name: (moduleId) => viteManualChunks(moduleId) ?? null,
+            },
+          ],
         }
       }
     },
