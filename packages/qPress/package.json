@@ -44,16 +44,16 @@
     "@md-plugins/shared": "workspace:*",
     "@md-plugins/vite-md-plugin": "workspace:*",
     "@types/markdown-it": "^14.1.2",
-    "fs-extra": "^11.3.4",
+    "fs-extra": "^11.3.5",
     "markdown-it": "^14.1.1"
   },
   "devDependencies": {
-    "@quasar/app-vite": "3.0.0-beta.18",
+    "@quasar/app-vite": "3.0.0-beta.19",
     "@types/markdown-it": "^14.1.2",
-    "vite": "^8.0.3"
+    "vite": "^8.0.14"
   },
   "peerDependencies": {
-    "@quasar/app-vite": ">=3.0.0-beta.18",
+    "@quasar/app-vite": ">=3.0.0-beta.19",
     "markdown-it": "^14.1.0"
   },
   "engines": {
