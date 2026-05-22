@@ -35,6 +35,7 @@ A collection of Markdown-it! plugins, Vite plugins, and App Extensions for Vue a
 
 [![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/md-plugins/md-plugins)]()
 [![GitHub repo size in bytes](https://img.shields.io/github/repo-size/md-plugins/md-plugins)]()
+[![Netlify Status](https://api.netlify.com/api/v1/badges/850bdc62-254a-464f-98cd-90e823f257d2/deploy-status)](https://app.netlify.com/projects/md-plugins/deploys)
 
 [![npm](https://img.shields.io/npm/dt/@md-plugins/quasar-app-extension-q-press)](https://www.npmjs.com/package/@md-plugins/quasar-app-extension-q-press)
 ![@md-plugins/quasar-app-extension-q-press](https://img.shields.io/npm/dm/@md-plugins/quasar-app-extension-q-press)
