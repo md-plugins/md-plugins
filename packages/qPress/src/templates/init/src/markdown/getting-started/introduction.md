@@ -21,7 +21,7 @@ Markdown Plugins are a set of tools and extensions designed to enhance the funct
 - **Title Extraction**: Extract the first header in Markdown as the page title.
 - **Script Imports**: Extract and process **&lt;script import&gt;** blocks from Markdown.
 - **Code Block Enhancements**: Enhance code block rendering with syntax highlighting, tabs, and more.
-- **Custom Styling**: Apply custom styles to your Markdown content for a more polished look.
+- **Custom Styling**: Apply custom styles to your Markdown content for a more refined look.
 - **Integration**: Easily integrate with other tools and platforms to streamline your workflow.
 
 ## Why Use Markdown Plugins?
@@ -48,7 +48,7 @@ Here are some examples of what you can achieve with Markdown Plugins:
 
 - **Custom Syntax**: Add custom syntax for specific use cases.
 - **Enhanced Components**: Embed interactive and enhanced components.
-- **Custom Styling**: Apply custom styles to your content for a polished look.
+- **Custom Styling**: Apply custom styles to your content for a refined look.
 - **Frontmatter Support**: Extract and process frontmatter content from your Markdown files.
 - **Header Management**: Extract and process headers for generating ToCs or managing headers.
 - **Inline Code Styling**: Add custom classes to inline code blocks for styling.
