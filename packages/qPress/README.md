@@ -4,7 +4,7 @@ The Ultimate Markdown Solution for the Quasar Framework.
 
 See the [documentation](https://md-plugins.netlify.app/quasar-app-extensions/qpress/overview) for more information.
 
-> Current beta release: `0.1.0-beta.6`.
+> Current beta release: `0.1.0-beta.7`.
 >
 > Q-Press currently targets Quasar Vite projects using `@quasar/app-vite` `>=3.0.0-beta.26`. TypeScript processing is required.
 
@@ -26,14 +26,12 @@ See the [documentation](https://md-plugins.netlify.app/quasar-app-extensions/qpr
 - `quasar ext add @md-plugins/q-press`
 - Here is what gets installed on a **new** install:
   - `src/.q-press`
-  - `src/q-press.globals.d.ts`
   - `src/components`
   - `src/markdown`
   - `src/examples`
   - `src/siteConfig`
 - Here is what gets installed on an **update** install:
   - `src/.q-press`
-  - `src/q-press.globals.d.ts`
 
 2. Install `markdown-it` and `@types/markdown-it` in your project devDependencies
 
@@ -220,7 +218,7 @@ If you don't have a `.prettierignore` file, create one and add the following:
 
 ## Updating
 
-When you update, only the `src/.q-press` folder will be updated as well as the file `src/q-press.globals.d.ts`. If you want to re-install everything, just remove the `src/siteConfig` folder.
+When you update, only the `src/.q-press` folder will be updated. If you want to re-install everything, just remove the `src/siteConfig` folder.
 
 To make it easier to update, you can use the following command:
 

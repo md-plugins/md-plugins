@@ -39,15 +39,9 @@ For direct Vite plugin usage, update the packages you consume:
 pnpm up @md-plugins/vite-md-plugin@beta @md-plugins/vite-examples-plugin@beta
 ```
 
-## File Name Check
+## Q-Press Type Globals
 
-Q-Press installs and updates this type shim:
-
-```text
-src/q-press.globals.d.ts
-```
-
-If your project still references `src/q-press.global.d.ts`, rename the reference to the plural `globals` filename.
+Q-Press now provides its shared Markdown, menu and `ImportMeta` globals directly from the app extension package. After upgrading to this release line and running `quasar prepare`, projects no longer need to keep a local `src/q-press.globals.d.ts` file.
 
 ## Environment Variable Changes
 

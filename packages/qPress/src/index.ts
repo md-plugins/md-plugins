@@ -6,6 +6,7 @@
  */
 
 import { defineIndexScript } from '@quasar/app-vite'
+import { fileURLToPath } from 'node:url'
 
 // import fse from 'fs-extra'
 // import { viteMdPlugin } from '@md-plugins/vite-md-plugin'
@@ -22,6 +23,18 @@ type ViteConfigWithAlias = {
     alias?: ViteAlias
   }
 }
+
+type QuasarTsConfig = {
+  files?: string[]
+}
+
+type QuasarTypescriptConfig = {
+  extendTsConfig?: (tsConfig: QuasarTsConfig) => void
+}
+
+const qPressGlobalsTsConfigPath = fileURLToPath(
+  new URL('./q-press-globals.d.ts', import.meta.url),
+).replace(/\\/g, '/')
 
 function normalizeAlias(alias: ViteAlias | undefined): ViteAliasEntry[] {
   if (Array.isArray(alias)) {
@@ -47,6 +60,23 @@ function addQuasarSourceAlias(viteConf: ViteConfigWithAlias, appDir: string): vo
   ]
 }
 
+function addQPressGlobalsToTsConfig(tsConfig: QuasarTsConfig): void {
+  tsConfig.files ??= []
+
+  if (!tsConfig.files.includes(qPressGlobalsTsConfigPath)) {
+    tsConfig.files.push(qPressGlobalsTsConfigPath)
+  }
+}
+
+function extendTypeScriptConfig(typescriptConfig: QuasarTypescriptConfig): void {
+  const userExtendTsConfig = typescriptConfig.extendTsConfig
+
+  typescriptConfig.extendTsConfig = (tsConfig) => {
+    userExtendTsConfig?.(tsConfig)
+    addQPressGlobalsToTsConfig(tsConfig)
+  }
+}
+
 export default defineIndexScript((api) => {
   // verify this is a Vite project
   if (!api.hasVite) {
@@ -59,8 +89,11 @@ export default defineIndexScript((api) => {
   // here we extend /quasar.config, so we can add some Vite/Vue stuff
   api.extendQuasarConf(async (config) => {
     config.build ??= {}
+    config.build.typescript ??= {}
     config.build.viteVuePluginOptions ??= {}
     config.framework ??= {}
+
+    extendTypeScriptConfig(config.build.typescript)
 
     // make sure 'vueRouterMode' has 'history' mode
     if (config.build.vueRouterMode !== 'history') {

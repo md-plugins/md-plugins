@@ -1,6 +1,6 @@
 {
   "name": "@md-plugins/quasar-app-extension-q-press",
-  "version": "0.1.0-beta.6",
+  "version": "0.1.0-beta.7",
   "description": "QPress - The Ultimate Markdown Solution for Quasar Framework",
   "keywords": [
     "markdown",
@@ -22,6 +22,7 @@
   },
   "type": "module",
   "main": "dist/index.js",
+  "types": "dist/q-press-globals.d.ts",
   "publishConfig": {
     "access": "public"
   },

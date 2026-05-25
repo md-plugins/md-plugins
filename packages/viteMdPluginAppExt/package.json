@@ -1,6 +1,6 @@
 {
   "name": "@md-plugins/quasar-app-extension-vite-md-plugin",
-  "version": "0.1.0-beta.6",
+  "version": "0.1.0-beta.7",
   "description": "A Quasar app-ext for @md-plugins/viteMdPlugin",
   "keywords": [
     "app extension",

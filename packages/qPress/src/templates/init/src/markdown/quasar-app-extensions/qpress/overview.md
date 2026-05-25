@@ -33,14 +33,12 @@ quasar ext add @md-plugins/q-press
 
 - **New Install:**
   - `src/.q-press`
-  - `src/q-press.globals.d.ts`
   - `src/components`
   - `src/markdown`
   - `src/examples`
   - `src/siteConfig`
 - **Update Install:**
   - `src/.q-press`
-  - `src/q-press.globals.d.ts`
 
 ### Additional Dependencies
 
@@ -311,7 +309,7 @@ If you don't have a `.prettierignore` file, create one in the root of your proje
 
 ## Updating
 
-When you update, only the `src/.q-press` folder will be updated as well as the file `src/q-press.globals.d.ts`. If you want to re-install everything, just remove the `src/siteConfig` folder.
+When you update, only the `src/.q-press` folder will be updated. If you want to re-install everything, just remove the `src/siteConfig` folder.
 
 To make it easier to update, you can use the following command:
 
