@@ -3,3 +3,5 @@ packages:
 allowBuilds:
   '@parcel/watcher': true
   esbuild: true
+minimumReleaseAgeExclude:
+  - '@quasar/app-vite@3.0.0-beta.26'

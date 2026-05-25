@@ -72,9 +72,9 @@ This monorepo provides:
 
 ## Current Release
 
-The active release line is `0.1.0-beta.3`, published on npm with the `beta` dist-tag. The npm `latest` dist-tag still points at the previous `0.1.0-alpha.29` packages, so install from `beta` when testing the Quasar CLI Vite 3 compatible release.
+The active release line is `0.1.0-beta.6`, published on npm with the `beta` dist-tag. The npm `latest` dist-tag still points at the previous `0.1.0-alpha.29` packages, so install from `beta` when testing the Quasar CLI Vite 3 compatible release.
 
-The `0.1.0` beta line targets Quasar Vite projects using `@quasar/app-vite` `>=3.0.0-beta.18`, Node.js `>=22.13`, and `pnpm@11.1.0`.
+The `0.1.0` beta line targets Quasar Vite projects using `@quasar/app-vite` `>=3.0.0-beta.26`, Node.js `>=22.13`, and `pnpm@11.3.0`.
 
 ```bash
 pnpm add @md-plugins/vite-md-plugin@beta
@@ -111,7 +111,7 @@ cd md-plugins
 pnpm install
 ```
 
-This repository is currently developed with Node.js `>=22.13` and `pnpm@11.1.0`.
+This repository is currently developed with Node.js `>=22.13` and `pnpm@11.3.0`.
 
 ## Development
 

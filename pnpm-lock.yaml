@@ -64,8 +64,8 @@ importers:
         specifier: workspace:*
         version: link:../viteMdPlugin
       '@quasar/app-vite':
-        specifier: 3.0.0-beta.20
-        version: 3.0.0-beta.20(@types/node@25.9.1)(jiti@2.6.1)(pinia@3.0.4(typescript@5.9.3)(vue@3.5.34(typescript@5.9.3)))(quasar@2.19.3)(rollup@4.60.0)(sass@1.99.0)(terser@5.37.0)(typescript@5.9.3)(vue-router@5.0.7(@vue/compiler-sfc@3.5.34)(pinia@3.0.4(typescript@5.9.3)(vue@3.5.34(typescript@5.9.3)))(vue@3.5.34(typescript@5.9.3)))(vue@3.5.34(typescript@5.9.3))(yaml@2.8.3)
+        specifier: 3.0.0-beta.26
+        version: 3.0.0-beta.26(@types/node@25.9.1)(jiti@2.6.1)(pinia@3.0.4(typescript@5.9.3)(vue@3.5.34(typescript@5.9.3)))(quasar@2.19.3)(rollup@4.60.0)(sass@1.99.0)(terser@5.37.0)(typescript@5.9.3)(vue-router@5.0.7(@vue/compiler-sfc@3.5.34)(pinia@3.0.4(typescript@5.9.3)(vue@3.5.34(typescript@5.9.3)))(vue@3.5.34(typescript@5.9.3)))(vue@3.5.34(typescript@5.9.3))(yaml@2.8.3)
       '@types/markdown-it-container':
         specifier: ^4.0.0
         version: 4.0.0
@@ -293,8 +293,8 @@ importers:
         version: 14.1.1
     devDependencies:
       '@quasar/app-vite':
-        specifier: 3.0.0-beta.20
-        version: 3.0.0-beta.20(@types/node@25.9.1)(jiti@2.6.1)(pinia@3.0.4(typescript@5.9.3)(vue@3.5.34(typescript@5.9.3)))(quasar@2.19.3)(rollup@4.60.0)(sass@1.99.0)(terser@5.37.0)(typescript@5.9.3)(vue-router@5.0.7(@vue/compiler-sfc@3.5.34)(pinia@3.0.4(typescript@5.9.3)(vue@3.5.34(typescript@5.9.3)))(vue@3.5.34(typescript@5.9.3)))(vue@3.5.34(typescript@5.9.3))(yaml@2.8.3)
+        specifier: 3.0.0-beta.26
+        version: 3.0.0-beta.26(@types/node@25.9.1)(jiti@2.6.1)(pinia@3.0.4(typescript@5.9.3)(vue@3.5.34(typescript@5.9.3)))(quasar@2.19.3)(rollup@4.60.0)(sass@1.99.0)(terser@5.37.0)(typescript@5.9.3)(vue-router@5.0.7(@vue/compiler-sfc@3.5.34)(pinia@3.0.4(typescript@5.9.3)(vue@3.5.34(typescript@5.9.3)))(vue@3.5.34(typescript@5.9.3)))(vue@3.5.34(typescript@5.9.3))(yaml@2.8.3)
       vite:
         specifier: ^8.0.14
         version: 8.0.14(@types/node@25.9.1)(jiti@2.6.1)(sass-embedded@1.99.0)(sass@1.99.0)(terser@5.37.0)(yaml@2.8.3)
@@ -373,8 +373,8 @@ importers:
         specifier: workspace:*
         version: link:../viteMdPlugin
       '@quasar/app-vite':
-        specifier: 3.0.0-beta.20
-        version: 3.0.0-beta.20(@types/node@25.9.1)(jiti@2.6.1)(pinia@3.0.4(typescript@5.9.3)(vue@3.5.34(typescript@5.9.3)))(quasar@2.19.3)(rollup@4.60.0)(sass@1.99.0)(terser@5.37.0)(typescript@5.9.3)(vue-router@5.0.7(@vue/compiler-sfc@3.5.34)(pinia@3.0.4(typescript@5.9.3)(vue@3.5.34(typescript@5.9.3)))(vue@3.5.34(typescript@5.9.3)))(vue@3.5.34(typescript@5.9.3))(yaml@2.8.3)
+        specifier: 3.0.0-beta.26
+        version: 3.0.0-beta.26(@types/node@25.9.1)(jiti@2.6.1)(pinia@3.0.4(typescript@5.9.3)(vue@3.5.34(typescript@5.9.3)))(quasar@2.19.3)(rollup@4.60.0)(sass@1.99.0)(terser@5.37.0)(typescript@5.9.3)(vue-router@5.0.7(@vue/compiler-sfc@3.5.34)(pinia@3.0.4(typescript@5.9.3)(vue@3.5.34(typescript@5.9.3)))(vue@3.5.34(typescript@5.9.3)))(vue@3.5.34(typescript@5.9.3))(yaml@2.8.3)
 
 packages:
 
@@ -1063,8 +1063,8 @@ packages:
     resolution: {integrity: sha512-C2Xj8FZ0uHWeCXXqX5B4/gVFQmtSkiuOolzAgutjTfseNOHT3pUjljDZsTSxXFGgio54bCzVFqmEOUrIVk8RDA==}
     engines: {node: '>=20.0.0'}
 
-  '@quasar/app-vite@3.0.0-beta.20':
-    resolution: {integrity: sha512-nQXVIQO18K0vFteAN/Dja/NV9s7nTi3NqRAk890D9uCaKbGtIZwoJh/kzFJ/2EaryjLyvqxVF4VtGDG5+g/Tlw==}
+  '@quasar/app-vite@3.0.0-beta.26':
+    resolution: {integrity: sha512-dzvqdeqMB3UJhNfI+m4km906UUQoCPv1hY24OAtAZQqvlx856Qvviq8vvEv/WaaT250WVDx6R7G5RMabdSZOng==}
     engines: {node: ^30 || ^28 || ^26 || ^24 || ^22.22.0}
     hasBin: true
     peerDependencies:
@@ -3880,7 +3880,7 @@ snapshots:
       tslib: 2.8.1
       tsyringe: 4.10.0
 
-  '@quasar/app-vite@3.0.0-beta.20(@types/node@25.9.1)(jiti@2.6.1)(pinia@3.0.4(typescript@5.9.3)(vue@3.5.34(typescript@5.9.3)))(quasar@2.19.3)(rollup@4.60.0)(sass@1.99.0)(terser@5.37.0)(typescript@5.9.3)(vue-router@5.0.7(@vue/compiler-sfc@3.5.34)(pinia@3.0.4(typescript@5.9.3)(vue@3.5.34(typescript@5.9.3)))(vue@3.5.34(typescript@5.9.3)))(vue@3.5.34(typescript@5.9.3))(yaml@2.8.3)':
+  '@quasar/app-vite@3.0.0-beta.26(@types/node@25.9.1)(jiti@2.6.1)(pinia@3.0.4(typescript@5.9.3)(vue@3.5.34(typescript@5.9.3)))(quasar@2.19.3)(rollup@4.60.0)(sass@1.99.0)(terser@5.37.0)(typescript@5.9.3)(vue-router@5.0.7(@vue/compiler-sfc@3.5.34)(pinia@3.0.4(typescript@5.9.3)(vue@3.5.34(typescript@5.9.3)))(vue@3.5.34(typescript@5.9.3)))(vue@3.5.34(typescript@5.9.3))(yaml@2.8.3)':
     dependencies:
       '@clack/prompts': 1.4.0
       '@quasar/render-ssr-error': 2.2.2
