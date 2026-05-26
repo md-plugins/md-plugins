@@ -80,6 +80,13 @@ function stripImports(content: string) {
     .trim()
 }
 
+function stripCompilerMacros(content: string) {
+  return content
+    .replace(/^\s*defineOptions\(\s*\{[\s\S]*?\}\s*\)\s*;?\s*$/gm, '')
+    .replace(/^\s*defineExpose\(\s*\{[\s\S]*?\}\s*\)\s*;?\s*$/gm, '')
+    .trim()
+}
+
 function getScriptBlock(script: string, setup: boolean) {
   const re = setup
     ? /<script\s+setup([^>]*)>([\s\S]*?)<\/script>/
@@ -119,7 +126,7 @@ function getAppSetup() {
 function createSetupScript(script: string) {
   const { content } = getScriptBlock(script, true)
   const globalImports = getGlobalImportLines(content)
-  const setupContent = stripImports(content)
+  const setupContent = stripCompilerMacros(stripImports(content))
   const returnNames = getSetupReturnNames(setupContent)
   const setupBody = [
     setupContent.length > 0 ? indent(setupContent, 4) : '',
