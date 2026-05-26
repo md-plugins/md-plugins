@@ -18,11 +18,13 @@ The Vite Examples Plugin is a powerful tool that enhances the standard Vite func
 
 ## Installation
 
-You can install the Vite Examples plugin using npm, yarn, or pnpm. Choose your preferred method below:
+You can install the Vite Examples plugin using npm, yarn, pnpm, or bun. Choose your preferred method below:
 
 ```tabs
 <<| bash pnpm |>>
 pnpm add @md-plugins/vite-examples-plugin
+<<| bash bun |>>
+bun add @md-plugins/vite-examples-plugin
 <<| bash yarn |>>
 yarn add @md-plugins/vite-examples-plugin
 <<| bash npm |>>

@@ -56,11 +56,13 @@ The official NPM name is `@md-plugins/md-plugin-headers`.
 
 ## Installation
 
-You can install the Headers plugin using npm, yarn, or pnpm. Choose your preferred method below:
+You can install the Headers plugin using npm, yarn, pnpm, or bun. Choose your preferred method below:
 
 ```tabs
 <<| bash pnpm |>>
 pnpm add @md-plugins/md-plugin-headers
+<<| bash bun |>>
+bun add @md-plugins/md-plugin-headers
 <<| bash yarn |>>
 yarn add @md-plugins/md-plugin-headers
 <<| bash npm |>>

@@ -15,6 +15,8 @@ Install the plugin via your preferred package manager:
 ```bash
 # with pnpm:
 pnpm add @md-plugins/md-plugin-image
+# with bun:
+bun add @md-plugins/md-plugin-image
 # with Yarn:
 yarn add @md-plugins/md-plugin-image
 # with npm:

@@ -482,6 +482,8 @@ Look for the `+` and `-` on individual lines at the far-left.
 ```tabs
 <<| bash pnpm |>>
 pnpm add @md-plugins/md-plugin-codeblocks
+<<| bash bun |>>
+bun add @md-plugins/md-plugin-codeblocks
 <<| bash yarn |>>
 yarn add @md-plugins/md-plugin-codeblocks
 <<| bash npm |>>
@@ -492,6 +494,8 @@ npm install @md-plugins/md-plugin-codeblocks
 ```tabs
 <<| bash pnpm |>>
 pnpm add @md-plugins/md-plugin-codeblocks
+<<| bash bun |>>
+bun add @md-plugins/md-plugin-codeblocks
 <<| bash yarn |>>
 yarn add @md-plugins/md-plugin-codeblocks
 <<| bash npm |>>
@@ -597,11 +601,13 @@ The official NPM name is `@md-plugins/md-plugin-codeblocks`.
 
 ## Installation
 
-You can install the Codeblocks plugin using npm, yarn, or pnpm. Choose your preferred method below:
+You can install the Codeblocks plugin using npm, yarn, pnpm, or bun. Choose your preferred method below:
 
 ```tabs
 <<| bash pnpm |>>
 pnpm add @md-plugins/md-plugin-codeblocks
+<<| bash bun |>>
+bun add @md-plugins/md-plugin-codeblocks
 <<| bash yarn |>>
 yarn add @md-plugins/md-plugin-codeblocks
 <<| bash npm |>>

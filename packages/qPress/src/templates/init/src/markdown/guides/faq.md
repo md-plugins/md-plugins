@@ -11,7 +11,7 @@ Markdown Plugins are tools that extend the functionality of Markdown, allowing y
 
 ### How do I install Markdown Plugins?
 
-You can install Markdown Plugins using npm, yarn, or pnpm. Here is an example using npm:
+You can install Markdown Plugins using npm, yarn, pnpm, or bun. Here is an example using npm:
 
 ```bash
 npm install @md-plugins/vite-md-plugin

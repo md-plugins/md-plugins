@@ -79,6 +79,9 @@ The `0.1.0` beta line targets Quasar Vite projects using `@quasar/app-vite` `>=3
 ```bash
 pnpm add @md-plugins/vite-md-plugin@beta
 pnpm add @md-plugins/quasar-app-extension-q-press@beta
+
+bun add @md-plugins/vite-md-plugin@beta
+bun add @md-plugins/quasar-app-extension-q-press@beta
 ```
 
 ## Plugins

@@ -76,6 +76,10 @@ export interface CodepenConfig {
   jsSetup?: string
   jsPreProcessor?: string
   head?: string
+  globalPackages?: {
+    packageName: string
+    globalName: string
+  }[]
 }
 
 export interface SiteConfig {

@@ -47,6 +47,8 @@ quasar ext add @md-plugins/q-press
 ```tabs
 <<| bash pnpm |>>
 pnpm i -D markdown-it @types/markdown-it
+<<| bash bun |>>
+bun add -d markdown-it @types/markdown-it
 <<| bash yarn |>>
 yarn add -D markdown-it @types/markdown-it
 <<| bash npm |>>
@@ -58,6 +60,8 @@ npm i -D markdown-it @types/markdown-it
 ```tabs
 <<| bash pnpm |>>
 pnpm add prismjs
+<<| bash bun |>>
+bun add prismjs
 <<| bash yarn |>>
 yarn add prismjs
 <<| bash npm |>>

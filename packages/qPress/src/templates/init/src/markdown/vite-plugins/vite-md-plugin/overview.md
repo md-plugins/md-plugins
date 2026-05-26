@@ -39,11 +39,13 @@ The `viteMdPlugin` is built on top of the following plugins:
 
 ## Installation
 
-You can install the Vite MD plugin using npm, yarn, or pnpm. Choose your preferred method below:
+You can install the Vite MD plugin using npm, yarn, pnpm, or bun. Choose your preferred method below:
 
 ```tabs
 <<| bash pnpm |>>
 pnpm add @md-plugins/vite-md-plugin
+<<| bash bun |>>
+bun add @md-plugins/vite-md-plugin
 <<| bash yarn |>>
 yarn add @md-plugins/vite-md-plugin
 <<| bash npm |>>

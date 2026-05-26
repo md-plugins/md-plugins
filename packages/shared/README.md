@@ -16,6 +16,8 @@ Install the plugin via your preferred package manager:
 ```bash
 # with pnpm:
 pnpm add @md-plugins/shared
+# with bun:
+bun add @md-plugins/shared
 # with Yarn:
 yarn add @md-plugins/shared
 # with npm:

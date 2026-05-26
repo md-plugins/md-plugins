@@ -4,7 +4,7 @@ The Ultimate Markdown Solution for the Quasar Framework.
 
 See the [documentation](https://md-plugins.netlify.app/quasar-app-extensions/qpress/overview) for more information.
 
-> Current beta release: `0.1.0-beta.10`.
+> Current beta release: `0.1.0-beta.11`.
 >
 > Q-Press currently targets Quasar Vite projects using `@quasar/app-vite` `>=3.0.0-beta.29`. TypeScript processing is required.
 
@@ -38,12 +38,14 @@ See the [documentation](https://md-plugins.netlify.app/quasar-app-extensions/qpr
 - `npm i -D markdown-it @types/markdown-it`
 - `yarn add -D markdown-it @types/markdown-it`
 - `pnpm i -D markdown-it @types/markdown-it`
+- `bun add -d markdown-it @types/markdown-it`
 
 3. Add `prismjs` to your project dependencies
 
 - `npm i prismjs`
 - `yarn add prismjs`
 - `pnpm add prismjs`
+- `bun add prismjs`
 
 ## Modifications
 

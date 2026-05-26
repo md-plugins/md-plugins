@@ -14,6 +14,8 @@ Install the plugin via your preferred package manager:
 ```bash
 # with pnpm:
 pnpm add @md-plugins/md-plugin-blockquote
+# with bun:
+bun add @md-plugins/md-plugin-blockquote
 # with Yarn:
 yarn add @md-plugins/md-plugin-blockquote
 # with npm:

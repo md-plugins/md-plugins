@@ -16,6 +16,8 @@ Install the plugin via your preferred package manager:
 ```bash
 # with pnpm
 pnpm add @md-plugins/vite-examples-plugin
+# with bun
+bun add @md-plugins/vite-examples-plugin
 # with yarn
 yarn add @md-plugins/vite-examples-plugin
 # with npm

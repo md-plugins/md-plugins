@@ -16,6 +16,8 @@ Install the plugin via your preferred package manager:
 ```bash
 # with pnpm:
 pnpm add @md-plugins/md-plugin-containers
+# with bun:
+bun add @md-plugins/md-plugin-containers
 # with Yarn:
 yarn add @md-plugins/md-plugin-containers
 # with npm:

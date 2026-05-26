@@ -36,6 +36,8 @@ Install the plugin via your preferred package manager:
 ```bash
 # with pnpm:
 pnpm add @md-plugins/vite-md-plugin
+# with bun:
+bun add @md-plugins/vite-md-plugin
 # with Yarn:
 yarn add @md-plugins/vite-md-plugin
 # with npm:

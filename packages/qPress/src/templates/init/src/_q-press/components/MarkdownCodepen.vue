@@ -26,6 +26,11 @@ type CodepenParts = {
   [key: string]: string | undefined
 }
 
+type CodepenGlobalPackage = {
+  packageName: string
+  globalName: string
+}
+
 const defaultCssResources = [
   'https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons',
   `https://cdn.jsdelivr.net/npm/quasar@${Quasar.version}/dist/quasar.min.css`,
@@ -46,12 +51,22 @@ function indent(code: string, spaces = 2) {
 
 function getImportNames(content: string, packageName: string) {
   const names = new Set<string>()
-  const importRe = new RegExp(`import\\s+{([^}'"\\n]+)}\\s+from\\s+['"]${packageName}['"];?`, 'g')
+  const escapedPackageName = packageName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  const importRe = new RegExp(
+    `import\\s+(?!type\\b){([^}]*)}\\s+from\\s+['"]${escapedPackageName}['"];?`,
+    'g',
+  )
   let match: RegExpExecArray | null
 
   while ((match = importRe.exec(content)) !== null) {
-    for (const part of match[1].split(',')) {
-      const name = part.trim().replace(/\s+as\s+/g, ': ')
+    for (const part of (match[1] ?? '').split(',')) {
+      const rawName = part.trim()
+
+      if (rawName.length === 0 || rawName.startsWith('type ')) {
+        continue
+      }
+
+      const name = rawName.replace(/\s+as\s+/g, ': ')
 
       if (name.length > 0) {
         names.add(name)
@@ -62,6 +77,16 @@ function getImportNames(content: string, packageName: string) {
   return [...names]
 }
 
+function getGlobalPackageImportLines(content: string) {
+  return (siteConfig.codepen?.globalPackages ?? [])
+    .map(({ packageName, globalName }: CodepenGlobalPackage) => {
+      const imports = getImportNames(content, packageName)
+
+      return imports.length > 0 ? `const { ${imports.join(', ')} } = ${globalName}` : ''
+    })
+    .filter((line) => line.length > 0)
+}
+
 function getGlobalImportLines(content: string) {
   const vueImports = getImportNames(content, 'vue')
   const quasarImports = getImportNames(content, 'quasar')
@@ -69,6 +94,7 @@ function getGlobalImportLines(content: string) {
   return [
     vueImports.length > 0 ? `const { ${vueImports.join(', ')} } = Vue` : '',
     quasarImports.length > 0 ? `const { ${quasarImports.join(', ')} } = Quasar` : '',
+    ...getGlobalPackageImportLines(content),
   ].filter((line) => line.length > 0)
 }
 
@@ -101,19 +127,51 @@ function getScriptBlock(script: string, setup: boolean) {
 
 function getSetupReturnNames(content: string) {
   const names = new Set<string>()
-  const declarationRe = /(?:^|\n)\s*(?:const|let|var)\s+([A-Za-z_$][\w$]*)/g
+  const topLevelContent = getTopLevelContent(content)
+  const declarationRe =
+    /(?:^|\n)\s*(?:const|let|var)\s+([\s\S]*?)(?=\n\s*(?:const|let|var|function|interface|type|class)\s+|\s*$)/g
+  const variableNameRe = /(?:^|\n)\s*([A-Za-z_$][\w$]*)\s*(?:[:=,]|$)/g
   const functionRe = /(?:^|\n)\s*function\s+([A-Za-z_$][\w$]*)/g
   let match: RegExpExecArray | null
 
-  while ((match = declarationRe.exec(content)) !== null) {
-    names.add(match[1])
+  while ((match = declarationRe.exec(topLevelContent)) !== null) {
+    let variableMatch: RegExpExecArray | null
+
+    while ((variableMatch = variableNameRe.exec(match[1] ?? '')) !== null) {
+      if (variableMatch[1] !== undefined) {
+        names.add(variableMatch[1])
+      }
+    }
   }
 
-  while ((match = functionRe.exec(content)) !== null) {
-    names.add(match[1])
+  while ((match = functionRe.exec(topLevelContent)) !== null) {
+    if (match[1] !== undefined) {
+      names.add(match[1])
+    }
   }
 
   return [...names]
+}
+
+function getTopLevelContent(content: string) {
+  let depth = 0
+  let output = ''
+
+  for (const char of content) {
+    if (depth === 0 || char === '\n') {
+      output += char
+    } else {
+      output += ' '
+    }
+
+    if (char === '{') {
+      depth++
+    } else if (char === '}') {
+      depth = Math.max(0, depth - 1)
+    }
+  }
+
+  return output
 }
 
 function getAppSetup() {
