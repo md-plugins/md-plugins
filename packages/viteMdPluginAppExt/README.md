@@ -19,7 +19,7 @@ This App-Extension (app-ext) is for convenience only. For more granular control,
 
 > Current beta release: `0.1.0-beta.8`.
 >
-> This app extension currently targets Quasar Vite projects using `@quasar/app-vite` `>=3.0.0-beta.26`.
+> This app extension currently targets Quasar Vite projects using `@quasar/app-vite` `>=3.0.0-beta.28`.
 
 ## Installation
 

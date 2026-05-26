@@ -1,6 +1,6 @@
 {
   "name": "@md-plugins/mono-repo",
-  "version": "0.1.0-beta.8",
+  "version": "0.1.0-beta.9",
   "private": true,
   "description": "",
   "keywords": [
@@ -31,8 +31,8 @@
   "devDependencies": {
     "@types/node": "^25.9.1",
     "@vitest/coverage-istanbul": "^4.1.7",
-    "oxfmt": "^0.51.0",
-    "oxlint": "^1.64.0",
+    "oxfmt": "^0.52.0",
+    "oxlint": "^1.67.0",
     "typescript": "~5.9.3",
     "unbuild": "^3.6.1",
     "vitest": "^4.1.7"

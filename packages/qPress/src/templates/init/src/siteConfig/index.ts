@@ -70,6 +70,14 @@ export interface PrivacyConfig {
   link: string
 }
 
+export interface CodepenConfig {
+  cssExternal?: string[]
+  jsExternal?: string[]
+  jsSetup?: string
+  jsPreProcessor?: string
+  head?: string
+}
+
 export interface SiteConfig {
   lang: string
   title: string
@@ -78,6 +86,8 @@ export interface SiteConfig {
   version: string
   copyright: CopyrightConfig
   githubEditRootSrc: string // src folder for github edit links (appended with 'markdown' and 'examples')
+  githubSourceRootSrc?: string // src folder for GitHub source links (appended with 'markdown' and 'examples')
+  codepen?: CodepenConfig
   license: LicenseConfig
   privacy: PrivacyConfig
   logoConfig: LogoConfig
@@ -391,6 +401,7 @@ const config = {
     line2: '',
   } as CopyrightConfig,
   githubEditRootSrc: 'https://github.com/md-plugins/md-plugins/edit/dev/packages/docs/src/',
+  githubSourceRootSrc: 'https://github.com/md-plugins/md-plugins/tree/dev/packages/docs/src/',
   license: {
     label: 'MIT License',
     link: 'https://github.com/md-plugins/md-plugins/blob/dev/LICENSE.md',
