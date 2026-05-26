@@ -230,7 +230,7 @@ function createOptionsScript(script: string) {
 const props = defineProps({ title: { type: String, required: true } })
 
 const active = ref(false)
-const formRef = ref(null)
+const formRef = ref<HTMLFormElement | null>(null)
 const def = reactive<{ parts: CodepenParts }>({ parts: {} })
 
 const cssResources = computed(() => {
@@ -302,7 +302,10 @@ const html = computed(() => {
 })
 
 const editors = computed(() => {
-  const flag = (html.value && 0b100) | (css.value && 0b010) | (js.value && 0b001)
+  const flag =
+    (html.value.length > 0 ? 0b100 : 0) |
+    (css.value.length > 0 ? 0b010 : 0) |
+    (js.value.length > 0 ? 0b001 : 0)
   return flag.toString(2)
 })
 
@@ -356,14 +359,14 @@ function open(whichParts: CodepenParts) {
   def.parts = whichParts
 
   if (active.value) {
-    formRef.value.submit()
+    formRef.value?.submit()
     return
   }
 
   active.value = true
 
   nextTick(() => {
-    formRef.value.submit()
+    formRef.value?.submit()
   })
 }
 
