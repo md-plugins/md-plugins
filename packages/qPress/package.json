@@ -49,12 +49,12 @@
     "markdown-it": "^14.2.0"
   },
   "devDependencies": {
-    "@quasar/app-vite": "3.0.0-beta.28",
+    "@quasar/app-vite": "3.0.0-beta.29",
     "@types/markdown-it": "^14.1.2",
     "vite": "^8.0.14"
   },
   "peerDependencies": {
-    "@quasar/app-vite": ">=3.0.0-beta.28",
+    "@quasar/app-vite": ">=3.0.0-beta.29",
     "markdown-it": "^14.2.0"
   },
   "engines": {
