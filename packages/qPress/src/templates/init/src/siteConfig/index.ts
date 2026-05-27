@@ -1,4 +1,4 @@
-import { fabGithub, fabXTwitter } from '@quasar/extras/fontawesome-v6'
+import { fabGithub, fabXTwitter } from '@quasar/extras/fontawesome-v7'
 import { slugify } from '@md-plugins/shared'
 import { version, productName } from '../../package.json'
 
@@ -75,6 +75,7 @@ export interface CodepenConfig {
   jsExternal?: string[]
   jsSetup?: string
   jsPreProcessor?: string
+  titleSuffix?: string
   head?: string
   globalPackages?: {
     packageName: string

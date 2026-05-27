@@ -49,8 +49,8 @@ function indent(code: string, spaces = 2) {
     .join('\n')
 }
 
-function getImportNames(content: string, packageName: string) {
-  const names = new Set<string>()
+function getImportParts(content: string, packageName: string) {
+  const parts: { importName: string; bindingName: string }[] = []
   const escapedPackageName = packageName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
   const importRe = new RegExp(
     `import\\s+(?!type\\b){([^}]*)}\\s+from\\s+['"]${escapedPackageName}['"];?`,
@@ -66,15 +66,32 @@ function getImportNames(content: string, packageName: string) {
         continue
       }
 
-      const name = rawName.replace(/\s+as\s+/g, ': ')
+      const [importName, bindingName = importName] = rawName.split(/\s+as\s+/)
 
-      if (name.length > 0) {
-        names.add(name)
+      if (importName !== undefined && importName.length > 0) {
+        parts.push({
+          importName,
+          bindingName,
+        })
       }
     }
   }
 
-  return [...names]
+  return parts
+}
+
+function getImportNames(content: string, packageName: string) {
+  return [
+    ...new Set(
+      getImportParts(content, packageName).map(({ importName, bindingName }) =>
+        importName === bindingName ? importName : `${importName}: ${bindingName}`,
+      ),
+    ),
+  ]
+}
+
+function getImportBindingNames(content: string, packageName: string) {
+  return [...new Set(getImportParts(content, packageName).map(({ bindingName }) => bindingName))]
 }
 
 function getGlobalPackageImportLines(content: string) {
@@ -96,6 +113,16 @@ function getGlobalImportLines(content: string) {
     quasarImports.length > 0 ? `const { ${quasarImports.join(', ')} } = Quasar` : '',
     ...getGlobalPackageImportLines(content),
   ].filter((line) => line.length > 0)
+}
+
+function getGlobalImportBindingNames(content: string) {
+  return [
+    ...getImportBindingNames(content, 'vue'),
+    ...getImportBindingNames(content, 'quasar'),
+    ...(siteConfig.codepen?.globalPackages ?? []).flatMap(({ packageName }: CodepenGlobalPackage) =>
+      getImportBindingNames(content, packageName),
+    ),
+  ]
 }
 
 function stripImports(content: string) {
@@ -185,7 +212,9 @@ function createSetupScript(script: string) {
   const { content } = getScriptBlock(script, true)
   const globalImports = getGlobalImportLines(content)
   const setupContent = stripCompilerMacros(stripImports(content))
-  const returnNames = getSetupReturnNames(setupContent)
+  const returnNames = [
+    ...new Set([...getGlobalImportBindingNames(content), ...getSetupReturnNames(setupContent)]),
+  ]
   const setupBody = [
     setupContent.length > 0 ? indent(setupContent, 4) : '',
     returnNames.length > 0 ? `    return { ${returnNames.join(', ')} }` : '',
@@ -274,7 +303,10 @@ const html = computed(() => {
     .replace(/([\w]+=")([^"]*?)(")/g, function (match, p1, p2, p3) {
       return p1 + p2.replace(/>/g, '___TEMP_REPLACEMENT___') + p3
     })
-    .replace(/<(q-[\w-]+|div)([^>]*?)\s*?([\n\r][\t ]+)?\/>/gs, '<$1$2$3></$1>')
+    .replace(
+      /<([A-Z][\w-]*|[a-z][\w]*-[\w-]+|div)([^>]*?)\s*?([\n\r][\t ]+)?\/>/gs,
+      '<$1$2$3></$1>',
+    )
     .replace(
       /(<template[^>]*>)(\s*?(?:[\n\r][\t ]+)?)<(thead|tbody|tfoot)/gs,
       '$1$2<___PREVENT_TEMPLATE___$3',
@@ -310,10 +342,12 @@ const editors = computed(() => {
 })
 
 const computedTitle = computed(() => {
+  const titleSuffix = siteConfig.codepen?.titleSuffix ?? `Quasar v${Quasar.version}`
+
   return (
     (typeof document !== 'undefined' ? document.title.split(' | ')[0] + ': ' : '') +
     (props.title ? props.title + ' - ' : '') +
-    `Quasar v${Quasar.version}`
+    titleSuffix
   )
 })
 

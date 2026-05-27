@@ -31,7 +31,7 @@ export default defineConfig(async (ctx) => {
     extras: [
       // 'ionicons-v4',
       // 'mdi-v7',
-      // 'fontawesome-v6',
+      // 'fontawesome-v7',
       // 'eva-icons',
       // 'themify',
       // 'line-awesome',
@@ -141,7 +141,7 @@ export default defineConfig(async (ctx) => {
       autoImportVueExtensions: ['vue', 'md'],
       config: {},
 
-      iconSet: 'svg-mdi-v6',
+      iconSet: 'svg-mdi-v7',
       // iconSet: 'material-icons', // Quasar icon set
       // lang: 'en-US', // Quasar language pack
 
