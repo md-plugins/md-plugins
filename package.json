@@ -1,6 +1,6 @@
 {
   "name": "@md-plugins/mono-repo",
-  "version": "0.1.0-beta.12",
+  "version": "0.1.0-beta.13",
   "private": true,
   "description": "",
   "keywords": [
@@ -18,7 +18,7 @@
     "dev": "vitest",
     "check-types": "pnpm check-types:packages && pnpm --filter mdplugins_docs check-types",
     "check-types:packages": "tsc -p tsconfig.json --noEmit --skipLibCheck",
-    "deep": "ncu --deep",
+    "deep": "ncu --configFilePath . --packageFile '{package.json,packages/*/package.json}'",
     "clean": "pnpm -r --stream clean",
     "format": "oxfmt",
     "format:check": "oxfmt --check",
@@ -31,6 +31,7 @@
   "devDependencies": {
     "@types/node": "^25.9.1",
     "@vitest/coverage-istanbul": "^4.1.7",
+    "npm-check-updates": "^22.2.1",
     "oxfmt": "^0.52.0",
     "oxlint": "^1.67.0",
     "typescript": "~5.9.3",
@@ -41,6 +42,6 @@
     "node": ">=22.13",
     "pnpm": ">=11.3.0"
   },
-  "packageManager": "pnpm@11.3.0",
+  "packageManager": "pnpm@11.4.0",
   "access": "private"
 }
