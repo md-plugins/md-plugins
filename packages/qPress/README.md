@@ -232,6 +232,13 @@ quasar ext invoke @md-plugins/q-press
 
 In case this README falls out of date, please refer to the [documentation](https://md-plugins.netlify.app/quasar-app-extensions/qpress/overview) for the latest information.
 
+## Support
+
+If Q-Press is useful in your workflow and you want to support ongoing maintenance:
+
+GitHub Sponsors: https://github.com/sponsors/hawkeye64
+PayPal: https://paypal.me/hawkeye64
+
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE.md) file for details.

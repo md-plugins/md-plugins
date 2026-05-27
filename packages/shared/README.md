@@ -104,6 +104,13 @@ function slugify(str: string): string
 
 In case this README falls out of date, please refer to the [documentation](https://md-plugins.netlify.app/md-plugins/shared/overview) for the latest information.
 
+## Support
+
+If md-plugins shared utilities is useful in your workflow and you want to support ongoing maintenance:
+
+GitHub Sponsors: https://github.com/sponsors/hawkeye64
+PayPal: https://paypal.me/hawkeye64
+
 ## License
 
 This package is licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.
