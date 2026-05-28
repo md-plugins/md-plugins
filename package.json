@@ -24,6 +24,9 @@
     "format:check": "oxfmt --check",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
+    "verify": "pnpm verify:fast && pnpm verify:build",
+    "verify:fast": "pnpm format:check && pnpm lint && pnpm test",
+    "verify:build": "pnpm build && pnpm check-types",
     "ci:publish": "pnpm -r publish --access public --publish-branch dev",
     "ci:publish:beta": "pnpm -r publish --access public --publish-branch dev --tag beta",
     "test": "vitest run"

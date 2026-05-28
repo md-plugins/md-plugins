@@ -31,10 +31,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      # Build all packages except docs
-      - name: Build all packages
-        run: pnpm build
-
-      # Run Vitest tests
-      - name: Run Vitest tests
-        run: pnpm test
+      # Run checks in dependency-safe order
+      - name: Verify
+        run: pnpm verify
