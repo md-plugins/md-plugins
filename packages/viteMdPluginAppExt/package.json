@@ -1,6 +1,6 @@
 {
   "name": "@md-plugins/quasar-app-extension-vite-md-plugin",
-  "version": "0.1.0-beta.14",
+  "version": "0.1.0-beta.15",
   "description": "A Quasar app-ext for @md-plugins/viteMdPlugin",
   "keywords": [
     "app extension",
@@ -21,10 +21,10 @@
   },
   "devDependencies": {
     "@md-plugins/vite-md-plugin": "workspace:*",
-    "@quasar/app-vite": "3.0.0-beta.31"
+    "@quasar/app-vite": "3.0.0-beta.32"
   },
   "peerDependencies": {
-    "@quasar/app-vite": ">=3.0.0-beta.30"
+    "@quasar/app-vite": ">=3.0.0-beta.32"
   },
   "engines": {
     "node": ">=22.13",

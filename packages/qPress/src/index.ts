@@ -78,13 +78,8 @@ function extendTypeScriptConfig(typescriptConfig: QuasarTypescriptConfig): void 
 }
 
 export default defineIndexScript((api) => {
-  // verify this is a Vite project
-  if (!api.hasVite) {
-    throw new Error('This extension requires Vite')
-  }
-
   api.compatibleWith('quasar', '^2.0.0')
-  api.compatibleWith('@quasar/app-vite', '>=3.0.0-beta.29')
+  api.compatibleWith('@quasar/app-vite', '>=3.0.0-beta.32')
 
   // here we extend /quasar.config, so we can add some Vite/Vue stuff
   api.extendQuasarConf(async (config) => {

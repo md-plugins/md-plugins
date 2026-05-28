@@ -1,6 +1,6 @@
 {
   "name": "@md-plugins/quasar-app-extension-q-press",
-  "version": "0.1.0-beta.14",
+  "version": "0.1.0-beta.15",
   "description": "QPress - The Ultimate Markdown Solution for Quasar Framework",
   "keywords": [
     "markdown",
@@ -48,12 +48,12 @@
     "markdown-it": "^14.2.0"
   },
   "devDependencies": {
-    "@quasar/app-vite": "3.0.0-beta.31",
+    "@quasar/app-vite": "3.0.0-beta.32",
     "@types/markdown-it": "^14.1.2",
     "vite": "^8.0.14"
   },
   "peerDependencies": {
-    "@quasar/app-vite": ">=3.0.0-beta.30",
+    "@quasar/app-vite": ">=3.0.0-beta.32",
     "markdown-it": "^14.2.0"
   },
   "engines": {

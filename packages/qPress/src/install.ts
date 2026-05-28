@@ -8,13 +8,8 @@ import { defineInstallScript } from '@quasar/app-vite'
 import { existsSync } from 'node:fs'
 
 export default defineInstallScript(async (api) => {
-  // verify this is a Vite project
-  if (!api.hasVite) {
-    throw new Error('This extension requires Vite')
-  }
-
   api.compatibleWith('quasar', '^2.0.0')
-  api.compatibleWith('@quasar/app-vite', '>=3.0.0-beta.29')
+  api.compatibleWith('@quasar/app-vite', '>=3.0.0-beta.32')
 
   // project must have pinia installed
   if ((await api.getStorePackageName()) !== 'pinia') {
