@@ -28,10 +28,19 @@ For Q-Press projects, update the app extension package and then invoke it:
 
 ```bash
 pnpm up @md-plugins/quasar-app-extension-q-press@beta
-quasar ext invoke @md-plugins/q-press
+# or
+npm install @md-plugins/quasar-app-extension-q-press@beta
+# or
+yarn add @md-plugins/quasar-app-extension-q-press@beta
+# or
+bun add @md-plugins/quasar-app-extension-q-press@beta
 ```
 
-Use the equivalent `npm`, `yarn`, or `bun` command if your project does not use pnpm.
+Then invoke the app extension:
+
+```bash
+quasar ext invoke @md-plugins/q-press
+```
 
 When prompted, choose `Overwrite All` if you want the generated Q-Press files to match the beta templates.
 
@@ -39,6 +48,12 @@ For direct Vite plugin usage, update the packages you consume:
 
 ```bash
 pnpm up @md-plugins/vite-md-plugin@beta @md-plugins/vite-examples-plugin@beta
+# or
+npm install @md-plugins/vite-md-plugin@beta @md-plugins/vite-examples-plugin@beta
+# or
+yarn add @md-plugins/vite-md-plugin@beta @md-plugins/vite-examples-plugin@beta
+# or
+bun add @md-plugins/vite-md-plugin@beta @md-plugins/vite-examples-plugin@beta
 ```
 
 ## Remove App-Level Shared Imports
@@ -49,6 +64,12 @@ If your project has this dependency, remove it from the consuming app:
 
 ```bash
 pnpm remove @md-plugins/shared
+# or
+npm uninstall @md-plugins/shared
+# or
+yarn remove @md-plugins/shared
+# or
+bun remove @md-plugins/shared
 ```
 
 If you have customized generated files and cannot choose `Overwrite All`, update copied Q-Press files that import `slugify` from `@md-plugins/shared`.
