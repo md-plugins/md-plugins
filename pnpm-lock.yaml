@@ -60,9 +60,6 @@ importers:
       '@md-plugins/md-plugin-headers':
         specifier: workspace:*
         version: link:../md-plugin-headers
-      '@md-plugins/shared':
-        specifier: workspace:*
-        version: link:../shared
       '@md-plugins/vite-examples-plugin':
         specifier: workspace:*
         version: link:../viteExamplesPlugin
@@ -285,9 +282,6 @@ importers:
       '@md-plugins/md-plugin-title':
         specifier: workspace:*
         version: link:../md-plugin-title
-      '@md-plugins/shared':
-        specifier: workspace:*
-        version: link:../shared
       '@md-plugins/vite-md-plugin':
         specifier: workspace:*
         version: link:../viteMdPlugin

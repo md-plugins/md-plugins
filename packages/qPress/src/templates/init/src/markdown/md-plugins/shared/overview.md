@@ -1,20 +1,24 @@
 ---
-title: Shared Plugin Overview
-desc: Overview of the shared utilities and types for MD-Plugins plugins.
+title: Shared Package Overview
+desc: Overview of the shared utilities and types used by MD-Plugins packages.
 ---
 
-The `shared` plugin provides a set of utilities and types that are used across various MD-Plugins plugins. It serves as a common foundation, ensuring consistency and reducing duplication of code across the different plugins.
+The `@md-plugins/shared` package provides utilities and types used internally by the MD-Plugins packages. It serves as a common foundation, ensuring consistency and reducing duplication across the different plugins.
+
+::: tip
+QPress applications do not need to install or import `@md-plugins/shared` directly. Install it only when you are building a custom Markdown-It plugin or contributing to the MD-Plugins packages themselves.
+:::
 
 ## Key Features
 
 - **Common Utilities**: Provides utility functions that are commonly used across multiple plugins.
 - **Type Definitions**: Includes TypeScript type definitions to ensure type safety and consistency.
 - **Helper Functions**: Offers helper functions to simplify common tasks and operations.
-- **Reusable Components**: Contains reusable components that can be leveraged by other plugins.
+- **Reusable Helpers**: Contains shared helpers that can be leveraged by other MD-Plugins packages.
 
 ## Utilities
 
-The `shared` plugin includes a variety of utility functions that can be used to perform common tasks. Some of the key utilities include:
+The shared package includes a variety of utility functions that can be used to perform common tasks. Some of the key utilities include:
 
 - **String Manipulation**: Functions for manipulating and formatting strings.
 - **Array Operations**: Functions for performing common array operations.
@@ -23,7 +27,7 @@ The `shared` plugin includes a variety of utility functions that can be used to 
 
 ## Type Definitions
 
-The `shared` plugin provides TypeScript type definitions that are used across the MD-Plugins project. These type definitions help ensure type safety and consistency. Some of the key type definitions include:
+The shared package provides TypeScript type definitions that are used across the MD-Plugins project. These type definitions help ensure type safety and consistency. Some of the key type definitions include:
 
 - **MarkdownItEnv**: Defines the structure of the environment object used by MD-Plugins plugins.
 - **PluginOptions**: Defines the structure of the options object passed to plugins.
@@ -179,7 +183,7 @@ export {
 
 ## Helper Functions
 
-The `shared` plugin includes a variety of helper functions that simplify common tasks and operations. Some of the key helper functions include:
+The shared package includes a variety of helper functions that simplify common tasks and operations. Some of the key helper functions include:
 
 - **resolveTitleFromToken**: Extracts the title from a Markdown token.
 - **parseFrontmatter**: Parses frontmatter content from a Markdown file.
@@ -190,6 +194,6 @@ The `shared` plugin includes a variety of helper functions that simplify common 
 
 ## Conclusion
 
-The `shared` plugin is an essential part of the MD-Plugins project, providing common utilities, type definitions, helper functions, and reusable components. By leveraging the `shared` plugin, you can ensure consistency and reduce duplication of code across your plugins.
+The shared package is an essential internal part of the MD-Plugins project, providing common utilities, type definitions, and helper functions. If you are building custom plugins, you can use it to stay aligned with the same types and helpers used by the official MD-Plugins packages.
 
 Happy coding!

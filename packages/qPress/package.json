@@ -42,7 +42,6 @@
     "@md-plugins/md-plugin-link": "workspace:*",
     "@md-plugins/md-plugin-table": "workspace:*",
     "@md-plugins/md-plugin-title": "workspace:*",
-    "@md-plugins/shared": "workspace:*",
     "@md-plugins/vite-md-plugin": "workspace:*",
     "@types/markdown-it": "^14.1.2",
     "fs-extra": "^11.3.5",

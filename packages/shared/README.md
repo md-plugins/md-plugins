@@ -2,6 +2,8 @@
 
 The `@md-plugins/shared` package provides common utilities, types, and helpers used across various Markdown-It plugins in the `@md-plugins` ecosystem. It serves as a foundational package to ensure consistency and reduce code duplication across the plugins.
 
+QPress applications and regular `@md-plugins/vite-md-plugin` users do not need to install this package directly. Use it only when building a custom Markdown-It plugin or contributing to the MD-Plugins packages.
+
 ## Features
 
 - Shared TypeScript types for plugin environments.
@@ -11,7 +13,7 @@ The `@md-plugins/shared` package provides common utilities, types, and helpers u
 
 ## Installation
 
-Install the plugin via your preferred package manager:
+Install the package via your preferred package manager when you need it for plugin development:
 
 ```bash
 # with pnpm:

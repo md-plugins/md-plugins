@@ -35,7 +35,7 @@ The `viteMdPlugin` is built on top of the following plugins:
 | `@md-plugins/md-plugin-title`       | Extracts the first header in Markdown as the page title.                | [README](packages/md-plugin-title/README.md)       | [Docs](/md-plugins/title/overview)       |
 | `@md-plugins/md-plugin-frontmatter` | Extracts and processes frontmatter content from Markdown files.         | [README](packages/md-plugin-frontmatter/README.md) | [Docs](/md-plugins/frontmatter/overview) |
 | `@md-plugins/md-plugin-containers`  | Adds custom containers for callouts, warnings, and more.                | [README](packages/md-plugin-containers/README.md)  | [Docs](/md-plugins/containers/overview)  |
-| `@md-plugins/shared`                | Shared utilities and types for the plugins.                             | [README](packages/shared/README.md)                | [Docs](/md-plugins/shared/overview)      |
+| `@md-plugins/shared`                | Internal shared utilities and types used by the bundled plugins.        | [README](packages/shared/README.md)                | [Docs](/md-plugins/shared/overview)      |
 
 ## Installation
 
