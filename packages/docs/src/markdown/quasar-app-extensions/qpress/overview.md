@@ -125,12 +125,12 @@ export default defineConfig(async (ctx) => {
 
 ```ts [maxheight=400px]
 import type { RouteRecordRaw } from 'vue-router'
-import mdPageList from 'src/markdown/listing'
+import mdPageList from '@/markdown/listing'
 
 const routes = [
   {
     path: '/',
-    component: () => import('src/.q-press/layouts/MarkdownLayout.vue'),
+    component: () => import('@/.q-press/layouts/MarkdownLayout.vue'),
     children: [
       // Include the Landing Page route first
       ...Object.entries(mdPageList)
@@ -169,7 +169,7 @@ const routes = [
   // but you can also remove it
   {
     path: '/:catchAll(.*)*',
-    component: () => import('pages/ErrorNotFound.vue'),
+    component: () => import('@/pages/ErrorNotFound.vue'),
   },
 ] as RouteRecordRaw[]
 
@@ -186,7 +186,7 @@ Update your `App.vue`:
 </template>
 
 <script setup lang="ts">
-  import { useDark } from 'src/.q-press/composables/dark'
+  import { useDark } from '@/.q-press/composables/dark'
   const { initDark } = useDark()
   initDark()
 </script>
@@ -206,7 +206,7 @@ Update your `App.vue`:
 <script setup lang="ts">
 // don't forget to add the Quasar 'Meta' plugin into your quasar.config file!
 import { useMeta } from 'quasar'
-import getMeta from 'src/.q-press/assets/get-meta'
+import getMeta from '@/.q-press/assets/get-meta'
 
 // You can use the `getMeta` function to get the meta tags for your page and provide default values
 useMeta({

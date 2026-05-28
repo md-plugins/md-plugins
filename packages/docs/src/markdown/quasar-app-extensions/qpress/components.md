@@ -8,33 +8,33 @@ Q-Press has a lot of components that can be used in your app. Under the hood, th
 ## Components
 
 <script import>
-import DarkModeToggleApi from 'src/.q-press/api/components/DarkModeToggle.json'
-import MarkdownApiApi from 'src/.q-press/api/components/MarkdownApi.json'
-import MarkdownCardLinkApi from 'src/.q-press/api/components/MarkdownCardLink.json'
-import MarkdownCardTitleApi from 'src/.q-press/api/components/MarkdownCardTitle.json'
-import MarkdownCodeApi from 'src/.q-press/api/components/MarkdownCode.json'
-import MarkdownCodepenApi from 'src/.q-press/api/components/MarkdownCodepen.json'
+import DarkModeToggleApi from '@/.q-press/api/components/DarkModeToggle.json'
+import MarkdownApiApi from '@/.q-press/api/components/MarkdownApi.json'
+import MarkdownCardLinkApi from '@/.q-press/api/components/MarkdownCardLink.json'
+import MarkdownCardTitleApi from '@/.q-press/api/components/MarkdownCardTitle.json'
+import MarkdownCodeApi from '@/.q-press/api/components/MarkdownCode.json'
+import MarkdownCodepenApi from '@/.q-press/api/components/MarkdownCodepen.json'
 
-import MarkdownCodePrismApi from 'src/.q-press/api/components/MarkdownCodePrism.json'
-import MarkdownCopyButtonApi from 'src/.q-press/api/components/MarkdownCopyButton.json'
-import MarkdownDrawerSidebarApi from 'src/.q-press/api/components/MarkdownDrawerSidebar.json'
-import MarkdownDrawerTocApi from 'src/.q-press/api/components/MarkdownDrawerToc.json'
+import MarkdownCodePrismApi from '@/.q-press/api/components/MarkdownCodePrism.json'
+import MarkdownCopyButtonApi from '@/.q-press/api/components/MarkdownCopyButton.json'
+import MarkdownDrawerSidebarApi from '@/.q-press/api/components/MarkdownDrawerSidebar.json'
+import MarkdownDrawerTocApi from '@/.q-press/api/components/MarkdownDrawerToc.json'
 
-import MarkdownExampleApi from 'src/.q-press/api/components/MarkdownExample.json'
-import MarkdownHeaderApi from 'src/.q-press/api/components/MarkdownHeader.json'
-import MarkdownHeaderIconLinksApi from 'src/.q-press/api/components/MarkdownHeaderIconLinks.json'
-import MarkdownHeaderMenuApi from 'src/.q-press/api/components/MarkdownHeaderMenu.json'
-import MarkdownHeaderTextLinksApi from 'src/.q-press/api/components/MarkdownHeaderTextLinks.json'
+import MarkdownExampleApi from '@/.q-press/api/components/MarkdownExample.json'
+import MarkdownHeaderApi from '@/.q-press/api/components/MarkdownHeader.json'
+import MarkdownHeaderIconLinksApi from '@/.q-press/api/components/MarkdownHeaderIconLinks.json'
+import MarkdownHeaderMenuApi from '@/.q-press/api/components/MarkdownHeaderMenu.json'
+import MarkdownHeaderTextLinksApi from '@/.q-press/api/components/MarkdownHeaderTextLinks.json'
 
-import MarkdownLayoutApi from 'src/.q-press/api/components/MarkdownLayout.json'
-import MarkdownLinkApi from 'src/.q-press/api/components/MarkdownLink.json'
-import MarkdownPageApi from 'src/.q-press/api/components/MarkdownPage.json'
-import MarkdownPageFooterApi from 'src/.q-press/api/components/MarkdownPageFooter.json'
-import MarkdownPageSidebarApi from 'src/.q-press/api/components/MarkdownPageSidebar.json'
-import MarkdownPageTocApi from 'src/.q-press/api/components/MarkdownPageToc.json'
+import MarkdownLayoutApi from '@/.q-press/api/components/MarkdownLayout.json'
+import MarkdownLinkApi from '@/.q-press/api/components/MarkdownLink.json'
+import MarkdownPageApi from '@/.q-press/api/components/MarkdownPage.json'
+import MarkdownPageFooterApi from '@/.q-press/api/components/MarkdownPageFooter.json'
+import MarkdownPageSidebarApi from '@/.q-press/api/components/MarkdownPageSidebar.json'
+import MarkdownPageTocApi from '@/.q-press/api/components/MarkdownPageToc.json'
 
-import MarkdownTreeApi from 'src/.q-press/api/components/MarkdownTree.json'
-import MarkdownPrerenderApi from 'src/.q-press/api/components/MarkdownPrerender.json'
+import MarkdownTreeApi from '@/.q-press/api/components/MarkdownTree.json'
+import MarkdownPrerenderApi from '@/.q-press/api/components/MarkdownPrerender.json'
 
 </script>
 

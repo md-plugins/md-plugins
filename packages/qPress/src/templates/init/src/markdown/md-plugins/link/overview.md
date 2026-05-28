@@ -38,7 +38,7 @@ const md = new MarkdownIt()
 md.use(linkPlugin, {
   linkTag: 'CustomLink', // Optional: Customize the link tag
   linkToKeyword: 'href', // Optional: Customize the link keyword
-  pageScript: 'import CustomLink from "src/components/CustomLink.vue"', // Optional: Add import statement
+  pageScript: 'import CustomLink from "@/components/CustomLink.vue"', // Optional: Add import statement
 })
 
 // Now you can use the Link plugin in your Markdown content
@@ -78,7 +78,7 @@ const md = new MarkdownIt()
 md.use(linkPlugin, {
   linkTag: 'CustomLink', // Optional: Customize the link tag
   linkToKeyword: 'href', // Optional: Customize the link keyword
-  pageScript: 'import CustomLink from "src/components/CustomLink.vue"', // Optional: Add import statement
+  pageScript: 'import CustomLink from "@/components/CustomLink.vue"', // Optional: Add import statement
 })
 
 // Now you can use the Link plugin in your Markdown content
@@ -109,7 +109,7 @@ const md = new MarkdownIt()
 md.use(linkPlugin, {
   linkTag: 'CustomLink', // Customize the link tag
   linkToKeyword: 'href', // Customize the link keyword
-  pageScript: 'import CustomLink from "src/components/CustomLink.vue"', // Add import statement
+  pageScript: 'import CustomLink from "@/components/CustomLink.vue"', // Add import statement
 })
   .use(markdownItAnchor)
   .use(markdownItToc)

@@ -190,8 +190,8 @@ export const source = import.meta.glob('/src/examples/example1/*.vue', {
 In production, the plugin preloads example components and their raw source code, generating import and export statements:
 
 ```ts
-import Example1 from 'app/src/examples/example1/Example1.vue'
-import RawExample1 from 'app/src/examples/example1/Example1.vue?raw'
+import Example1 from '@/examples/example1/Example1.vue'
+import RawExample1 from '@/examples/example1/Example1.vue?raw'
 
 export { Example1, RawExample1 }
 ```

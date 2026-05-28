@@ -32,12 +32,12 @@ export function mdParse(
   }
 
   // Pre-processing: add default page scripts and detect custom components.
-  env.pageScripts!.add("import MarkdownPage from 'src/.q-press/layouts/MarkdownPage.vue'")
+  env.pageScripts!.add("import MarkdownPage from '@/.q-press/layouts/MarkdownPage.vue'")
   if (markdownApiRE.test(code)) {
-    env.pageScripts!.add("import MarkdownApi from 'src/.q-press/components/MarkdownApi.vue'")
+    env.pageScripts!.add("import MarkdownApi from '@/.q-press/components/MarkdownApi.vue'")
   }
   if (markdownTreeRE.test(code)) {
-    env.pageScripts!.add("import MarkdownTree from 'src/.q-press/components/MarkdownTree.vue'")
+    env.pageScripts!.add("import MarkdownTree from '@/.q-press/components/MarkdownTree.vue'")
   }
 
   // Call the preProcess hook if provided. (Note: This is synchronous.)
@@ -53,12 +53,10 @@ export function mdParse(
 
   // Post-processing: add page scripts based on the rendered content.
   if (env.frontmatter!.examples !== undefined) {
-    env.pageScripts!.add(
-      "import MarkdownExample from 'src/.q-press/components/MarkdownExample.vue'",
-    )
+    env.pageScripts!.add("import MarkdownExample from '@/.q-press/components/MarkdownExample.vue'")
   }
   if (markdownLinkRE.test(code)) {
-    env.pageScripts!.add("import MarkdownLink from 'src/.q-press/components/MarkdownLink.vue'")
+    env.pageScripts!.add("import MarkdownLink from '@/.q-press/components/MarkdownLink.vue'")
   }
 
   // Call the postProcess hook if provided.

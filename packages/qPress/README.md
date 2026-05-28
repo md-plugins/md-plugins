@@ -92,11 +92,11 @@ See the [documentation](https://md-plugins.netlify.app/quasar-app-extensions/qpr
 
 - ```ts
   import type { RouteRecordRaw } from 'vue-router'
-  import mdPageList from 'src/markdown/listing'
+  import mdPageList from '@/markdown/listing'
   const routes = [
     {
       path: '/',
-      component: () => import('src/.q-press/layouts/MarkdownLayout.vue'),
+      component: () => import('@/.q-press/layouts/MarkdownLayout.vue'),
       children: [
         // Include the Landing Page route first
         ...Object.entries(mdPageList)
@@ -134,7 +134,7 @@ See the [documentation](https://md-plugins.netlify.app/quasar-app-extensions/qpr
     // but you can also remove it
     {
       path: '/:catchAll(.*)*',
-      component: () => import('pages/ErrorNotFound.vue'),
+      component: () => import('@/pages/ErrorNotFound.vue'),
     },
   ] as RouteRecordRaw[]
 
@@ -149,7 +149,7 @@ See the [documentation](https://md-plugins.netlify.app/quasar-app-extensions/qpr
   </template>
 
   <script setup lang="ts">
-    import { useDark } from 'src/.q-press/composables/dark'
+    import { useDark } from '@/.q-press/composables/dark'
     const { initDark } = useDark()
     initDark()
   </script>

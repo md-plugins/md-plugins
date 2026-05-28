@@ -83,7 +83,7 @@ The `link` plugin provides several options for customization. Here are the avail
 #### pageScript
 
 - **Type**: `string`
-- **Default**: `'import MarkdownLink from "src/.q-press/components/MarkdownLink.vue"'`
+- **Default**: `'import MarkdownLink from "@/.q-press/components/MarkdownLink.vue"'`
 - **Description**: The script to import the custom link component.
 
 ### Example Configuration
@@ -99,7 +99,7 @@ const md = new MarkdownIt()
 md.use(linkPlugin, {
   linkTag: 'CustomLink',
   linkToKeyword: 'href',
-  pageScript: 'import CustomLink from "src/components/CustomLink.vue"',
+  pageScript: 'import CustomLink from "@/components/CustomLink.vue"',
 })
 ```
 

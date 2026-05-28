@@ -163,7 +163,7 @@ export function getVueComponent(
     ${nav !== false ? ':nav="nav"' : ''}>${mdContent}</markdown-page>
 </template>
 <script setup>
-import { copyHeading } from 'src/.q-press/components/markdown-utils'
+import { copyHeading } from '@/.q-press/components/markdown-utils'
 ${
   examples !== false
     ? `

@@ -141,8 +141,8 @@ export function createMarkdownRenderer(options: MarkdownOptions = {}): MarkdownR
     containerComponent: 'MarkdownPrerender',
     copyButtonComponent: 'MarkdownCopyButton',
     pageScripts: [
-      "import MarkdownPrerender from 'src/.q-press/components/MarkdownPrerender'",
-      "import MarkdownCopyButton from 'src/.q-press/components/MarkdownCopyButton.vue'",
+      "import MarkdownPrerender from '@/.q-press/components/MarkdownPrerender'",
+      "import MarkdownCopyButton from '@/.q-press/components/MarkdownCopyButton.vue'",
     ],
     ...options,
   })

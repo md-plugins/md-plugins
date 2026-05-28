@@ -10,7 +10,7 @@ import { resolvePluginOptions } from '@md-plugins/shared'
 const DEFAULT_LINK_PLUGIN_OPTIONS: LinkPluginOptions = {
   linkTag: 'MarkdownLink',
   linkToKeyword: 'to',
-  pageScript: 'import MarkdownLink from "src/.q-press/components/MarkdownLink.vue"',
+  pageScript: 'import MarkdownLink from "@/.q-press/components/MarkdownLink.vue"',
 }
 
 export const linkPlugin: PluginWithOptions<LinkPluginOptions> = (

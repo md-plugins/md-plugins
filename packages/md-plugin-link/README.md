@@ -37,7 +37,7 @@ const md = new MarkdownIt();
 md.use(linkPlugin, {
   linkTag: 'MarkdownLink', // Custom link tag (e.g., Vue Router component)
   linkToKeyword: 'to', // Attribute to use for internal links
-  pageScript: 'import MarkdownLink from "src/.q-press/components/MarkdownLink.vue";',
+  pageScript: 'import MarkdownLink from "@/.q-press/components/MarkdownLink.vue";',
 });
 
 const markdownContent = `
@@ -66,18 +66,18 @@ For the example above, the plugin produces the following output:
 Additionally, the `pageScripts` property in the `env` object will contain:
 
 ```js
-Set(['import MarkdownLink from "src/.q-press/components/MarkdownLink.vue";'])
+Set(['import MarkdownLink from "@/.q-press/components/MarkdownLink.vue";'])
 ```
 
 ## Options
 
 The `md-plugin-link` plugin supports the following options:
 
-| Option        | Type   | Default                                                                | Description                                                     |
-| ------------- | ------ | ---------------------------------------------------------------------- | --------------------------------------------------------------- |
-| linkTag       | string | 'MarkdownLink'                                                         | Custom tag to use for internal links.                           |
-| linkToKeyword | string | 'to'                                                                   | Attribute to use for internal links (e.g., to for router-link). |
-| pageScript    | string | 'import MarkdownLink from "src/.q-press/components/MarkdownLink.vue";' | Import statement for required components.                       |
+| Option        | Type   | Default                                                              | Description                                                     |
+| ------------- | ------ | -------------------------------------------------------------------- | --------------------------------------------------------------- |
+| linkTag       | string | 'MarkdownLink'                                                       | Custom tag to use for internal links.                           |
+| linkToKeyword | string | 'to'                                                                 | Attribute to use for internal links (e.g., to for router-link). |
+| pageScript    | string | 'import MarkdownLink from "@/.q-press/components/MarkdownLink.vue";' | Import statement for required components.                       |
 
 ## Testing
 
