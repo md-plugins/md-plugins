@@ -7,6 +7,8 @@ overrides:
   sass-embedded: 1.100.0
 minimumReleaseAgeExclude:
   - '@quasar/app-vite'
+  - '@clack/core'
+  - '@clack/prompts'
   - '@quasar/extras'
   - '@quasar/art@1.0.0'
   - '@oxfmt/binding-android-arm-eabi@0.52.0'
