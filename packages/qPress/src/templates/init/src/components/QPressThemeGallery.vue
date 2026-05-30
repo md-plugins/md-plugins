@@ -6,18 +6,34 @@
       class="qpress-theme-preview"
       :style="getThemeStyle(theme)"
     >
-      <div class="qpress-theme-preview__header">
+      <div class="qpress-theme-preview__heading">
         <span class="qpress-theme-preview__eyebrow">{{ theme.name }}</span>
         <strong>{{ theme.tagline }}</strong>
-      </div>
-      <div class="qpress-theme-preview__body">
-        <div class="qpress-theme-preview__swatches" aria-label="Theme color swatches">
-          <span class="qpress-theme-preview__swatch qpress-theme-preview__swatch--primary"></span>
-          <span class="qpress-theme-preview__swatch qpress-theme-preview__swatch--secondary"></span>
-          <span class="qpress-theme-preview__swatch qpress-theme-preview__swatch--accent"></span>
-        </div>
         <p>{{ theme.description }}</p>
-        <code class="qpress-theme-preview__code">markdown-token</code>
+      </div>
+
+      <div class="qpress-theme-preview__pair">
+        <section class="qpress-theme-preview__panel qpress-theme-preview__panel--light">
+          <span class="qpress-theme-preview__surface">Light</span>
+          <div class="qpress-theme-preview__swatches" aria-label="Light theme color swatches">
+            <span class="qpress-theme-preview__swatch qpress-theme-preview__swatch--primary"></span>
+            <span class="qpress-theme-preview__swatch qpress-theme-preview__swatch--secondary"></span>
+            <span class="qpress-theme-preview__swatch qpress-theme-preview__swatch--accent"></span>
+          </div>
+          <p>Light surface, body text, and inline token treatment.</p>
+          <code class="qpress-theme-preview__code qpress-theme-preview__code--light">markdown-token</code>
+        </section>
+
+        <section class="qpress-theme-preview__panel qpress-theme-preview__panel--dark">
+          <span class="qpress-theme-preview__surface">Dark</span>
+          <div class="qpress-theme-preview__swatches" aria-label="Dark theme color swatches">
+            <span class="qpress-theme-preview__swatch qpress-theme-preview__swatch--primary"></span>
+            <span class="qpress-theme-preview__swatch qpress-theme-preview__swatch--secondary"></span>
+            <span class="qpress-theme-preview__swatch qpress-theme-preview__swatch--accent"></span>
+          </div>
+          <p>Dark surface, body text, and inline token treatment.</p>
+          <code class="qpress-theme-preview__code qpress-theme-preview__code--dark">markdown-token</code>
+        </section>
       </div>
     </article>
   </div>
@@ -30,10 +46,12 @@ type ThemePalette = {
   accent: string
   lightBg: string
   lightText: string
+  lightCodeBg: string
+  lightCodeText: string
   darkBg: string
   darkText: string
-  codeBg: string
-  codeText: string
+  darkCodeBg: string
+  darkCodeText: string
   shadow: string
 }
 
@@ -55,12 +73,14 @@ const themes: ThemePreview[] = [
       accent: '#ea5e13',
       lightBg: '#fefefe',
       lightText: '#4d4d4d',
+      lightCodeBg: '#f5f5f5',
+      lightCodeText: '#4d4d4d',
       darkBg: '#080e1a',
       darkText: '#cbcbcb',
-      codeBg: '#f5f5f5',
-      codeText: '#4d4d4d',
-      shadow: 'rgba(0, 191, 255, 0.22)'
-    }
+      darkCodeBg: '#121212',
+      darkCodeText: '#e6e6e6',
+      shadow: 'rgba(0, 191, 255, 0.22)',
+    },
   },
   {
     name: 'Mystic',
@@ -72,12 +92,14 @@ const themes: ThemePreview[] = [
       accent: '#ff4500',
       lightBg: '#e6e6fa',
       lightText: '#4b0082',
+      lightCodeBg: '#f8f8ff',
+      lightCodeText: '#9370db',
       darkBg: '#171122',
       darkText: '#e6e6fa',
-      codeBg: '#f8f8ff',
-      codeText: '#9370db',
-      shadow: 'rgba(138, 43, 226, 0.32)'
-    }
+      darkCodeBg: '#4b0082',
+      darkCodeText: '#e6e6fa',
+      shadow: 'rgba(138, 43, 226, 0.32)',
+    },
   },
   {
     name: 'Newspaper',
@@ -89,12 +111,14 @@ const themes: ThemePreview[] = [
       accent: '#666666',
       lightBg: '#f5f5f5',
       lightText: '#333333',
+      lightCodeBg: '#f5f5f5',
+      lightCodeText: '#333333',
       darkBg: '#000000',
       darkText: '#ffffff',
-      codeBg: '#f5f5f5',
-      codeText: '#333333',
-      shadow: 'rgba(0, 0, 0, 0.24)'
-    }
+      darkCodeBg: '#1a1a1a',
+      darkCodeText: '#e6e6e6',
+      shadow: 'rgba(0, 0, 0, 0.24)',
+    },
   },
   {
     name: 'Sunrise',
@@ -106,12 +130,14 @@ const themes: ThemePreview[] = [
       accent: '#f39c12',
       lightBg: '#ecf0f1',
       lightText: '#2c3e50',
+      lightCodeBg: '#ecf0f1',
+      lightCodeText: '#2c3e50',
       darkBg: '#34495e',
       darkText: '#ecf0f1',
-      codeBg: '#ecf0f1',
-      codeText: '#2c3e50',
-      shadow: 'rgba(231, 76, 60, 0.26)'
-    }
+      darkCodeBg: '#2c3e50',
+      darkCodeText: '#ecf0f1',
+      shadow: 'rgba(231, 76, 60, 0.26)',
+    },
   },
   {
     name: 'Tawny',
@@ -123,13 +149,15 @@ const themes: ThemePreview[] = [
       accent: '#d2691e',
       lightBg: '#f5f5dc',
       lightText: '#5c4033',
+      lightCodeBg: '#fdfdfd',
+      lightCodeText: '#5c4033',
       darkBg: '#3e2723',
       darkText: '#f5f5dc',
-      codeBg: '#fdfdfd',
-      codeText: '#5c4033',
-      shadow: 'rgba(139, 69, 19, 0.3)'
-    }
-  }
+      darkCodeBg: '#5c4033',
+      darkCodeText: '#f5f5dc',
+      shadow: 'rgba(139, 69, 19, 0.3)',
+    },
+  },
 ]
 
 function getThemeStyle(theme: ThemePreview): Record<string, string> {
@@ -139,11 +167,13 @@ function getThemeStyle(theme: ThemePreview): Record<string, string> {
     '--qpress-theme-accent': theme.palette.accent,
     '--qpress-theme-light-bg': theme.palette.lightBg,
     '--qpress-theme-light-text': theme.palette.lightText,
+    '--qpress-theme-light-code-bg': theme.palette.lightCodeBg,
+    '--qpress-theme-light-code-text': theme.palette.lightCodeText,
     '--qpress-theme-dark-bg': theme.palette.darkBg,
     '--qpress-theme-dark-text': theme.palette.darkText,
-    '--qpress-theme-code-bg': theme.palette.codeBg,
-    '--qpress-theme-code-text': theme.palette.codeText,
-    '--qpress-theme-shadow': theme.palette.shadow
+    '--qpress-theme-dark-code-bg': theme.palette.darkCodeBg,
+    '--qpress-theme-dark-code-text': theme.palette.darkCodeText,
+    '--qpress-theme-shadow': theme.palette.shadow,
   }
 }
 </script>
@@ -151,31 +181,36 @@ function getThemeStyle(theme: ThemePreview): Record<string, string> {
 <style scoped lang="scss">
 .qpress-theme-gallery {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(460px, 1fr));
+  gap: 18px;
   margin: 24px 0 32px;
 }
 
 .qpress-theme-preview {
   overflow: hidden;
   border: 1px solid var(--qpress-theme-accent);
-  border-radius: 14px;
-  color: var(--qpress-theme-light-text);
+  border-radius: 16px;
   background: var(--qpress-theme-light-bg);
   box-shadow: 0 18px 36px -28px var(--qpress-theme-shadow);
 
-  &__header {
+  &__heading {
     display: grid;
-    gap: 4px;
-    padding: 18px;
+    gap: 6px;
+    padding: 18px 20px;
     color: var(--qpress-theme-dark-text);
     background:
       linear-gradient(135deg, rgba(255, 255, 255, 0.08), transparent 42%),
       var(--qpress-theme-dark-bg);
     border-bottom: 5px solid var(--qpress-theme-accent);
+
+    p {
+      margin: 0;
+      opacity: 0.86;
+    }
   }
 
-  &__eyebrow {
+  &__eyebrow,
+  &__surface {
     color: var(--qpress-theme-primary);
     font-size: 0.76rem;
     font-weight: 700;
@@ -183,10 +218,36 @@ function getThemeStyle(theme: ThemePreview): Record<string, string> {
     text-transform: uppercase;
   }
 
-  &__body {
+  &__pair {
     display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  &__panel {
+    display: grid;
+    align-content: start;
     gap: 12px;
+    min-height: 230px;
     padding: 18px;
+
+    p {
+      margin: 0;
+    }
+
+    &--light {
+      color: var(--qpress-theme-light-text);
+      background: var(--qpress-theme-light-bg);
+    }
+
+    &--dark {
+      color: var(--qpress-theme-dark-text);
+      background: var(--qpress-theme-dark-bg);
+      border-left: 1px solid var(--qpress-theme-accent);
+
+      .qpress-theme-preview__swatch {
+        border-color: rgba(255, 255, 255, 0.22);
+      }
+    }
   }
 
   &__swatches {
@@ -216,10 +277,33 @@ function getThemeStyle(theme: ThemePreview): Record<string, string> {
   &__code {
     width: fit-content;
     padding: 5px 8px;
-    color: var(--qpress-theme-code-text);
-    background: var(--qpress-theme-code-bg);
     border: 1px solid var(--qpress-theme-primary);
     border-radius: 6px;
+
+    &--light {
+      color: var(--qpress-theme-light-code-text);
+      background: var(--qpress-theme-light-code-bg);
+    }
+
+    &--dark {
+      color: var(--qpress-theme-dark-code-text);
+      background: var(--qpress-theme-dark-code-bg);
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .qpress-theme-gallery {
+    grid-template-columns: 1fr;
+  }
+
+  .qpress-theme-preview__pair {
+    grid-template-columns: 1fr;
+  }
+
+  .qpress-theme-preview__panel--dark {
+    border-top: 1px solid var(--qpress-theme-accent);
+    border-left: 0;
   }
 }
 </style>
