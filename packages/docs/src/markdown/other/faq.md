@@ -35,10 +35,14 @@ Use the individual `@md-plugins/md-plugin-*` packages when you already own the M
 
 **A.** Install the package that matches your integration path. For direct Vite plugin usage:
 
-```bash
+```tabs
+<<| bash pnpm |>>
 pnpm add @md-plugins/vite-md-plugin@beta
+<<| bash Bun |>>
 bun add @md-plugins/vite-md-plugin@beta
+<<| bash Yarn |>>
 yarn add @md-plugins/vite-md-plugin@beta
+<<| bash npm |>>
 npm install @md-plugins/vite-md-plugin@beta
 ```
 
