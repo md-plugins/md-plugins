@@ -58,10 +58,8 @@ Here are some examples of what you can achieve with Markdown Plugins:
 - **Script Imports**: Extract and process `<script import>` blocks from Markdown.
 - **Code Block Enhancements**: Enhance code block rendering with syntax highlighting, tabs, and more.
 
-<!-- Check out the [Examples](../guides/examples) section for more detailed examples and use cases. -->
-
 ## Support
 
-If you have any questions or need assistance, please refer to the [FAQ](../guides/faq) or reach out to our support team.
+If you have any questions or need assistance, please refer to the [FAQ](/other/faq) or reach out to our support team.
 
 Happy coding!

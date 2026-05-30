@@ -1,6 +1,7 @@
 ---
 title: Frequently Asked Questions
 desc: Common questions and answers about Markdown Plugins.
+keys: Other
 ---
 
 ## General Questions

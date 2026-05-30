@@ -26,7 +26,7 @@
           </span>
         </router-link>
         <router-link
-          to="/guides/upgrade-guide"
+          to="/other/upgrade-guide"
           class="hero-button q-btn q-btn-item non-selectable no-outline q-btn--standard q-btn--rectangle q-btn--actionable q-focusable q-hoverable q-btn--no-uppercase q-btn--rounded q-btn--dense"
         >
           <span

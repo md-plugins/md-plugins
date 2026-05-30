@@ -52,7 +52,6 @@ const secondaryToolbarLinks = [
   mdPluginsMenu, // <-- this is the menu we just created
   vitePluginsMenu,
   QuasarAppExts,
-  guidesMenu,
   otherMenu,
 ]
 ```
@@ -105,7 +104,7 @@ export const sidebar = [
   processedMdPluginsMenu, // <-- this is the menu we just created
   processedVitePluginsMenu,
   processedQuasarAppExts,
-  processedGuidesMenu,
+  processedOtherMenu,
 ]
 ```
 

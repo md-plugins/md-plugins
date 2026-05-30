@@ -1,6 +1,7 @@
 ---
 title: Upgrade Guide
 desc: Upgrade MD-Plugins and Q-Press to the 0.1.0 beta.
+keys: Other
 related:
   - quasar-app-extensions/qpress/overview
   - quasar-app-extensions/vite-md-plugin-app-ext/overview

@@ -301,32 +301,39 @@ const QuasarAppExts: SiteMenuItem = {
   ],
 }
 
-const guidesMenu: SiteMenuItem = {
-  name: 'Guides',
+const otherMenu: SiteMenuItem = {
+  name: 'Other',
   mq: 1100, // media query breakpoint
   children: [
     {
+      name: 'Releases',
+      path: '/other/releases',
+    },
+    {
       name: 'Upgrade Guide',
-      path: '/guides/upgrade-guide',
+      path: '/other/upgrade-guide',
     },
     {
       name: 'FAQ',
-      path: '/guides/faq',
+      path: '/other/faq',
+    },
+    {
+      name: 'Contact',
+      path: '/other/contact',
     },
     {
       name: 'Contributing',
-      path: '/guides/contributing',
-    },
-  ],
-}
-
-const otherMenu: SiteMenuItem = {
-  name: 'Other',
-  mq: 1190, // media query breakpoint
-  children: [
-    {
-      name: 'Releases',
-      path: '/other/release-notes',
+      children: [
+        { name: 'Overview', path: '/other/contributing/overview' },
+        {
+          name: 'Bugs and Feature Requests',
+          path: '/other/contributing/bugs-and-feature-requests',
+        },
+        { name: 'Packages', path: '/other/contributing/packages' },
+        { name: 'Documentation', path: '/other/contributing/documentation' },
+        { name: 'Call to Action', path: '/other/contributing/call-to-action' },
+        { name: 'Sponsor', path: '/other/contributing/sponsor' },
+      ],
     },
   ],
 }
@@ -352,11 +359,11 @@ const processedQuasarAppExts = {
   children: QuasarAppExts.children ? QuasarAppExts.children.map(processMenuItem) : [],
 }
 
-const processedGuidesMenu = {
-  name: guidesMenu.name,
-  path: slugify(guidesMenu.name),
+const processedOtherMenu = {
+  name: otherMenu.name,
+  path: slugify(otherMenu.name),
   expanded: false,
-  children: guidesMenu.children ? guidesMenu.children.map(processMenuItem) : [],
+  children: otherMenu.children ? otherMenu.children.map(processMenuItem) : [],
 }
 
 const secondaryToolbarLinks = [
@@ -364,7 +371,6 @@ const secondaryToolbarLinks = [
   mdPluginsMenu,
   vitePluginsMenu,
   QuasarAppExts,
-  guidesMenu,
   otherMenu,
 ]
 
@@ -391,7 +397,7 @@ export const sidebar = [
   processedMdPluginsMenu,
   processedVitePluginsMenu,
   processedQuasarAppExts,
-  processedGuidesMenu,
+  processedOtherMenu,
 ]
 
 const config = {
