@@ -138,7 +138,7 @@ The `viteMdPlugin` accepts the following parameters:
 
 The `menu` parameter should conform to the following structure:
 
-```typescript
+```typescript [twoslash]
 export interface MenuItem {
   name: string
   path?: string
@@ -151,6 +151,19 @@ export interface MenuItem {
   external?: boolean
   expanded?: boolean
 }
+
+const menu = [
+  {
+    name: 'Getting Started',
+    children: [{ name: 'Introduction', path: '/getting-started/introduction' }],
+  },
+] satisfies MenuItem[]
+
+const firstMenuItem = menu[0]
+//    ^?
+
+type FirstMenuItem = (typeof menu)[number]
+//   ^?
 ```
 
 ## Testing

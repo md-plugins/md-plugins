@@ -9,9 +9,7 @@ The `codeblocks` plugin enhances code block rendering in your Markdown content. 
 
 ### Type Information
 
-```ts
-import { PluginWithOptions } from 'markdown-it'
-
+```ts [twoslash]
 interface Lang {
   name: string
   customCopy?: boolean
@@ -65,18 +63,24 @@ interface CodeblockPluginOptions {
   langList?: Lang[]
 }
 
-declare module '@md-plugins/shared' {
-  interface MarkdownItEnv {
-    /**
-     * An array of page script (import statements) to be included.
-     */
-    pageScripts?: Set<string>
-  }
+const options = {
+  defaultLang: 'typescript',
+  preClass: 'markdown-code',
+  langList: [{ name: 'typescript', aliases: 'typescript|ts' }],
+} satisfies CodeblockPluginOptions
+
+const firstLanguage = options.langList?.[0]
+//    ^?
+
+type CodeblockLanguage = NonNullable<CodeblockPluginOptions['langList']>[number]
+//   ^?
+
+interface MarkdownItEnv {
+  /**
+   * An array of page script (import statements) to be included.
+   */
+  pageScripts?: Set<string>
 }
-
-declare const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions>
-
-export { type CodeblockPluginOptions, type Lang, codeblocksPlugin }
 ```
 
 ### Default CSS

@@ -32,9 +32,7 @@ The shared package provides TypeScript type definitions that are used across the
 - **MarkdownItEnv**: Defines the structure of the environment object used by MD-Plugins plugins.
 - **PluginOptions**: Defines the structure of the options object passed to plugins.
 
-```ts
-import Token from 'markdown-it/lib/token.mjs'
-
+```ts [twoslash]
 /**
  * Escape html chars
  */
@@ -87,6 +85,19 @@ type ResolvePluginOptionsFn = <T extends object, K extends keyof any>(
   defaults: T,
 ) => T
 
+interface LinkPluginOptions {
+  externalTarget?: '_blank' | '_self'
+  externalRel?: string
+}
+
+const linkOptions = resolvePluginOptions({ link: { externalTarget: '_blank' } }, 'link', {
+  externalTarget: '_self',
+  externalRel: 'noopener',
+} satisfies LinkPluginOptions)
+
+const linkTarget = linkOptions.externalTarget
+//    ^?
+
 interface ResolveTitleOptions {
   /**
    * Should allow inline HTML tags or not.
@@ -109,7 +120,7 @@ interface ResolveTitleOptions {
  * Typically using the next token of `heading_open` token
  */
 declare const resolveTitleFromToken: (
-  token: Token,
+  token: unknown,
   { shouldAllowHtml, shouldEscapeText }: ResolveTitleOptions,
 ) => string
 
@@ -139,7 +150,7 @@ interface ResolveHeadersOptions extends ResolveTitleOptions {
  * Resolve headers from markdown-it tokens
  */
 declare const resolveHeadersFromTokens: (
-  tokens: Token[],
+  tokens: unknown[],
   {
     level,
     shouldAllowHtml,

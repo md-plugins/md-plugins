@@ -60,7 +60,7 @@ const secondaryToolbarLinks = [
 
 A `MenuItem` looks like this, but not all options are used for header menus:
 
-```ts
+```ts [twoslash]
 interface MenuItem {
   name: string
   path?: string
@@ -73,6 +73,21 @@ interface MenuItem {
   external?: boolean
   expanded?: boolean
 }
+
+const docsMenu = {
+  name: 'Guides',
+  expanded: true,
+  children: [
+    { name: 'Installation', path: '/getting-started/installation' },
+    { name: 'Themes', path: '/quasar-app-extensions/qpress/themes' },
+  ],
+} satisfies MenuItem
+
+const firstDocLink = docsMenu.children[0]
+//    ^?
+
+type MenuChildren = NonNullable<MenuItem['children']>
+//   ^?
 ```
 
 ## Sidebar Menu Items
