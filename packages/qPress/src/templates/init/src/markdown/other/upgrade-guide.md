@@ -31,13 +31,14 @@ The core Markdown-it plugins and direct Vite plugins are not Quasar-only. You ca
 
 For Q-Press projects, update the app extension package and then invoke it:
 
-```bash
+```tabs
+<<| bash pnpm |>>
 pnpm up @md-plugins/quasar-app-extension-q-press@beta
-# or
+<<| bash npm |>>
 npm install @md-plugins/quasar-app-extension-q-press@beta
-# or
+<<| bash yarn |>>
 yarn add @md-plugins/quasar-app-extension-q-press@beta
-# or
+<<| bash bun |>>
 bun add @md-plugins/quasar-app-extension-q-press@beta
 ```
 
@@ -51,13 +52,14 @@ When prompted, choose `Overwrite All` if you want the generated Q-Press files to
 
 For direct Vite plugin usage, update the packages you consume:
 
-```bash
+```tabs
+<<| bash pnpm |>>
 pnpm up @md-plugins/vite-md-plugin@beta @md-plugins/vite-examples-plugin@beta
-# or
+<<| bash npm |>>
 npm install @md-plugins/vite-md-plugin@beta @md-plugins/vite-examples-plugin@beta
-# or
+<<| bash yarn |>>
 yarn add @md-plugins/vite-md-plugin@beta @md-plugins/vite-examples-plugin@beta
-# or
+<<| bash bun |>>
 bun add @md-plugins/vite-md-plugin@beta @md-plugins/vite-examples-plugin@beta
 ```
 
