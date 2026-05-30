@@ -68,19 +68,21 @@ console.log('Hello, world!')
 
 ### Code Block with TwoSlash
 
-Add the `twoslash` attribute to TypeScript or JavaScript examples when you want inferred type information, compiler diagnostics, or `^?` query output.
+Add the `twoslash` attribute to TypeScript or JavaScript examples when you want inferred type information, compiler diagnostics, or query output. Hover an identifier in the example below to see the type tooltip.
 
 ```ts [twoslash]
 const count = 1
-//    ^?
+const label = count.toFixed(0)
 ```
 
 ````markup
 ```ts [twoslash]
 const count = 1
-//    ^?
+const label = count.toFixed(0)
 ```
 ````
+
+If you add a `// ^?` query marker, TwoSlash renders that query result persistently below the matching expression. That is useful for teaching types directly in the page, while normal identifier details remain hover-based.
 
 ### Code Block with Restricted Height
 
