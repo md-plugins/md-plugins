@@ -24,6 +24,12 @@ Refer to the **Installation** section of each plugin's documentation for detaile
 
 Configuration varies depending on the plugin. Generally, you will need to import the plugin and use it with your Markdown processor (e.g., MarkdownIt). Refer to the **Configuration** section of each plugin's documentation for detailed instructions.
 
+### Can I use MD-Plugins without Quasar?
+
+Yes. The individual Markdown-it plugins and direct Vite plugins can be used in non-Quasar projects. For example, `@md-plugins/vite-md-plugin` and `@md-plugins/vite-examples-plugin` are Vite plugins that can be used in Vue/Vite projects, and the `@md-plugins/md-plugin-*` packages can be used anywhere you configure MarkdownIt.
+
+The Quasar-specific limitation only applies to the app extensions, such as Q-Press. Those app extensions target Quasar CLI Vite projects and are not intended for Webpack or JavaScript-only Quasar projects.
+
 ## Plugin-Specific Questions
 
 ### How do I add custom classes to images?

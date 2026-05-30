@@ -9,6 +9,8 @@ Welcome to the Markdown Plugins documentation! This guide will help you start us
 
 Markdown Plugins are a set of tools and extensions designed to enhance the functionality of Markdown. They provide additional features and capabilities that go beyond the standard Markdown syntax, allowing you to create more dynamic and interactive content.
 
+The core Markdown-it plugins and direct Vite plugins work in Vue/Vite projects as well as Quasar projects. Use the Quasar app extensions when you want Quasar CLI integration, generated Q-Press docs files, and Quasar-specific routing/build configuration.
+
 ## Key Features
 
 - **Extended Syntax**: Add custom syntax and elements to your Markdown documents.

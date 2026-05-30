@@ -54,6 +54,10 @@
         Markdown Plugins go beyond the standard Markdown syntax.<br />Discover the power of Markdown
         Plugins and enhance your documentation experience!
       </p>
+      <p>
+        Use the Markdown-it and Vite plugins in Vue/Vite projects, or choose the Quasar app
+        extensions when you want Q-Press and Quasar CLI Vite integration.
+      </p>
     </div>
     <div class="row justify-center hero">
       <div class="hero-title">Markdown-It! Plugins</div>
