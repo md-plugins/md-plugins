@@ -17,22 +17,30 @@
           <span class="qpress-theme-preview__surface">Light</span>
           <div class="qpress-theme-preview__swatches" aria-label="Light theme color swatches">
             <span class="qpress-theme-preview__swatch qpress-theme-preview__swatch--primary"></span>
-            <span class="qpress-theme-preview__swatch qpress-theme-preview__swatch--secondary"></span>
+            <span
+              class="qpress-theme-preview__swatch qpress-theme-preview__swatch--secondary"
+            ></span>
             <span class="qpress-theme-preview__swatch qpress-theme-preview__swatch--accent"></span>
           </div>
           <p>Light surface, body text, and inline token treatment.</p>
-          <code class="qpress-theme-preview__code qpress-theme-preview__code--light">markdown-token</code>
+          <code class="qpress-theme-preview__code qpress-theme-preview__code--light"
+            >markdown-token</code
+          >
         </section>
 
         <section class="qpress-theme-preview__panel qpress-theme-preview__panel--dark">
           <span class="qpress-theme-preview__surface">Dark</span>
           <div class="qpress-theme-preview__swatches" aria-label="Dark theme color swatches">
             <span class="qpress-theme-preview__swatch qpress-theme-preview__swatch--primary"></span>
-            <span class="qpress-theme-preview__swatch qpress-theme-preview__swatch--secondary"></span>
+            <span
+              class="qpress-theme-preview__swatch qpress-theme-preview__swatch--secondary"
+            ></span>
             <span class="qpress-theme-preview__swatch qpress-theme-preview__swatch--accent"></span>
           </div>
           <p>Dark surface, body text, and inline token treatment.</p>
-          <code class="qpress-theme-preview__code qpress-theme-preview__code--dark">markdown-token</code>
+          <code class="qpress-theme-preview__code qpress-theme-preview__code--dark"
+            >markdown-token</code
+          >
         </section>
       </div>
     </article>
