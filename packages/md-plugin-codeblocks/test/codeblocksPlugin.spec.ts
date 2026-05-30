@@ -82,6 +82,43 @@ console.log('Line 3');
     expect(renderedHTML).toContain('<span class="c-line line-highlight">')
   })
 
+  it('renders Twoslash output when explicitly enabled with bracket attrs', () => {
+    const md = new MarkdownIt()
+    md.use(codeblocksPlugin)
+
+    const markdownInput = `
+\`\`\`ts [twoslash]
+const count = 1
+//    ^?
+\`\`\`
+      `.trim()
+
+    const renderedHTML = md.render(markdownInput)
+
+    expect(renderedHTML).toContain('twoslash')
+    expect(renderedHTML).toContain('twoslash-popup-code')
+    expect(renderedHTML).toContain('count')
+    expect(renderedHTML).toContain(':')
+  })
+
+  it('renders Twoslash output when enabled with a bare meta flag', () => {
+    const md = new MarkdownIt()
+    md.use(codeblocksPlugin)
+
+    const markdownInput = `
+\`\`\`ts twoslash Type query
+const enabled = true
+//    ^?
+\`\`\`
+      `.trim()
+
+    const renderedHTML = md.render(markdownInput)
+
+    expect(renderedHTML).toContain('<MarkdownPrerender title="Type query">')
+    expect(renderedHTML).toContain('twoslash-popup-code')
+    expect(renderedHTML).not.toContain('title="twoslash')
+  })
+
   it('renders tabbed code blocks with multiple tabs and attributes', () => {
     const md = new MarkdownIt()
     md.use(codeblocksPlugin, {

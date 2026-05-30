@@ -12,6 +12,7 @@ The Codeblocks Plugin is a powerful tool that enhances the standard code block f
 ## Key Features
 
 - **Syntax Highlighting**: Automatically highlight code syntax for various programming languages.
+- **TwoSlash Hovers**: Opt in to TypeScript-powered hover and query output for richer examples.
 - **Line Numbers**: Display line numbers alongside your code blocks for better readability.
 - **Line Highlighting**: Highlight specific lines of code for emphasis.
 - **Add/Remove Lines**: Highlight add or remove lines of code with ease.
@@ -62,6 +63,22 @@ console.log('Hello, world!')
 ````markup
 ```js My Title
 console.log('Hello, world!')
+```
+````
+
+### Code Block with TwoSlash
+
+Add the `twoslash` attribute to TypeScript or JavaScript examples when you want inferred type information, compiler diagnostics, or `^?` query output.
+
+```ts [twoslash]
+const count = 1
+//    ^?
+```
+
+````markup
+```ts [twoslash]
+const count = 1
+//    ^?
 ```
 ````
 

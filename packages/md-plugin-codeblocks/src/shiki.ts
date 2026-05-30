@@ -27,6 +27,7 @@ export interface CodeblockTransformerOptions {
   lineList: CodeLineProps[]
   maxheight?: string
   preClass: string
+  twoslash?: boolean
 }
 
 const shikiLangs = [
@@ -60,6 +61,16 @@ export const highlighter = await createHighlighter({
   langAlias: shikiLangAlias,
 })
 
+// @typescript/vfs logs every file read when DEBUG is set; keep docs builds quiet.
+const debugEnvValue = process.env.DEBUG
+delete process.env.DEBUG
+const twoslashModule = await import('@shikijs/twoslash').finally(() => {
+  if (debugEnvValue !== undefined) {
+    process.env.DEBUG = debugEnvValue
+  }
+})
+const { rendererRich, transformerTwoslash } = twoslashModule
+
 const supportedLangSet = new Set(highlighter.getLoadedLanguages())
 
 export const themeOptions = {
@@ -79,10 +90,12 @@ export function buildCodeBlockTransformers({
   lineList,
   maxheight,
   preClass,
+  twoslash,
 }: CodeblockTransformerOptions): ShikiTransformer[] {
   return [
     preClassTransformer(preClass, maxheight),
     codeClassTransformer(codeClass),
+    ...(twoslash === true ? [twoslashTransformer] : []),
     transformerNotationHighlight(),
     transformerNotationDiff(),
     transformerNotationFocus(),
@@ -91,6 +104,15 @@ export function buildCodeBlockTransformers({
     lineDecorTransformer(lineList),
   ]
 }
+
+const twoslashTransformer = transformerTwoslash({
+  renderer: rendererRich(),
+  twoslashOptions: {
+    compilerOptions: {
+      traceResolution: false,
+    },
+  },
+})
 
 function preClassTransformer(preClass: string, maxheight?: string): ShikiTransformer {
   return {

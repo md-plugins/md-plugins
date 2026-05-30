@@ -5,6 +5,7 @@ A **Markdown-It** plugin that enhances code block rendering by providing syntax 
 ## Features
 
 - **Syntax Highlighting**: Automatically highlights code blocks using **Shiki**.
+- **TwoSlash Hovers**: Opt in to TypeScript-powered hover and query output for richer examples.
 - **Line Numbering**: Optionally adds line numbers to code blocks.
 - **Magic Comments**: Supports special comments like `[[! highlight]]`, `[[! add]]`, and `[[! rem]]` for inline code annotations.
 - **Tabbed Code Blocks**: Enables the creation of tabbed code blocks for multi-language or multi-file examples.
@@ -98,6 +99,17 @@ The plugin supports magic comments for inline annotations:
 console.log('Line 1')
 console.log('Line 2')
 console.log('Line 3')
+```
+````
+
+### TwoSlash Type Hovers
+
+Add the `twoslash` attribute to TypeScript or JavaScript examples when you want inferred type information, compiler diagnostics, or `^?` query output.
+
+````markup
+```ts [twoslash]
+const count = 1
+//    ^?
 ```
 ````
 

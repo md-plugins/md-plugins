@@ -125,13 +125,15 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
 
       if (tabsMatch !== null) {
         const { lang, attrs, title } = tabsMatch.groups || {}
+        const bareAttrs = extractBareAttrs(title?.trim() || null)
 
-        currentTabName = title?.trim() || `Tab ${list.length + 1}`
+        currentTabName = bareAttrs.title ?? `Tab ${list.length + 1}`
 
         list.push(currentTabName)
         tabMap[currentTabName] = {
           attrs: {
             ...parseAttrs(attrs?.trim() || null),
+            ...bareAttrs.attrs,
             lang,
           },
           content: [],
@@ -159,6 +161,7 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
   }
 
   const magicCommentList = ['highlight', 'rem', 'add']
+  const bareAttrList = ['twoslash']
   const magicCommentRE = new RegExp(` *\\[\\[! (?<type>(${magicCommentList.join('|')}))\\]\\] *`)
   const magicCommentGlobalRE = new RegExp(magicCommentRE, 'g')
 
@@ -240,7 +243,7 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
   }
 
   function getHighlightedContent(rawContent: string, attrs: { [key: string]: any }): string {
-    const { lang, maxheight } = attrs
+    const { lang, maxheight, twoslash } = attrs
 
     let content = rawContent.trim()
     const lineList = parseCodeLine(content, attrs)
@@ -261,6 +264,7 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
             lineList,
             maxheight,
             preClass: preClass ?? 'markdown-code',
+            twoslash: twoslash === true || twoslash === 'true',
           }),
         })
         .replace('<pre ', '<pre v-pre ') + `<${copyButtonComponent}${langProp} />`
@@ -281,6 +285,35 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
     return acc
   }
 
+  function extractBareAttrs(title: string | null): {
+    attrs: { [key: string]: true }
+    title: string | null
+  } {
+    if (title === null) {
+      return {
+        attrs: {},
+        title: null,
+      }
+    }
+
+    const attrs: { [key: string]: true } = {}
+    const remainingTitle: string[] = []
+
+    for (const chunk of title.split(/\s+/)) {
+      if (remainingTitle.length === 0 && bareAttrList.includes(chunk)) {
+        attrs[chunk] = true
+        continue
+      }
+
+      remainingTitle.push(chunk)
+    }
+
+    return {
+      attrs,
+      title: remainingTitle.length > 0 ? remainingTitle.join(' ') : null,
+    }
+  }
+
   function parseDefinitionLine(token: Token): { lang: string; title: string | null; tabs?: any } {
     const match = token.info.trim().match(definitionLineRE)
 
@@ -292,10 +325,12 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
     }
 
     const { lang, attrs, title } = match.groups || {}
+    const bareAttrs = extractBareAttrs(title?.trim() || null)
     const acc: { lang: string; title: string | null; tabs?: any } = {
       ...parseAttrs(attrs?.trim() || null),
+      ...bareAttrs.attrs,
       lang: lang as string,
-      title: title?.trim() || null,
+      title: bareAttrs.title,
     }
 
     if (acc.lang === 'tabs') {
