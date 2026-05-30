@@ -1,5 +1,6 @@
 import type Token from 'markdown-it/lib/token.mjs'
 import MarkdownIt from 'markdown-it'
+import markdownItIns from 'markdown-it-ins'
 
 import type { MarkdownItEnv } from '@md-plugins/shared'
 import { frontmatterPlugin } from '@md-plugins/md-plugin-frontmatter'
@@ -113,6 +114,7 @@ export function createMarkdownRenderer(options: MarkdownOptions = {}): MarkdownR
   md.use(importsPlugin)
   md.use(titlePlugin)
   md.use(headersPlugin, { level: [2, 3], ...options })
+  md.use(markdownItIns)
 
   // md.use(tocPlugin)
 
