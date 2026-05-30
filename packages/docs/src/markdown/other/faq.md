@@ -1,42 +1,80 @@
 ---
 title: Frequently Asked Questions
-desc: Common questions and answers about Markdown Plugins.
+desc: Common questions and answers about MD-Plugins.
 keys: Other
 ---
 
-## General Questions
+Use this page to quickly scan the questions people tend to ask while setting up MD-Plugins, Q-Press, and the direct Vite plugins.
 
-### What are Markdown Plugins?
+## General
 
-Markdown Plugins are tools that extend the functionality of Markdown, allowing you to add custom syntax, enhanced components, and custom styling to your Markdown documents. They help improve the accessibility, styling, and interactivity of your content.
+:::details Q. What are MD-Plugins?
 
-### How do I install Markdown Plugins?
+**A.** MD-Plugins are Markdown-it and Vite plugins that help turn Markdown into application-ready content. They cover things like headings, links, frontmatter, images, code blocks, examples, and Q-Press documentation sites.
+:::
 
-You can install Markdown Plugins using npm, yarn, pnpm, or bun. Here is an example using npm:
+:::details Q. Can I use MD-Plugins without Quasar?
+
+**A.** Yes. The individual Markdown-it plugins and direct Vite plugins can be used in non-Quasar projects. For example, `@md-plugins/vite-md-plugin` and `@md-plugins/vite-examples-plugin` can be used in Vue/Vite projects, and the `@md-plugins/md-plugin-*` packages can be used anywhere you configure MarkdownIt.
+
+The Quasar-specific limitation only applies to app extensions, such as Q-Press. Those app extensions target Quasar CLI Vite projects and are not intended for Webpack or JavaScript-only Quasar projects.
+:::
+
+:::details Q. Which package should I start with?
+
+**A.** Use `@md-plugins/quasar-app-extension-q-press` if you want the full Q-Press documentation site experience inside a Quasar CLI Vite project.
+
+Use `@md-plugins/vite-md-plugin` if you want Markdown pages or content in a Vue/Vite app without installing the Q-Press app extension.
+
+Use the individual `@md-plugins/md-plugin-*` packages when you already own the MarkdownIt setup and only need specific behavior.
+:::
+
+## Installation And Updates
+
+:::details Q. How do I install MD-Plugins?
+
+**A.** Install the package that matches your integration path. For direct Vite plugin usage:
 
 ```bash
-npm install @md-plugins/vite-md-plugin
+pnpm add @md-plugins/vite-md-plugin@beta
+bun add @md-plugins/vite-md-plugin@beta
+yarn add @md-plugins/vite-md-plugin@beta
+npm install @md-plugins/vite-md-plugin@beta
 ```
 
-Refer to the **Installation** section of each plugin's documentation for detailed instructions.
+For Q-Press in a Quasar CLI Vite project:
 
-### How do I configure Markdown Plugins?
+```bash
+quasar ext add @md-plugins/q-press@beta
+```
 
-Configuration varies depending on the plugin. Generally, you will need to import the plugin and use it with your Markdown processor (e.g., MarkdownIt). Refer to the **Configuration** section of each plugin's documentation for detailed instructions.
+Refer to the installation section for each package when you need package-specific options.
+:::
 
-### Can I use MD-Plugins without Quasar?
+:::details Q. How do I update an existing Q-Press project?
 
-Yes. The individual Markdown-it plugins and direct Vite plugins can be used in non-Quasar projects. For example, `@md-plugins/vite-md-plugin` and `@md-plugins/vite-examples-plugin` are Vite plugins that can be used in Vue/Vite projects, and the `@md-plugins/md-plugin-*` packages can be used anywhere you configure MarkdownIt.
+**A.** Update the app extension package, then invoke it so the generated files can be refreshed:
 
-The Quasar-specific limitation only applies to the app extensions, such as Q-Press. Those app extensions target Quasar CLI Vite projects and are not intended for Webpack or JavaScript-only Quasar projects.
+```bash
+pnpm up @md-plugins/quasar-app-extension-q-press@beta
+quasar ext invoke @md-plugins/q-press
+```
 
-## Plugin-Specific Questions
+Choose `Overwrite All` if you want the generated `src/.q-press` files to match the current beta templates.
+:::
 
-### How do I add custom classes to images?
+:::details Q. Does Q-Press support Webpack projects?
 
-You can use the `image` plugin to add custom classes to images. Here is an example configuration:
+**A.** No. Q-Press targets Quasar CLI Vite projects. The direct Markdown-it and Vite plugin packages are the right path for non-Quasar Vite projects.
+:::
 
-```typescript
+## Plugin Usage
+
+:::details Q. How do I add custom classes to images?
+
+**A.** Use the image plugin and pass the class through its options:
+
+```ts
 import MarkdownIt from 'markdown-it'
 import { imagePlugin } from '@md-plugins/md-plugin-image'
 
@@ -47,11 +85,13 @@ md.use(imagePlugin, {
 })
 ```
 
-### How do I extract and process frontmatter content?
+:::
 
-You can use the `frontmatter` plugin to extract and process frontmatter content from your Markdown files. Here is an example configuration:
+:::details Q. How do I extract and process frontmatter content?
 
-```typescript
+**A.** Use the frontmatter plugin and read the generated frontmatter from the MarkdownIt environment:
+
+```ts
 import MarkdownIt from 'markdown-it'
 import { frontmatterPlugin } from '@md-plugins/md-plugin-frontmatter'
 
@@ -65,17 +105,19 @@ md.use(frontmatterPlugin, {
   renderExcerpt: true,
 })
 
-const env: MarkdownItEnv = {}
+const env = {}
 const html = md.render(code, env)
 
 console.log(env.frontmatter)
 ```
 
-### How do I enhance code block rendering?
+:::
 
-You can use the `codeblocks` plugin to enhance code block rendering with syntax highlighting, tabs, and more. Here is an example configuration:
+:::details Q. How do I enhance code block rendering?
 
-```typescript
+**A.** Use the codeblocks plugin. It can render syntax-highlighted code blocks, copy buttons, tabbed code blocks, line highlighting, and code-group metadata:
+
+```ts
 import MarkdownIt from 'markdown-it'
 import { codeblocksPlugin } from '@md-plugins/md-plugin-codeblocks'
 
@@ -88,35 +130,46 @@ md.use(codeblocksPlugin, {
 })
 ```
 
-### How do I convert Markdown links into Vue components?
+:::
 
-You can use the `link` plugin to convert Markdown links into Vue components for SPA-friendly routing. Here is an example configuration:
+:::details Q. How do I convert Markdown links into Vue components?
 
-```typescript
+**A.** Use the link plugin to render Markdown links as Vue routing components:
+
+```ts
 import MarkdownIt from 'markdown-it'
 import { linkPlugin } from '@md-plugins/md-plugin-link'
 
 const md = new MarkdownIt()
 
 md.use(linkPlugin, {
-  linkTag: 'RouterLink', // or 'router-link'
+  linkTag: 'RouterLink',
   linkToKeyword: 'to',
   pageScript: 'import { RouterLink } from "vue-router"',
 })
 ```
 
+:::
+
 ## Troubleshooting
 
-### My Markdown content is not rendering correctly. What should I do?
+:::details Q. My Markdown content is not rendering correctly. What should I check first?
 
-Ensure that you have correctly installed and configured the plugins. Check the console for any error messages and refer to the documentation for troubleshooting tips. If the issue persists, reach out to our support team for assistance.
+**A.** Confirm that the package is installed, the plugin is registered with MarkdownIt or Vite, and your generated Q-Press files are current. If you recently upgraded Q-Press, run:
 
-### How do I report a bug or request a feature?
+```bash
+quasar ext invoke @md-plugins/q-press
+```
 
-You can report bugs or request features by opening an issue on the GitHub repository of the respective plugin. Provide as much detail as possible to help us understand and address your request.
+Choose `Overwrite All` when you want the generated files to match the latest templates.
+:::
 
-## Support
+:::details Q. How do I report a bug or request a feature?
 
-If you have any other questions or need further assistance, please refer to the Support page or contact our support team.
+**A.** Open an issue in the MD-Plugins repository and include the package name, version, reproduction steps, expected result, and actual result.
+:::
 
-Happy coding!
+:::details Q. Where can I get support?
+
+**A.** Start with the package documentation and FAQ. If you are blocked or found a bug, open a GitHub issue with enough detail for someone else to reproduce the problem.
+:::
