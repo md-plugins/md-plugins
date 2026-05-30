@@ -19,6 +19,8 @@ To use a theme, simply add the following line to your `src/css/quasar.variables.
 
 This will load the `sunrise` theme into your **Q-Press** enabled app.
 
+Import only one Q-Press theme, then add any project-specific overrides below that import. This keeps the theme variables predictable while still letting you tune colors, typography, and spacing for your site.
+
 ## Custom Themes
 
 If you want to build your own theme, add these variables to your `src/css/quasar.variables.(scss|sass)` file and modify them to your liking:
@@ -59,7 +61,7 @@ $light-pill: $brand-light;
 $light-text: $brand-light-text;
 $light-bg: $brand-light-bg;
 
-$dark-pill: scale-color($brand-primary, $lightness: -80%);
+$dark-pill: scale-color($brand-dark-bg, $lightness: 12%);
 $dark-text: $brand-dark-text;
 $dark-bg: $brand-dark-bg;
 
@@ -92,6 +94,8 @@ $header-height: 55px;
 $header-transition: 0.6s cubic-bezier(0.25, 0.8, 0.5, 1);
 $header-quick-transition: 0.28s ease-in-out;
 ```
+
+For custom themes, prefer deriving dark surfaces such as `$dark-pill` from `$brand-dark-bg` instead of `$brand-primary`. Accent colors can become too saturated or too dark when reused as backgrounds or text in dark mode.
 
 ## Media Query Breakpoints
 

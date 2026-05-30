@@ -109,10 +109,13 @@ ul {
     // .markdown-note__title,
     .markdown-link,
     .markdown-token {
-      color: scale-color($brand-primary, $lightness: -35%);
+      color: $brand-light-text;
+    }
+    .markdown-link {
+      border-bottom-color: rgba($brand-primary, 0.78);
     }
     .markdown-token {
-      border-color: scale-color($brand-primary, $lightness: -35%);
+      border-color: rgba($brand-primary, 0.5);
     }
     & strong {
       font-weight: 700;
