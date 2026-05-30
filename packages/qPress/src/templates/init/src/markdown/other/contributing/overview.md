@@ -35,10 +35,7 @@ If working with GitHub sounds like a lot, check out this [free video series](htt
 Before submitting a pull request, run the checks that match your change:
 
 ```bash
-pnpm format:check
-pnpm lint
-pnpm test
-pnpm check-types
+pnpm check:all
 ```
 
 Thanks for helping make MD-Plugins better for everyone.
