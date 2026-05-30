@@ -236,6 +236,13 @@ const mdPluginsMenu: SiteMenuItem = {
       ],
     },
     {
+      name: 'Mermaid',
+      children: [
+        { name: 'Overview', path: '/md-plugins/mermaid/overview' },
+        { name: 'Advanced', path: '/md-plugins/mermaid/advanced' },
+      ],
+    },
+    {
       name: 'Table',
       children: [
         { name: 'Overview', path: '/md-plugins/table/overview' },

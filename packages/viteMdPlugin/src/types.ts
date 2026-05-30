@@ -1,4 +1,5 @@
 import type { Options } from 'markdown-it'
+import type MarkdownIt from 'markdown-it'
 import type { MarkdownItEnv } from '@md-plugins/shared'
 import type { BlockquotePluginOptions } from '@md-plugins/md-plugin-blockquote'
 import type { CodeblockPluginOptions } from '@md-plugins/md-plugin-codeblocks'
@@ -7,7 +8,11 @@ import type { HeadersPluginOptions } from '@md-plugins/md-plugin-headers'
 import type { ImagePluginOptions } from '@md-plugins/md-plugin-image'
 import type { InlineCodePluginOptions } from '@md-plugins/md-plugin-inlinecode'
 import type { LinkPluginOptions } from '@md-plugins/md-plugin-link'
+import type { MermaidPluginOptions } from '@md-plugins/md-plugin-mermaid'
 import type { TablePluginOptions } from '@md-plugins/md-plugin-table'
+
+export type MarkdownItPlugin = (md: MarkdownIt, ...params: any[]) => void
+export type MarkdownItPluginEntry = MarkdownItPlugin | [MarkdownItPlugin, ...any[]]
 
 export interface MarkdownOptions extends Options {
   html?: boolean
@@ -21,7 +26,9 @@ export interface MarkdownOptions extends Options {
   imagePlugin?: ImagePluginOptions
   inlineCodePlugin?: InlineCodePluginOptions
   linkPlugin?: LinkPluginOptions
+  mermaidPlugin?: MermaidPluginOptions
   tablePlugin?: TablePluginOptions
+  markdownItPlugins?: MarkdownItPluginEntry[]
   preProcess?: (env: MarkdownItEnv) => void
   postProcess?: (env: MarkdownItEnv) => void
 }

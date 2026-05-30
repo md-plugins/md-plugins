@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@quasar/extras": "2.0.0",
+    "mermaid": "^11.15.0",
     "pinia": "^3.0.4",
     "quasar": "^2.19.3",
     "shiki": "^4.1.0",

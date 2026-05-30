@@ -11,6 +11,7 @@ import { inlinecodePlugin } from '@md-plugins/md-plugin-inlinecode'
 import { imagePlugin } from '@md-plugins/md-plugin-image'
 import { codeblocksPlugin } from '@md-plugins/md-plugin-codeblocks'
 import { blockquotePlugin } from '@md-plugins/md-plugin-blockquote'
+import { mermaidPlugin } from '@md-plugins/md-plugin-mermaid'
 import { tablePlugin } from '@md-plugins/md-plugin-table'
 import { titlePlugin } from '@md-plugins/md-plugin-title'
 import type {
@@ -20,7 +21,7 @@ import type {
   ContainerOptions,
 } from '@md-plugins/md-plugin-containers'
 import { containersPlugin } from '@md-plugins/md-plugin-containers'
-import type { MarkdownOptions } from './types'
+import type { MarkdownItPluginEntry, MarkdownOptions } from './types'
 
 export type MarkdownRenderer = MarkdownIt
 
@@ -83,6 +84,20 @@ const createContainer: CreateContainerFn = (
       },
     },
   ]
+}
+
+function registerUserMarkdownItPlugins(
+  md: MarkdownIt,
+  plugins: MarkdownItPluginEntry[] | undefined,
+): void {
+  for (const entry of plugins ?? []) {
+    if (Array.isArray(entry)) {
+      const [plugin, ...params] = entry
+      md.use(plugin, ...params)
+    } else {
+      md.use(entry)
+    }
+  }
 }
 
 /**
@@ -148,9 +163,11 @@ export function createMarkdownRenderer(options: MarkdownOptions = {}): MarkdownR
     ],
     ...options,
   })
+  md.use(mermaidPlugin, { ...options })
   md.use(linkPlugin, { ...options })
   md.use(inlinecodePlugin, { ...options })
   md.use(imagePlugin, { ...options })
+  registerUserMarkdownItPlugins(md, options.markdownItPlugins)
 
   return {
     // env: Environment for storing metadata

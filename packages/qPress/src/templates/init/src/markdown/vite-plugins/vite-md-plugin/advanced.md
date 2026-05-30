@@ -11,7 +11,7 @@ The `viteMdPlugin` is a powerful tool for integrating Markdown processing into y
 
 ```ts
 import { Plugin } from 'vite'
-import { Options } from 'markdown-it'
+import MarkdownIt, { Options } from 'markdown-it'
 import { BlockquotePluginOptions } from '@md-plugins/md-plugin-blockquote'
 import { CodeblockPluginOptions } from '@md-plugins/md-plugin-codeblocks'
 import { FrontmatterPluginOptions } from '@md-plugins/md-plugin-frontmatter'
@@ -19,21 +19,27 @@ import { HeadersPluginOptions } from '@md-plugins/md-plugin-headers'
 import { ImagePluginOptions } from '@md-plugins/md-plugin-image'
 import { InlineCodePluginOptions } from '@md-plugins/md-plugin-inlinecode'
 import { LinkPluginOptions } from '@md-plugins/md-plugin-link'
+import { MermaidPluginOptions } from '@md-plugins/md-plugin-mermaid'
 import { TablePluginOptions } from '@md-plugins/md-plugin-table'
+
+type MarkdownItPlugin = (md: MarkdownIt, ...params: any[]) => void
+type MarkdownItPluginEntry = MarkdownItPlugin | [MarkdownItPlugin, ...any[]]
 
 interface MarkdownOptions extends Options {
   html?: boolean
   linkify?: boolean
   typographer?: boolean
   breaks?: boolean
-  blockquote?: BlockquotePluginOptions
-  codeblocks?: CodeblockPluginOptions
-  frontmatter?: FrontmatterPluginOptions
-  headers?: HeadersPluginOptions | boolean
-  image?: ImagePluginOptions
-  inlinecode?: InlineCodePluginOptions
-  link?: LinkPluginOptions
-  table?: TablePluginOptions
+  blockquotePlugin?: BlockquotePluginOptions
+  codeblockPlugin?: CodeblockPluginOptions
+  frontmatterPlugin?: FrontmatterPluginOptions
+  headersPlugin?: HeadersPluginOptions | boolean
+  imagePlugin?: ImagePluginOptions
+  inlineCodePlugin?: InlineCodePluginOptions
+  linkPlugin?: LinkPluginOptions
+  mermaidPlugin?: MermaidPluginOptions
+  tablePlugin?: TablePluginOptions
+  markdownItPlugins?: MarkdownItPluginEntry[]
 }
 
 interface MenuItem {
@@ -128,6 +134,59 @@ export default defineConfig({
 })
 ```
 
+### Using Other Markdown-It Plugins
+
+The `viteMdPlugin` already includes the md-plugins used by Q-Press, plus inserted text support for `++text++`. If you need additional Markdown-it syntax, install the plugin and pass it through `config.markdownItPlugins`.
+
+```tabs
+<<| bash pnpm |>>
+pnpm add markdown-it-mark markdown-it-sub markdown-it-sup markdown-it-footnote
+<<| bash bun |>>
+bun add markdown-it-mark markdown-it-sub markdown-it-sup markdown-it-footnote
+<<| bash yarn |>>
+yarn add markdown-it-mark markdown-it-sub markdown-it-sup markdown-it-footnote
+<<| bash npm |>>
+npm install markdown-it-mark markdown-it-sub markdown-it-sup markdown-it-footnote
+```
+
+```ts
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import markdownItFootnote from 'markdown-it-footnote'
+import markdownItMark from 'markdown-it-mark'
+import markdownItSub from 'markdown-it-sub'
+import markdownItSup from 'markdown-it-sup'
+import { viteMdPlugin } from '@md-plugins/vite-md-plugin'
+
+export default defineConfig({
+  plugins: [
+    vue(),
+    viteMdPlugin({
+      path: './src/markdown',
+      menu: [],
+      config: {
+        markdownItPlugins: [
+          markdownItMark, // ==highlight==
+          markdownItSub, // H~2~O
+          markdownItSup, // E=mc^2^
+          markdownItFootnote, // footnote references
+        ],
+      },
+    }),
+  ],
+})
+```
+
+If you own a raw MarkdownIt instance instead of using `viteMdPlugin`, wire the plugins directly:
+
+```ts
+import MarkdownIt from 'markdown-it'
+import markdownItMark from 'markdown-it-mark'
+
+const md = new MarkdownIt()
+md.use(markdownItMark)
+```
+
 ### Quasar Framework Configuration
 
 If you’re using the Quasar Framework with Vite, additional configuration is needed to enable support for `.md` files:
@@ -210,55 +269,26 @@ export interface MenuItem {
 #### `config`
 
 - **Type**: `MarkdownOptions`
-- **Description**: Additional configuration options for the Markdown processing.
+- **Description**: Additional configuration options for the Markdown processor and bundled md-plugins.
 
-````ts
-import { Options } from 'markdown-it';
-import { BlockquotePluginOptions } from '@md-plugins/md-plugin-blockquote';
-import { CodeblockPluginOptions } from '@md-plugins/md-plugin-codeblocks';
-import { FrontmatterPluginOptions } from '@md-plugins/md-plugin-frontmatter';
-import { HeadersPluginOptions } from '@md-plugins/md-plugin-headers';
-import { ImagePluginOptions } from '@md-plugins/md-plugin-image';
-import { InlineCodePluginOptions } from '@md-plugins/md-plugin-inlinecode';
-import { LinkPluginOptions } from '@md-plugins/md-plugin-link';
-import { TablePluginOptions } from '@md-plugins/md-plugin-table';
+Use `config.markdownItPlugins` for extra Markdown-it syntax that md-plugins does not bundle by default. Use `config.mermaidPlugin` to customize Mermaid rendering.
 
-interface MarkdownOptions extends Options {
-    html?: boolean;
-    linkify?: boolean;
-    typographer?: boolean;
-    breaks?: boolean;
-    blockquote?: BlockquotePluginOptions;
-    codeblocks?: CodeblockPluginOptions;
-    frontmatter?: FrontmatterPluginOptions;
-    headers?: HeadersPluginOptions | boolean;
-    image?: ImagePluginOptions;
-    inlinecode?: InlineCodePluginOptions;
-    link?: LinkPluginOptions;
-    table?: TablePluginOptions;
-}
-```
-
-### Example Configuration
-
-Here is an example of how you can configure the `viteMdPlugin` with custom options:
-
-```typescript
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
+```ts
 import { viteMdPlugin } from '@md-plugins/vite-md-plugin'
+import markdownItMark from 'markdown-it-mark'
 
-const menu = [
-  { title: 'Home', path: '/' },
-  { title: 'Guide', path: '/guide/' },
-  { title: 'API', path: '/api/' },
-]
-const basePath = '/docs'
-
-export default defineConfig({
-  plugins: [vue(), viteMdPlugin(basePath, menu)],
+viteMdPlugin({
+  path: './src/markdown',
+  menu: [],
+  config: {
+    markdownItPlugins: [markdownItMark],
+    mermaidPlugin: {
+      renderMode: 'component',
+      componentName: 'MarkdownMermaid',
+    },
+  },
 })
-````
+```
 
 ### Using the Plugin
 

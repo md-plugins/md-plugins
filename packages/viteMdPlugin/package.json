@@ -51,6 +51,7 @@
     "@md-plugins/md-plugin-imports": "workspace:*",
     "@md-plugins/md-plugin-inlinecode": "workspace:*",
     "@md-plugins/md-plugin-link": "workspace:*",
+    "@md-plugins/md-plugin-mermaid": "workspace:*",
     "@md-plugins/md-plugin-table": "workspace:*",
     "@md-plugins/md-plugin-title": "workspace:*",
     "@md-plugins/shared": "workspace:*",

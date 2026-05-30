@@ -1,0 +1,54 @@
+{
+  "name": "@md-plugins/md-plugin-mermaid",
+  "version": "0.1.0-beta.19",
+  "description": "A markdown-it plugin for rendering Mermaid diagrams.",
+  "keywords": [
+    "markdown-it",
+    "mermaid",
+    "quasarframework",
+    "types",
+    "vue"
+  ],
+  "homepage": "https://github.com/md-plugins",
+  "bugs": {
+    "url": "https://github.com/md-plugins/md-plugins/issues"
+  },
+  "license": "MIT",
+  "author": "hawkeye64 <galbraith64@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/md-plugins/md-plugins.git"
+  },
+  "files": [
+    "./dist"
+  ],
+  "type": "module",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      }
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "unbuild",
+    "clean": "rm -rf dist/ node_modules/",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "@md-plugins/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/markdown-it": "^14.1.2",
+    "markdown-it": "^14.2.0"
+  },
+  "peerDependencies": {
+    "markdown-it": "^14.2.0"
+  }
+}

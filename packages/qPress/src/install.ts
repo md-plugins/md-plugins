@@ -29,6 +29,7 @@ export default defineInstallScript(async (api) => {
 
   api.extendPackageJson({
     dependencies: {
+      mermaid: '^11.15.0',
       shiki: '^4.1.0',
     },
   })
