@@ -40,12 +40,12 @@ See the [documentation](https://md-plugins.netlify.app/quasar-app-extensions/qpr
 - `pnpm i -D markdown-it @types/markdown-it`
 - `bun add -d markdown-it @types/markdown-it`
 
-3. Add `prismjs` to your project dependencies
+3. Q-Press adds `shiki` to your project dependencies when invoked. If you are wiring the generated files manually, add it yourself:
 
-- `npm i prismjs`
-- `yarn add prismjs`
-- `pnpm add prismjs`
-- `bun add prismjs`
+- `npm i shiki`
+- `yarn add shiki`
+- `pnpm add shiki`
+- `bun add shiki`
 
 ## Modifications
 

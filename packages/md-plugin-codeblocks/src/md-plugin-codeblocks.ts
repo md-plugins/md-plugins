@@ -2,14 +2,18 @@ import MarkdownIt from 'markdown-it'
 import type { PluginWithOptions, Options } from 'markdown-it'
 import type Token from 'markdown-it/lib/token.mjs'
 import type { MarkdownItEnv } from '@md-plugins/shared'
-import type { Grammar } from 'prismjs'
 import type { CodeblockPluginOptions, Lang } from './types'
-import prism from 'prismjs'
-import loadLanguages from 'prismjs/components/index.js'
 import { resolvePluginOptions } from '@md-plugins/shared'
+import {
+  buildCodeBlockTransformers,
+  highlighter,
+  normalizeShikiLang,
+  themeOptions,
+  type CodeLineProps,
+} from './shiki'
 
 /**
- * A list of default programming languages supported by Prism.
+ * A list of default programming languages supported by Shiki.
  * Each language in the list has a name and can optionally specify aliases and whether it has a custom copy button.
  */
 const defaultLangList: Lang[] = [
@@ -17,6 +21,7 @@ const defaultLangList: Lang[] = [
   { name: 'bash', customCopy: true },
   { name: 'javascript', aliases: 'javascript|js' },
   { name: 'typescript', aliases: 'typescript|ts' },
+  { name: 'yaml', aliases: 'yaml|yml' },
   { name: 'sass' },
   { name: 'scss' },
   { name: 'css' },
@@ -24,6 +29,7 @@ const defaultLangList: Lang[] = [
   { name: 'xml' },
   { name: 'nginx' },
   { name: 'html' },
+  { name: 'vue' },
   { name: 'diff' }, // special grammars
 ]
 
@@ -66,9 +72,6 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
     pageScripts = DEFAULT_CODEBLOCK_PLUGIN_OPTIONS.pageScripts,
     langList = defaultLangList,
   } = resolvedOptions
-
-  // Load the languages defined in the options
-  loadLanguages(langList.map((l) => l.name))
 
   // Create a custom copy-language list
   const customCopyLangList = langList.filter((l) => l.customCopy === true).map((l) => l.name)
@@ -159,11 +162,6 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
   const magicCommentRE = new RegExp(` *\\[\\[! (?<type>(${magicCommentList.join('|')}))\\]\\] *`)
   const magicCommentGlobalRE = new RegExp(magicCommentRE, 'g')
 
-  interface CodeLineProps {
-    prefix: string[]
-    classList: string[]
-  }
-
   function extractCodeLineProps(lines: string[], attrs: { [key: string]: any }) {
     const acc: { [key: string]: string[] } = {}
 
@@ -241,15 +239,6 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
     return acc
   }
 
-  function renderCodeBlock(html: string, codeClass?: string): string {
-    return `<code${codeClass ? ` class="${codeClass}"` : ''}>${html}</code>`
-  }
-
-  function getPrismHighlightedContent(rawContent: string, lang: string): string {
-    const content = rawContent.trim()
-    return prism.highlight(content, prism.languages[lang] as Grammar, lang)
-  }
-
   function getHighlightedContent(rawContent: string, attrs: { [key: string]: any }): string {
     const { lang, maxheight } = attrs
 
@@ -260,39 +249,21 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
       content = content.trim().replace(magicCommentGlobalRE, '')
     }
 
-    const html = getPrismHighlightedContent(content, lang)
-      .split('\n')
-      .map((line, lineIndex) => {
-        const target = lineList[lineIndex]
-
-        if (target === void 0) return line
-        let lineHtml = ''
-        lineHtml +=
-          target.classList.length !== 0
-            ? `<span class="c-line ${target.classList.join(' ')}"></span>`
-            : ''
-        lineHtml +=
-          target.prefix.length !== 0
-            ? `<span class="c-lpref">${target.prefix.join(' ')}</span>`
-            : ''
-        lineHtml += line
-        return lineHtml
-      })
-      .join('\n')
-
-    // langClass is causing interference with numbers, add, rem, etc
-    // commenting out for now
-    // const langClass = lang === 'css' ? ' language-css' : ` language-${lang}`
-
-    const preAttrs = maxheight !== void 0 ? ` style="max-height:${maxheight}"` : ''
-
     const langProp = customCopyLangList.includes(lang) === true ? ` lang="${lang}"` : ''
 
     return (
-      // `<pre v-pre class="${preClass}${langClass}"${preAttrs}>` +
-      `<pre v-pre class="${preClass}"${preAttrs}>` +
-      renderCodeBlock(html, codeClass) +
-      `</pre><${copyButtonComponent}${langProp} />`
+      highlighter
+        .codeToHtml(content, {
+          lang: normalizeShikiLang(lang),
+          ...themeOptions,
+          transformers: buildCodeBlockTransformers({
+            codeClass,
+            lineList,
+            maxheight,
+            preClass: preClass ?? 'markdown-code',
+          }),
+        })
+        .replace('<pre ', '<pre v-pre ') + `<${copyButtonComponent}${langProp} />`
     )
   }
 

@@ -1,10 +1,10 @@
 # md-plugin-codeblocks
 
-A **Markdown-It** plugin that enhances code block rendering by providing syntax highlighting, line numbering, and support for advanced features like tabbed code blocks. It integrates with Prism.js for syntax highlighting and allows customization for various use cases.
+A **Markdown-It** plugin that enhances code block rendering by providing syntax highlighting, line numbering, and support for advanced features like tabbed code blocks. It integrates with Shiki for syntax highlighting and allows customization for various use cases.
 
 ## Features
 
-- **Syntax Highlighting**: Automatically highlights code blocks using **Prism.js**.
+- **Syntax Highlighting**: Automatically highlights code blocks using **Shiki**.
 - **Line Numbering**: Optionally adds line numbers to code blocks.
 - **Magic Comments**: Supports special comments like `[[! highlight]]`, `[[! add]]`, and `[[! rem]]` for inline code annotations.
 - **Tabbed Code Blocks**: Enables the creation of tabbed code blocks for multi-language or multi-file examples.

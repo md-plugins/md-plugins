@@ -59,7 +59,7 @@ interface CodeblockPluginOptions {
    */
   pageScripts?: string[]
   /**
-   * Optional Prism languages configuration array. This allows you to override or add custom language definitions.
+   * Optional Shiki languages configuration array. This allows you to override or add custom language definitions.
    * Each item can have a `name`, optional `aliases`, and `customCopy` boolean.
    */
   langList?: Lang[]
@@ -201,7 +201,7 @@ The `codeblocks` plugin provides several options for customization. Here are the
 #### `langList`
 
 - **Type**: `Array<{ name: string; aliases?: string; customCopy?: boolean }>`
-- **Description**: Optional Prism languages configuration array. This allows you to override or add custom language definitions. Each item can have a `name`, optional `aliases`, and `customCopy` boolean.
+- **Description**: Optional Shiki languages configuration array. This allows you to override or add custom language definitions. Each item can have a `name`, optional `aliases`, and `customCopy` boolean.
 
 ### Conclusion
 

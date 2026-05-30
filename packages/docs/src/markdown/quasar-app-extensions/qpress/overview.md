@@ -55,17 +55,17 @@ yarn add -D markdown-it @types/markdown-it
 npm i -D markdown-it @types/markdown-it
 ```
 
-2. **Add `prismjs` to your project dependencies:**
+2. **Q-Press adds `shiki` to your project dependencies when invoked. If you are wiring the generated files manually, add it yourself:**
 
 ```tabs
 <<| bash pnpm |>>
-pnpm add prismjs
+pnpm add shiki
 <<| bash bun |>>
-bun add prismjs
+bun add shiki
 <<| bash yarn |>>
-yarn add prismjs
+yarn add shiki
 <<| bash npm |>>
-npm i prismjs
+npm i shiki
 ```
 
 ## Configuration

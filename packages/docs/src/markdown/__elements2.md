@@ -229,7 +229,7 @@ sudo apt autoremove
    { name: 'diff' }
  ]
 
-@@ -20,6 +22,12 @@ loadLanguages(langList.map(l => l.name))
+@@ -20,6 +22,12 @@ const highlighter = await createHighlighter({
 
  const langMatch = langList.map(l => l.aliases || l.name).join('|')
 
@@ -268,7 +268,7 @@ sudo apt autoremove
 
 -function highlight (content, attrs) {
 -  const { lang, numbered } = attrs
--  const highlightedText = prism.highlight(content, prism.languages[ lang ], lang)
+-  const highlightedText = highlighter.codeToHtml(content, { lang })
 +const magicCommentRE = / *\/\/\[! (?<klass>[\w-]+)\] */
 +const magicCommentGlobalRE = new RegExp(magicCommentRE, 'g')
 

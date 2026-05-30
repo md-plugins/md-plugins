@@ -27,6 +27,12 @@ export default defineInstallScript(async (api) => {
     throw new Error('This extension requires TypeScript')
   }
 
+  api.extendPackageJson({
+    dependencies: {
+      shiki: '^4.1.0',
+    },
+  })
+
   const path = api.resolve.src('siteConfig')
   if (existsSync(path)) {
     // this is an update scenario

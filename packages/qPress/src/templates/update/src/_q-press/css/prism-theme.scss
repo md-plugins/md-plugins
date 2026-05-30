@@ -29,10 +29,17 @@
   &--copying {
     .c-lpref,
     .c-line,
+    .line.diff.remove,
     .token.deleted-sign,
     .token.prefix {
       display: none;
     }
+  }
+
+  .line {
+    position: relative;
+    display: inline-block;
+    width: 100%;
   }
 }
 
@@ -100,6 +107,11 @@
 }
 
 body.body--light {
+  .shiki,
+  .shiki span {
+    color: var(--shiki-light);
+  }
+
   .markdown-code {
     color: $brand-light-codeblock-text;
     background-color: $brand-light-codeblock-bg;
@@ -205,6 +217,11 @@ body.body--light {
 }
 
 body.body--dark {
+  .shiki,
+  .shiki span {
+    color: var(--shiki-dark);
+  }
+
   .markdown-code {
     color: $brand-dark-codeblock-text;
     background-color: $brand-dark-codeblock-bg;

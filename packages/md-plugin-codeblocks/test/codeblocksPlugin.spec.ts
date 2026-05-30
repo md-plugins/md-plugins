@@ -24,10 +24,12 @@ console.log('Hello, world!');
     expect(renderedHTML).toContain('</MarkdownPrerender>')
 
     // Check for syntax highlighting
-    expect(renderedHTML).toContain('<pre v-pre class="markdown-code">')
+    expect(renderedHTML).toContain('<pre v-pre class="shiki')
+    expect(renderedHTML).toContain('markdown-code')
     expect(renderedHTML).toContain('<code>')
-    expect(renderedHTML).toContain('console<span class="token punctuation">.')
-    expect(renderedHTML).toContain('<span class="token string">\'Hello, world!\'</span>')
+    expect(renderedHTML).toContain('--shiki-light')
+    expect(renderedHTML).toContain('console.')
+    expect(renderedHTML).toContain("'Hello, world!'")
 
     // Check for copy button
     expect(renderedHTML).toContain('<MarkdownCopyButton')
@@ -51,7 +53,8 @@ console.log('Hello, world!');
     const renderedHTML = md.render(markdownInput)
 
     expect(renderedHTML).toContain('<MarkdownPrerender>')
-    expect(renderedHTML).toContain('<pre v-pre class="markdown-code">')
+    expect(renderedHTML).toContain('<pre v-pre class="shiki')
+    expect(renderedHTML).toContain('markdown-code')
     expect(renderedHTML).toContain('<MarkdownCopyButton')
   })
 
@@ -118,10 +121,11 @@ const x = {
     expect(renderedHTML).toContain('<q-tab-panel class="q-pa-none" name="Three (with diff)">')
 
     // Verify tab contents
-    expect(renderedHTML).toContain('<span class="token keyword">export</span>')
+    expect(renderedHTML).toContain('export')
     expect(renderedHTML).toContain('<span class="c-lpref">')
-    expect(renderedHTML).toContain('<span class="token boolean">true</span>')
-    expect(renderedHTML).toContain('<span class="token prefix inserted">+</span>')
+    expect(renderedHTML).toContain('true')
+    expect(renderedHTML).toContain('<span class="c-line line-add"></span>')
+    expect(renderedHTML).toContain('<span class="c-line line-rem"></span>')
   })
 
   it('falls back gracefully for unsupported languages', () => {
@@ -136,7 +140,8 @@ some random code
 
     const renderedHTML = md.render(markdownInput)
 
-    expect(renderedHTML).toContain('<pre v-pre class="markdown-code">')
+    expect(renderedHTML).toContain('<pre v-pre class="shiki')
+    expect(renderedHTML).toContain('markdown-code')
     expect(renderedHTML).toContain('<code>')
   })
 
@@ -158,9 +163,8 @@ console.log('Normal Line');
 
     expect(renderedHTML).toContain('<span class="c-line line-add">')
     expect(renderedHTML).toContain('<span class="c-line line-rem">')
-    expect(renderedHTML).toContain(
-      `<span class="c-lpref"> </span>console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'Normal Line'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>`,
-    )
+    expect(renderedHTML).toContain(`<span class="c-lpref"> </span>`)
+    expect(renderedHTML).toContain(`'Normal Line'`)
   })
 
   it('renders empty tabs gracefully with no content', () => {
@@ -189,10 +193,10 @@ console.log('Normal Line');
 
     // Verify the content of empty tabs contains a <pre> block and copy button
     expect(renderedHTML).toContain(
-      '<q-tab-panel class="q-pa-none" name="Empty Tab"><pre v-pre class="markdown-code"><code></code></pre><MarkdownCopyButton /></q-tab-panel>',
+      '<q-tab-panel class="q-pa-none" name="Empty Tab"><pre v-pre class="shiki',
     )
     expect(renderedHTML).toContain(
-      '<q-tab-panel class="q-pa-none" name="Another Empty Tab"><pre v-pre class="markdown-code"><code></code></pre><MarkdownCopyButton /></q-tab-panel>',
+      '<q-tab-panel class="q-pa-none" name="Another Empty Tab"><pre v-pre class="shiki',
     )
   })
 })

@@ -639,7 +639,7 @@ md.use(codeblocksPlugin, {
   langList: [
     { name: 'javascript', aliases: 'javascript|js' },
     { name: 'typescript', aliases: 'typescript|ts' },
-  ], // Optional: Customize Prism languages
+  ], // Optional: Customize Shiki languages
 })
 
 // Now you can use the Codeblocks plugin in your Markdown content
@@ -659,7 +659,7 @@ The Codeblocks plugin accepts the following options:
 - **preClass**: The class to be used for the pre tag. Default is `markdown-pre`.
 - **codeClass**: The class to be used for the code tag. Default is `markdown-code`.
 - **pageScripts**: An array of page scripts to be included.
-- **langList**: Optional Prism languages configuration array. Each item can have a name, optional aliases, and customCopy boolean.
+- **langList**: Optional Shiki languages configuration array. Each item can have a name, optional aliases, and customCopy boolean.
 
 When `defaultLang` is `markup`, the plugin will use the `markup` language for code blocks which means no highlighting will be applied.
 
@@ -694,7 +694,7 @@ md.use(codeblocksPlugin, {
   langList: [
     { name: 'javascript', aliases: 'javascript|js' },
     { name: 'typescript', aliases: 'typescript|ts' },
-  ], // Customize Prism languages
+  ], // Customize Shiki languages
 })
   .use(markdownItAnchor)
   .use(markdownItToc)
