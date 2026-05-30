@@ -10,14 +10,14 @@ The Mermaid plugin is small, but it has two different integration paths:
 
 ## Options
 
-| Option          | Type         | Default              | Description                                  |
-| --------------- | ------------ | -------------------- | -------------------------------------------- | ------------------------- |
-| `languages`     | `string[]`   | `['mermaid', 'mmd']` | Fence languages treated as Mermaid diagrams. |
-| `renderMode`    | `'component' | 'pre'`               | `'component'`                                | Output mode for diagrams. |
-| `componentName` | `string`     | `'MarkdownMermaid'`  | Component used in component mode.            |
-| `codeProp`      | `string`     | `'code'`             | Component prop that receives Mermaid source. |
-| `preClass`      | `string`     | `'mermaid'`          | CSS class used in pre mode.                  |
-| `pageScripts`   | `string[]`   | Q-Press import       | Imports added to generated Vue pages.        |
+| Option          | Type                    | Default              | Description                                  |
+| --------------- | ----------------------- | -------------------- | -------------------------------------------- |
+| `languages`     | `string[]`              | `['mermaid', 'mmd']` | Fence languages treated as Mermaid diagrams. |
+| `renderMode`    | `'component' \| 'pre'`  | `'component'`        | Output mode for diagrams.                    |
+| `componentName` | `string`                | `'MarkdownMermaid'`  | Component used in component mode.            |
+| `codeProp`      | `string`                | `'code'`             | Component prop that receives Mermaid source. |
+| `preClass`      | `string`                | `'mermaid'`          | CSS class used in pre mode.                  |
+| `pageScripts`   | `string[]`              | Q-Press import       | Imports added to generated Vue pages.        |
 
 ## Component Mode
 
