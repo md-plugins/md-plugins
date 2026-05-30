@@ -106,7 +106,9 @@ export function buildCodeBlockTransformers({
 }
 
 const twoslashTransformer = transformerTwoslash({
-  renderer: rendererRich(),
+  renderer: rendererRich({
+    queryRendering: 'line',
+  }),
   twoslashOptions: {
     compilerOptions: {
       traceResolution: false,

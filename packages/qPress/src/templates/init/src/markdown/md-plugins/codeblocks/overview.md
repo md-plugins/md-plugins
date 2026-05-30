@@ -84,6 +84,18 @@ const label = count.toFixed(0)
 
 If you add a `// ^?` query marker, TwoSlash renders that query result persistently below the matching expression. That is useful for teaching types directly in the page, while normal identifier details remain hover-based.
 
+```ts [twoslash]
+const selectedIcon = 'event' as const
+//    ^?
+```
+
+````markup
+```ts [twoslash]
+const selectedIcon = 'event' as const
+//    ^?
+```
+````
+
 ### Code Block with Restricted Height
 
 ```js [maxheight=300px]
