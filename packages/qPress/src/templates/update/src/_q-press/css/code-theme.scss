@@ -39,6 +39,10 @@
     display: inline-block;
     width: 100%;
   }
+
+  &:has(.twoslash-query-persisted) > code {
+    padding-bottom: calc(16px + 2.2em);
+  }
 }
 
 .c-line {
@@ -163,6 +167,10 @@
   .twoslash-query-persisted .twoslash-popup-container {
     z-index: 9;
     transform: translateY(1.5em);
+  }
+
+  .twoslash-query-persisted {
+    display: inline-block;
   }
 
   .twoslash-hover:hover .twoslash-popup-container,
