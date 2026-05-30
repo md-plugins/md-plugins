@@ -29,9 +29,7 @@
   &--copying {
     .c-lpref,
     .c-line,
-    .line.diff.remove,
-    .token.deleted-sign,
-    .token.prefix {
+    .line.diff.remove {
       display: none;
     }
   }

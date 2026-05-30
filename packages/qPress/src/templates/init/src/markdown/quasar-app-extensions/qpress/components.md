@@ -14,8 +14,6 @@ import MarkdownCardLinkApi from '@/.q-press/api/components/MarkdownCardLink.json
 import MarkdownCardTitleApi from '@/.q-press/api/components/MarkdownCardTitle.json'
 import MarkdownCodeApi from '@/.q-press/api/components/MarkdownCode.json'
 import MarkdownCodepenApi from '@/.q-press/api/components/MarkdownCodepen.json'
-
-import MarkdownCodePrismApi from '@/.q-press/api/components/MarkdownCodePrism.json'
 import MarkdownCopyButtonApi from '@/.q-press/api/components/MarkdownCopyButton.json'
 import MarkdownDrawerSidebarApi from '@/.q-press/api/components/MarkdownDrawerSidebar.json'
 import MarkdownDrawerTocApi from '@/.q-press/api/components/MarkdownDrawerToc.json'
@@ -44,8 +42,6 @@ import MarkdownPrerenderApi from '@/.q-press/api/components/MarkdownPrerender.js
 <MarkdownApi :api="MarkdownCardTitleApi" name="MarkdownCardTitle"/>
 <MarkdownApi :api="MarkdownCodeApi" name="MarkdownCode"/>
 <MarkdownApi :api="MarkdownCodepenApi" name="MarkdownCodepen"/>
-
-<MarkdownApi :api="MarkdownCodePrismApi" name="MarkdownCodePrism"/>
 <MarkdownApi :api="MarkdownCopyButtonApi" name="MarkdownCopyButton"/>
 <!-- No <MarkdownApi :api="MarkdownDrawerSidebarApi" name="MarkdownDrawerSidebar"/> -->
 <!-- No <MarkdownApi :api="MarkdownDrawerTocApi" name="MarkdownDrawerToc"/> -->

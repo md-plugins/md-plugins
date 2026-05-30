@@ -2,7 +2,7 @@
 @use './fonts.scss';
 
 // Keep this import so Shiki code blocks share the selected qPress theme variables.
-@import './prism-theme.scss';
+@import './code-theme.scss';
 
 .material-icons {
   font-family: 'Material Icons';
