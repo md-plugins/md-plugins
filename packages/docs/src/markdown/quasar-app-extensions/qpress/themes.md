@@ -11,6 +11,88 @@ Currently, there are five themes available for **Q-Press**:
 - **Sunrise**
 - **Tawny**
 
+## Theme Gallery
+
+Each preview below is wrapped in a `qpress-theme-preview` namespace. That means the gallery can show every bundled theme at once without importing every theme file or overriding the active site theme.
+
+<div class="qpress-theme-gallery">
+  <article class="qpress-theme-preview qpress-theme-preview--default">
+    <div class="qpress-theme-preview__header">
+      <span class="qpress-theme-preview__eyebrow">Default</span>
+      <strong>Clean technical docs</strong>
+    </div>
+    <div class="qpress-theme-preview__body">
+      <div class="qpress-theme-preview__swatches">
+        <span class="qpress-theme-preview__swatch qpress-theme-preview__swatch--primary"></span>
+        <span class="qpress-theme-preview__swatch qpress-theme-preview__swatch--secondary"></span>
+        <span class="qpress-theme-preview__swatch qpress-theme-preview__swatch--accent"></span>
+      </div>
+      <p>A crisp blue and orange palette with neutral surfaces.</p>
+      <code class="qpress-theme-preview__code">markdown-token</code>
+    </div>
+  </article>
+  <article class="qpress-theme-preview qpress-theme-preview--mystic">
+    <div class="qpress-theme-preview__header">
+      <span class="qpress-theme-preview__eyebrow">Mystic</span>
+      <strong>Vivid reference sites</strong>
+    </div>
+    <div class="qpress-theme-preview__body">
+      <div class="qpress-theme-preview__swatches">
+        <span class="qpress-theme-preview__swatch qpress-theme-preview__swatch--primary"></span>
+        <span class="qpress-theme-preview__swatch qpress-theme-preview__swatch--secondary"></span>
+        <span class="qpress-theme-preview__swatch qpress-theme-preview__swatch--accent"></span>
+      </div>
+      <p>A purple, cyan, and ember palette with a more expressive voice.</p>
+      <code class="qpress-theme-preview__code">markdown-token</code>
+    </div>
+  </article>
+  <article class="qpress-theme-preview qpress-theme-preview--newspaper">
+    <div class="qpress-theme-preview__header">
+      <span class="qpress-theme-preview__eyebrow">Newspaper</span>
+      <strong>Editorial documentation</strong>
+    </div>
+    <div class="qpress-theme-preview__body">
+      <div class="qpress-theme-preview__swatches">
+        <span class="qpress-theme-preview__swatch qpress-theme-preview__swatch--primary"></span>
+        <span class="qpress-theme-preview__swatch qpress-theme-preview__swatch--secondary"></span>
+        <span class="qpress-theme-preview__swatch qpress-theme-preview__swatch--accent"></span>
+      </div>
+      <p>A restrained black, white, and slate palette for classic docs.</p>
+      <code class="qpress-theme-preview__code">markdown-token</code>
+    </div>
+  </article>
+  <article class="qpress-theme-preview qpress-theme-preview--sunrise">
+    <div class="qpress-theme-preview__header">
+      <span class="qpress-theme-preview__eyebrow">Sunrise</span>
+      <strong>Warm product guides</strong>
+    </div>
+    <div class="qpress-theme-preview__body">
+      <div class="qpress-theme-preview__swatches">
+        <span class="qpress-theme-preview__swatch qpress-theme-preview__swatch--primary"></span>
+        <span class="qpress-theme-preview__swatch qpress-theme-preview__swatch--secondary"></span>
+        <span class="qpress-theme-preview__swatch qpress-theme-preview__swatch--accent"></span>
+      </div>
+      <p>A red, blue, and amber palette with bright approachable contrast.</p>
+      <code class="qpress-theme-preview__code">markdown-token</code>
+    </div>
+  </article>
+  <article class="qpress-theme-preview qpress-theme-preview--tawny">
+    <div class="qpress-theme-preview__header">
+      <span class="qpress-theme-preview__eyebrow">Tawny</span>
+      <strong>Earthy knowledge bases</strong>
+    </div>
+    <div class="qpress-theme-preview__body">
+      <div class="qpress-theme-preview__swatches">
+        <span class="qpress-theme-preview__swatch qpress-theme-preview__swatch--primary"></span>
+        <span class="qpress-theme-preview__swatch qpress-theme-preview__swatch--secondary"></span>
+        <span class="qpress-theme-preview__swatch qpress-theme-preview__swatch--accent"></span>
+      </div>
+      <p>A grounded brown and sand palette for warm, calm documentation.</p>
+      <code class="qpress-theme-preview__code">markdown-token</code>
+    </div>
+  </article>
+</div>
+
 To use a theme, add the import to your `src/css/quasar.variables.scss` or `src/css/quasar.variables.sass` file:
 
 ```tabs
