@@ -23,6 +23,7 @@ The core Markdown-it plugins and direct Vite plugins work in Vue/Vite projects a
 - **Title Extraction**: Extract the first header in Markdown as the page title.
 - **Script Imports**: Extract and process **&lt;script import&gt;** blocks from Markdown.
 - **Code Block Enhancements**: Enhance code block rendering with syntax highlighting, tabs, and more.
+- **Mermaid Diagrams**: Render Mermaid fenced code blocks as client-side diagrams.
 - **Custom Styling**: Apply custom styles to your Markdown content for a more refined look.
 - **Integration**: Easily integrate with other tools and platforms to streamline your workflow.
 
@@ -59,6 +60,7 @@ Here are some examples of what you can achieve with Markdown Plugins:
 - **Title Extraction**: Extract the first header in Markdown as the page title.
 - **Script Imports**: Extract and process `<script import>` blocks from Markdown.
 - **Code Block Enhancements**: Enhance code block rendering with syntax highlighting, tabs, and more.
+- **Mermaid Diagrams**: Add flowcharts, sequence diagrams, and other Mermaid diagrams to Markdown pages.
 
 ## Support
 
