@@ -166,6 +166,25 @@ const themes: ThemePreview[] = [
       shadow: 'rgba(139, 69, 19, 0.3)',
     },
   },
+  {
+    name: 'Evergreen',
+    tagline: 'Durable field manuals',
+    description: 'A spruce, moss, and amber palette for calm long-lived docs.',
+    palette: {
+      primary: '#14b8a6',
+      secondary: '#3f8f68',
+      accent: '#f59e0b',
+      lightBg: '#f3faf6',
+      lightText: '#173b2f',
+      lightCodeBg: '#e6f6ee',
+      lightCodeText: '#0f5132',
+      darkBg: '#071914',
+      darkText: '#d7f3e6',
+      darkCodeBg: '#0e2a22',
+      darkCodeText: '#b8f5d4',
+      shadow: 'rgba(20, 184, 166, 0.28)',
+    },
+  },
 ]
 
 function getThemeStyle(theme: ThemePreview): Record<string, string> {

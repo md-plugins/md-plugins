@@ -3,9 +3,10 @@ title: Q-Press Themes
 desc: Themes for Q-Press App-Extension for Quasar.
 ---
 
-Currently, there are five themes available for **Q-Press**:
+Currently, there are six themes available for **Q-Press**:
 
 - **Default**
+- **Evergreen**
 - **Mystic**
 - **Newspaper**
 - **Sunrise**
