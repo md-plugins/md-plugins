@@ -72,7 +72,7 @@ This monorepo provides:
 
 ## Current Release
 
-The active release line is `0.1.0-beta.19`, published on npm with the `beta` dist-tag. The npm `latest` dist-tag still points at the previous `0.1.0-alpha.29` packages, so install from `beta` when testing the Quasar CLI Vite 3 compatible release.
+The active release line is `0.1.0-beta.21`, published on npm with the `beta` dist-tag. The npm `latest` dist-tag still points at the previous `0.1.0-alpha.29` packages, so install from `beta` when testing the Quasar CLI Vite 3 compatible release.
 
 The `0.1.0` beta line supports direct Markdown-it and Vite plugin usage in Vue/Vite projects. The Quasar app extensions in this repo target Quasar Vite projects using `@quasar/app-vite` `>=3.0.0-beta.33`. Repository development and CI use Node.js `>=22.13` and `pnpm@11.4.0`.
 

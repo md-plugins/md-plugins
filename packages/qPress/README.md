@@ -4,7 +4,7 @@ The Ultimate Markdown Solution for the Quasar Framework.
 
 See the [documentation](https://md-plugins.netlify.app/quasar-app-extensions/qpress/overview) for more information.
 
-> Current beta release: `0.1.0-beta.20`.
+> Current beta release: `0.1.0-beta.21`.
 >
 > Q-Press currently targets Quasar Vite projects using `@quasar/app-vite` `>=3.0.0-beta.33`. TypeScript processing is required.
 
