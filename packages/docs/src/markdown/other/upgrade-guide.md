@@ -69,13 +69,14 @@ Q-Press applications should not install or import `@md-plugins/shared` directly.
 
 If your project has this dependency, remove it from the consuming app:
 
-```bash
+```tabs
+<<| bash pnpm |>>
 pnpm remove @md-plugins/shared
-# or
+<<| bash npm |>>
 npm uninstall @md-plugins/shared
-# or
+<<| bash yarn |>>
 yarn remove @md-plugins/shared
-# or
+<<| bash bun |>>
 bun remove @md-plugins/shared
 ```
 
