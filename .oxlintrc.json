@@ -2,8 +2,18 @@
   "$schema": "./node_modules/oxlint/configuration_schema.json",
   "env": {
     "browser": true,
+    "es2022": true,
     "node": true,
-    "es2022": true
+    "vue": true
+  },
+  "globals": {
+    "defineEmits": "readonly",
+    "defineExpose": "readonly",
+    "defineModel": "readonly",
+    "defineOptions": "readonly",
+    "defineProps": "readonly",
+    "gtag": "readonly",
+    "withDefaults": "readonly"
   },
   "ignorePatterns": [
     "**/node_modules/**",
@@ -21,6 +31,7 @@
       }
     ],
     "no-debugger": "error",
+    "no-undef": "error",
     "typescript/no-explicit-any": "off"
   }
 }
