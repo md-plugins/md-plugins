@@ -15,5 +15,5 @@
 </template>
 
 <script setup lang="ts">
-defineOptions({ name: 'ErrorNotFound' })
+defineOptions({ name: 'Error404' })
 </script>

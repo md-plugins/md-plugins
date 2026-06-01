@@ -18,6 +18,7 @@ const componentsPath = path.resolve(__dirname, '../../docs/src/components')
 const markdownPath = path.resolve(__dirname, '../../docs/src/markdown')
 const examplesPath = path.resolve(__dirname, '../../docs/src/examples')
 const siteConfigPath = path.resolve(__dirname, '../../docs/src/siteConfig')
+const pagesPath = path.resolve(__dirname, '../../docs/src/pages')
 
 // The "update" folder only gets the '_q-press' folder.
 fse.removeSync(initPath)
@@ -33,6 +34,7 @@ fse.copySync(componentsPath, path.join(initPath, 'src/components'))
 fse.copySync(markdownPath, path.join(initPath, 'src/markdown'))
 fse.copySync(examplesPath, path.join(initPath, 'src/examples'))
 fse.copySync(siteConfigPath, path.join(initPath, 'src/siteConfig'))
+fse.copySync(pagesPath, path.join(initPath, 'src/pages'))
 
 // Keep rendered templates next to the compiled install script for published packages.
 fse.copySync(path.resolve(__dirname, '../src/templates'), distTemplatesPath)
