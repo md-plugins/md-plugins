@@ -10,6 +10,21 @@ describe('createMarkdownRenderer', () => {
     expect(result.html).toContain('Contributors like <ins>you</ins> help.')
   })
 
+  it('treats source line wrapping as a soft break by default', () => {
+    const renderer = createMarkdownRenderer()
+    const result = renderer.render('This paragraph is wrapped\nin source markdown.', {})
+
+    expect(result.html).toContain('This paragraph is wrapped\nin source markdown.')
+    expect(result.html).not.toContain('<br>')
+  })
+
+  it('allows hard line breaks when explicitly enabled', () => {
+    const renderer = createMarkdownRenderer({ breaks: true })
+    const result = renderer.render('This paragraph is wrapped\nin source markdown.', {})
+
+    expect(result.html).toContain('<br>')
+  })
+
   it('registers user supplied MarkdownIt plugins', () => {
     const renderer = createMarkdownRenderer({
       markdownItPlugins: [

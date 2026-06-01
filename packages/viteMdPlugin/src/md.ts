@@ -121,7 +121,7 @@ export function createMarkdownRenderer(options: MarkdownOptions = {}): MarkdownR
     html: true,
     linkify: true,
     typographer: true,
-    breaks: true,
+    breaks: false,
     ...options,
   })
 
