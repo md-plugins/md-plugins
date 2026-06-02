@@ -7,11 +7,7 @@
       <div class="hero__grid">
         <div class="hero__copy">
           <div class="hero__eyebrow">{{ heroEyebrow }}</div>
-          <img
-            :src="logoSrc"
-            :alt="logoAlt"
-            class="hero-logo"
-          />
+          <img :src="logoSrc" :alt="logoAlt" class="hero-logo" />
           <h1 class="hero-title">{{ productName }}</h1>
 
           <p class="hero-subtitle">{{ siteConfig.description }}</p>
@@ -20,7 +16,10 @@
           <div class="hero-buttons">
             <q-btn
               to="/getting-started/introduction"
-              no-caps rounded unelevated class="hero-button hero-button--solid"
+              no-caps
+              rounded
+              unelevated
+              class="hero-button hero-button--solid"
             >
               <div class="hero-button__content q-anchor--skip">
                 <span class="hero-button__slot hero-button__slot--empty" aria-hidden="true" />
@@ -33,7 +32,10 @@
 
             <q-btn
               to="/other/upgrade-guide"
-              no-caps rounded unelevated class="hero-button hero-button--ghost"
+              no-caps
+              rounded
+              unelevated
+              class="hero-button hero-button--ghost"
             >
               <div class="hero-button__content q-anchor--skip">
                 <span class="hero-button__slot hero-button__slot--empty" aria-hidden="true" />
@@ -48,7 +50,10 @@
               :href="githubRepoUrl"
               target="_blank"
               rel="noopener noreferrer"
-              no-caps rounded unelevated class="hero-button hero-button--ghost"
+              no-caps
+              rounded
+              unelevated
+              class="hero-button hero-button--ghost"
             >
               <div class="hero-button__content q-anchor--skip">
                 <span class="hero-button__slot">
@@ -61,11 +66,7 @@
           </div>
 
           <div class="hero-pills">
-            <span
-              v-for="pill in heroPills"
-              :key="pill"
-              class="hero-pill"
-            >
+            <span v-for="pill in heroPills" :key="pill" class="hero-pill">
               {{ pill }}
             </span>
           </div>
@@ -109,11 +110,7 @@
       </div>
 
       <div class="feature-grid">
-        <article
-          v-for="feature in featureCards"
-          :key="feature.title"
-          class="feature-card"
-        >
+        <article v-for="feature in featureCards" :key="feature.title" class="feature-card">
           <div class="feature-card__icon">
             <q-icon :name="feature.icon" />
           </div>
@@ -124,11 +121,7 @@
     </section>
 
     <section class="plugin-sections">
-      <article
-        v-for="group in pluginGroups"
-        :key="group.title"
-        class="plugin-group"
-      >
+      <article v-for="group in pluginGroups" :key="group.title" class="plugin-group">
         <div class="plugin-group__header">
           <div class="plugin-group__eyebrow">{{ group.eyebrow }}</div>
           <h2 class="plugin-group__title">{{ group.title }}</h2>
@@ -156,19 +149,17 @@
     <section class="resource-section">
       <article class="resource-card resource-card--primary">
         <div class="resource-card__eyebrow">Ecosystem</div>
-        <h2 class="resource-card__title">Markdown authoring, Vite transforms, and Quasar docs tooling in one stack</h2>
+        <h2 class="resource-card__title">
+          Markdown authoring, Vite transforms, and Quasar docs tooling in one stack
+        </h2>
         <p class="resource-card__body">
           Use the Markdown-it and Vite plugins directly in Vue and Vite projects, or move up to the
-          Quasar app extensions when you want docs-site scaffolding, examples, and Q-Press integration.
+          Quasar app extensions when you want docs-site scaffolding, examples, and Q-Press
+          integration.
         </p>
 
         <div class="resource-card__actions">
-          <a
-            :href="githubRepoUrl"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="resource-link"
-          >
+          <a :href="githubRepoUrl" target="_blank" rel="noopener noreferrer" class="resource-link">
             <q-icon :name="fabGithub" />
             <span>md-plugins Repo</span>
           </a>
@@ -197,18 +188,16 @@
 
       <article class="resource-card resource-card--secondary">
         <div class="resource-card__eyebrow">Need Help?</div>
-        <h2 class="resource-card__title">Start with introduction, then pick the layer you actually need</h2>
+        <h2 class="resource-card__title">
+          Start with introduction, then pick the layer you actually need
+        </h2>
         <p class="resource-card__body">
           Most teams only need one or two pieces of the stack. The docs are organized so you can
           start with the overview, then jump straight to plugin-specific pages or the Q-Press path.
         </p>
 
         <div class="resource-list">
-          <div
-            v-for="item in supportItems"
-            :key="item.title"
-            class="resource-list__item"
-          >
+          <div v-for="item in supportItems" :key="item.title" class="resource-list__item">
             <div class="resource-list__title">{{ item.title }}</div>
             <div class="resource-list__body">{{ item.body }}</div>
           </div>
@@ -235,11 +224,19 @@ const previewKicker = 'Plugin Families'
 const previewTitle = 'Start small with a single plugin, or grow into a full documentation workflow'
 const previewBody =
   'MD Plugins covers multiple layers of the stack, from Markdown syntax helpers and imported content to Vue SFC generation and full Q-Press documentation sites.'
-const sectionTitle = 'One toolkit for authored content, markdown-driven UI, and documentation workflows'
+const sectionTitle =
+  'One toolkit for authored content, markdown-driven UI, and documentation workflows'
 const sectionText =
   'MD Plugins stays useful at different scales: a single Markdown-it enhancement, a Vite pipeline for docs-style content, or a complete Quasar docs site with shared conventions and examples.'
 
-const heroPills = ['Markdown-it', 'Vite', 'Vue SFCs', 'Q-Press', 'Quasar App Extensions', 'Docs Tooling']
+const heroPills = [
+  'Markdown-it',
+  'Vite',
+  'Vue SFCs',
+  'Q-Press',
+  'Quasar App Extensions',
+  'Docs Tooling',
+]
 
 const familyHighlights = [
   {
@@ -261,7 +258,7 @@ const familyHighlights = [
 
 const featureCards = [
   {
-    icon: 'markdown',
+    icon: 'article',
     title: 'Authoring Primitives',
     body: 'Extend plain Markdown with targeted plugins instead of inventing one-off content rules for each project.',
   },
@@ -431,14 +428,15 @@ const supportItems = [
   --landing-surface-strong: rgba(34, 55, 43, 0.88);
   --landing-text-soft: rgba(240, 248, 240, 0.82);
   --landing-shadow: 0 28px 60px rgba(13, 21, 17, 0.28);
+  padding: 28px clamp(16px, 2.4vw, 34px) 42px;
   color: #203126;
 }
 
 .hero {
   position: relative;
   overflow: hidden;
-  margin-bottom: 40px;
-  padding: clamp(28px, 5vw, 52px);
+  margin-bottom: 32px;
+  padding: clamp(24px, 4vw, 44px);
   border: 1px solid var(--landing-border);
   border-radius: 34px;
   background:
@@ -472,7 +470,7 @@ const supportItems = [
   position: relative;
   z-index: 1;
   display: grid;
-  gap: 30px;
+  gap: 24px;
   align-items: center;
   grid-template-columns: minmax(0, 1.04fr) minmax(320px, 0.96fr);
 }
@@ -481,7 +479,7 @@ const supportItems = [
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 16px;
+  gap: 14px;
 }
 
 .hero__eyebrow,
@@ -502,6 +500,11 @@ const supportItems = [
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
+}
+
+.plugin-group__eyebrow,
+.resource-card__eyebrow {
+  margin-bottom: 14px;
 }
 
 .hero-logo {
@@ -538,22 +541,24 @@ const supportItems = [
   color: var(--landing-text-soft);
 }
 
-.hero-buttons,
-.hero-pills,
-.resource-card__actions {
+.hero-buttons {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 10px 12px;
+  padding-top: 6px;
+  margin-bottom: 6px;
 }
 
-.hero-buttons {
-  padding-top: 8px;
-  margin-bottom: 10px;
+.hero-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-top: 6px;
 }
 
 .hero-button {
-  min-height: 48px;
-  padding: 0 20px;
+  min-height: 50px;
+  padding: 0 18px;
   border: 1px solid transparent;
   text-decoration: none;
   transition:
@@ -589,9 +594,9 @@ const supportItems = [
 
 .hero-button__content {
   display: grid;
-  grid-template-columns: 1.25rem minmax(0, 1fr) 1.25rem;
+  grid-template-columns: 1.5rem minmax(0, 1fr) 1.5rem;
   align-items: center;
-  column-gap: 10px;
+  column-gap: 12px;
   min-width: 0;
   width: 100%;
   font-family: 'Space Grotesk', 'Sora', 'Segoe UI', sans-serif;
@@ -603,12 +608,16 @@ const supportItems = [
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 1.25rem;
-  height: 1.25rem;
+  width: 1.5rem;
+  height: 1.5rem;
 }
 
 .hero-button__slot--empty {
   visibility: hidden;
+}
+
+.hero-button__slot :deep(.q-icon) {
+  font-size: 1.3rem;
 }
 
 .hero-button__label {
@@ -634,12 +643,12 @@ const supportItems = [
   border: 1px solid var(--landing-border);
   border-radius: 24px;
   background: var(--landing-surface);
-  box-shadow: 0 16px 34px rgba(13, 21, 17, 0.16);
+  box-shadow: var(--landing-card-shadow);
 }
 
 .preview-panel {
   width: 100%;
-  padding: 22px;
+  padding: 20px;
   background:
     linear-gradient(180deg, rgba(252, 246, 227, 0.08), rgba(252, 246, 227, 0.02)),
     rgba(18, 29, 22, 0.54);
@@ -667,6 +676,7 @@ const supportItems = [
 }
 
 .preview-panel__note {
+  color: var(--landing-note-text);
   font-size: 0.84rem;
   font-weight: 600;
 }
@@ -738,7 +748,7 @@ const supportItems = [
 .feature-section,
 .plugin-sections,
 .resource-section {
-  margin-top: 36px;
+  margin-top: 28px;
 }
 
 .section-heading,
@@ -747,7 +757,7 @@ const supportItems = [
 }
 
 .section-heading {
-  margin: 0 auto 24px;
+  margin: 0 auto 20px;
   text-align: center;
 }
 
@@ -755,6 +765,7 @@ const supportItems = [
   margin: 14px 0 10px;
   font-size: clamp(2rem, 4vw, 2.8rem);
   line-height: 1.12;
+  text-wrap: balance;
 }
 
 .feature-grid,
@@ -775,10 +786,13 @@ const supportItems = [
 
 .plugin-grid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  margin-top: 20px;
+  margin-top: 18px;
 }
 
 .resource-section {
+  display: grid;
+  gap: 16px;
+  align-items: start;
   grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
 }
 
@@ -786,7 +800,7 @@ const supportItems = [
 .resource-card,
 .plugin-group {
   position: relative;
-  padding: 24px;
+  padding: 20px;
 }
 
 .feature-card::before,
@@ -866,6 +880,13 @@ const supportItems = [
     var(--landing-surface-strong);
 }
 
+.resource-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
 .resource-link {
   display: inline-flex;
   align-items: center;
@@ -885,15 +906,18 @@ const supportItems = [
 
 .resource-list {
   display: grid;
-  gap: 14px;
-  margin-top: 18px;
+  gap: 0;
+  margin-top: 16px;
 }
 
 .resource-list__item {
-  padding: 16px 18px;
-  border: 1px solid rgba(252, 246, 227, 0.08);
-  border-radius: 18px;
-  background: rgba(252, 246, 227, 0.04);
+  padding: 12px 0;
+  border-top: 1px solid var(--landing-resource-item-border);
+}
+
+.resource-list__item:first-child {
+  padding-top: 0;
+  border-top: 0;
 }
 
 .resource-list__title {
@@ -902,6 +926,21 @@ const supportItems = [
   font-size: 0.96rem;
   font-weight: 700;
   color: #f8e4a3;
+}
+
+.feature-card__body,
+.plugin-group__body,
+.resource-card__body,
+.highlight-card__body,
+.plugin-tile__body {
+  color: var(--landing-body-text);
+  font-size: 0.97rem;
+}
+
+.resource-list__body {
+  color: var(--landing-body-text);
+  font-size: 0.93rem;
+  line-height: 1.55;
 }
 
 @media (max-width: 1180px) {
@@ -915,6 +954,10 @@ const supportItems = [
 }
 
 @media (max-width: 760px) {
+  .landing-page {
+    padding: 18px 12px 30px;
+  }
+
   .hero {
     padding: 24px 18px;
     border-radius: 24px;
@@ -942,11 +985,12 @@ const supportItems = [
   }
 }
 
-
 /* codex-theme-override:start */
 .landing-page {
   --landing-page-text: #{$brand-light-text};
   --landing-heading: #{$brand-light-text};
+  --landing-body-text: #{rgba($brand-light-text, 0.84)};
+  --landing-note-text: #{rgba($brand-light-text, 0.66)};
   --landing-border: #{rgba($brand-secondary, 0.16)};
   --landing-border-strong: #{rgba($brand-secondary, 0.24)};
   --landing-surface: #{rgba($brand-light, 0.78)};
@@ -997,6 +1041,8 @@ const supportItems = [
 body.body--dark .landing-page {
   --landing-page-text: #{$brand-dark-text};
   --landing-heading: #{$brand-dark-text};
+  --landing-body-text: #{rgba($brand-dark-text, 0.8)};
+  --landing-note-text: #{rgba($brand-dark-text, 0.64)};
   --landing-border: #{rgba($brand-light, 0.12)};
   --landing-border-strong: #{rgba($brand-light, 0.2)};
   --landing-surface: #{rgba($dark-pill, 0.74)};
@@ -1105,7 +1151,11 @@ body.body--dark .landing-page {
 
 .preview-panel {
   background:
-    linear-gradient(180deg, var(--landing-panel-gradient-top), var(--landing-panel-gradient-bottom)),
+    linear-gradient(
+      180deg,
+      var(--landing-panel-gradient-top),
+      var(--landing-panel-gradient-bottom)
+    ),
     var(--landing-panel-bg);
 }
 
