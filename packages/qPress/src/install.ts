@@ -9,7 +9,7 @@ import { existsSync } from 'node:fs'
 
 export default defineInstallScript(async (api) => {
   api.compatibleWith('quasar', '^2.0.0')
-  api.compatibleWith('@quasar/app-vite', '>=3.0.0-beta.36')
+  api.compatibleWith('@quasar/app-vite', '>=3.0.0-beta.38')
 
   // project must have pinia installed
   if ((await api.getStorePackageName()) !== 'pinia') {
