@@ -378,7 +378,7 @@ const appExtensions = [
   },
   {
     name: 'Q-Press',
-    desc: 'Create polished Quasar documentation sites with shared page structure, navigation, and tooling.',
+    desc: 'Create refined Quasar documentation sites with shared page structure, navigation, and tooling.',
     path: '/quasar-app-extensions/qpress/overview',
   },
 ]
