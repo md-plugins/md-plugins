@@ -35,17 +35,18 @@ usually use Vue Router client-side navigation, so later navigation behaves like 
 The practical lifecycle is:
 
 ```mermaid
-flowchart LR
+flowchart TD
   firstHit["Initial direct hit<br/>or browser refresh"]
-  staticHtml["Route-specific<br/>static HTML"]
-  hydration["Vue/Quasar<br/>hydration"]
+  staticHtml["Route-specific<br/>static HTML file"]
+  hydration["Vue/Quasar<br/>hydrates"]
   interactive["Interactive docs app"]
   spaNav["In-app navigation<br/>SPA routing + lazy chunks"]
-  hardRefresh["Another hard refresh"]
+  hardRefresh["Hard refresh later"]
 
-  firstHit --> staticHtml --> hydration --> interactive --> spaNav
+  firstHit --> staticHtml --> hydration --> interactive
+  interactive --> spaNav
   spaNav --> interactive
-  hardRefresh --> staticHtml
+  hardRefresh -. restarts at .-> staticHtml
 ```
 
 SSG is not a runtime server. It produces static files that can be deployed to Netlify or any other
