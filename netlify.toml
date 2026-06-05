@@ -1,6 +1,6 @@
 [build]
 publish = "packages/docs/dist/spa"
-command = "pnpm install && pnpm build:packages && pnpm --dir packages/docs build:ssg"
+command = "pnpm install && pnpm build"
 
 [build.environment]
 NODE_OPTIONS = "--max_old_space_size=4096"

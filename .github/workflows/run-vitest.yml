@@ -1,4 +1,4 @@
-name: Run Vitest Tests
+name: Verify Packages And SSG Docs
 
 on:
   push: # Trigger on push to any branch
@@ -6,7 +6,7 @@ on:
 
 jobs:
   vitest:
-    name: Run Vitest
+    name: Verify Packages And SSG Docs
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -31,6 +31,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      # Run checks in dependency-safe order
-      - name: Verify
+      # Run checks and build the docs using the production SSG path.
+      - name: Verify packages and SSG docs
         run: pnpm verify
