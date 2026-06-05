@@ -22,6 +22,21 @@ This website is built with **Q-Press**! When you install the App-Extension, you 
 - **Hot Module Replacement (HMR)**: Supports HMR for Markdown files, enabling a smooth development experience with instant updates.
 - **Static Route Output**: Adds Q-Press SSG route inventory and generated app-factory helpers for static-host prerender workflows.
 
+```mermaid
+flowchart TD
+  markdown["src/markdown pages"]
+  examples["src/examples demos"]
+  siteConfig["src/siteConfig navigation"]
+  qpress["Q-Press generated shell"]
+  vite["Vite + Quasar build"]
+  output["Docs site<br/>SPA routes, examples, themes, optional SSG"]
+
+  markdown --> qpress
+  examples --> qpress
+  siteConfig --> qpress
+  qpress --> vite --> output
+```
+
 ## Installation
 
 To install the Q-Press App Extension, use the following command on your existing Quasar project:

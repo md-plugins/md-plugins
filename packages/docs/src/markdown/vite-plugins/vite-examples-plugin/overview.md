@@ -16,6 +16,19 @@ The Vite Examples Plugin is a powerful tool that enhances the standard Vite func
 - **Manual Chunking**: Customize the chunking strategy for your Vite build.
 - **Example Handling**: Easily include and manage examples in your Vite project.
 
+```mermaid
+flowchart TD
+  examples["Example source files"]
+  plugin["viteExamplesPlugin"]
+  metadata["Virtual examples registry"]
+  docs["MarkdownExample components"]
+  users["Live docs readers<br/>and CodePen exports"]
+  chunks["Production chunk groups"]
+
+  examples --> plugin --> metadata --> docs --> users
+  plugin --> chunks
+```
+
 ## Installation
 
 You can install the Vite Examples plugin using npm, yarn, pnpm, or bun. Choose your preferred method below:

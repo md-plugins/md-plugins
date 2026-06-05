@@ -12,6 +12,18 @@ Welcome to the Vite Markdown Plugin documentation! This guide will provide you w
 
 The Vite Markdown Plugin is a powerful tool that transforms Markdown content into Vue Single File Components (SFCs). It integrates seamlessly with Vite to provide a flexible and customizable way to handle Markdown files in your Vue projects.
 
+```mermaid
+flowchart TD
+  file["Markdown file"]
+  markdownIt["Markdown-it renderer"]
+  plugins["Bundled md-plugins<br/>frontmatter, headers, links, code, diagrams"]
+  vueSfc["Generated Vue SFC"]
+  vite["Vite module graph"]
+  app["Vue or Quasar app route"]
+
+  file --> markdownIt --> plugins --> vueSfc --> vite --> app
+```
+
 ## Key Features
 
 - **Markdown to Vue SFC Transformation**: Converts Markdown files into Vue Single File Components, enabling dynamic content rendering.
