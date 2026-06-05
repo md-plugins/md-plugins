@@ -63,6 +63,9 @@ importers:
       '@md-plugins/md-plugin-headers':
         specifier: workspace:*
         version: link:../md-plugin-headers
+      '@md-plugins/quasar-app-extension-q-press':
+        specifier: workspace:*
+        version: link:../qPress
       '@md-plugins/vite-examples-plugin':
         specifier: workspace:*
         version: link:../viteExamplesPlugin
@@ -311,9 +314,12 @@ importers:
       '@md-plugins/vite-ssg-plugin':
         specifier: workspace:*
         version: link:../viteSsgPlugin
-      '@types/markdown-it':
-        specifier: ^14.1.2
-        version: 14.1.2
+      '@quasar/vite-plugin':
+        specifier: ^1.12.0
+        version: 1.12.0(@vitejs/plugin-vue@6.0.7(vite@8.0.16(@types/node@25.9.1)(jiti@2.6.1)(sass-embedded@1.100.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vue@3.5.35(typescript@6.0.3)))(quasar@2.19.3)(vite@8.0.16(@types/node@25.9.1)(jiti@2.6.1)(sass-embedded@1.100.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vue@3.5.35(typescript@6.0.3))
+      '@vitejs/plugin-vue':
+        specifier: ^6.0.7
+        version: 6.0.7(vite@8.0.16(@types/node@25.9.1)(jiti@2.6.1)(sass-embedded@1.100.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vue@3.5.35(typescript@6.0.3))
       '@vue/server-renderer':
         specifier: ^3.5.0
         version: 3.5.35(vue@3.5.35(typescript@6.0.3))
@@ -323,13 +329,16 @@ importers:
       markdown-it:
         specifier: ^14.2.0
         version: 14.2.0
+      vite:
+        specifier: ^8.0.16
+        version: 8.0.16(@types/node@25.9.1)(jiti@2.6.1)(sass-embedded@1.100.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0)
     devDependencies:
       '@quasar/app-vite':
         specifier: 3.0.0-beta.38
         version: 3.0.0-beta.38(@types/node@25.9.1)(jiti@2.6.1)(pinia@3.0.4(typescript@6.0.3)(vue@3.5.35(typescript@6.0.3)))(quasar@2.19.3)(sass@1.100.0)(terser@5.48.0)(typescript@6.0.3)(vue-router@5.1.0(@vue/compiler-sfc@3.5.35)(pinia@3.0.4(typescript@6.0.3)(vue@3.5.35(typescript@6.0.3)))(vite@8.0.16(@types/node@25.9.1)(jiti@2.6.1)(sass-embedded@1.100.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vue@3.5.35(typescript@6.0.3)))(vue@3.5.35(typescript@6.0.3))(yaml@2.9.0)
-      vite:
-        specifier: ^8.0.16
-        version: 8.0.16(@types/node@25.9.1)(jiti@2.6.1)(sass-embedded@1.100.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0)
+      '@types/markdown-it':
+        specifier: ^14.1.2
+        version: 14.1.2
 
   packages/shared:
     devDependencies:

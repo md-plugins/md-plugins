@@ -5,6 +5,7 @@ import { createMarkdownRenderer } from './md'
 
 const markdownLinkRE = /<MarkdownLink /
 const markdownApiRE = /<MarkdownApi /
+const markdownExampleRE = /<MarkdownExample(?:\s|>)/
 const markdownTreeRE = /<MarkdownTree /
 
 /**
@@ -38,6 +39,9 @@ export function mdParse(
   }
   if (markdownTreeRE.test(code)) {
     env.pageScripts!.add("import MarkdownTree from '@/.q-press/components/MarkdownTree.vue'")
+  }
+  if (markdownExampleRE.test(code)) {
+    env.pageScripts!.add("import MarkdownExample from '@/.q-press/components/MarkdownExample.vue'")
   }
 
   // Call the preProcess hook if provided. (Note: This is synchronous.)

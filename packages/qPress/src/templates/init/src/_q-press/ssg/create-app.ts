@@ -1,5 +1,5 @@
 import { Cookies, Dark, Meta, Notify, Quasar } from 'quasar'
-import { createSSRApp, markRaw } from 'vue'
+import { createSSRApp, markRaw, unref } from 'vue'
 import type { Pinia } from 'pinia'
 import type { Router } from 'vue-router'
 import type {
@@ -21,6 +21,7 @@ type QPressSsgContext = Record<string, unknown> & {
     url: string
     headers: Record<string, string>
   }
+  state?: unknown
 }
 
 type QPressQuasarOptions = {
@@ -135,6 +136,7 @@ export async function createQPressSsgApp(
   app.use(store)
   exposeRouterToStores(store, router)
   app.use(router)
+  ssrContext.state = unref(store.state)
 
   return {
     app,

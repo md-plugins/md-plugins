@@ -158,14 +158,10 @@ function parse(body: string): string {
     .replace(/```([\S]+)/g, '<pre class="markdown-code release__code"><code>')
     .replace(/```\n/g, '</code></pre>')
     .replace(/`(.*?)`/g, '<code class="markdown-token">$1</code>')
-    .replace(
-      /#([\d]+)/g,
-      createExternalLink(`${props.repoUrl}/issues/$1`, '#$1'),
-    )
+    .replace(/#([\d]+)/g, createExternalLink(`${props.repoUrl}/issues/$1`, '#$1'))
     .replace(/^&gt; ([\S ]+)$/gm, '<div class="release__blockquote">$1</div>')
-    .replace(
-      /\[([\S ]*?)\]\((\S*?)\)/g,
-      (_match, label: string, href: string) => createExternalLink(href, label),
+    .replace(/\[([\S ]*?)\]\((\S*?)\)/g, (_match, label: string, href: string) =>
+      createExternalLink(href, label),
     )
     .replace(/^ {2}[-*] ([^\n]+)$/gm, '<li class="q-pl-md">$1</li>')
     .replace(/^[-*] ([^\n]+)$/gm, '<li>$1</li>')

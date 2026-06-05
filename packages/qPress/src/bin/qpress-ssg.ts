@@ -12,7 +12,12 @@ Usage:
 
 Options:
   --out-dir <dir>        SPA output directory. Defaults to dist/spa.
-  --ssr-dir <dir>        Quasar SSR output directory. Defaults to dist/ssr.
+  --renderer <name>      qpress or quasar-ssr. Defaults to qpress.
+  --src-dir <dir>        App source directory for qpress renderer. Defaults to src.
+  --ssg-app-entry <file> Q-Press SSG app entry inside src-dir.
+                         Defaults to .q-press/ssg/create-app.ts.
+  --ssr-dir <dir>        Quasar SSR output directory for quasar-ssr renderer.
+                         Defaults to dist/ssr.
   --manifest-file <file> SSG route manifest inside out-dir. Defaults to q-press-ssg-routes.json.
   --app-html-file <file> App shell file inside out-dir. Defaults to index.html.
   --app-mount-id <id>    App mount element id. Defaults to q-app.
@@ -27,6 +32,9 @@ type CliOptions = {
   manifestFile?: string
   outDir?: string
   quiet?: boolean
+  renderer?: 'qpress' | 'quasar-ssr'
+  srcDir?: string
+  ssgAppEntry?: string
   ssrDir?: string
 }
 
@@ -53,6 +61,25 @@ function parseArgs(args: string[]): CliOptions & { help?: boolean } {
         break
       case '--out-dir':
         options.outDir = readValue(args, index, arg)
+        index += 1
+        break
+      case '--renderer': {
+        const renderer = readValue(args, index, arg)
+
+        if (renderer !== 'qpress' && renderer !== 'quasar-ssr') {
+          throw new Error('--renderer must be either "qpress" or "quasar-ssr".')
+        }
+
+        options.renderer = renderer
+        index += 1
+        break
+      }
+      case '--src-dir':
+        options.srcDir = readValue(args, index, arg)
+        index += 1
+        break
+      case '--ssg-app-entry':
+        options.ssgAppEntry = readValue(args, index, arg)
         index += 1
         break
       case '--ssr-dir':
