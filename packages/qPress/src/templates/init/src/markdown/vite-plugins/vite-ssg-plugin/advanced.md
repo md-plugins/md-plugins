@@ -149,18 +149,17 @@ viteSsgPlugin({
 
 ## Post-Build Prerendering
 
-For Q-Press, use the generated prerender wrapper after the normal SPA build:
+For Q-Press, use the first-class command after building the SPA and SSR renderer:
 
-```ts
-import { prerenderQPressSsgRoutes } from './src/.q-press/ssg/prerender'
-
-await prerenderQPressSsgRoutes({
-  outDir: 'dist/spa',
-})
+```bash
+pnpm build:ssg:renderer
+pnpm build:ssg
 ```
 
-The helper reads `q-press-ssg-routes.json`, renders every route with the generated Q-Press app
-factory, and writes the route HTML files back into the built output directory.
+`qpress-ssg` reads `q-press-ssg-routes.json`, renders every route with the built Quasar SSR
+renderer, and writes the route HTML files back into the built SPA output directory. Use
+`pnpm prerender:ssg` when both `dist/spa` and `dist/ssr` already exist and only the static
+prerender pass needs to run again.
 
 ## Vue / Quasar Renderer Adapter
 
@@ -200,8 +199,9 @@ It is reasonable to create a local branch or throwaway script that boots a Quasa
 feeds it into `prerenderVueSsgRoutes()` while the workflow is still being proven.
 
 That scratch harness should not be committed as finalized docs-site code. Commit the reusable
-plugin behavior, the documented options, and the generated Q-Press app-factory template; leave
-one-off local test wiring out unless it has been promoted into reusable Q-Press tooling.
+plugin behavior, the documented options, the generated Q-Press app-factory template, and reusable
+runner behavior such as `qpress-ssg`; leave one-off local test wiring out unless it belongs in the
+shared tooling.
 
 ## Current Gaps
 

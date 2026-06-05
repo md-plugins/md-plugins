@@ -20,6 +20,9 @@
     "type": "git",
     "url": "git+https://github.com/md-plugins/md-plugins.git"
   },
+  "bin": {
+    "qpress-ssg": "dist/bin/qpress-ssg.js"
+  },
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/q-press-globals.d.ts",
@@ -46,6 +49,7 @@
     "@md-plugins/vite-md-plugin": "workspace:*",
     "@md-plugins/vite-ssg-plugin": "workspace:*",
     "@types/markdown-it": "^14.1.2",
+    "@vue/server-renderer": "^3.5.0",
     "fs-extra": "^11.3.5",
     "markdown-it": "^14.2.0"
   },

@@ -34,6 +34,11 @@ export default defineInstallScript(async (api) => {
       mermaid: '^11.15.0',
       shiki: '^4.1.0',
     },
+    scripts: {
+      'build:ssg': 'quasar prepare && quasar build && qpress-ssg',
+      'build:ssg:renderer': 'quasar prepare && quasar build -m ssr',
+      'prerender:ssg': 'qpress-ssg',
+    },
   })
 
   const path = api.resolve.src('siteConfig')

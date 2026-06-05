@@ -138,7 +138,6 @@ const netlifyLink = {
   maxWidth: '120px',
 }
 
-
 const sponsorLink = {
   path: 'https://github.com/sponsors/hawkeye64',
   external: true,

@@ -14,9 +14,8 @@ This package currently focuses on route inventory and static route output:
   route HTML.
 
 By default, generated route HTML uses the built `index.html` app shell. That makes the output
-usable on Netlify or other static hosts today. Full Vue SSR prerendering should build on the
-`renderRoute` hook once Q-Press route generation, dynamic routes, examples, and hydration rules
-are defined.
+usable on Netlify or other static hosts today. Q-Press projects can use `qpress-ssg` for
+first-class Vue/Quasar build-time prerendering when a Quasar SSR renderer is available.
 
 ## Usage
 
@@ -124,8 +123,15 @@ project-specific static renderer.
 
 ## Vue / Quasar Build-Time Rendering
 
-For Vue or Quasar apps, `createVueSsgRouteRenderer` adapts a per-route SSR app factory into
-the generic `renderRoute` hook. This uses Vue's server renderer at build time only; the
+For Q-Press apps, build the Quasar SSR renderer and then run the generated Q-Press command:
+
+```bash
+pnpm build:ssg:renderer
+pnpm build:ssg
+```
+
+For lower-level Vue or Quasar apps, `createVueSsgRouteRenderer` adapts a per-route SSR app factory
+into the generic `renderRoute` hook. This uses Vue's server renderer at build time only; the
 published output can still be deployed as static files on Netlify or any other static host.
 
 ```ts
@@ -138,10 +144,10 @@ await prerenderVueSsgRoutes({
 })
 ```
 
-Q-Press generates `src/.q-press/ssg/create-app` and `src/.q-press/ssg/prerender` so docs
-projects do not need to hand-roll the Quasar app, router, Pinia, and `ssrContext` wiring.
-Non-Q-Press projects can still provide their own app factory. Vue SSR dependencies are
-optional until this adapter is used.
+Q-Press generates `src/.q-press/ssg/create-app` and `src/.q-press/ssg/prerender`, and the
+`qpress-ssg` binary consumes Quasar's built SSR `server-entry.js` for the common docs-site flow.
+Non-Q-Press projects can still provide their own app factory. Vue SSR dependencies are optional
+until this adapter is used.
 
 ## Local SSR / SSG Proving
 
@@ -149,8 +155,9 @@ It is reasonable to create a local branch or throwaway script that boots a Quasa
 feeds it into `prerenderVueSsgRoutes()` while the workflow is still being proven.
 
 That scratch harness should not be committed as finalized docs-site code. Commit the reusable
-plugin behavior, the documented options, and the generated Q-Press app-factory template; leave
-one-off local test wiring out unless it has been promoted into reusable Q-Press tooling.
+plugin behavior, the documented options, the generated Q-Press app-factory template, and reusable
+runner behavior such as `qpress-ssg`; leave one-off local test wiring out unless it belongs in the
+shared tooling.
 
 ## Virtual Module
 
@@ -163,6 +170,5 @@ import ssgRouteManifest, { ssgRoutes } from 'virtual:md-plugins/ssg-routes'
 ## Next Steps
 
 - Add dynamic-route parameter expansion.
-- Promote the Q-Press prerender wrapper into a first-class command once local proving is complete.
 - Define lazy client hydration behavior for examples and browser-only components.
 - Define how browser-only examples opt out of prerendering.

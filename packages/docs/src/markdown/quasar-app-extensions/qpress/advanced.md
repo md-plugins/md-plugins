@@ -102,9 +102,29 @@ vitePlugins: [
 ]
 ```
 
-## Q-Press SSG App Factory
+## Q-Press SSG Runner
 
-Q-Press generates two helper files for static prerendering:
+Q-Press projects can prerender docs routes with the generated scripts:
+
+```bash
+pnpm build:ssg:renderer
+pnpm build:ssg
+pnpm prerender:ssg
+```
+
+The `qpress-ssg` command reads `dist/spa/q-press-ssg-routes.json`, imports the built Quasar SSR
+renderer from `dist/ssr/server/server-entry.js`, renders each route, and writes the prerendered
+HTML back into the SPA output folder.
+
+```bash
+qpress-ssg --out-dir dist/spa --ssr-dir dist/ssr
+```
+
+`build:ssg:renderer` requires Quasar SSR mode. If a docs app has never enabled SSR before, run
+`quasar mode add ssr` once, build the renderer again, and keep deploying the generated `dist/spa`
+folder as static output.
+
+Q-Press also keeps lower-level helpers available for custom build tooling:
 
 - `src/.q-press/ssg/create-app`: Creates a fresh Vue SSR app for each route, installs Quasar with
   the Q-Press plugins, resolves the host Pinia store and router, and prepares a Quasar-style
@@ -112,18 +132,8 @@ Q-Press generates two helper files for static prerendering:
 - `src/.q-press/ssg/prerender`: Wraps `prerenderVueSsgRoutes()` with the generated Q-Press app
   factory.
 
-Use the wrapper for the common post-build flow:
-
-```ts
-import { prerenderQPressSsgRoutes } from './src/.q-press/ssg/prerender'
-
-await prerenderQPressSsgRoutes({
-  outDir: 'dist/spa',
-})
-```
-
-If a project needs to customize the per-route SSR context or Quasar options, pass
-`createAppOptions`:
+If a project needs to customize the per-route SSR context or Quasar options, use the generated
+wrapper and pass `createAppOptions`:
 
 ```ts
 await prerenderQPressSsgRoutes({
@@ -158,8 +168,8 @@ await prerenderVueSsgRoutes({
 ```
 
 The generated factory is intentionally reusable instead of being tied to a single script. Run it
-from build tooling that understands the docs app's TypeScript, Vue, and alias configuration, or
-promote that wiring into a shared Q-Press prerender command when the workflow is finalized.
+from build tooling that understands the docs app's TypeScript, Vue, and alias configuration when
+the built `qpress-ssg` command is not enough.
 
 ## Support
 

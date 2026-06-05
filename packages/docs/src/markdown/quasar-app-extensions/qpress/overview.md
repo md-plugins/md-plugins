@@ -227,18 +227,25 @@ useMeta({
 Q-Press installs the Vite SSG route plugin automatically. During a production SPA build, it emits a
 `q-press-ssg-routes.json` manifest and route-specific HTML shell files for Markdown routes.
 
-When you are ready to prerender actual Vue/Quasar HTML, use the generated helper:
+Installed projects also get first-class SSG scripts:
 
-```ts
-import { prerenderQPressSsgRoutes } from './src/.q-press/ssg/prerender'
-
-await prerenderQPressSsgRoutes({
-  outDir: 'dist/spa',
-})
+```bash
+pnpm build:ssg:renderer
+pnpm build:ssg
+pnpm prerender:ssg
 ```
 
-The helper uses `src/.q-press/ssg/create-app` to create a fresh Q-Press app, store, router, Quasar
-plugins, and SSR context for each route.
+`build:ssg:renderer` builds the Quasar SSR renderer into `dist/ssr`. If the project has never used
+SSR mode before, run `quasar mode add ssr` once and then rebuild the renderer. `build:ssg` rebuilds
+the SPA output and runs `qpress-ssg` against `dist/spa` and `dist/ssr`. `prerender:ssg` reruns only
+the static prerender pass against existing build output.
+
+```bash
+qpress-ssg --out-dir dist/spa --ssr-dir dist/ssr
+```
+
+The SSR renderer is used at build time only. The generated pages still deploy as static files from
+`dist/spa`, which keeps Netlify and other static-host workflows simple.
 
 ## FAQ
 
