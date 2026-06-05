@@ -150,6 +150,15 @@ Projects that already ship runtime SSR can reuse the same app factory, while pro
 only want SSG can run the renderer during the build and deploy the generated HTML without an
 SSR server. Vue SSR dependencies are optional until this adapter is used.
 
+## Local SSR / SSG Proving
+
+It is reasonable to create a local branch or throwaway script that boots a Quasar/Vue SSR app and
+feeds it into `prerenderVueSsgRoutes()` while the workflow is still being proven.
+
+That scratch harness should not be committed as finalized docs-site code. Commit the reusable
+plugin behavior, the documented options, and the eventual Q-Press generated app-factory template;
+leave one-off local test wiring out unless it has been promoted into that reusable template.
+
 ## Virtual Module
 
 Client or build tooling can import the generated manifest:
