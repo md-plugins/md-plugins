@@ -20,6 +20,7 @@ This website is built with **Q-Press**! When you install the App-Extension, you 
 - **Seamless Integration**: Integrates with Quasar's build system and Vue Router, ensuring smooth navigation and rendering of Markdown content.
 - **Customizable**: Provides options to customize the integration, allowing you to tailor the behavior to your specific needs.
 - **Hot Module Replacement (HMR)**: Supports HMR for Markdown files, enabling a smooth development experience with instant updates.
+- **Static Route Output**: Adds Q-Press SSG route inventory and generated app-factory helpers for static-host prerender workflows.
 
 ## Installation
 
@@ -55,17 +56,17 @@ yarn add -D markdown-it @types/markdown-it
 npm i -D markdown-it @types/markdown-it
 ```
 
-2. **Q-Press adds `shiki` to your project dependencies when invoked. If you are wiring the generated files manually, add it yourself:**
+2. **Q-Press adds `mermaid`, `shiki`, `@md-plugins/vite-ssg-plugin`, and `@vue/server-renderer` to your project dependencies when invoked. If you are wiring the generated files manually, add them yourself:**
 
 ```tabs
 <<| bash pnpm |>>
-pnpm add shiki
+pnpm add mermaid shiki @md-plugins/vite-ssg-plugin @vue/server-renderer
 <<| bash bun |>>
-bun add shiki
+bun add mermaid shiki @md-plugins/vite-ssg-plugin @vue/server-renderer
 <<| bash yarn |>>
-yarn add shiki
+yarn add mermaid shiki @md-plugins/vite-ssg-plugin @vue/server-renderer
 <<| bash npm |>>
-npm i shiki
+npm i mermaid shiki @md-plugins/vite-ssg-plugin @vue/server-renderer
 ```
 
 ## Configuration
@@ -220,6 +221,24 @@ useMeta({
 })
 </script>
 ```
+
+### Static Route and SSG Output
+
+Q-Press installs the Vite SSG route plugin automatically. During a production SPA build, it emits a
+`q-press-ssg-routes.json` manifest and route-specific HTML shell files for Markdown routes.
+
+When you are ready to prerender actual Vue/Quasar HTML, use the generated helper:
+
+```ts
+import { prerenderQPressSsgRoutes } from './src/.q-press/ssg/prerender'
+
+await prerenderQPressSsgRoutes({
+  outDir: 'dist/spa',
+})
+```
+
+The helper uses `src/.q-press/ssg/create-app` to create a fresh Q-Press app, store, router, Quasar
+plugins, and SSR context for each route.
 
 ## FAQ
 

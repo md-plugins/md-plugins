@@ -149,52 +149,39 @@ viteSsgPlugin({
 
 ## Post-Build Prerendering
 
-For Quasar and Q-Press, a post-build prerender step is usually cleaner than trying to boot the full
-app inside the Vite plugin hook:
+For Q-Press, use the generated prerender wrapper after the normal SPA build:
 
 ```ts
-import { prerenderSsgRoutes } from '@md-plugins/vite-ssg-plugin'
+import { prerenderQPressSsgRoutes } from './src/.q-press/ssg/prerender'
 
-await prerenderSsgRoutes({
+await prerenderQPressSsgRoutes({
   outDir: 'dist/spa',
-  async renderRoute(route, { appHtml }) {
-    const rendered = await renderMyRoute(route.path)
-
-    return appHtml.replace('<div id="q-app"></div>', `<div id="q-app">${rendered}</div>`)
-  },
 })
 ```
 
-The helper reads `q-press-ssg-routes.json`, renders every route, and writes the route HTML files
-back into the built output directory.
+The helper reads `q-press-ssg-routes.json`, renders every route with the generated Q-Press app
+factory, and writes the route HTML files back into the built output directory.
 
 ## Vue / Quasar Renderer Adapter
 
-`prerenderVueSsgRoutes` wraps `prerenderSsgRoutes` with Vue SSR rendering:
+The generated Q-Press factory lives at `src/.q-press/ssg/create-app`:
 
 ```ts
 import { prerenderVueSsgRoutes } from '@md-plugins/vite-ssg-plugin'
-import { createSsrApp } from './entry-ssr'
+import { createQPressSsgApp } from './src/.q-press/ssg/create-app'
 
 await prerenderVueSsgRoutes({
   outDir: 'dist/spa',
-  async createApp(route) {
-    const { app, router } = await createSsrApp()
-
-    return {
-      app,
-      router,
-      routeLocation: route.path,
-      ssrContext: {
-        url: route.path,
-      },
-    }
-  },
+  createApp: createQPressSsgApp,
 })
 ```
 
-This adapter lazy-loads `@vue/server-renderer` only when used. Non-Quasar Vue projects can use it
-as long as they can create a fresh SSR-safe app instance for each route.
+`createQPressSsgApp` creates a fresh Vue SSR app, installs Quasar with the Q-Press plugins,
+resolves the host Pinia store and router, initializes a Quasar-style `ssrContext`, and returns the
+shape expected by `prerenderVueSsgRoutes()`.
+
+Non-Q-Press Vue projects can still use `prerenderVueSsgRoutes()` directly as long as they provide
+their own fresh SSR-safe app instance for each route.
 
 ## SSR and SSG Together
 
@@ -213,13 +200,11 @@ It is reasonable to create a local branch or throwaway script that boots a Quasa
 feeds it into `prerenderVueSsgRoutes()` while the workflow is still being proven.
 
 That scratch harness should not be committed as finalized docs-site code. Commit the reusable
-plugin behavior, the documented options, and the eventual Q-Press generated app-factory template;
-leave one-off local test wiring out unless it has been promoted into that reusable template.
+plugin behavior, the documented options, and the generated Q-Press app-factory template; leave
+one-off local test wiring out unless it has been promoted into reusable Q-Press tooling.
 
 ## Current Gaps
 
-- Q-Press still needs a generated SSR app-factory template so docs projects do not hand-roll
-  `createApp` plumbing.
 - Dynamic route parameter expansion needs a manifest strategy before generated release pages or
   content-driven routes can be fully automated.
 - Live examples need clear opt-in or opt-out rules for SSR-safe rendering and client hydration.

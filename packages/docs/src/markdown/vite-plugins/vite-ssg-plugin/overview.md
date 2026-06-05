@@ -119,29 +119,19 @@ static hosts even before a full SSR renderer is wired in.
 
 ## Build-Time Vue Rendering
 
-When a project is ready to prerender actual Vue/Quasar HTML, run the post-build helper with a fresh
-app factory per route:
+When a project is ready to prerender actual Q-Press HTML, use the generated app factory wrapper:
 
 ```ts
-import { prerenderVueSsgRoutes } from '@md-plugins/vite-ssg-plugin'
-import { createSsrApp } from './entry-ssr'
+import { prerenderQPressSsgRoutes } from './src/.q-press/ssg/prerender'
 
-await prerenderVueSsgRoutes({
+await prerenderQPressSsgRoutes({
   outDir: 'dist/spa',
-  async createApp(route) {
-    const { app, router } = await createSsrApp()
-
-    return {
-      app,
-      router,
-      routeLocation: route.path,
-    }
-  },
 })
 ```
 
-This uses Vue SSR at build time only. The deployed output can still be plain static files, while
-projects that already run SSR can reuse the same app factory in a separate prerender step.
+This uses Vue SSR at build time only. The deployed output can still be plain static files. Projects
+that need more control can import `createQPressSsgApp` from `src/.q-press/ssg/create-app` and pass
+it to `prerenderVueSsgRoutes()` directly.
 
 ## Optional by Design
 

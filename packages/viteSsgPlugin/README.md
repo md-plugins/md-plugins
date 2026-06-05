@@ -130,25 +130,18 @@ published output can still be deployed as static files on Netlify or any other s
 
 ```ts
 import { prerenderVueSsgRoutes } from '@md-plugins/vite-ssg-plugin'
-import { createSsrApp } from './path/to/entry-ssr'
+import { createQPressSsgApp } from './src/.q-press/ssg/create-app'
 
 await prerenderVueSsgRoutes({
   outDir: 'dist/spa',
-  async createApp(route) {
-    const { app, router } = await createSsrApp()
-
-    return {
-      app,
-      router,
-      routeLocation: route.path,
-    }
-  },
+  createApp: createQPressSsgApp,
 })
 ```
 
-Projects that already ship runtime SSR can reuse the same app factory, while projects that
-only want SSG can run the renderer during the build and deploy the generated HTML without an
-SSR server. Vue SSR dependencies are optional until this adapter is used.
+Q-Press generates `src/.q-press/ssg/create-app` and `src/.q-press/ssg/prerender` so docs
+projects do not need to hand-roll the Quasar app, router, Pinia, and `ssrContext` wiring.
+Non-Q-Press projects can still provide their own app factory. Vue SSR dependencies are
+optional until this adapter is used.
 
 ## Local SSR / SSG Proving
 
@@ -156,8 +149,8 @@ It is reasonable to create a local branch or throwaway script that boots a Quasa
 feeds it into `prerenderVueSsgRoutes()` while the workflow is still being proven.
 
 That scratch harness should not be committed as finalized docs-site code. Commit the reusable
-plugin behavior, the documented options, and the eventual Q-Press generated app-factory template;
-leave one-off local test wiring out unless it has been promoted into that reusable template.
+plugin behavior, the documented options, and the generated Q-Press app-factory template; leave
+one-off local test wiring out unless it has been promoted into reusable Q-Press tooling.
 
 ## Virtual Module
 
@@ -170,7 +163,6 @@ import ssgRouteManifest, { ssgRoutes } from 'virtual:md-plugins/ssg-routes'
 ## Next Steps
 
 - Add dynamic-route parameter expansion.
-- Add a Q-Press generated SSR app-factory template so docs projects do not need to hand-roll
-  `createApp` for static rendering.
+- Promote the Q-Press prerender wrapper into a first-class command once local proving is complete.
 - Define lazy client hydration behavior for examples and browser-only components.
 - Define how browser-only examples opt out of prerendering.

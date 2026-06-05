@@ -102,6 +102,65 @@ vitePlugins: [
 ]
 ```
 
+## Q-Press SSG App Factory
+
+Q-Press generates two helper files for static prerendering:
+
+- `src/.q-press/ssg/create-app`: Creates a fresh Vue SSR app for each route, installs Quasar with
+  the Q-Press plugins, resolves the host Pinia store and router, and prepares a Quasar-style
+  `ssrContext`.
+- `src/.q-press/ssg/prerender`: Wraps `prerenderVueSsgRoutes()` with the generated Q-Press app
+  factory.
+
+Use the wrapper for the common post-build flow:
+
+```ts
+import { prerenderQPressSsgRoutes } from './src/.q-press/ssg/prerender'
+
+await prerenderQPressSsgRoutes({
+  outDir: 'dist/spa',
+})
+```
+
+If a project needs to customize the per-route SSR context or Quasar options, pass
+`createAppOptions`:
+
+```ts
+await prerenderQPressSsgRoutes({
+  outDir: 'dist/spa',
+  createAppOptions(route) {
+    return {
+      ssrContext: {
+        url: route.path,
+        req: {
+          url: route.path,
+          headers: {
+            cookie: 'theme=dark',
+          },
+        },
+      },
+    }
+  },
+})
+```
+
+For lower-level control, import `createQPressSsgApp` directly and pass it to
+`prerenderVueSsgRoutes()` from `@md-plugins/vite-ssg-plugin`.
+
+```ts
+import { prerenderVueSsgRoutes } from '@md-plugins/vite-ssg-plugin'
+import { createQPressSsgApp } from './src/.q-press/ssg/create-app'
+
+await prerenderVueSsgRoutes({
+  outDir: 'dist/spa',
+  createApp: createQPressSsgApp,
+})
+```
+
+The generated factory is intentionally reusable instead of being tied to a single script. Run it
+from build tooling that understands the docs app's TypeScript, Vue, and alias configuration, or
+promote that wiring into a shared Q-Press prerender command when the workflow is finalized.
+
 ## Support
 
 If you have any questions or need assistance, please refer to the FAQ or reach out to our support team.
