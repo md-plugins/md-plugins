@@ -405,6 +405,12 @@ importers:
         specifier: 3.0.0-beta.38
         version: 3.0.0-beta.38(@types/node@25.9.1)(jiti@2.6.1)(pinia@3.0.4(typescript@6.0.3)(vue@3.5.35(typescript@6.0.3)))(quasar@2.19.3)(sass@1.100.0)(terser@5.48.0)(typescript@6.0.3)(vue-router@5.1.0(@vue/compiler-sfc@3.5.35)(pinia@3.0.4(typescript@6.0.3)(vue@3.5.35(typescript@6.0.3)))(vite@8.0.16(@types/node@25.9.1)(jiti@2.6.1)(sass-embedded@1.100.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0))(vue@3.5.35(typescript@6.0.3)))(vue@3.5.35(typescript@6.0.3))(yaml@2.9.0)
 
+  packages/viteSsgPlugin:
+    devDependencies:
+      vite:
+        specifier: ^8.0.16
+        version: 8.0.16(@types/node@25.9.1)(jiti@2.6.1)(sass-embedded@1.100.0)(sass@1.100.0)(terser@5.48.0)(yaml@2.9.0)
+
 packages:
 
   '@antfu/install-pkg@1.1.0':
