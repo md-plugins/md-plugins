@@ -14,9 +14,9 @@
     "test": "echo \"No test specified\" && exit 0",
     "dev": "quasar dev",
     "build": "quasar prepare && quasar build",
-    "build:ssg": "quasar prepare && quasar build && qpress-ssg",
+    "build:ssg": "quasar prepare && quasar build && node ../qPress/bin/qpress-ssg.js",
     "build:ssg:renderer": "quasar prepare && quasar build -m ssr",
-    "prerender:ssg": "qpress-ssg",
+    "prerender:ssg": "node ../qPress/bin/qpress-ssg.js",
     "build:ssr": "quasar prepare && quasar build -m ssr",
     "start:ssr": "cd dist/ssr && node index.js",
     "prepared": "quasar prepare"

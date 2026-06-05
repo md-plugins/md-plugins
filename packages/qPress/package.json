@@ -21,7 +21,7 @@
     "url": "git+https://github.com/md-plugins/md-plugins.git"
   },
   "bin": {
-    "qpress-ssg": "dist/bin/qpress-ssg.js"
+    "qpress-ssg": "bin/qpress-ssg.js"
   },
   "type": "module",
   "main": "dist/index.js",
