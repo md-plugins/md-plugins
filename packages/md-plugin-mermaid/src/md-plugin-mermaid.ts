@@ -18,6 +18,20 @@ function getFenceLang(token: Token): string {
   return token.info.trim().split(/\s+/, 1)[0] ?? ''
 }
 
+function getFenceClass(token: Token): string {
+  const info = token.info.trim()
+  const attrsMatch = info.match(/\{(?<attrs>[^}]*)\}/)
+  const attrs = attrsMatch?.groups?.attrs
+
+  if (!attrs) {
+    return ''
+  }
+
+  const classNames = Array.from(attrs.matchAll(/(?:^|\s)\.([A-Za-z0-9_-]+)/g), (match) => match[1])
+
+  return classNames.join(' ')
+}
+
 function getVueBinding(md: MarkdownIt, value: string): string {
   return md.utils.escapeHtml(JSON.stringify(value))
 }
@@ -62,8 +76,13 @@ export const mermaidPlugin: PluginWithOptions<MermaidPluginOptions> = (
         : self.renderToken(tokens, idx, options)
     }
 
+    const className = getFenceClass(token)
+    const classAttr = className ? ` class="${md.utils.escapeHtml(className)}"` : ''
+
     if (renderMode === 'pre') {
-      return `<pre class="${md.utils.escapeHtml(preClass)}"><code>${md.utils.escapeHtml(token.content)}</code></pre>`
+      return `<pre class="${md.utils.escapeHtml(
+        [preClass, className].filter(Boolean).join(' '),
+      )}"><code>${md.utils.escapeHtml(token.content)}</code></pre>`
     }
 
     if (pageScripts.length > 0) {
@@ -73,6 +92,6 @@ export const mermaidPlugin: PluginWithOptions<MermaidPluginOptions> = (
       }
     }
 
-    return `<${componentName} :${codeProp}="${getVueBinding(md, token.content)}"></${componentName}>`
+    return `<${componentName}${classAttr} :${codeProp}="${getVueBinding(md, token.content)}"></${componentName}>`
   }
 }

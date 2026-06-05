@@ -31,6 +31,30 @@ describe('mermaidPlugin', () => {
     expect(rendered).toContain('<pre class="mermaid"><code>graph TD\nA --&gt; B\n</code></pre>')
   })
 
+  it('passes fence classes through to the rendered component', () => {
+    const md = new MarkdownIt()
+
+    md.use(mermaidPlugin)
+
+    const rendered = md.render('```mermaid {.desktop-only .wide-diagram}\ngraph TD\nA --> B\n```')
+
+    expect(rendered).toContain(
+      '<MarkdownMermaid class="desktop-only wide-diagram" :code="&quot;graph TD\\nA --&gt; B\\n&quot;"></MarkdownMermaid>',
+    )
+  })
+
+  it('combines preClass and fence classes in pre mode', () => {
+    const md = new MarkdownIt()
+
+    md.use(mermaidPlugin, { renderMode: 'pre' })
+
+    const rendered = md.render('```mermaid {.desktop-only}\ngraph TD\nA --> B\n```')
+
+    expect(rendered).toContain(
+      '<pre class="mermaid desktop-only"><code>graph TD\nA --&gt; B\n</code></pre>',
+    )
+  })
+
   it('delegates non-Mermaid fences to the existing renderer', () => {
     const md = new MarkdownIt()
 

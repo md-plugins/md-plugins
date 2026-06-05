@@ -5,6 +5,7 @@ A **Markdown-It** plugin that renders Mermaid fenced code blocks. It is designed
 ## Features
 
 - Converts `mermaid` and `mmd` fenced code blocks into a configurable component.
+- Passes fence class metadata through to the rendered component or `<pre>` element.
 - Adds page import statements for Q-Press generated Vue pages.
 - Supports a plain `<pre class="mermaid">` render mode for custom MarkdownIt pipelines.
 
@@ -63,6 +64,20 @@ Then initialize Mermaid in your application after the HTML is mounted.
 ```mermaid
 graph TD
   A[Write Markdown] --> B[Render Diagram]
+```
+````
+
+Use Markdown fence classes when a diagram needs responsive presentation or custom styling:
+
+````markdown
+```mermaid {.desktop-diagram}
+flowchart LR
+  A --> B
+```
+
+```mermaid {.mobile-diagram}
+flowchart TD
+  A --> B
 ```
 ````
 
