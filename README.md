@@ -5,7 +5,7 @@
   <img src="https://raw.githubusercontent.com/md-plugins/md-plugins/refs/heads/main/media/markdown-1024x1024.png" alt="md-plugins - Markdown-it, Vite, and Quasar documentation tooling" width="300" style="border-radius: 50%;">
 </a>
 <br>
-A collection of Markdown-it plugins, Vite plugins, and Quasar app extensions for Vue/Vite content workflows and Q-Press documentation sites.
+A collection of Markdown-it plugins, Vite plugins, and Quasar app extensions for Vue/Vite content workflows, static docs output, and Q-Press documentation sites.
 </p>
 
 <p><strong>Markdown-it! Plugins</strong></p>
@@ -19,6 +19,7 @@ A collection of Markdown-it plugins, Vite plugins, and Quasar app extensions for
 ![@md-plugins/md-plugin-imports](https://img.shields.io/npm/v/@md-plugins/md-plugin-imports/beta?label=@md-plugins/md-plugin-imports@beta)
 ![@md-plugins/md-plugin-inlinecode](https://img.shields.io/npm/v/@md-plugins/md-plugin-inlinecode/beta?label=@md-plugins/md-plugin-inlinecode@beta)
 ![@md-plugins/md-plugin-link](https://img.shields.io/npm/v/@md-plugins/md-plugin-link/beta?label=@md-plugins/md-plugin-link@beta)
+![@md-plugins/md-plugin-mermaid](https://img.shields.io/npm/v/@md-plugins/md-plugin-mermaid/beta?label=@md-plugins/md-plugin-mermaid@beta)
 ![@md-plugins/md-plugin-table](https://img.shields.io/npm/v/@md-plugins/md-plugin-table/beta?label=@md-plugins/md-plugin-table@beta)
 ![@md-plugins/md-plugin-title](https://img.shields.io/npm/v/@md-plugins/md-plugin-title/beta?label=@md-plugins/md-plugin-title@beta)
 ![@md-plugins/shared](https://img.shields.io/npm/v/@md-plugins/shared/beta?label=@md-plugins/shared@beta)
@@ -48,7 +49,7 @@ A collection of Markdown-it plugins, Vite plugins, and Quasar app extensions for
 
 A collection of **Markdown-It plugins** and utilities designed for enhanced Markdown processing. This monorepo contains various plugins for handling specific Markdown features.
 
-A collection of **Vite plugins** for transforming Markdown into Vue Single File Components (SFCs) and for handling raw SFC content.
+A collection of **Vite plugins** for transforming Markdown into Vue Single File Components (SFCs), handling raw example source, and generating static documentation output.
 
 A collection of **App Extensions** for Quasar Framework, providing enhanced Markdown support for Quasar applications, including **Q-Press**. The **Q-Press** App Extension is a powerful tool for Quasar developers that simplifies the integration of Markdown content into Quasar applications. It leverages the capabilities of Vite and various Markdown plugins to transform Markdown files into Vue components, enabling a seamless and efficient workflow for content management. Q-Press also uses the SSG Vite plugin to generate route manifests and static HTML output for documentation sites that need static-host-friendly pages.
 
@@ -76,7 +77,7 @@ This monorepo provides:
 
 The current beta line in this repository is `0.1.0-beta.23`. Packages in this line publish to npm under the `beta` dist-tag, while the npm `latest` dist-tag still points at the previous `0.1.0-alpha.29` packages.
 
-The `0.1.0` beta line supports direct Markdown-it and Vite plugin usage in Vue/Vite projects. The Quasar app extensions in this repo target Quasar Vite projects using `@quasar/app-vite` `>=3.0.0-beta.38`. Repository development and CI use Node.js `>=22.13` and `pnpm@11.4.0`.
+The `0.1.0` beta line supports direct Markdown-it and Vite plugin usage in Vue/Vite projects, including Markdown transforms, live example source loading, and optional SSG route output. The Quasar app extensions in this repo target Quasar Vite projects using `@quasar/app-vite` `>=3.0.0-beta.38`. Repository development and CI use Node.js `>=22.13` and `pnpm@11.5.1`.
 
 ```bash
 pnpm add @md-plugins/vite-md-plugin@beta
@@ -104,8 +105,8 @@ bun add @md-plugins/quasar-app-extension-q-press@beta
 | `@md-plugins/md-plugin-frontmatter`               | Extracts and processes frontmatter content from Markdown files.                                                      | [README](packages/md-plugin-frontmatter/README.md) |
 | `@md-plugins/md-plugin-containers`                | Adds custom containers for callouts, warnings, and more.                                                             | [README](packages/md-plugin-containers/README.md)  |
 | `@md-plugins/shared`                              | Shared utilities and types for the plugins.                                                                          | [README](packages/shared/README.md)                |
-| `viteMdPlugin`                                    | Vite plugin for transforming Markdown into Vue SFCs.                                                                 | [README](packages/viteMdPlugin/README.md)          |
-| `viteExamplesPlugin`                              | Vite plugin for loading and transforming example components and their raw source code for usage in your application. | [README](packages/viteExamplesPlugin/README.md)    |
+| `@md-plugins/vite-md-plugin`                      | Vite plugin for transforming Markdown into Vue SFCs.                                                                 | [README](packages/viteMdPlugin/README.md)          |
+| `@md-plugins/vite-examples-plugin`                | Vite plugin for loading and transforming example components and their raw source code for usage in your application. | [README](packages/viteExamplesPlugin/README.md)    |
 | `@md-plugins/vite-ssg-plugin`                     | Vite plugin for generating route manifests, static HTML shells, and optional prerendered SSG output.                 | [README](packages/viteSsgPlugin/README.md)         |
 | `@md-plugins/quasar-app-extension-vite-md-plugin` | Quasar app extension for enhanced Markdown support in Quasar Applications.                                           | [README](packages/viteMdPluginAppExt/README.md)    |
 | `@md-plugins/quasar-app-extension-q-press`        | Markdown documentation tooling for Quasar and Vite applications.                                                     | [README](packages/qPress/README.md)                |
@@ -120,13 +121,13 @@ cd md-plugins
 pnpm install
 ```
 
-This repository is currently developed with Node.js `>=22.13`, CI runs on Node.js 24, and local tooling uses `pnpm@11.4.0`.
+This repository is currently developed with Node.js `>=22.13`, CI runs on Node.js 24, and local tooling uses `pnpm@11.5.1`.
 
 ## Development
 
 ### Building Packages
 
-Build all packages in the monorepo:
+Build all packages and the SSG documentation output in the monorepo:
 
 ```bash
 pnpm build
@@ -156,8 +157,8 @@ We welcome contributions! Please open an issue or submit a pull request with you
 
 If md-plugins is useful in your workflow and you want to support ongoing maintenance:
 
-GitHub Sponsors: https://github.com/sponsors/hawkeye64
-PayPal: https://paypal.me/hawkeye64
+- GitHub Sponsors: https://github.com/sponsors/hawkeye64
+- PayPal: https://paypal.me/hawkeye64
 
 ## License
 
