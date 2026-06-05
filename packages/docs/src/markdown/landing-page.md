@@ -1,6 +1,6 @@
 ---
 title: MD-PLUGINS
-desc: Markdown for your Quasar and Vue builds
+desc: Markdown tooling for Quasar and Vue/Vite builds
 editLink: false
 ---
 

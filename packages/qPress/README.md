@@ -1,6 +1,6 @@
 # Q-Press
 
-The Ultimate Markdown Solution for the Quasar Framework.
+Markdown documentation tooling for Quasar and Vite applications.
 
 See the [documentation](https://md-plugins.netlify.app/quasar-app-extensions/qpress/overview) for more information.
 

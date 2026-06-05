@@ -284,7 +284,7 @@ const featureCards = [
   },
   {
     icon: 'integration_instructions',
-    title: 'Vue and Quasar Fit',
+    title: 'Vue/Vite and Quasar Fit',
     body: 'Use the lower-level plugins in Vite apps or move into Quasar app extensions when the project needs more scaffolding.',
   },
   {
