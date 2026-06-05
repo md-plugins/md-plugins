@@ -19,15 +19,33 @@ type MaybePromise<T> = T | Promise<T>
 
 type JsonPrimitive = string | number | boolean | null
 type JsonValue = JsonPrimitive | JsonValue[] | { [key: string]: JsonValue }
+type SsgRouteParams = Record<string, JsonPrimitive | undefined>
+type SsgRouteMeta = Record<string, JsonValue | undefined>
 
 interface SsgRouteObject {
   path: string
-  meta?: Record<string, JsonValue | undefined>
-  params?: Record<string, JsonPrimitive | undefined>
+  meta?: SsgRouteMeta
+  params?: SsgRouteParams
   data?: JsonValue
 }
 
 type SsgRouteInput = string | SsgRouteObject
+
+interface SsgRoute {
+  path: string
+  htmlFile: string
+  id: string
+  meta: SsgRouteMeta
+  params: SsgRouteParams
+  data?: JsonValue
+}
+
+interface SsgRouteManifest {
+  base: string
+  routes: SsgRoute[]
+}
+
+type SsgRouteSource = SsgRouteInput[] | (() => MaybePromise<SsgRouteInput[]>)
 
 interface MarkdownSsgRoutesOptions {
   root: string
@@ -36,21 +54,127 @@ interface MarkdownSsgRoutesOptions {
   landingPage?: string
 }
 
+interface SsgRouteRenderContext {
+  appHtml: string
+  manifest: SsgRouteManifest
+  routeIndex: number
+}
+
+type SsgRouteRenderer = (
+  route: SsgRoute,
+  context: SsgRouteRenderContext,
+) => MaybePromise<string | undefined>
+
+type SsgRouteHtmlTransformer = (
+  html: string,
+  route: SsgRoute,
+  context: SsgRouteRenderContext,
+) => MaybePromise<string>
+
+interface SsgRouteHtmlOptions {
+  renderRoute?: SsgRouteRenderer
+  transformHtml?: SsgRouteHtmlTransformer
+  injectRoutePayload?: boolean
+}
+
+interface PrerenderSsgRoutesOptions extends SsgRouteHtmlOptions {
+  outDir: string
+  appHtmlFile?: string
+  manifestFile?: string
+  manifest?: SsgRouteManifest
+}
+
+interface PrerenderedSsgRoute {
+  path: string
+  htmlFile: string
+  bytes: number
+}
+
+interface PrerenderSsgRoutesResult {
+  manifest: SsgRouteManifest
+  outDir: string
+  routes: PrerenderedSsgRoute[]
+}
+
+interface VueSsgRouterAdapter {
+  push?: (location: unknown) => MaybePromise<unknown>
+  replace?: (location: unknown) => MaybePromise<unknown>
+  isReady?: () => MaybePromise<unknown>
+}
+
+interface VueSsgAppFactoryResult {
+  app: unknown
+  router?: VueSsgRouterAdapter
+  ssrContext?: Record<string, unknown>
+  routeLocation?: unknown
+  onRendered?: () => MaybePromise<void>
+}
+
+type VueSsgAppFactory = (
+  route: SsgRoute,
+  context: SsgRouteRenderContext,
+) => MaybePromise<VueSsgAppFactoryResult | unknown>
+
+type VueSsgRenderToString = (
+  app: unknown,
+  ssrContext?: Record<string, unknown>,
+) => MaybePromise<string>
+
+type VueSsgRouteLocationResolver = (
+  route: SsgRoute,
+  context: SsgRouteRenderContext,
+) => unknown
+
+type VueSsgAppHtmlReplacer = (
+  appHtml: string,
+  renderedAppHtml: string,
+  route: SsgRoute,
+  context: SsgRouteRenderContext,
+) => string
+
+type VueSsgRenderedAppHtmlTransformer = (
+  renderedAppHtml: string,
+  route: SsgRoute,
+  context: SsgRouteRenderContext,
+) => MaybePromise<string>
+
+interface VueSsgRouteRendererOptions {
+  createApp: VueSsgAppFactory
+  renderToString?: VueSsgRenderToString
+  appMountId?: string
+  routeLocation?: VueSsgRouteLocationResolver
+  useRouterReplace?: boolean
+  transformRenderedAppHtml?: VueSsgRenderedAppHtmlTransformer
+  replaceAppHtml?: VueSsgAppHtmlReplacer
+}
+
+interface PrerenderVueSsgRoutesOptions
+  extends Omit<PrerenderSsgRoutesOptions, 'renderRoute'>, VueSsgRouteRendererOptions {}
+
 interface ViteSsgPluginOptions {
   enabled?: boolean
-  routes?: SsgRouteInput[] | (() => MaybePromise<SsgRouteInput[]>)
+  routes?: SsgRouteSource
   markdown?: MarkdownSsgRoutesOptions
   base?: string
   emitHtml?: boolean
   appHtmlFile?: string
-  renderRoute?: SsgRouteRenderer
-  transformHtml?: SsgRouteHtmlTransformer
-  injectRoutePayload?: boolean
+  renderRoute?: SsgRouteHtmlOptions['renderRoute']
+  transformHtml?: SsgRouteHtmlOptions['transformHtml']
+  injectRoutePayload?: SsgRouteHtmlOptions['injectRoutePayload']
   manifestFile?: string
   virtualModuleId?: string
 }
 
 declare function viteSsgPlugin(options?: ViteSsgPluginOptions): Plugin
+declare function prerenderSsgRoutes(
+  options: PrerenderSsgRoutesOptions,
+): Promise<PrerenderSsgRoutesResult>
+declare function createVueSsgRouteRenderer(
+  options: VueSsgRouteRendererOptions,
+): SsgRouteRenderer
+declare function prerenderVueSsgRoutes(
+  options: PrerenderVueSsgRoutesOptions,
+): Promise<PrerenderSsgRoutesResult>
 ```
 
 ## Route Sources
