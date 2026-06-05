@@ -121,10 +121,11 @@ To verify the generated static output locally from the repository root, build th
 
 ```bash
 pnpm --dir packages/docs build:ssg
-pnpm --dir packages/docs exec quasar serve dist/spa --history
+cd packages/docs
+quasar serve dist/spa --history
 ```
 
-The `--history` flag is important because Q-Press docs use Vue Router history mode, and it keeps refreshed deep links such as `/vite-plugins/vite-ssg-plugin/advanced` working during local testing.
+The `serve` command comes from the global Quasar CLI. The `--history` flag is important because Q-Press docs use Vue Router history mode, and it keeps refreshed deep links such as `/vite-plugins/vite-ssg-plugin/advanced` working during local testing.
 
 If a project already has Quasar SSR mode enabled and wants to reuse that renderer instead, build the renderer and opt in explicitly:
 
