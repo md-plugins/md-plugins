@@ -174,6 +174,11 @@
             <span>Q-Press</span>
           </a>
 
+          <router-link to="/vite-plugins/vite-ssg-plugin/overview" class="resource-link">
+            <q-icon name="route" />
+            <span>SSG Plugin</span>
+          </router-link>
+
           <a
             href="https://www.npmjs.com/search?q=%40md-plugins"
             target="_blank"
@@ -245,9 +250,9 @@ const familyHighlights = [
     body: 'Authoring helpers for quotes, code, containers, imports, Mermaid, tables, shared helpers, and more.',
   },
   {
-    value: '2',
+    value: '3',
     label: 'Vite Plugins',
-    body: 'Transform Markdown into Vue SFCs and import example source alongside live demos.',
+    body: 'Transform Markdown, import example source, and generate static route output.',
   },
   {
     value: '2',
@@ -273,8 +278,13 @@ const featureCards = [
     body: 'Keep live examples and readable source side by side without duplicating the same content by hand.',
   },
   {
+    icon: 'route',
+    title: 'Static Route Output',
+    body: 'Inventory docs routes and emit static HTML files so deep links can work cleanly on static hosts.',
+  },
+  {
     icon: 'integration_instructions',
-    title: 'Vue and Quasar Fit',
+    title: 'Vue/Vite and Quasar Fit',
     body: 'Use the lower-level plugins in Vite apps or move into Quasar app extensions when the project needs more scaffolding.',
   },
   {
@@ -368,6 +378,11 @@ const vitePlugins = [
     desc: 'Import example source alongside live demos so docs can show both behavior and implementation.',
     path: '/vite-plugins/vite-examples-plugin/overview',
   },
+  {
+    name: 'Vite SSG Plugin',
+    desc: 'Inventory docs routes, emit static route HTML, and bridge Vue or Quasar build-time rendering.',
+    path: '/vite-plugins/vite-ssg-plugin/overview',
+  },
 ]
 
 const appExtensions = [
@@ -392,8 +407,8 @@ const pluginGroups = [
   },
   {
     eyebrow: 'Vite',
-    title: 'Build Markdown-driven Vue pages and example systems',
-    body: 'Move from authored text to app-ready content when pages need components, embedded demos, and raw source visibility.',
+    title: 'Build Markdown-driven Vue pages, example systems, and static route output',
+    body: 'Move from authored text to app-ready content when pages need components, embedded demos, raw source visibility, or SSG-friendly deep links.',
     items: vitePlugins,
   },
   {

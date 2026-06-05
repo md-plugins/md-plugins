@@ -138,7 +138,6 @@ const netlifyLink = {
   maxWidth: '120px',
 }
 
-
 const sponsorLink = {
   path: 'https://github.com/sponsors/hawkeye64',
   external: true,
@@ -296,6 +295,13 @@ const vitePluginsMenu: SiteMenuItem = {
         { name: 'Advanced', path: '/vite-plugins/vite-examples-plugin/advanced' },
       ],
     },
+    {
+      name: 'viteSsgPlugin',
+      children: [
+        { name: 'Overview', path: '/vite-plugins/vite-ssg-plugin/overview' },
+        { name: 'Advanced', path: '/vite-plugins/vite-ssg-plugin/advanced' },
+      ],
+    },
   ],
 }
 
@@ -426,7 +432,7 @@ const config = {
   lang: 'en-US',
   title: productName,
   description:
-    'MD-Plugins is a collection of Markdown and Vite plugins that make it easy to build markdown user interfaces in Vue and Quasar applications.',
+    'MD-Plugins provides Markdown-it plugins, Vite plugins, and Quasar app extensions for Vue/Vite content workflows, Q-Press docs sites, and SSG-ready documentation.',
   theme: 'doc',
   version: version,
   copyright: {

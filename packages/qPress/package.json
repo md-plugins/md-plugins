@@ -1,7 +1,7 @@
 {
   "name": "@md-plugins/quasar-app-extension-q-press",
   "version": "0.1.0-beta.22",
-  "description": "QPress - The Ultimate Markdown Solution for Quasar Framework",
+  "description": "Q-Press - Markdown documentation tooling for Quasar and Vite",
   "keywords": [
     "markdown",
     "markdown-it",
@@ -19,6 +19,9 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/md-plugins/md-plugins.git"
+  },
+  "bin": {
+    "qpress-ssg": "bin/qpress-ssg.js"
   },
   "type": "module",
   "main": "dist/index.js",
@@ -44,14 +47,17 @@
     "@md-plugins/md-plugin-table": "workspace:*",
     "@md-plugins/md-plugin-title": "workspace:*",
     "@md-plugins/vite-md-plugin": "workspace:*",
-    "@types/markdown-it": "^14.1.2",
+    "@md-plugins/vite-ssg-plugin": "workspace:*",
+    "@quasar/vite-plugin": "^1.12.0",
+    "@vitejs/plugin-vue": "^6.0.7",
+    "@vue/server-renderer": "^3.5.0",
     "fs-extra": "^11.3.5",
-    "markdown-it": "^14.2.0"
+    "markdown-it": "^14.2.0",
+    "vite": "^8.0.16"
   },
   "devDependencies": {
     "@quasar/app-vite": "3.0.0-beta.38",
-    "@types/markdown-it": "^14.1.2",
-    "vite": "^8.0.16"
+    "@types/markdown-it": "^14.1.2"
   },
   "peerDependencies": {
     "@quasar/app-vite": ">=3.0.0-beta.38",

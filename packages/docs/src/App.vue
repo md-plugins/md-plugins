@@ -11,12 +11,12 @@ const { initDark } = useDark()
 initDark()
 
 useMeta({
-  title: 'MD-Plugins for Vue and Quasar',
+  title: 'MD-Plugins for Vite, Vue, and Quasar',
   titleTemplate: (title) => `${title} | MD-Plugins`,
 
   meta: getMeta(
-    'MD-Plugins - Build markdown user interfaces in record time',
-    'MD-Plugins is a collection of Markdown and Vite plugins that make it easy to build markdown user interfaces in Vue and Quasar applications.',
+    'MD-Plugins - Markdown tooling for Vite, Vue, and Quasar',
+    'MD-Plugins provides Markdown-it plugins, Vite plugins, and Quasar app extensions for Vue/Vite content workflows, Q-Press docs sites, and SSG-ready documentation.',
   ),
 })
 </script>

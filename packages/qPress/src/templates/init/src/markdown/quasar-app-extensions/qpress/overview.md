@@ -20,6 +20,22 @@ This website is built with **Q-Press**! When you install the App-Extension, you 
 - **Seamless Integration**: Integrates with Quasar's build system and Vue Router, ensuring smooth navigation and rendering of Markdown content.
 - **Customizable**: Provides options to customize the integration, allowing you to tailor the behavior to your specific needs.
 - **Hot Module Replacement (HMR)**: Supports HMR for Markdown files, enabling a smooth development experience with instant updates.
+- **Static Route Output**: Adds Q-Press SSG route inventory and generated app-factory helpers for static-host prerender workflows.
+
+```mermaid
+flowchart TD
+  markdown["src/markdown pages"]
+  examples["src/examples demos"]
+  siteConfig["src/siteConfig navigation"]
+  qpress["Q-Press generated shell"]
+  vite["Vite + Quasar build"]
+  output["Docs site<br/>SPA routes, examples, themes, optional SSG"]
+
+  markdown --> qpress
+  examples --> qpress
+  siteConfig --> qpress
+  qpress --> vite --> output
+```
 
 ## Installation
 
@@ -55,17 +71,17 @@ yarn add -D markdown-it @types/markdown-it
 npm i -D markdown-it @types/markdown-it
 ```
 
-2. **Q-Press adds `shiki` to your project dependencies when invoked. If you are wiring the generated files manually, add it yourself:**
+2. **Q-Press adds `mermaid`, `shiki`, `@md-plugins/vite-ssg-plugin`, and `@vue/server-renderer` to your project dependencies when invoked. If you are wiring the generated files manually, add them yourself:**
 
 ```tabs
 <<| bash pnpm |>>
-pnpm add shiki
+pnpm add mermaid shiki @md-plugins/vite-ssg-plugin @vue/server-renderer
 <<| bash bun |>>
-bun add shiki
+bun add mermaid shiki @md-plugins/vite-ssg-plugin @vue/server-renderer
 <<| bash yarn |>>
-yarn add shiki
+yarn add mermaid shiki @md-plugins/vite-ssg-plugin @vue/server-renderer
 <<| bash npm |>>
-npm i shiki
+npm i mermaid shiki @md-plugins/vite-ssg-plugin @vue/server-renderer
 ```
 
 ## Configuration
@@ -210,16 +226,59 @@ import getMeta from '@/.q-press/assets/get-meta'
 
 // You can use the `getMeta` function to get the meta tags for your page and provide default values
 useMeta({
-  title: 'MD-Plugins for Vue and Quasar',
+  title: 'MD-Plugins for Vite, Vue, and Quasar',
   titleTemplate: (title) => `${title} | MD-Plugins`,
 
   meta: getMeta(
-    'MD-Plugins - Build markdown user interfaces in record time',
-    'MD-Plugins is a collection of Markdown and Vite plugins that make it easy to build markdown user interfaces in Vue and Quasar applications.',
+    'MD-Plugins - Markdown tooling for Vite, Vue, and Quasar',
+    'MD-Plugins provides Markdown-it plugins, Vite plugins, and Quasar app extensions for Vue/Vite content workflows, Q-Press docs sites, and SSG-ready documentation.',
   ),
 })
 </script>
 ```
+
+### Static Route and SSG Output
+
+Q-Press installs the Vite SSG route plugin automatically. During a production SPA build, it emits a `q-press-ssg-routes.json` manifest and route-specific HTML shell files for Markdown routes.
+
+Installed projects also get first-class SSG scripts:
+
+```bash
+pnpm build:ssg
+pnpm prerender:ssg
+```
+
+`build:ssg` rebuilds the SPA output and runs `qpress-ssg` against `dist/spa`. The default Q-Press renderer uses the generated `src/.q-press/ssg/create-app.ts` app factory, so it does not require Quasar SSR mode. `prerender:ssg` reruns only the static prerender pass against existing SPA build output.
+
+```bash
+qpress-ssg --out-dir dist/spa
+```
+
+Projects that already have Quasar SSR mode enabled can opt into the SSR-bundle renderer with `qpress-ssg --renderer quasar-ssr --ssr-dir dist/ssr`. In both cases, the generated pages still deploy as static files from `dist/spa`, which keeps Netlify and other static-host workflows simple.
+
+### How Q-Press SSG Is Served
+
+Q-Press SSG is a static first-hit workflow. A direct request, browser refresh, or crawler visit to a
+known docs route can receive that route's generated `index.html` file instead of only the root SPA
+shell.
+
+```txt
+/other/upgrade-guide
+  -> dist/spa/other/upgrade-guide/index.html
+```
+
+That route file includes the prerendered page HTML, route-specific meta tags, and initial client
+state. The Vue/Quasar bundle then hydrates the page and takes over interactivity. After hydration,
+clicking docs links usually uses Vue Router SPA navigation, so the browser fetches route chunks
+instead of requesting each route's `index.html` file again.
+
+This is why SSG can be useful even though the client app still ships: the first response is more
+complete, while the hydrated app still keeps fast client-side navigation.
+
+SSG can help SEO and indexing because crawlers, link preview bots, and users receive route-specific
+content and metadata in the initial HTML response. It does not guarantee better search ranking by
+itself, but it makes docs pages easier for crawlers to read without depending on JavaScript
+rendering.
 
 ## FAQ
 

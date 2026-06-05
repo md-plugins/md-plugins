@@ -2,7 +2,7 @@
   "name": "@md-plugins/mono-repo",
   "version": "0.1.0-beta.22",
   "private": true,
-  "description": "",
+  "description": "Markdown-it, Vite, and Quasar documentation tooling for Vue/Vite projects.",
   "keywords": [
     "markdown",
     "markdown-it",
@@ -14,7 +14,8 @@
   "author": "",
   "main": "index.js",
   "scripts": {
-    "build": "pnpm -r --stream build",
+    "build": "pnpm build:packages && pnpm build:docs:ssg",
+    "build:docs:ssg": "pnpm --dir packages/docs build:ssg",
     "build:packages": "pnpm --filter './packages/*' --filter '!mdplugins_docs' --stream build",
     "dev": "vitest",
     "check-types": "pnpm check-types:packages && pnpm build:packages && pnpm --filter mdplugins_docs check-types",
@@ -28,7 +29,7 @@
     "check:all": "pnpm verify",
     "verify": "pnpm verify:fast && pnpm verify:build",
     "verify:fast": "pnpm format:check && pnpm lint && pnpm test",
-    "verify:build": "pnpm build && pnpm check-types",
+    "verify:build": "pnpm build && pnpm check-types:packages && pnpm --filter mdplugins_docs check-types",
     "ci:publish": "pnpm -r publish --access public --publish-branch dev",
     "ci:publish:beta": "pnpm -r publish --access public --publish-branch dev --tag beta",
     "test": "vitest run"

@@ -6,7 +6,10 @@
  */
 
 import { defineIndexScript } from '@quasar/app-vite'
+import { existsSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
+import { viteSsgPlugin } from '@md-plugins/vite-ssg-plugin'
+import type { PluginOption } from 'vite'
 
 // import fse from 'fs-extra'
 // import { viteMdPlugin } from '@md-plugins/vite-md-plugin'
@@ -22,6 +25,7 @@ type ViteConfigWithAlias = {
   resolve?: {
     alias?: ViteAlias
   }
+  plugins?: PluginOption[]
 }
 
 type QuasarTsConfig = {
@@ -66,6 +70,11 @@ function addQPressGlobalsToTsConfig(tsConfig: QuasarTsConfig): void {
   if (!tsConfig.files.includes(qPressGlobalsTsConfigPath)) {
     tsConfig.files.push(qPressGlobalsTsConfigPath)
   }
+}
+
+function addVitePlugin(viteConf: ViteConfigWithAlias, plugin: PluginOption): void {
+  viteConf.plugins ??= []
+  viteConf.plugins.push(plugin)
 }
 
 function extendTypeScriptConfig(typescriptConfig: QuasarTypescriptConfig): void {
@@ -135,5 +144,18 @@ export default defineIndexScript((api) => {
 
   api.extendViteConf((viteConf, _invoke, aeApi) => {
     addQuasarSourceAlias(viteConf, aeApi.appDir)
+
+    const markdownPath = api.resolve.src('markdown')
+
+    if (existsSync(markdownPath)) {
+      addVitePlugin(
+        viteConf,
+        viteSsgPlugin({
+          markdown: {
+            root: markdownPath,
+          },
+        }),
+      )
+    }
   })
 })

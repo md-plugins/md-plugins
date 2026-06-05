@@ -29,8 +29,15 @@ export default defineInstallScript(async (api) => {
 
   api.extendPackageJson({
     dependencies: {
+      '@md-plugins/vite-ssg-plugin': '^0.1.0-beta.22',
+      '@vue/server-renderer': '^3.5.0',
       mermaid: '^11.15.0',
       shiki: '^4.1.0',
+    },
+    scripts: {
+      'build:ssg': 'quasar prepare && quasar build && qpress-ssg',
+      'build:ssg:renderer': 'quasar prepare && quasar build -m ssr',
+      'prerender:ssg': 'qpress-ssg',
     },
   })
 

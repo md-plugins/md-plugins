@@ -2,10 +2,10 @@
 
 <p align="center">
 <a href="https://github.com/md-plugins/md-plugins">
-  <img src="https://raw.githubusercontent.com/md-plugins/md-plugins/refs/heads/main/media/markdown-1024x1024.png" alt="md-plugins - Collection of Markdown-it! plugins for Vue and Quasar" width="300" style="border-radius: 50%;">
+  <img src="https://raw.githubusercontent.com/md-plugins/md-plugins/refs/heads/main/media/markdown-1024x1024.png" alt="md-plugins - Markdown-it, Vite, and Quasar documentation tooling" width="300" style="border-radius: 50%;">
 </a>
 <br>
-A collection of Markdown-it! plugins, Vite plugins, and App Extensions for Vue and Quasar.
+A collection of Markdown-it plugins, Vite plugins, and Quasar app extensions for Vue/Vite content workflows and Q-Press documentation sites.
 </p>
 
 <p><strong>Markdown-it! Plugins</strong></p>
@@ -103,7 +103,7 @@ bun add @md-plugins/quasar-app-extension-q-press@beta
 | `viteMdPlugin`                                    | Vite plugin for transforming Markdown into Vue SFCs.                                                                 | [README](packages/viteMdPlugin/README.md)          |
 | `viteExamplesPlugin`                              | Vite plugin for loading and transforming example components and their raw source code for usage in your application. | [README](packages/viteExamplesPlugin/README.md)    |
 | `@md-plugins/quasar-app-extension-vite-md-plugin` | Quasar app extension for enhanced Markdown support in Quasar Applications.                                           | [README](packages/viteMdPluginAppExt/README.md)    |
-| `@md-plugins/quasar-app-extension-q-press`        | The Ultimate Markdown Solution for Quasar Framework Applications.                                                    | [README](packages/qPress/README.md)                |
+| `@md-plugins/quasar-app-extension-q-press`        | Markdown documentation tooling for Quasar and Vite applications.                                                     | [README](packages/qPress/README.md)                |
 
 ## Installation
 
