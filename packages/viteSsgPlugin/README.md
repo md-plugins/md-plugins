@@ -17,6 +17,18 @@ By default, generated route HTML uses the built `index.html` app shell. That mak
 usable on Netlify or other static hosts today. Q-Press projects can use `qpress-ssg` for
 first-class Vue/Quasar build-time prerendering without enabling Quasar SSR mode.
 
+## Why SSG?
+
+SSG turns known routes into static HTML at build time. A direct visit or browser refresh can receive
+the route's own `index.html` file, then the Vue/Quasar client bundle hydrates the page and normal
+SPA navigation takes over.
+
+That gives docs sites a useful middle ground: static hosting without a runtime SSR server, but with
+route-specific HTML, meta tags, headings, and body content in the first response. This can help SEO,
+indexing crawlers, and social link previews because they no longer need to depend entirely on
+client-side JavaScript rendering. SSG does not guarantee search ranking improvements by itself; it
+simply makes the route content easier to read earlier and more reliably.
+
 ## Usage
 
 ```ts

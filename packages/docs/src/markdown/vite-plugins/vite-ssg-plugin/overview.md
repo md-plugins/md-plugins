@@ -14,6 +14,61 @@ It starts with a safe baseline: inventory the routes, emit `q-press-ssg-routes.j
 route-specific `index.html` files from the built app shell. Projects can stop there for static-host
 deep links, or add a renderer when they are ready for full Vue/Quasar HTML prerendering.
 
+## How SSG Works
+
+Static Site Generation is a build-time rendering step. Instead of waiting for the browser to boot a
+blank SPA shell and then fetch the route component, the build writes an `index.html` file for each
+known route.
+
+For a direct visit or hard refresh, the static host can serve the matching route file:
+
+```txt
+/getting-started/introduction
+  -> dist/spa/getting-started/introduction/index.html
+```
+
+That first response contains real HTML for the route, including page content, route-specific meta
+tags, and any initial state that the renderer serializes. After the HTML loads, the normal
+Vue/Quasar client bundle hydrates the page. Once hydration is complete, link clicks inside the app
+usually use Vue Router client-side navigation, so later navigation behaves like a regular SPA.
+
+The practical lifecycle is:
+
+```txt
+Initial direct hit or browser refresh -> route-specific static HTML
+Hydration -> Vue/Quasar app becomes interactive
+In-app navigation -> SPA routing and lazy route chunks
+Another hard refresh -> route-specific static HTML again
+```
+
+SSG is not a runtime server. It produces static files that can be deployed to Netlify or any other
+static host, while still allowing the app to behave like a SPA after hydration.
+
+## Why Use SSG
+
+Use SSG when a docs site needs static-host deployment but should still serve meaningful HTML for
+deep links. It is especially useful for documentation because most routes are known at build time.
+
+- **Static hosting**: Deploy prerendered pages without running a Node SSR server.
+- **Deep links**: Refreshing a docs route can return the route's own HTML instead of only the root
+  SPA shell.
+- **Faster first content**: Browsers receive page markup before the client bundle finishes loading.
+- **SEO and indexing**: Crawlers receive route-specific titles, descriptions, headings, and body
+  content in the initial HTML response.
+- **Social previews**: Link unfurlers and bots that do not execute JavaScript can still read the
+  route metadata.
+- **SPA behavior preserved**: Once hydrated, menus, drawers, examples, dark mode, and Vue Router
+  navigation continue to run on the client.
+
+SSG helps SEO because it reduces the crawler's dependence on JavaScript execution. Modern search
+engines such as Google can render JavaScript, but that rendering can be delayed, incomplete, or less
+predictable than receiving content in the first HTML response. Many other crawlers and social
+preview bots read only the initial HTML. SSG gives those clients route-specific content and meta
+tags immediately.
+
+SSG is not a replacement for good content, correct canonical/meta tags, a sitemap, robots policy,
+or accessible markup. It simply makes the route content available earlier and more reliably.
+
 ## Key Features
 
 - **Route inventory**: Normalize explicit routes or discover Markdown pages from a Q-Press-style
