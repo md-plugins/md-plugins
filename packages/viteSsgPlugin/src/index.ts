@@ -1,3 +1,5 @@
+export * from './html'
+export * from './markdownRoutes'
 export * from './routes'
 export * from './types'
 export * from './viteSsgPlugin'

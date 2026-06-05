@@ -30,10 +30,9 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": {
-        "types": "./dist/index.d.mts",
-        "default": "./dist/index.mjs"
-      }
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "default": "./dist/index.mjs"
     }
   },
   "publishConfig": {
@@ -42,6 +41,9 @@
   "scripts": {
     "build": "unbuild",
     "clean": "rm -rf dist/ node_modules/"
+  },
+  "dependencies": {
+    "tinyglobby": "^0.2.17"
   },
   "devDependencies": {
     "vite": "^8.0.16"

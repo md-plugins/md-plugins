@@ -1,6 +1,39 @@
 import type { Plugin, ResolvedConfig } from 'vite'
+import { Buffer } from 'node:buffer'
+import { createSsgRouteHtml } from './html'
+import { discoverMarkdownSsgRoutes } from './markdownRoutes'
 import { createSsgRouteManifest, defaultSsgManifestFile, defaultSsgVirtualModuleId } from './routes'
 import type { SsgRouteInput, SsgRouteManifest, ViteSsgPluginOptions } from './types'
+
+type BundleAsset = {
+  type: 'asset'
+  fileName: string
+  source: string | Uint8Array
+}
+
+type OutputBundle = Record<string, unknown>
+
+function isBundleAsset(entry: unknown): entry is BundleAsset {
+  return (
+    typeof entry === 'object' &&
+    entry !== null &&
+    'type' in entry &&
+    entry.type === 'asset' &&
+    'fileName' in entry &&
+    typeof entry.fileName === 'string' &&
+    'source' in entry
+  )
+}
+
+function assetSourceToString(source: string | Uint8Array): string {
+  return typeof source === 'string' ? source : Buffer.from(source).toString('utf8')
+}
+
+function findHtmlAsset(bundle: OutputBundle, fileName: string): BundleAsset | undefined {
+  return Object.values(bundle).find(
+    (entry): entry is BundleAsset => isBundleAsset(entry) && entry.fileName === fileName,
+  )
+}
 
 function serializeManifestModule(manifest: SsgRouteManifest): string {
   const serializedManifest = JSON.stringify(manifest, null, 2)
@@ -14,17 +47,20 @@ function serializeManifestModule(manifest: SsgRouteManifest): string {
 }
 
 async function resolveRouteInputs(
-  routeSource: ViteSsgPluginOptions['routes'],
+  options: Pick<ViteSsgPluginOptions, 'markdown' | 'routes'>,
 ): Promise<SsgRouteInput[]> {
+  const routeSource = options.routes
+  const markdownRoutes = options.markdown ? discoverMarkdownSsgRoutes(options.markdown) : []
+
   if (!routeSource) {
-    return []
+    return markdownRoutes
   }
 
   if (typeof routeSource === 'function') {
-    return routeSource()
+    return [...markdownRoutes, ...(await routeSource())]
   }
 
-  return routeSource
+  return [...markdownRoutes, ...routeSource]
 }
 
 export function viteSsgPlugin(options: ViteSsgPluginOptions = {}): Plugin {
@@ -34,7 +70,7 @@ export function viteSsgPlugin(options: ViteSsgPluginOptions = {}): Plugin {
   let manifest: SsgRouteManifest | undefined
 
   async function refreshManifest(): Promise<SsgRouteManifest> {
-    const routes = await resolveRouteInputs(options.routes)
+    const routes = await resolveRouteInputs(options)
     manifest = createSsgRouteManifest(routes, {
       base: options.base ?? config?.base ?? '/',
     })
@@ -74,18 +110,61 @@ export function viteSsgPlugin(options: ViteSsgPluginOptions = {}): Plugin {
       return serializeManifestModule(await getManifest())
     },
 
-    async generateBundle() {
+    async generateBundle(_outputOptions, bundle) {
       if (options.enabled === false) {
         return
       }
 
       const resolvedManifest = await refreshManifest()
+      const appHtmlFile = options.appHtmlFile ?? 'index.html'
+      const appHtmlAsset = findHtmlAsset(bundle as OutputBundle, appHtmlFile)
 
       this.emitFile({
         type: 'asset',
         fileName: options.manifestFile ?? defaultSsgManifestFile,
         source: `${JSON.stringify(resolvedManifest, null, 2)}\n`,
       })
+
+      if (options.emitHtml === false) {
+        return
+      }
+
+      const htmlAsset = appHtmlAsset
+
+      if (!htmlAsset) {
+        this.warn(
+          `Could not find ${appHtmlFile}; skipped SSG route HTML generation. The route manifest was still emitted.`,
+        )
+        return
+      }
+
+      const appHtml = assetSourceToString(htmlAsset.source)
+
+      for (const [routeIndex, route] of resolvedManifest.routes.entries()) {
+        const context = {
+          appHtml,
+          manifest: resolvedManifest,
+          routeIndex,
+        }
+        const renderedHtml =
+          (await options.renderRoute?.(route, context)) ??
+          createSsgRouteHtml(route, context, {
+            injectRoutePayload: options.injectRoutePayload,
+          })
+        const transformedHtml =
+          (await options.transformHtml?.(renderedHtml, route, context)) ?? renderedHtml
+
+        if (route.htmlFile === appHtmlFile) {
+          htmlAsset.source = transformedHtml
+          continue
+        }
+
+        this.emitFile({
+          type: 'asset',
+          fileName: route.htmlFile,
+          source: transformedHtml,
+        })
+      }
     },
   }
 }

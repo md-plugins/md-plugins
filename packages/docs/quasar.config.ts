@@ -6,6 +6,7 @@ import type { Plugin } from 'vite'
 
 import { viteMdPlugin, type MenuItem } from '@md-plugins/vite-md-plugin'
 import { viteExamplesPlugin, viteManualChunks } from '@md-plugins/vite-examples-plugin'
+import { viteSsgPlugin } from '@md-plugins/vite-ssg-plugin'
 
 type QuasarConfig = Awaited<ReturnType<ReturnType<typeof defineConfig>>>
 
@@ -117,6 +118,11 @@ export default defineConfig(async (ctx) => {
         viteExamplesPlugin({
           isProd: ctx.prod,
           path: ctx.appPaths.srcDir + '/examples',
+        }) as unknown as Plugin,
+        viteSsgPlugin({
+          markdown: {
+            root: ctx.appPaths.srcDir + '/markdown',
+          },
         }) as unknown as Plugin,
         [
           'vite-plugin-checker',

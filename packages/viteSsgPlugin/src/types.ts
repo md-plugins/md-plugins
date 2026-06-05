@@ -33,6 +33,45 @@ export interface SsgRouteManifest {
 
 export type SsgRouteSource = SsgRouteInput[] | (() => MaybePromise<SsgRouteInput[]>)
 
+export interface MarkdownSsgRoutesOptions {
+  /**
+   * Directory containing Markdown pages.
+   */
+  root: string
+
+  /**
+   * Glob pattern or patterns to include.
+   */
+  include?: string | string[]
+
+  /**
+   * Glob pattern or patterns to exclude.
+   */
+  exclude?: string | string[]
+
+  /**
+   * Markdown file that should map to the site root.
+   */
+  landingPage?: string
+}
+
+export interface SsgRouteRenderContext {
+  appHtml: string
+  manifest: SsgRouteManifest
+  routeIndex: number
+}
+
+export type SsgRouteRenderer = (
+  route: SsgRoute,
+  context: SsgRouteRenderContext,
+) => MaybePromise<string | undefined>
+
+export type SsgRouteHtmlTransformer = (
+  html: string,
+  route: SsgRoute,
+  context: SsgRouteRenderContext,
+) => MaybePromise<string>
+
 export interface ViteSsgPluginOptions {
   /**
    * Enables manifest emission. The virtual module remains available either way.
@@ -45,10 +84,40 @@ export interface ViteSsgPluginOptions {
   routes?: SsgRouteSource
 
   /**
+   * Optional Markdown route discovery. This can be combined with explicit routes.
+   */
+  markdown?: MarkdownSsgRoutesOptions
+
+  /**
    * Base path used by the generated route manifest.
    * Falls back to Vite's resolved base.
    */
   base?: string
+
+  /**
+   * Emits static HTML files for each route. Defaults to true.
+   */
+  emitHtml?: boolean
+
+  /**
+   * Built HTML file used as the app shell. Defaults to index.html.
+   */
+  appHtmlFile?: string
+
+  /**
+   * Optional per-route HTML renderer. Returning undefined falls back to the app shell.
+   */
+  renderRoute?: SsgRouteRenderer
+
+  /**
+   * Optional per-route HTML transform after rendering or app-shell fallback.
+   */
+  transformHtml?: SsgRouteHtmlTransformer
+
+  /**
+   * Injects a JSON payload for the current SSG route into generated HTML.
+   */
+  injectRoutePayload?: boolean
 
   /**
    * Build asset path for the generated route manifest.
