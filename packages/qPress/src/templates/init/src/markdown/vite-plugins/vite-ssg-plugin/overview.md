@@ -131,8 +131,7 @@ pnpm prerender:ssg
 static HTML back into `dist/spa`. This uses Vue SSR at build time only. The deployed output can
 still be plain static files.
 
-Projects that need more control can import `createQPressSsgApp` from
-`src/.q-press/ssg/create-app` and pass it to `prerenderVueSsgRoutes()` directly.
+Projects that need more control can import `createQPressSsgApp` from `src/.q-press/ssg/create-app` and pass it to `prerenderVueSsgRoutes()` directly.
 
 ## Optional by Design
 

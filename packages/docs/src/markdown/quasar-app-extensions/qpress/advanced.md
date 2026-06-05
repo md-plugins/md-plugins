@@ -120,9 +120,7 @@ HTML back into the SPA output folder.
 qpress-ssg --out-dir dist/spa --ssr-dir dist/ssr
 ```
 
-`build:ssg:renderer` requires Quasar SSR mode. If a docs app has never enabled SSR before, run
-`quasar mode add ssr` once, build the renderer again, and keep deploying the generated `dist/spa`
-folder as static output.
+`build:ssg:renderer` requires Quasar SSR mode. If a docs app has never enabled SSR before, run `quasar mode add ssr` once, build the renderer again, and keep deploying the generated `dist/spa` folder as static output.
 
 Q-Press also keeps lower-level helpers available for custom build tooling:
 
@@ -154,8 +152,7 @@ await prerenderQPressSsgRoutes({
 })
 ```
 
-For lower-level control, import `createQPressSsgApp` directly and pass it to
-`prerenderVueSsgRoutes()` from `@md-plugins/vite-ssg-plugin`.
+For lower-level control, import `createQPressSsgApp` directly and pass it to `prerenderVueSsgRoutes()` from `@md-plugins/vite-ssg-plugin`.
 
 ```ts
 import { prerenderVueSsgRoutes } from '@md-plugins/vite-ssg-plugin'

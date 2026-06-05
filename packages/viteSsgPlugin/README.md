@@ -144,8 +144,7 @@ await prerenderVueSsgRoutes({
 })
 ```
 
-Q-Press generates `src/.q-press/ssg/create-app` and `src/.q-press/ssg/prerender`, and the
-`qpress-ssg` binary consumes Quasar's built SSR `server-entry.js` for the common docs-site flow.
+Q-Press generates `src/.q-press/ssg/create-app` and `src/.q-press/ssg/prerender`, and the `qpress-ssg` binary consumes Quasar's built SSR `server-entry.js` for the common docs-site flow.
 Non-Q-Press projects can still provide their own app factory. Vue SSR dependencies are optional
 until this adapter is used.
 

@@ -224,8 +224,7 @@ useMeta({
 
 ### Static Route and SSG Output
 
-Q-Press installs the Vite SSG route plugin automatically. During a production SPA build, it emits a
-`q-press-ssg-routes.json` manifest and route-specific HTML shell files for Markdown routes.
+Q-Press installs the Vite SSG route plugin automatically. During a production SPA build, it emits a `q-press-ssg-routes.json` manifest and route-specific HTML shell files for Markdown routes.
 
 Installed projects also get first-class SSG scripts:
 
@@ -244,8 +243,7 @@ the static prerender pass against existing build output.
 qpress-ssg --out-dir dist/spa --ssr-dir dist/ssr
 ```
 
-The SSR renderer is used at build time only. The generated pages still deploy as static files from
-`dist/spa`, which keeps Netlify and other static-host workflows simple.
+The SSR renderer is used at build time only. The generated pages still deploy as static files from `dist/spa`, which keeps Netlify and other static-host workflows simple.
 
 ## FAQ
 
