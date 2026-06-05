@@ -1,5 +1,6 @@
 export * from './html'
 export * from './markdownRoutes'
+export * from './prerender'
 export * from './routes'
 export * from './types'
 export * from './viteSsgPlugin'

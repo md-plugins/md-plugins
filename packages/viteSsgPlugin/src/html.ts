@@ -1,4 +1,4 @@
-import type { SsgRoute, SsgRouteRenderContext } from './types'
+import type { SsgRoute, SsgRouteHtmlOptions, SsgRouteRenderContext } from './types'
 
 export function escapeJsonForHtml(json: string): string {
   return json
@@ -18,6 +18,10 @@ export function createSsgRoutePayloadScript(route: SsgRoute): string {
 export function injectSsgRoutePayload(html: string, route: SsgRoute): string {
   const script = createSsgRoutePayloadScript(route)
 
+  if (html.includes('id="md-plugins-ssg-route"')) {
+    return html
+  }
+
   if (html.includes('</head>')) {
     return html.replace('</head>', `${script}\n</head>`)
   }
@@ -35,4 +39,23 @@ export function createSsgRouteHtml(
   }
 
   return injectSsgRoutePayload(context.appHtml, route)
+}
+
+export async function renderSsgRouteHtml(
+  route: SsgRoute,
+  context: SsgRouteRenderContext,
+  options: SsgRouteHtmlOptions = {},
+): Promise<string> {
+  const renderedHtml = await options.renderRoute?.(route, context)
+  const routeHtml =
+    renderedHtml ??
+    createSsgRouteHtml(route, context, {
+      injectRoutePayload: options.injectRoutePayload,
+    })
+  const html =
+    renderedHtml && options.injectRoutePayload !== false
+      ? injectSsgRoutePayload(routeHtml, route)
+      : routeHtml
+
+  return (await options.transformHtml?.(html, route, context)) ?? html
 }

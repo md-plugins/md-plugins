@@ -1,6 +1,6 @@
 import type { Plugin, ResolvedConfig } from 'vite'
 import { Buffer } from 'node:buffer'
-import { createSsgRouteHtml } from './html'
+import { renderSsgRouteHtml } from './html'
 import { discoverMarkdownSsgRoutes } from './markdownRoutes'
 import { createSsgRouteManifest, defaultSsgManifestFile, defaultSsgVirtualModuleId } from './routes'
 import type { SsgRouteInput, SsgRouteManifest, ViteSsgPluginOptions } from './types'
@@ -146,13 +146,11 @@ export function viteSsgPlugin(options: ViteSsgPluginOptions = {}): Plugin {
           manifest: resolvedManifest,
           routeIndex,
         }
-        const renderedHtml =
-          (await options.renderRoute?.(route, context)) ??
-          createSsgRouteHtml(route, context, {
-            injectRoutePayload: options.injectRoutePayload,
-          })
-        const transformedHtml =
-          (await options.transformHtml?.(renderedHtml, route, context)) ?? renderedHtml
+        const transformedHtml = await renderSsgRouteHtml(route, context, {
+          renderRoute: options.renderRoute,
+          transformHtml: options.transformHtml,
+          injectRoutePayload: options.injectRoutePayload,
+        })
 
         if (route.htmlFile === appHtmlFile) {
           htmlAsset.source = transformedHtml

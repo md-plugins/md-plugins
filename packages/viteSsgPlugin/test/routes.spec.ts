@@ -1,7 +1,11 @@
 import { describe, expect, it } from 'vitest'
+import { mkdtemp, readFile, writeFile } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { createSsgRouteHtml } from '../src/html'
 import { discoverMarkdownSsgRoutes, markdownFileToRoutePath } from '../src/markdownRoutes'
+import { prerenderSsgRoutes } from '../src/prerender'
 import {
   createSsgRouteManifest,
   normalizeSsgBase,
@@ -155,5 +159,59 @@ describe('SSG HTML helpers', () => {
     expect(html).toContain('"path":"/unsafe"')
     expect(html).toContain('\\u003C/script\\u003E')
     expect(html).not.toContain('</script><script>alert')
+  })
+})
+
+describe('SSG file prerendering', () => {
+  it('renders route HTML files with a custom async renderer', async () => {
+    const outDir = await mkdtemp(join(tmpdir(), 'md-plugins-ssg-'))
+    const manifest = createSsgRouteManifest(['/', '/guide'])
+
+    await writeFile(
+      join(outDir, 'index.html'),
+      '<html><head><title>Docs</title></head><body><div id="q-app"></div></body></html>',
+    )
+    await writeFile(
+      join(outDir, 'q-press-ssg-routes.json'),
+      `${JSON.stringify(manifest, null, 2)}\n`,
+    )
+
+    const result = await prerenderSsgRoutes({
+      outDir,
+      async renderRoute(route, { appHtml }) {
+        return appHtml.replace(
+          '<div id="q-app"></div>',
+          `<div id="q-app"><main>Rendered ${route.path}</main></div>`,
+        )
+      },
+      transformHtml(html, route) {
+        return html.replace('</head>', `<meta name="ssg-route" content="${route.path}"></head>`)
+      },
+    })
+
+    await expect(readFile(join(outDir, 'index.html'), 'utf8')).resolves.toContain(
+      '<main>Rendered /</main>',
+    )
+    await expect(readFile(join(outDir, 'guide/index.html'), 'utf8')).resolves.toContain(
+      '<main>Rendered /guide</main>',
+    )
+    await expect(readFile(join(outDir, 'guide/index.html'), 'utf8')).resolves.toContain(
+      'id="md-plugins-ssg-route"',
+    )
+    await expect(readFile(join(outDir, 'guide/index.html'), 'utf8')).resolves.toContain(
+      'name="ssg-route" content="/guide"',
+    )
+    expect(result.routes).toEqual([
+      {
+        path: '/',
+        htmlFile: 'index.html',
+        bytes: expect.any(Number),
+      },
+      {
+        path: '/guide',
+        htmlFile: 'guide/index.html',
+        bytes: expect.any(Number),
+      },
+    ])
   })
 })

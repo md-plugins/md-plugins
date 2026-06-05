@@ -100,6 +100,28 @@ viteSsgPlugin({
 })
 ```
 
+## Post-Build Prerendering
+
+When a project has a renderer available outside the Vite build, use `prerenderSsgRoutes`.
+This is the intended bridge for SSR-quality output:
+
+```ts
+import { prerenderSsgRoutes } from '@md-plugins/vite-ssg-plugin'
+
+await prerenderSsgRoutes({
+  outDir: 'dist/spa',
+  async renderRoute(route, { appHtml }) {
+    const renderedAppHtml = await renderMyAppAt(route.path)
+
+    return appHtml.replace('<div id="q-app"></div>', `<div id="q-app">${renderedAppHtml}</div>`)
+  },
+})
+```
+
+The helper reads `q-press-ssg-routes.json`, renders every route, and writes each route's
+`index.html` file. The renderer can be a Vue SSR renderer, a Quasar SSR adapter, or any
+project-specific static renderer.
+
 ## Virtual Module
 
 Client or build tooling can import the generated manifest:
@@ -111,6 +133,6 @@ import ssgRouteManifest, { ssgRoutes } from 'virtual:md-plugins/ssg-routes'
 ## Next Steps
 
 - Add dynamic-route parameter expansion.
-- Add full Vue route rendering for SSR-quality HTML.
+- Add a first-party Quasar/Vue SSR renderer adapter.
 - Define lazy client hydration behavior for examples and browser-only components.
 - Define how browser-only examples opt out of prerendering.

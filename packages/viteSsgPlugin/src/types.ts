@@ -72,6 +72,57 @@ export type SsgRouteHtmlTransformer = (
   context: SsgRouteRenderContext,
 ) => MaybePromise<string>
 
+export interface SsgRouteHtmlOptions {
+  /**
+   * Optional per-route HTML renderer. Returning undefined falls back to the app shell.
+   */
+  renderRoute?: SsgRouteRenderer
+
+  /**
+   * Optional per-route HTML transform after rendering or app-shell fallback.
+   */
+  transformHtml?: SsgRouteHtmlTransformer
+
+  /**
+   * Injects a JSON payload for the current SSG route into generated HTML.
+   */
+  injectRoutePayload?: boolean
+}
+
+export interface PrerenderSsgRoutesOptions extends SsgRouteHtmlOptions {
+  /**
+   * Built output directory containing the app shell and route manifest.
+   */
+  outDir: string
+
+  /**
+   * Built HTML file used as the app shell. Defaults to index.html.
+   */
+  appHtmlFile?: string
+
+  /**
+   * Build asset path for the generated route manifest.
+   */
+  manifestFile?: string
+
+  /**
+   * Manifest to use instead of reading one from disk.
+   */
+  manifest?: SsgRouteManifest
+}
+
+export interface PrerenderedSsgRoute {
+  path: string
+  htmlFile: string
+  bytes: number
+}
+
+export interface PrerenderSsgRoutesResult {
+  manifest: SsgRouteManifest
+  outDir: string
+  routes: PrerenderedSsgRoute[]
+}
+
 export interface ViteSsgPluginOptions {
   /**
    * Enables manifest emission. The virtual module remains available either way.
@@ -105,19 +156,11 @@ export interface ViteSsgPluginOptions {
   appHtmlFile?: string
 
   /**
-   * Optional per-route HTML renderer. Returning undefined falls back to the app shell.
+   * Optional per-route HTML renderer/transform behavior.
    */
-  renderRoute?: SsgRouteRenderer
-
-  /**
-   * Optional per-route HTML transform after rendering or app-shell fallback.
-   */
-  transformHtml?: SsgRouteHtmlTransformer
-
-  /**
-   * Injects a JSON payload for the current SSG route into generated HTML.
-   */
-  injectRoutePayload?: boolean
+  renderRoute?: SsgRouteHtmlOptions['renderRoute']
+  transformHtml?: SsgRouteHtmlOptions['transformHtml']
+  injectRoutePayload?: SsgRouteHtmlOptions['injectRoutePayload']
 
   /**
    * Build asset path for the generated route manifest.
