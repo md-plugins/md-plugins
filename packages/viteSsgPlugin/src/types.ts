@@ -123,6 +123,88 @@ export interface PrerenderSsgRoutesResult {
   routes: PrerenderedSsgRoute[]
 }
 
+export interface VueSsgRouterAdapter {
+  push?: (location: unknown) => MaybePromise<unknown>
+  replace?: (location: unknown) => MaybePromise<unknown>
+  isReady?: () => MaybePromise<unknown>
+}
+
+export interface VueSsgAppFactoryResult {
+  app: unknown
+  router?: VueSsgRouterAdapter
+  ssrContext?: Record<string, unknown>
+  routeLocation?: unknown
+  onRendered?: () => MaybePromise<void>
+}
+
+export type VueSsgAppFactory = (
+  route: SsgRoute,
+  context: SsgRouteRenderContext,
+) => MaybePromise<VueSsgAppFactoryResult | unknown>
+
+export type VueSsgRenderToString = (
+  app: unknown,
+  ssrContext?: Record<string, unknown>,
+) => MaybePromise<string>
+
+export type VueSsgRouteLocationResolver = (
+  route: SsgRoute,
+  context: SsgRouteRenderContext,
+) => unknown
+
+export type VueSsgAppHtmlReplacer = (
+  appHtml: string,
+  renderedAppHtml: string,
+  route: SsgRoute,
+  context: SsgRouteRenderContext,
+) => string
+
+export type VueSsgRenderedAppHtmlTransformer = (
+  renderedAppHtml: string,
+  route: SsgRoute,
+  context: SsgRouteRenderContext,
+) => MaybePromise<string>
+
+export interface VueSsgRouteRendererOptions {
+  /**
+   * Creates a fresh Vue/Quasar SSR app instance for each route.
+   */
+  createApp: VueSsgAppFactory
+
+  /**
+   * Optional renderer. Defaults to lazy-loading @vue/server-renderer when used.
+   */
+  renderToString?: VueSsgRenderToString
+
+  /**
+   * DOM id for the app mount element in the built shell. Defaults to q-app.
+   */
+  appMountId?: string
+
+  /**
+   * Route location pushed into the returned router before rendering.
+   */
+  routeLocation?: VueSsgRouteLocationResolver
+
+  /**
+   * Use router.replace instead of router.push when both are available.
+   */
+  useRouterReplace?: boolean
+
+  /**
+   * Optional transform for the SSR-rendered app fragment before shell insertion.
+   */
+  transformRenderedAppHtml?: VueSsgRenderedAppHtmlTransformer
+
+  /**
+   * Optional full shell replacer for projects with a custom app placeholder.
+   */
+  replaceAppHtml?: VueSsgAppHtmlReplacer
+}
+
+export interface PrerenderVueSsgRoutesOptions
+  extends Omit<PrerenderSsgRoutesOptions, 'renderRoute'>, VueSsgRouteRendererOptions {}
+
 export interface ViteSsgPluginOptions {
   /**
    * Enables manifest emission. The virtual module remains available either way.

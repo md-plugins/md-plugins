@@ -14,6 +14,7 @@ import {
   routePathToHtmlFile,
   routePathToId,
 } from '../src/routes'
+import { createVueSsgRouteRenderer, prerenderVueSsgRoutes } from '../src/vueRenderer'
 
 describe('SSG route helpers', () => {
   it('normalizes base paths', () => {
@@ -213,5 +214,136 @@ describe('SSG file prerendering', () => {
         bytes: expect.any(Number),
       },
     ])
+  })
+})
+
+describe('Vue SSG renderer adapter', () => {
+  it('renders a Vue app factory result into the app shell after router navigation', async () => {
+    const manifest = createSsgRouteManifest(['/guide'])
+    const route = manifest.routes[0]
+    const navigatedTo: unknown[] = []
+    const renderer = createVueSsgRouteRenderer({
+      createApp(currentRoute) {
+        return {
+          app: {
+            routePath: currentRoute.path,
+          },
+          router: {
+            push(location: unknown) {
+              navigatedTo.push(location)
+            },
+            async isReady() {
+              navigatedTo.push('ready')
+            },
+          },
+          ssrContext: {
+            routePath: currentRoute.path,
+          },
+        }
+      },
+      renderToString(app, ssrContext) {
+        const renderedApp = app as { routePath: string }
+
+        return `<main>Rendered ${renderedApp.routePath} from ${ssrContext?.routePath}</main>`
+      },
+    })
+
+    const html = await renderer(route, {
+      appHtml: '<html><head></head><body><div id="q-app"></div></body></html>',
+      manifest,
+      routeIndex: 0,
+    })
+
+    expect(navigatedTo).toEqual(['/guide', 'ready'])
+    expect(html).toContain('<div id="q-app"><main>Rendered /guide from /guide</main></div>')
+  })
+
+  it('supports custom shell replacement and rendered fragment transforms', async () => {
+    const manifest = createSsgRouteManifest(['/custom'])
+    const route = manifest.routes[0]
+    const renderer = createVueSsgRouteRenderer({
+      createApp: () => ({ app: { name: 'docs' } }),
+      renderToString: () => '<main>Docs</main>',
+      transformRenderedAppHtml(renderedAppHtml) {
+        return `<div data-rendered="true">${renderedAppHtml}</div>`
+      },
+      replaceAppHtml(appHtml, renderedAppHtml) {
+        return appHtml.replace('<!--app-->', renderedAppHtml)
+      },
+    })
+
+    const html = await renderer(route, {
+      appHtml: '<html><body><!--app--></body></html>',
+      manifest,
+      routeIndex: 0,
+    })
+
+    expect(html).toContain('<div data-rendered="true"><main>Docs</main></div>')
+  })
+
+  it('falls back to router.replace when push is unavailable', async () => {
+    const manifest = createSsgRouteManifest(['/replace-only'])
+    const route = manifest.routes[0]
+    const navigatedTo: unknown[] = []
+    const renderer = createVueSsgRouteRenderer({
+      createApp: () => ({
+        app: {},
+        router: {
+          replace(location: unknown) {
+            navigatedTo.push(location)
+          },
+        },
+      }),
+      renderToString: () => '<main>Replace only</main>',
+    })
+
+    await renderer(route, {
+      appHtml: '<html><body><div id="q-app"></div></body></html>',
+      manifest,
+      routeIndex: 0,
+    })
+
+    expect(navigatedTo).toEqual(['/replace-only'])
+  })
+
+  it('prerenders Vue-rendered route HTML files after a build', async () => {
+    const outDir = await mkdtemp(join(tmpdir(), 'md-plugins-vue-ssg-'))
+    const manifest = createSsgRouteManifest(['/', '/guide'])
+
+    await writeFile(
+      join(outDir, 'index.html'),
+      '<html><head></head><body><div id="q-app"></div></body></html>',
+    )
+    await writeFile(
+      join(outDir, 'q-press-ssg-routes.json'),
+      `${JSON.stringify(manifest, null, 2)}\n`,
+    )
+
+    const result = await prerenderVueSsgRoutes({
+      outDir,
+      createApp(route) {
+        return {
+          app: {
+            routePath: route.path,
+          },
+        }
+      },
+      renderToString(app) {
+        const renderedApp = app as { routePath: string }
+
+        return `<main>Vue rendered ${renderedApp.routePath}</main>`
+      },
+    })
+
+    await expect(readFile(join(outDir, 'index.html'), 'utf8')).resolves.toContain(
+      '<main>Vue rendered /</main>',
+    )
+    await expect(readFile(join(outDir, 'guide/index.html'), 'utf8')).resolves.toContain(
+      '<main>Vue rendered /guide</main>',
+    )
+    await expect(readFile(join(outDir, 'guide/index.html'), 'utf8')).resolves.toContain(
+      'id="md-plugins-ssg-route"',
+    )
+    expect(result.routes).toHaveLength(2)
   })
 })

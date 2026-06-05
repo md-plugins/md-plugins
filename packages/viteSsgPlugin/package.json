@@ -47,5 +47,17 @@
   },
   "devDependencies": {
     "vite": "^8.0.16"
+  },
+  "peerDependencies": {
+    "@vue/server-renderer": "^3.5.0",
+    "vue": "^3.5.0"
+  },
+  "peerDependenciesMeta": {
+    "@vue/server-renderer": {
+      "optional": true
+    },
+    "vue": {
+      "optional": true
+    }
   }
 }

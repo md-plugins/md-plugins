@@ -122,6 +122,34 @@ The helper reads `q-press-ssg-routes.json`, renders every route, and writes each
 `index.html` file. The renderer can be a Vue SSR renderer, a Quasar SSR adapter, or any
 project-specific static renderer.
 
+## Vue / Quasar Build-Time Rendering
+
+For Vue or Quasar apps, `createVueSsgRouteRenderer` adapts a per-route SSR app factory into
+the generic `renderRoute` hook. This uses Vue's server renderer at build time only; the
+published output can still be deployed as static files on Netlify or any other static host.
+
+```ts
+import { prerenderVueSsgRoutes } from '@md-plugins/vite-ssg-plugin'
+import { createSsrApp } from './path/to/entry-ssr'
+
+await prerenderVueSsgRoutes({
+  outDir: 'dist/spa',
+  async createApp(route) {
+    const { app, router } = await createSsrApp()
+
+    return {
+      app,
+      router,
+      routeLocation: route.path,
+    }
+  },
+})
+```
+
+Projects that already ship runtime SSR can reuse the same app factory, while projects that
+only want SSG can run the renderer during the build and deploy the generated HTML without an
+SSR server. Vue SSR dependencies are optional until this adapter is used.
+
 ## Virtual Module
 
 Client or build tooling can import the generated manifest:
@@ -133,6 +161,7 @@ import ssgRouteManifest, { ssgRoutes } from 'virtual:md-plugins/ssg-routes'
 ## Next Steps
 
 - Add dynamic-route parameter expansion.
-- Add a first-party Quasar/Vue SSR renderer adapter.
+- Add a Q-Press generated SSR app-factory template so docs projects do not need to hand-roll
+  `createApp` for static rendering.
 - Define lazy client hydration behavior for examples and browser-only components.
 - Define how browser-only examples opt out of prerendering.
