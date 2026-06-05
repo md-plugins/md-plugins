@@ -149,17 +149,20 @@ viteSsgPlugin({
 
 ## Post-Build Prerendering
 
-For Q-Press, use the first-class command after building the SPA and SSR renderer:
+For Q-Press, use the first-class command after building the SPA:
 
 ```bash
-pnpm build:ssg:renderer
 pnpm build:ssg
 ```
 
-`qpress-ssg` reads `q-press-ssg-routes.json`, renders every route with the built Quasar SSR
-renderer, and writes the route HTML files back into the built SPA output directory. Use
-`pnpm prerender:ssg` when both `dist/spa` and `dist/ssr` already exist and only the static
-prerender pass needs to run again.
+`qpress-ssg` reads `q-press-ssg-routes.json`, renders every route with the generated Q-Press SSG app factory, and writes the route HTML files back into the built SPA output directory. Use `pnpm prerender:ssg` when `dist/spa` already exists and only the static prerender pass needs to run again.
+
+Projects that already have a Quasar SSR bundle can opt into that renderer explicitly:
+
+```bash
+pnpm build:ssg:renderer
+qpress-ssg --renderer quasar-ssr --out-dir dist/spa --ssr-dir dist/ssr
+```
 
 ## Vue / Quasar Renderer Adapter
 

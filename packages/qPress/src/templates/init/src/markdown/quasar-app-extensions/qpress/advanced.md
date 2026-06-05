@@ -107,20 +107,22 @@ vitePlugins: [
 Q-Press projects can prerender docs routes with the generated scripts:
 
 ```bash
-pnpm build:ssg:renderer
 pnpm build:ssg
 pnpm prerender:ssg
 ```
 
-The `qpress-ssg` command reads `dist/spa/q-press-ssg-routes.json`, imports the built Quasar SSR
-renderer from `dist/ssr/server/server-entry.js`, renders each route, and writes the prerendered
-HTML back into the SPA output folder.
+The `qpress-ssg` command reads `dist/spa/q-press-ssg-routes.json`, loads the generated Q-Press SSG app factory from `src/.q-press/ssg/create-app.ts`, renders each route at build time, and writes the prerendered HTML back into the SPA output folder. It does not require Quasar SSR mode.
 
 ```bash
-qpress-ssg --out-dir dist/spa --ssr-dir dist/ssr
+qpress-ssg --out-dir dist/spa
 ```
 
-`build:ssg:renderer` requires Quasar SSR mode. If a docs app has never enabled SSR before, run `quasar mode add ssr` once, build the renderer again, and keep deploying the generated `dist/spa` folder as static output.
+If a project already has Quasar SSR mode enabled and wants to reuse that renderer instead, build the renderer and opt in explicitly:
+
+```bash
+pnpm build:ssg:renderer
+qpress-ssg --renderer quasar-ssr --out-dir dist/spa --ssr-dir dist/ssr
+```
 
 Q-Press also keeps lower-level helpers available for custom build tooling:
 

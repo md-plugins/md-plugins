@@ -114,22 +114,19 @@ export default defineConfig((ctx) => ({
 }))
 ```
 
-This produces static route files from the normal built shell. That is useful on Netlify and other
-static hosts even before a full SSR renderer is wired in.
+This produces static route files from the normal built shell, which is useful on Netlify and other
+static hosts by itself.
 
 ## Build-Time Vue Rendering
 
 When a Q-Press project is ready to prerender actual Vue/Quasar HTML, use the generated scripts:
 
 ```bash
-pnpm build:ssg:renderer
 pnpm build:ssg
 pnpm prerender:ssg
 ```
 
-`build:ssg:renderer` builds Quasar's SSR renderer, and `qpress-ssg` uses that renderer to write
-static HTML back into `dist/spa`. This uses Vue SSR at build time only. The deployed output can
-still be plain static files.
+`build:ssg` runs the normal SPA build and then lets `qpress-ssg` render static HTML from the generated Q-Press SSG app factory. This uses Vue's renderer at build time only and does not require Quasar SSR mode. Projects that already use Quasar SSR can opt into `qpress-ssg --renderer quasar-ssr`.
 
 Projects that need more control can import `createQPressSsgApp` from `src/.q-press/ssg/create-app` and pass it to `prerenderVueSsgRoutes()` directly.
 

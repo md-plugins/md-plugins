@@ -15,7 +15,7 @@ This package currently focuses on route inventory and static route output:
 
 By default, generated route HTML uses the built `index.html` app shell. That makes the output
 usable on Netlify or other static hosts today. Q-Press projects can use `qpress-ssg` for
-first-class Vue/Quasar build-time prerendering when a Quasar SSR renderer is available.
+first-class Vue/Quasar build-time prerendering without enabling Quasar SSR mode.
 
 ## Usage
 
@@ -123,12 +123,14 @@ project-specific static renderer.
 
 ## Vue / Quasar Build-Time Rendering
 
-For Q-Press apps, build the Quasar SSR renderer and then run the generated Q-Press command:
+For Q-Press apps, run the generated Q-Press command after a normal SPA build:
 
 ```bash
-pnpm build:ssg:renderer
 pnpm build:ssg
 ```
+
+Projects that already have a Quasar SSR bundle can opt into that renderer with
+`qpress-ssg --renderer quasar-ssr`, but it is not required for the default Q-Press SSG flow.
 
 For lower-level Vue or Quasar apps, `createVueSsgRouteRenderer` adapts a per-route SSR app factory
 into the generic `renderRoute` hook. This uses Vue's server renderer at build time only; the
@@ -144,9 +146,7 @@ await prerenderVueSsgRoutes({
 })
 ```
 
-Q-Press generates `src/.q-press/ssg/create-app` and `src/.q-press/ssg/prerender`, and the `qpress-ssg` binary consumes Quasar's built SSR `server-entry.js` for the common docs-site flow.
-Non-Q-Press projects can still provide their own app factory. Vue SSR dependencies are optional
-until this adapter is used.
+Q-Press generates `src/.q-press/ssg/create-app` and `src/.q-press/ssg/prerender`, and the `qpress-ssg` binary uses that app factory for the common docs-site flow. Non-Q-Press projects can still provide their own app factory. Vue SSR dependencies are optional until this adapter is used. Projects that already build a Quasar SSR bundle can opt into that path with `qpress-ssg --renderer quasar-ssr`.
 
 ## Local SSR / SSG Proving
 
