@@ -174,6 +174,11 @@
             <span>Q-Press</span>
           </a>
 
+          <router-link to="/vite-plugins/vite-ssg-plugin/overview" class="resource-link">
+            <q-icon name="route" />
+            <span>SSG Plugin</span>
+          </router-link>
+
           <a
             href="https://www.npmjs.com/search?q=%40md-plugins"
             target="_blank"
