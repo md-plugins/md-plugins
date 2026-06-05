@@ -27,6 +27,7 @@ A collection of Markdown-it plugins, Vite plugins, and Quasar app extensions for
 
 ![@md-plugins/vite-md-plugin](https://img.shields.io/npm/v/@md-plugins/vite-md-plugin/beta?label=@md-plugins/vite-md-plugin@beta)
 ![@md-plugins/vite-examples-plugin](https://img.shields.io/npm/v/@md-plugins/vite-examples-plugin/beta?label=@md-plugins/vite-examples-plugin@beta)
+![@md-plugins/vite-ssg-plugin](https://img.shields.io/npm/v/@md-plugins/vite-ssg-plugin/beta?label=@md-plugins/vite-ssg-plugin@beta)
 
 <p><strong>Quasar App Extensions</strong></p>
 
@@ -49,7 +50,7 @@ A collection of **Markdown-It plugins** and utilities designed for enhanced Mark
 
 A collection of **Vite plugins** for transforming Markdown into Vue Single File Components (SFCs) and for handling raw SFC content.
 
-A collection of **App Extensions** for Quasar Framework, providing enhanced Markdown support for Quasar applications, including **Q-Press**. The **Q-Press** App Extension is a powerful tool for Quasar developers that simplifies the integration of Markdown content into Quasar applications. It leverages the capabilities of Vite and various Markdown plugins to transform Markdown files into Vue components, enabling a seamless and efficient workflow for content management.
+A collection of **App Extensions** for Quasar Framework, providing enhanced Markdown support for Quasar applications, including **Q-Press**. The **Q-Press** App Extension is a powerful tool for Quasar developers that simplifies the integration of Markdown content into Quasar applications. It leverages the capabilities of Vite and various Markdown plugins to transform Markdown files into Vue components, enabling a seamless and efficient workflow for content management. Q-Press also uses the SSG Vite plugin to generate route manifests and static HTML output for documentation sites that need static-host-friendly pages.
 
 Inspired by [Quasar Framework](https://quasar.dev) documentation and [mdit-vue](https://github.com/mdit-vue/mdit-vue), this project aims to provide a comprehensive set of tools for working with Markdown content.
 
@@ -60,6 +61,7 @@ This monorepo provides:
 - Plugins to enhance Markdown rendering with features like blockquotes, inline code, tables, headers, and more.
 - A Vite plugin for seamless integration of Markdown into Vue projects.
 - A Vite plugin for handling raw SFC content.
+- A Vite SSG plugin for route manifests, static HTML shells, and optional prerendered output.
 - Shared utilities for common processing tasks.
 
 ## Table of Contents
@@ -78,9 +80,11 @@ The `0.1.0` beta line supports direct Markdown-it and Vite plugin usage in Vue/V
 
 ```bash
 pnpm add @md-plugins/vite-md-plugin@beta
+pnpm add @md-plugins/vite-ssg-plugin@beta
 pnpm add @md-plugins/quasar-app-extension-q-press@beta
 
 bun add @md-plugins/vite-md-plugin@beta
+bun add @md-plugins/vite-ssg-plugin@beta
 bun add @md-plugins/quasar-app-extension-q-press@beta
 ```
 
@@ -102,6 +106,7 @@ bun add @md-plugins/quasar-app-extension-q-press@beta
 | `@md-plugins/shared`                              | Shared utilities and types for the plugins.                                                                          | [README](packages/shared/README.md)                |
 | `viteMdPlugin`                                    | Vite plugin for transforming Markdown into Vue SFCs.                                                                 | [README](packages/viteMdPlugin/README.md)          |
 | `viteExamplesPlugin`                              | Vite plugin for loading and transforming example components and their raw source code for usage in your application. | [README](packages/viteExamplesPlugin/README.md)    |
+| `@md-plugins/vite-ssg-plugin`                     | Vite plugin for generating route manifests, static HTML shells, and optional prerendered SSG output.                 | [README](packages/viteSsgPlugin/README.md)         |
 | `@md-plugins/quasar-app-extension-vite-md-plugin` | Quasar app extension for enhanced Markdown support in Quasar Applications.                                           | [README](packages/viteMdPluginAppExt/README.md)    |
 | `@md-plugins/quasar-app-extension-q-press`        | Markdown documentation tooling for Quasar and Vite applications.                                                     | [README](packages/qPress/README.md)                |
 
