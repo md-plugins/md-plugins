@@ -119,21 +119,5 @@ onBeforeUnmount(() => {
     color: var(--q-secondary);
     font-style: italic;
   }
-
-  &--mobile {
-    display: none;
-  }
-}
-
-@media (max-width: 699px) {
-  .markdown-mermaid {
-    &--desktop {
-      display: none;
-    }
-
-    &--mobile {
-      display: block;
-    }
-  }
 }
 </style>
