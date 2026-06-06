@@ -120,10 +120,7 @@ type VueSsgRenderToString = (
   ssrContext?: Record<string, unknown>,
 ) => MaybePromise<string>
 
-type VueSsgRouteLocationResolver = (
-  route: SsgRoute,
-  context: SsgRouteRenderContext,
-) => unknown
+type VueSsgRouteLocationResolver = (route: SsgRoute, context: SsgRouteRenderContext) => unknown
 
 type VueSsgAppHtmlReplacer = (
   appHtml: string,
@@ -169,9 +166,7 @@ declare function viteSsgPlugin(options?: ViteSsgPluginOptions): Plugin
 declare function prerenderSsgRoutes(
   options: PrerenderSsgRoutesOptions,
 ): Promise<PrerenderSsgRoutesResult>
-declare function createVueSsgRouteRenderer(
-  options: VueSsgRouteRendererOptions,
-): SsgRouteRenderer
+declare function createVueSsgRouteRenderer(options: VueSsgRouteRendererOptions): SsgRouteRenderer
 declare function prerenderVueSsgRoutes(
   options: PrerenderVueSsgRoutesOptions,
 ): Promise<PrerenderSsgRoutesResult>
