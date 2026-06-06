@@ -1,6 +1,6 @@
 ---
 title: Q-Press
-desc: Q-Press App-Extension for Quasar.
+desc: Q-Press App Extension for Quasar.
 ---
 
 The Q-Press App Extension is a powerful tool for Quasar developers that simplifies the integration of Markdown content into Quasar applications. It leverages the capabilities of Vite and various Markdown plugins to transform Markdown files into Vue components, enabling a seamless and efficient workflow for content management.
@@ -10,7 +10,7 @@ Q-Press is for Quasar Vite projects using `@quasar/app-vite` `>=3.0.0-beta.38` a
 :::
 
 ::: tip
-This website is built with **Q-Press**! When you install the App-Extension, you will be able to have this website up and running in minutes. Later, you can make adjustments to the `src/siteConfig` and add your own markdown files in the `src/markdown` folder to make it your own.
+This website is built with **Q-Press**! When you install the App Extension, you will be able to have this website up and running in minutes. Later, you can make adjustments to the `src/siteConfig` and add your own Markdown files in the `src/markdown` folder to make it your own.
 :::
 
 ## Key Features
@@ -36,6 +36,45 @@ flowchart TD
   siteConfig --> qpress
   qpress --> vite --> output
 ```
+
+## How You Work With Q-Press
+
+Q-Press has two kinds of files:
+
+- **Project-owned files** are the files you normally edit: `src/markdown`, `src/examples`, `src/components`, and `src/siteConfig`.
+- **Generated shell files** live in `src/.q-press`. They provide the layout, markdown components, composables, API helpers, styles, SSG helpers, and generated route utilities.
+
+The normal authoring loop looks like this:
+
+1. Add or edit Markdown in `src/markdown`.
+2. Add the page to `src/siteConfig` if it should appear in the header, sidebar, footer, or `More` menu.
+3. Add examples under `src/examples/<topic>` when a page needs live example cards.
+4. Use Q-Press components such as `MarkdownExample`, `MarkdownApi`, `MarkdownPage`, and `MarkdownCardLink` inside Markdown when the page needs richer structure.
+5. Customize the docs theme through `src/css/quasar.variables.scss` and runtime `--qpress-*` CSS variables.
+6. Build with `pnpm build` for SPA output or `pnpm build:ssg` when you want static route HTML for crawlers and static hosts.
+
+When upgrading Q-Press, expect `src/.q-press` to be refreshed. Avoid placing project-specific edits there unless you are intentionally carrying a local fork of the generated shell.
+
+## Route And Content Conventions
+
+Markdown files become route components. The route path follows the file path under `src/markdown`.
+
+```txt
+src/markdown/getting-started/introduction.md
+  -> /getting-started/introduction
+
+src/markdown/quasar-app-extensions/qpress/themes.md
+  -> /quasar-app-extensions/qpress/themes
+```
+
+If the folder name and file name are the same, the generated route removes the repeated segment:
+
+```txt
+src/markdown/vite-plugins/vite-md-plugin/vite-md-plugin.md
+  -> /vite-plugins/vite-md-plugin
+```
+
+The landing page is the special case. A `landing-page.md` route is mounted at `/` and usually uses `meta: { fullscreen: true }` so it can own the full hero layout.
 
 ## Installation
 
@@ -384,4 +423,4 @@ Then select the `Overwrite All` option.
 
 ---
 
-Happy coding!
+After invocation, review the refreshed `src/.q-press` folder and keep project-specific docs, examples, theme overrides, and navigation in the project-owned folders described above.

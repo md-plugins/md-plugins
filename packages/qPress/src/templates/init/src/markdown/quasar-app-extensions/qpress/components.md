@@ -1,9 +1,21 @@
 ---
 title: Q-Press Components
-desc: Components for Q-Press App-Extension for Quasar.
+desc: Components for the Q-Press App Extension for Quasar.
 ---
 
-Q-Press has a lot of components that can be used in your app. Under the hood, these components are being used by the system. But, if you find a way to make them useful, you will find the documentation for them below to be helpful.
+Q-Press ships components for the generated docs shell and for Markdown-authored content. Most projects do not need to import the shell components directly, but content authors will use a small set of Markdown components regularly.
+
+| Component           | Typical use                                                          |
+| ------------------- | -------------------------------------------------------------------- |
+| `MarkdownPage`      | Wrap custom page layouts that still need Q-Press page behavior.      |
+| `MarkdownExample`   | Render a live Vue example from `src/examples`.                       |
+| `MarkdownApi`       | Render Quasar-style component API JSON.                              |
+| `MarkdownCardTitle` | Add card-style section headers inside Markdown pages.                |
+| `MarkdownCardLink`  | Add compact link cards for related docs or external resources.       |
+| `MarkdownCodepen`   | Open examples in CodePen with the site's configured dependencies.    |
+| `MarkdownPrerender` | Control content that should behave differently during SSG prerender. |
+
+The remaining components are primarily used by the generated layout, header, drawer, table-of-contents, and code rendering system. They are documented here for advanced customization and debugging.
 
 ## Components
 

@@ -1,12 +1,17 @@
 ---
 title: Q-Press Advanced Topics
-desc: Advanced Topics for the Q-Press App-Extension.
+desc: Advanced Topics for the Q-Press App Extension.
 examples: QAvatar
 related:
   - vite-plugins/vite-examples-plugin/overview
 ---
 
-If you plan on having `api` and `examples` support in your markdown files, we will discuss making the necessary updates to support that. If you don't know what `api` and `examples` are, here are examples for Quasar's `QAvatar` component:
+Q-Press has two advanced content workflows that turn Markdown pages into richer documentation:
+
+- **Live examples** render Vue files from `src/examples`.
+- **API cards** render Quasar-style JSON metadata through `MarkdownApi`.
+
+Here are both workflows on the same page using Quasar's `QAvatar` component:
 
 <script import>
 import AvatarApi from 'quasar/dist/api/QAvatar.json'
@@ -16,34 +21,44 @@ import AvatarApi from 'quasar/dist/api/QAvatar.json'
 
 <MarkdownExample title="Title for example card" file="BasicExample" no-edit no-github/>
 
-## Usage
+## Live Examples
 
-You will need to make sure you have the necessary components installed as outlined further down in the [Installation](#installation) section.
+Live examples are resolved through the `examples` frontmatter key and `MarkdownExample`.
 
-In your `src` folder, you should have an `examples` folder. Each child folder should be a topic, like a `QAvatar` folder. In this folder, you will add your examples.
+The folder contract is:
 
-In the `frontmatter` of your markdown file, you will need to specify the topic folder like so:
+```txt
+src/markdown/quasar-components/avatar.md
+src/examples/QAvatar/BasicExample.vue
+src/examples/QAvatar/DenseExample.vue
+```
+
+In the frontmatter of your Markdown file, specify the matching topic folder:
 
 ```yaml
 examples: QAvatar
 ```
 
-In your markdown file, you can add the following to create an `example` card:
-
-::: tip
-The `file="BasicExample"` is the name of the Vue file (without extension) in the `examples/QAvatar` folder.
-:::
+Then add an example card in Markdown:
 
 ```markdown
 <MarkdownExample title="Title for example card" file="BasicExample" no-edit no-github/>
 ```
 
-In your markdown file, you can add the following to create an `api` card:
+The `file="BasicExample"` value is the Vue filename without the `.vue` extension. Because the page frontmatter says `examples: QAvatar`, Q-Press resolves the file from `src/examples/QAvatar/BasicExample.vue`.
 
-::: tip
-The API format conforms to Quasar's API format.
-We will touch on this at a later date. For now, you can look at the Api folder in the .q-press folder.
-:::
+### Common Example Mistakes
+
+| Symptom                                | Check                                                                           |
+| -------------------------------------- | ------------------------------------------------------------------------------- |
+| The example card is empty              | Confirm the page frontmatter has `examples: FolderName`.                        |
+| The example file is not found          | Confirm `file` omits `.vue` and matches the filename exactly.                   |
+| CodePen output is missing dependencies | Configure `codepen` in `src/siteConfig/index.ts`.                               |
+| The example only fails during SSG      | Guard browser-only APIs such as `window`, `document`, and element measurements. |
+
+## API Cards
+
+Q-Press API cards use the same general JSON shape as Quasar component API files. Import the JSON in a `<script import>` block, then pass it to `MarkdownApi`:
 
 ```markdown
 <script import >
@@ -52,6 +67,18 @@ import AvatarApi from 'quasar/dist/api/QAvatar.json'
 
 <MarkdownApi :api="AvatarApi" name="QAvatar"/>
 ```
+
+Q-Press ships API JSON for its own generated components under `src/.q-press/api/components`. You can use those files as a reference when creating API JSON for your own documentation components.
+
+```markdown
+<script import>
+import MarkdownExampleApi from '@/.q-press/api/components/MarkdownExample.json'
+</script>
+
+<MarkdownApi :api="MarkdownExampleApi" name="MarkdownExample"/>
+```
+
+API cards are most useful when a component has enough props, slots, or events that prose would become hard to scan.
 
 ## viteExamplesPlugin
 
@@ -176,12 +203,8 @@ await prerenderVueSsgRoutes({
 })
 ```
 
-The generated factory is intentionally reusable instead of being tied to a single script. Run it
-from build tooling that understands the docs app's TypeScript, Vue, and alias configuration when
-the built `qpress-ssg` command is not enough.
+The generated factory is intentionally reusable instead of being tied to a single script. Run it from build tooling that understands the docs app's TypeScript, Vue, and alias configuration when the built `qpress-ssg` command is not enough.
 
-## Support
+## Where To Go Next
 
-If you have any questions or need assistance, please refer to the FAQ or reach out to our support team.
-
-Happy coding!
+Use the [viteExamplesPlugin](/vite-plugins/vite-examples-plugin/overview) docs when you need deeper example-source behavior, and use the [viteSsgPlugin](/vite-plugins/vite-ssg-plugin/overview) docs when you need lower-level SSG control outside the generated Q-Press runner.
