@@ -35,6 +35,29 @@ This will load the `sunrise` theme into your **Q-Press** enabled app. Q-Press th
 
 Import only one Q-Press theme, then add any project-specific overrides below that import. This keeps the theme variables predictable while still letting you tune colors, typography, and spacing for your site.
 
+## Runtime Theme Tokens
+
+Q-Press also publishes the active theme as runtime CSS custom properties. These tokens are derived from the selected Sass theme and switch automatically between `body.body--light` and `body.body--dark`, so shared components can follow future theme changes without copying Sass variables into every component.
+
+Use these tokens when building docs-specific cards, landing pages, callouts, or custom page sections:
+
+```scss
+.custom-docs-panel {
+  color: var(--qpress-text-primary);
+  background: var(--qpress-surface-raised);
+  border: 1px solid var(--qpress-border-subtle);
+  box-shadow: var(--qpress-card-shadow);
+}
+
+.custom-docs-pill {
+  color: var(--qpress-pill-text);
+  background: var(--qpress-pill-bg);
+  border: 1px solid var(--qpress-pill-border);
+}
+```
+
+The token family includes base colors such as `--qpress-color-primary`, RGB channels such as `--qpress-rgb-primary`, text tokens such as `--qpress-text-body`, surface tokens such as `--qpress-surface-panel`, border tokens, action tokens, chip tokens, pill tokens, shadows, and landing-page-friendly glow tokens. Prefer these runtime tokens over importing Q-Press Sass variables inside reusable Vue components.
+
 ## Custom Themes
 
 If you want to build your own theme, add these variables to your `src/css/quasar.variables.scss` or `src/css/quasar.variables.sass` file and modify them to your liking:
