@@ -41,9 +41,9 @@
     "test": "vitest"
   },
   "dependencies": {
-    "@shikijs/transformers": "^4.1.0",
-    "@shikijs/twoslash": "^4.1.0",
-    "shiki": "^4.1.0"
+    "@shikijs/transformers": "^4.2.0",
+    "@shikijs/twoslash": "^4.2.0",
+    "shiki": "^4.2.0"
   },
   "devDependencies": {
     "@md-plugins/shared": "workspace:*",

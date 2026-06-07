@@ -8,10 +8,10 @@ related:
   - vite-plugins/vite-md-plugin/overview
 ---
 
-The `0.1.0` beta line moves the Quasar app extensions, including Q-Press, to the Quasar CLI Vite 3 beta toolchain. It is the right version to use when your Quasar application is being upgraded to `@quasar/app-vite` `>=3.0.0-beta.38`.
+The `0.1.0` beta line moves the Quasar app extensions, including Q-Press, to the Quasar CLI Vite 3 beta toolchain. It is the right version to use when your Quasar application is being upgraded to `@quasar/app-vite` `>=3.0.0-beta.39`.
 
 ::: warning
-Q-Press and the Quasar app extension packages now target Quasar Vite projects using `@quasar/app-vite` `>=3.0.0-beta.38`. They are not intended for Webpack projects or JavaScript-only Quasar projects.
+Q-Press and the Quasar app extension packages now target Quasar Vite projects using `@quasar/app-vite` `>=3.0.0-beta.39`. They are not intended for Webpack projects or JavaScript-only Quasar projects.
 :::
 
 ::: tip
@@ -21,7 +21,7 @@ The core Markdown-it plugins and direct Vite plugins are not Quasar-only. You ca
 ## Before You Upgrade
 
 - For Q-Press or the Quasar app extensions, make sure your app is already on a Quasar Vite setup.
-- For Q-Press or the Quasar app extensions, upgrade the app to `@quasar/app-vite` `>=3.0.0-beta.38`.
+- For Q-Press or the Quasar app extensions, upgrade the app to `@quasar/app-vite` `>=3.0.0-beta.39`.
 - Use TypeScript in the consuming Quasar project when using the Quasar app extensions.
 - Import `defineConfig` in `quasar.config.ts` directly from `@quasar/app-vite`.
 - Use `/// <reference types="@quasar/app-vite/client" />` in `src/env.d.ts`.
