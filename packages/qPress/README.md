@@ -211,8 +211,8 @@ In case this README falls out of date, please refer to the [documentation](https
 
 If Q-Press is useful in your workflow and you want to support ongoing maintenance:
 
-GitHub Sponsors: https://github.com/sponsors/hawkeye64
-PayPal: https://paypal.me/hawkeye64
+- GitHub Sponsors: https://github.com/sponsors/hawkeye64
+- PayPal: https://paypal.me/hawkeye64
 
 ## License
 
