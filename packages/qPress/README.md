@@ -178,20 +178,6 @@ All you need to do now is change the configuration and landing page to make it y
 Q. I have errors in my `routes.ts` file, what should I do?
 A. You can remove the following line: `import type { RouteRecordRaw } from 'vue-router'` and also remove the `type` keyword from the `routes` variable (`: RouteRecordRaw[]`).
 
-Q. I still see an error in my `routes.ts` file, for `_key`, what should I do?
-A. Current Q-Press templates avoid unused tuple bindings by skipping the unused value. If your route example still has `[_key, component]`, change it to:
-
-```ts
-.map(([, component]) => ({
-  path: '',
-  name: 'Landing Page',
-  component,
-  meta: { fullscreen: true, dark: true },
-}))
-```
-
-You can also rerun `quasar ext invoke @md-plugins/q-press` and choose `Overwrite All` to refresh the generated Q-Press files from the latest template.
-
 Q. Every time I save a Markdown file, the formatter changes syntax that Q-Press needs. How can I prevent this?
 A. Current Q-Press projects use `oxfmt` for repository formatting. Use `pnpm format` and `pnpm format:check` as the source of truth for Markdown formatting.
 

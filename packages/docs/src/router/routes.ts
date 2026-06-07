@@ -9,7 +9,7 @@ const routes = [
       // Include the Landing Page route first
       ...Object.entries(mdPageList)
         .filter(([key]) => key.includes('landing-page.md'))
-        .map(([_key, component]) => ({
+        .map(([, component]) => ({
           path: '',
           name: 'Landing Page',
           component,

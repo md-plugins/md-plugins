@@ -355,24 +355,6 @@ Choose `Overwrite All` if you want the generated `src/.q-press` files to match t
 **A.** You can remove the following line: `import type { RouteRecordRaw } from 'vue-router'` and also remove the `type` keyword from the `routes` variable (`: RouteRecordRaw[]`).
 :::
 
-:::details Q. I still see an error in my `routes.ts` file, for `_key`, what should I do?
-
-**A.** Current Q-Press templates avoid unused tuple bindings by skipping the unused value.
-
-If your route example still has `[_key, component]`, change it to skip the unused tuple value:
-
-```ts
-.map(([, component]) => ({
-  path: '',
-  name: 'Landing Page',
-  component,
-  meta: { fullscreen: true, dark: true },
-}))
-```
-
-You can also rerun `quasar ext invoke @md-plugins/q-press` and choose `Overwrite All` to refresh the generated Q-Press files from the latest template.
-:::
-
 :::details Q. I see linting issues regarding `any`, what should I do?
 
 **A.** Prefer replacing `any` with the real type first. If the `any` is intentional, keep the exception close to the code and use an oxlint directive with a short explanation:
