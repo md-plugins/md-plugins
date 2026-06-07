@@ -190,7 +190,7 @@ const routes = [
       // Include the Landing Page route first
       ...Object.entries(mdPageList)
         .filter(([key]) => key.includes('landing-page.md'))
-        .map(([_key, component]) => ({
+        .map(([, component]) => ({
           path: '',
           name: 'Landing Page',
           component,
@@ -350,57 +350,45 @@ quasar ext invoke @md-plugins/q-press
 Choose `Overwrite All` if you want the generated `src/.q-press` files to match the current beta templates.
 :::
 
-:::details Q. I have errors in my`routes.ts` file, what should I do?
+:::details Q. I have errors in my `routes.ts` file, what should I do?
 
 **A.** You can remove the following line: `import type { RouteRecordRaw } from 'vue-router'` and also remove the `type` keyword from the `routes` variable (`: RouteRecordRaw[]`).
 :::
 
 :::details Q. I still see an error in my `routes.ts` file, for `_key`, what should I do?
 
-**A.** In your `eslint.config.js` file, add/replace the following in your rules:
+**A.** Current Quasar projects use `oxlint`, not ESLint. Do not add an `eslint.config.js` rule just for this.
 
-```js
-'@typescript-eslint/no-unused-vars': [
-  'error',
-  {
-    argsIgnorePattern: '^_',
-    ignoreRestSiblings: true,
-    varsIgnorePattern: '^_',
-  },
-],
+If your route example still has `[_key, component]`, change it to skip the unused tuple value:
+
+```ts
+.map(([, component]) => ({
+  path: '',
+  name: 'Landing Page',
+  component,
+  meta: { fullscreen: true, dark: true },
+}))
 ```
 
+You can also rerun `quasar ext invoke @md-plugins/q-press` and choose `Overwrite All` to refresh the generated Q-Press files from the latest template.
 :::
 
 :::details Q. I see linting issues regarding `any`, what should I do?
 
-**A.** In your `eslint.config.js` file, add/replace the following in your rules:
+**A.** Prefer replacing `any` with the real type first. If the `any` is intentional, keep the exception close to the code and use an oxlint directive with a short explanation:
 
-```js
-'@typescript-eslint/no-explicit-any': 'off',
+```ts
+// oxlint-disable-next-line typescript/no-explicit-any -- third-party API has no useful type here
+function normalizeExternalValue(value: any) {
+  return value
+}
 ```
 
 :::
 
 :::details Q. Every time I save a markdown file, `prettier` changes it so that it breaks. How can I prevent this?
 
-**A.** This is both a `prettier` and `eslint` issue. In `eslint.config.js`, add the following to the top of the file, right after `export default [`:
-
-```js
-{
-  /**
-   * Ignore the following files.
-   * Please note that pluginQuasar.configs.recommended() already ignores
-   * the "node_modules" folder for you (and all other Quasar project
-   * relevant folders and files).
-   *
-   * ESLint requires "ignores" key to be the only one in this object
-   */
-  ignores: ['eslint.config.js', '**/*.md', 'dist/**/*', 'node_modules'],
-},
-```
-
-If you don't have a `.prettierignore` file, create one in the root of your project and add the following:
+**A.** Current Q-Press projects use `oxfmt` for repository formatting. If your editor still runs Prettier on Markdown files, disable that editor integration for the project or add a `.prettierignore` file in the root of your project:
 
 ```bash
 # Ignore all Markdown files:
