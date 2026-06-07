@@ -179,7 +179,7 @@ Q. I have errors in my `routes.ts` file, what should I do?
 A. You can remove the following line: `import type { RouteRecordRaw } from 'vue-router'` and also remove the `type` keyword from the `routes` variable (`: RouteRecordRaw[]`).
 
 Q. I still see an error in my `routes.ts` file, for `_key`, what should I do?
-A. Current Quasar projects use `oxlint`, not ESLint. Do not add an `eslint.config.js` rule just for this. If your route example still has `[_key, component]`, change it to skip the unused tuple value:
+A. Current Q-Press templates avoid unused tuple bindings by skipping the unused value. If your route example still has `[_key, component]`, change it to:
 
 ```ts
 .map(([, component]) => ({
@@ -192,12 +192,17 @@ A. Current Quasar projects use `oxlint`, not ESLint. Do not add an `eslint.confi
 
 You can also rerun `quasar ext invoke @md-plugins/q-press` and choose `Overwrite All` to refresh the generated Q-Press files from the latest template.
 
-Q. Every time I save a markdown file, `prettier` changes it so that it breaks. How can I prevent this?
-A. Current Q-Press projects use `oxfmt` for repository formatting. If your editor still runs Prettier on Markdown files, disable that editor integration for the project or add a `.prettierignore` file in the root of your project:
+Q. Every time I save a Markdown file, the formatter changes syntax that Q-Press needs. How can I prevent this?
+A. Current Q-Press projects use `oxfmt` for repository formatting. Use `pnpm format` and `pnpm format:check` as the source of truth for Markdown formatting.
 
-```
-# Ignore all Markdown files:
-**/*.md
+If your editor formats Markdown differently on save, configure it to use the workspace formatter or disable format-on-save for Markdown in that project. A project-level VS Code setting is usually enough:
+
+```json
+{
+  "[markdown]": {
+    "editor.formatOnSave": false
+  }
+}
 ```
 
 ---

@@ -357,7 +357,7 @@ Choose `Overwrite All` if you want the generated `src/.q-press` files to match t
 
 :::details Q. I still see an error in my `routes.ts` file, for `_key`, what should I do?
 
-**A.** Current Quasar projects use `oxlint`, not ESLint. Do not add an `eslint.config.js` rule just for this.
+**A.** Current Q-Press templates avoid unused tuple bindings by skipping the unused value.
 
 If your route example still has `[_key, component]`, change it to skip the unused tuple value:
 
@@ -386,13 +386,18 @@ function normalizeExternalValue(value: any) {
 
 :::
 
-:::details Q. Every time I save a markdown file, `prettier` changes it so that it breaks. How can I prevent this?
+:::details Q. Every time I save a Markdown file, the formatter changes syntax that Q-Press needs. How can I prevent this?
 
-**A.** Current Q-Press projects use `oxfmt` for repository formatting. If your editor still runs Prettier on Markdown files, disable that editor integration for the project or add a `.prettierignore` file in the root of your project:
+**A.** Current Q-Press projects use `oxfmt` for repository formatting. Use `pnpm format` and `pnpm format:check` as the source of truth for Markdown formatting.
 
-```bash
-# Ignore all Markdown files:
-**/*.md
+If your editor formats Markdown differently on save, configure it to use the workspace formatter or disable format-on-save for Markdown in that project. A project-level VS Code setting is usually enough:
+
+```json
+{
+  "[markdown]": {
+    "editor.formatOnSave": false
+  }
+}
 ```
 
 :::
