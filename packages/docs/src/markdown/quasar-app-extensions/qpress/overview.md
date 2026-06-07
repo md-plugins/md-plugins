@@ -6,7 +6,7 @@ desc: Q-Press App Extension for Quasar.
 The Q-Press App Extension is a powerful tool for Quasar developers that simplifies the integration of Markdown content into Quasar applications. It leverages the capabilities of Vite and various Markdown plugins to transform Markdown files into Vue components, enabling a seamless and efficient workflow for content management.
 
 ::: warning
-Q-Press is for Quasar Vite projects using `@quasar/app-vite` `>=3.0.0-beta.39` at this time. TypeScript processing is also required. Do not use if you are using Webpack or have a JavaScript-only project.
+Q-Press is for Quasar Vite projects using `@quasar/app-vite` `>=3.0.0-beta.40` at this time. TypeScript processing is also required. Do not use if you are using Webpack or have a JavaScript-only project.
 :::
 
 ::: tip
