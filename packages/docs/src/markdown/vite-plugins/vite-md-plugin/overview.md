@@ -129,7 +129,7 @@ framework: {
 
 The `viteMdPlugin` allows you to define a navigation structure that can be updated dynamically based on the Markdown files in your project:
 
-```typescript
+```typescript [twoslash]
 const menu = [
   { name: 'Home', path: '/home' },
   { name: 'About', path: '/about' },

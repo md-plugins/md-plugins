@@ -88,7 +88,7 @@ After installing the extension, you need to configure it in your Quasar project.
 
 The `MenuItem` interface defines the structure of the sidebar menu items. It includes the following properties:
 
-```ts
+```ts [twoslash]
 interface MenuItem {
   name: string
   path?: string

@@ -251,7 +251,7 @@ The `viteMdPlugin` provides several options for customization. Here are the avai
 - **Type**: `MenuItem[]`
 - **Description**: An array of `MenuItem` objects representing the navigation menu structure.
 
-```ts
+```ts [twoslash]
 export interface MenuItem {
   name: string
   path?: string

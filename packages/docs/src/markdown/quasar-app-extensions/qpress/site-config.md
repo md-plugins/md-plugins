@@ -54,7 +54,7 @@ Menus can be displayed in the header, drawer/sidebar, footer, or `More` overflow
 
 To create a top-level menu, create something similar to the following:
 
-```ts
+```ts [twoslash]
 const mdPluginsMenu = {
   name: 'MD Plugins',
   mq: 600, // media query breakpoint
@@ -178,7 +178,7 @@ The `moreLinks` array controls a menu item called `More`. Items here are display
 
 Use `mq` on the original header menu to decide when the item should move:
 
-```ts
+```ts [twoslash]
 const guidesMenu = {
   name: 'Guides',
   mq: 780,
@@ -207,7 +207,7 @@ const links = {
 
 `codepen` is used by `MarkdownExample` when a live example opens in CodePen. Add global packages when an example needs browser globals and use `cssExternal`, `jsExternal`, or `head` when examples need shared assets.
 
-```ts
+```ts [twoslash]
 const codepen = {
   titleSuffix: ' - Q-Press Example',
   jsPreProcessor: 'typescript',
