@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { mkdtemp, readFile, writeFile } from 'node:fs/promises'
+import { mkdir, mkdtemp, readFile, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -164,6 +164,38 @@ describe('SSG HTML helpers', () => {
 })
 
 describe('SSG file prerendering', () => {
+  it('injects built CSS assets that are missing from the app shell', async () => {
+    const outDir = await mkdtemp(join(tmpdir(), 'md-plugins-ssg-'))
+    const manifest = createSsgRouteManifest(['/'])
+
+    await mkdir(join(outDir, 'assets'), { recursive: true })
+    await writeFile(join(outDir, 'assets/main.css'), 'body { color: black; }')
+    await writeFile(join(outDir, 'assets/route.css'), '.route { color: blue; }')
+    await writeFile(
+      join(outDir, 'index.html'),
+      '<html><head><link rel="stylesheet" crossorigin href="/assets/main.css"></head><body><div id="q-app"></div></body></html>',
+    )
+    await writeFile(
+      join(outDir, 'q-press-ssg-routes.json'),
+      `${JSON.stringify(manifest, null, 2)}\n`,
+    )
+
+    await prerenderSsgRoutes({
+      outDir,
+      renderRoute(route, { appHtml }) {
+        return appHtml.replace(
+          '<div id="q-app"></div>',
+          `<div id="q-app"><main>${route.path}</main></div>`,
+        )
+      },
+    })
+
+    const html = await readFile(join(outDir, 'index.html'), 'utf8')
+
+    expect(html.match(/href="\/assets\/main\.css"/g)).toHaveLength(1)
+    expect(html).toContain('href="/assets/route.css"')
+  })
+
   it('renders route HTML files with a custom async renderer', async () => {
     const outDir = await mkdtemp(join(tmpdir(), 'md-plugins-ssg-'))
     const manifest = createSsgRouteManifest(['/', '/guide'])
