@@ -39,7 +39,8 @@
   "scripts": {
     "build": "unbuild",
     "clean": "rm -rf dist/ node_modules/",
-    "test": "vitest"
+    "test": "vitest",
+    "prepack": "pnpm build"
   },
   "dependencies": {
     "@md-plugins/shared": "workspace:*"

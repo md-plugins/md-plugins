@@ -38,7 +38,8 @@
   "scripts": {
     "build": "unbuild",
     "clean": "rm -rf dist/ node_modules/",
-    "test": "vitest"
+    "test": "vitest",
+    "prepack": "pnpm build"
   },
   "devDependencies": {
     "@types/markdown-it": "^14.1.2",
