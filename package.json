@@ -31,6 +31,7 @@
     "verify:fast": "pnpm format:check && pnpm lint && pnpm test",
     "verify:build": "pnpm build && pnpm check-types:packages && pnpm --filter mdplugins_docs check-types",
     "ci:publish": "pnpm -r publish --access public --publish-branch dev",
+    "ci:publish:latest": "pnpm -r publish --access public --publish-branch dev --tag latest",
     "ci:publish:beta": "pnpm -r publish --access public --publish-branch dev --tag beta",
     "test": "vitest run"
   },
