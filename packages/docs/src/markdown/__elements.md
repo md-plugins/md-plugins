@@ -339,6 +339,8 @@ sudo apt autoremove
 
 ### diff
 
+Use `diff` when you want literal `+` / `-` markers to remain part of the copied text. The `[[! add]]` / `[[! rem]]` annotations style lines, but those markers are not copied as leading `+` / `-` characters.
+
 ```diff
 @@ -13,6 +13,8 @@ const langList = [
    { name: 'xml' },

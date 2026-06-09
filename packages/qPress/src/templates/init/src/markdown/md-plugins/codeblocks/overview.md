@@ -426,6 +426,8 @@ export function containersPlugin(
 
 ### Code Block Diff
 
+Use `diff` when you need literal `+` / `-` markers to remain in copyable output. The `add` / `rem` options are great for visual emphasis, but they do not copy as leading `+` / `-` characters.
+
 ```diff
   function createContainer(
     container: Container,
