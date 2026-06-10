@@ -253,6 +253,7 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
     }
 
     const langProp = customCopyLangList.includes(lang) === true ? ` lang="${lang}"` : ''
+    const codeProp = ` code="${md.utils.escapeHtml(content)}"`
 
     return (
       highlighter
@@ -267,7 +268,7 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
             twoslash: twoslash === true || twoslash === 'true',
           }),
         })
-        .replace('<pre ', '<pre v-pre ') + `<${copyButtonComponent}${langProp} />`
+        .replace('<pre ', '<pre v-pre ') + `<${copyButtonComponent}${langProp}${codeProp} />`
     )
   }
 

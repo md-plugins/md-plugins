@@ -33,6 +33,7 @@ console.log('Hello, world!');
 
     // Check for copy button
     expect(renderedHTML).toContain('<MarkdownCopyButton')
+    expect(renderedHTML).toContain(`code="console.log('Hello, world!');"`)
   })
 
   it('applies a default language when none is specified', () => {
@@ -99,6 +100,8 @@ const count = 1
     expect(renderedHTML).toContain('twoslash-popup-code')
     expect(renderedHTML).toContain('count')
     expect(renderedHTML).toContain(':')
+    expect(renderedHTML).toContain('code="const count = 1')
+    expect(renderedHTML).not.toContain('twoslash-popup-code" />')
   })
 
   it('renders Twoslash output when enabled with a bare meta flag', () => {
