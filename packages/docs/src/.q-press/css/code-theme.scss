@@ -403,6 +403,57 @@
   }
 }
 
+@media (max-width: 600px) {
+  .markdown-code {
+    &.twoslash {
+      overflow-x: auto;
+      overflow-y: auto;
+      max-width: 100%;
+    }
+  }
+
+  .twoslash {
+    .twoslash-hover > .twoslash-popup-container,
+    .twoslash-error-hover > .twoslash-popup-container {
+      position: fixed;
+      z-index: 6000;
+      top: calc(env(safe-area-inset-top) + 88px);
+      left: 16px;
+      right: 16px;
+      min-width: 0;
+      width: auto;
+      max-width: none;
+      max-height: calc(100vh - 120px);
+      white-space: normal;
+      overflow-wrap: anywhere;
+      overflow-y: auto;
+      transform: none;
+    }
+
+    .twoslash-popup-error,
+    .twoslash-popup-docs,
+    .twoslash-popup-docs-tags {
+      max-width: 100%;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .twoslash-popup-code {
+      box-sizing: border-box;
+      display: block;
+      max-width: 100%;
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    .twoslash-completion-cursor .twoslash-completion-list,
+    .twoslash-completion-list {
+      width: min(240px, calc(100vw - 48px));
+      max-width: calc(100vw - 48px);
+    }
+  }
+}
+
 body.body--light {
   .shiki,
   .shiki span {
