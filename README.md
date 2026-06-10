@@ -75,9 +75,9 @@ This monorepo provides:
 
 ## Current Release
 
-The current beta line in this repository is `0.1.0-beta.25`. Packages in this line publish to npm under the `beta` dist-tag, while the npm `latest` dist-tag still points at the previous `0.1.0-alpha.29` packages.
+The current beta line in this repository is `0.1.0-beta.28`. Packages in this line publish to npm under the `beta` dist-tag, while the npm `latest` dist-tag still points at the previous `0.1.0-alpha.29` packages.
 
-The `0.1.0` beta line supports direct Markdown-it and Vite plugin usage in Vue/Vite projects, including Markdown transforms, live example source loading, and optional SSG route output. The Quasar app extensions in this repo target Quasar Vite projects using `@quasar/app-vite` `>=3.0.0-beta.43`. Repository development and CI use Node.js `>=22.13` and `pnpm@11.5.1`.
+The `0.1.0` beta line supports direct Markdown-it and Vite plugin usage in Vue/Vite projects, including Markdown transforms, live example source loading, and optional SSG route output. The Quasar app extensions in this repo target Quasar Vite projects using `@quasar/app-vite` `>=3.0.0-beta.44`. Repository development and CI use Node.js `>=22.13` and `pnpm@11.5.2`.
 
 ```bash
 pnpm add @md-plugins/vite-md-plugin@beta
@@ -121,7 +121,7 @@ cd md-plugins
 pnpm install
 ```
 
-This repository is currently developed with Node.js `>=22.13`, CI runs on Node.js 24, and local tooling uses `pnpm@11.5.1`.
+This repository is currently developed with Node.js `>=22.13`, CI runs on Node.js 24, and local tooling uses `pnpm@11.5.2`.
 
 ## Development
 
