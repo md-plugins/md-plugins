@@ -10,30 +10,30 @@ A collection of Markdown-it plugins, Vite plugins, and Quasar app extensions for
 
 <p><strong>Markdown-it! Plugins</strong></p>
 
-![@md-plugins/md-plugin-blockquote](https://img.shields.io/npm/v/@md-plugins/md-plugin-blockquote/rc?label=@md-plugins/md-plugin-blockquote@rc)
-![@md-plugins/md-plugin-codeblocks](https://img.shields.io/npm/v/@md-plugins/md-plugin-codeblocks/rc?label=@md-plugins/md-plugin-codeblocks@rc)
-![@md-plugins/md-plugin-containers](https://img.shields.io/npm/v/@md-plugins/md-plugin-containers/rc?label=@md-plugins/md-plugin-containers@rc)
-![@md-plugins/md-plugin-frontmatter](https://img.shields.io/npm/v/@md-plugins/md-plugin-frontmatter/rc?label=@md-plugins/md-plugin-frontmatter@rc)
-![@md-plugins/md-plugin-headers](https://img.shields.io/npm/v/@md-plugins/md-plugin-headers/rc?label=@md-plugins/md-plugin-headers@rc)
-![@md-plugins/md-plugin-image](https://img.shields.io/npm/v/@md-plugins/md-plugin-image/rc?label=@md-plugins/md-plugin-image@rc)
-![@md-plugins/md-plugin-imports](https://img.shields.io/npm/v/@md-plugins/md-plugin-imports/rc?label=@md-plugins/md-plugin-imports@rc)
-![@md-plugins/md-plugin-inlinecode](https://img.shields.io/npm/v/@md-plugins/md-plugin-inlinecode/rc?label=@md-plugins/md-plugin-inlinecode@rc)
-![@md-plugins/md-plugin-link](https://img.shields.io/npm/v/@md-plugins/md-plugin-link/rc?label=@md-plugins/md-plugin-link@rc)
-![@md-plugins/md-plugin-mermaid](https://img.shields.io/npm/v/@md-plugins/md-plugin-mermaid/rc?label=@md-plugins/md-plugin-mermaid@rc)
-![@md-plugins/md-plugin-table](https://img.shields.io/npm/v/@md-plugins/md-plugin-table/rc?label=@md-plugins/md-plugin-table@rc)
-![@md-plugins/md-plugin-title](https://img.shields.io/npm/v/@md-plugins/md-plugin-title/rc?label=@md-plugins/md-plugin-title@rc)
-![@md-plugins/shared](https://img.shields.io/npm/v/@md-plugins/shared/rc?label=@md-plugins/shared@rc)
+![@md-plugins/md-plugin-blockquote](https://img.shields.io/npm/v/@md-plugins/md-plugin-blockquote?label=@md-plugins/md-plugin-blockquote)
+![@md-plugins/md-plugin-codeblocks](https://img.shields.io/npm/v/@md-plugins/md-plugin-codeblocks?label=@md-plugins/md-plugin-codeblocks)
+![@md-plugins/md-plugin-containers](https://img.shields.io/npm/v/@md-plugins/md-plugin-containers?label=@md-plugins/md-plugin-containers)
+![@md-plugins/md-plugin-frontmatter](https://img.shields.io/npm/v/@md-plugins/md-plugin-frontmatter?label=@md-plugins/md-plugin-frontmatter)
+![@md-plugins/md-plugin-headers](https://img.shields.io/npm/v/@md-plugins/md-plugin-headers?label=@md-plugins/md-plugin-headers)
+![@md-plugins/md-plugin-image](https://img.shields.io/npm/v/@md-plugins/md-plugin-image?label=@md-plugins/md-plugin-image)
+![@md-plugins/md-plugin-imports](https://img.shields.io/npm/v/@md-plugins/md-plugin-imports?label=@md-plugins/md-plugin-imports)
+![@md-plugins/md-plugin-inlinecode](https://img.shields.io/npm/v/@md-plugins/md-plugin-inlinecode?label=@md-plugins/md-plugin-inlinecode)
+![@md-plugins/md-plugin-link](https://img.shields.io/npm/v/@md-plugins/md-plugin-link?label=@md-plugins/md-plugin-link)
+![@md-plugins/md-plugin-mermaid](https://img.shields.io/npm/v/@md-plugins/md-plugin-mermaid?label=@md-plugins/md-plugin-mermaid)
+![@md-plugins/md-plugin-table](https://img.shields.io/npm/v/@md-plugins/md-plugin-table?label=@md-plugins/md-plugin-table)
+![@md-plugins/md-plugin-title](https://img.shields.io/npm/v/@md-plugins/md-plugin-title?label=@md-plugins/md-plugin-title)
+![@md-plugins/shared](https://img.shields.io/npm/v/@md-plugins/shared?label=@md-plugins/shared)
 
 <p><strong>Vite Plugins</strong></p>
 
-![@md-plugins/vite-md-plugin](https://img.shields.io/npm/v/@md-plugins/vite-md-plugin/rc?label=@md-plugins/vite-md-plugin@rc)
-![@md-plugins/vite-examples-plugin](https://img.shields.io/npm/v/@md-plugins/vite-examples-plugin/rc?label=@md-plugins/vite-examples-plugin@rc)
-![@md-plugins/vite-ssg-plugin](https://img.shields.io/npm/v/@md-plugins/vite-ssg-plugin/rc?label=@md-plugins/vite-ssg-plugin@rc)
+![@md-plugins/vite-md-plugin](https://img.shields.io/npm/v/@md-plugins/vite-md-plugin?label=@md-plugins/vite-md-plugin)
+![@md-plugins/vite-examples-plugin](https://img.shields.io/npm/v/@md-plugins/vite-examples-plugin?label=@md-plugins/vite-examples-plugin)
+![@md-plugins/vite-ssg-plugin](https://img.shields.io/npm/v/@md-plugins/vite-ssg-plugin?label=@md-plugins/vite-ssg-plugin)
 
 <p><strong>Quasar App Extensions</strong></p>
 
-![@md-plugins/quasar-app-extension-vite-md-plugin](https://img.shields.io/npm/v/@md-plugins/quasar-app-extension-vite-md-plugin/rc?label=@md-plugins/quasar-app-extension-vite-md-plugin@rc)
-![@md-plugins/quasar-app-extension-q-press](https://img.shields.io/npm/v/@md-plugins/quasar-app-extension-q-press/rc?label=@md-plugins/quasar-app-extension-q-press@rc)
+![@md-plugins/quasar-app-extension-vite-md-plugin](https://img.shields.io/npm/v/@md-plugins/quasar-app-extension-vite-md-plugin?label=@md-plugins/quasar-app-extension-vite-md-plugin)
+![@md-plugins/quasar-app-extension-q-press](https://img.shields.io/npm/v/@md-plugins/quasar-app-extension-q-press?label=@md-plugins/quasar-app-extension-q-press)
 
 [![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/md-plugins/md-plugins)]()
 [![GitHub repo size in bytes](https://img.shields.io/github/repo-size/md-plugins/md-plugins)]()
@@ -76,18 +76,18 @@ This monorepo provides:
 
 ## Current Release
 
-The current release-candidate line in this repository is `0.1.0-rc.0`. Packages in this line publish to npm under the `rc` dist-tag until the production release is ready for the `latest` dist-tag.
+The current release-candidate line in this repository is `0.1.0-rc.0`. Packages in this line publish to npm under the `latest` dist-tag while Quasar app-vite is in its release-candidate window.
 
 The `0.1.0` release-candidate line supports direct Markdown-it and Vite plugin usage in Vue/Vite projects, including Markdown transforms, live example source loading, and optional SSG route output. The Quasar app extensions in this repo target Quasar Vite projects using `@quasar/app-vite` `>=3.0.0-rc.1`. Repository development and CI use Node.js `>=22.13` and `pnpm@11.5.3`.
 
 ```bash
-pnpm add @md-plugins/vite-md-plugin@rc
-pnpm add @md-plugins/vite-ssg-plugin@rc
-pnpm add @md-plugins/quasar-app-extension-q-press@rc
+pnpm add @md-plugins/vite-md-plugin
+pnpm add @md-plugins/vite-ssg-plugin
+pnpm add @md-plugins/quasar-app-extension-q-press
 
-bun add @md-plugins/vite-md-plugin@rc
-bun add @md-plugins/vite-ssg-plugin@rc
-bun add @md-plugins/quasar-app-extension-q-press@rc
+bun add @md-plugins/vite-md-plugin
+bun add @md-plugins/vite-ssg-plugin
+bun add @md-plugins/quasar-app-extension-q-press
 ```
 
 ## Structure
