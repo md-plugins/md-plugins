@@ -8,7 +8,7 @@ related:
   - vite-plugins/vite-md-plugin/overview
 ---
 
-The `0.1.0` beta line moves the Quasar app extensions, including Q-Press, to the Quasar CLI Vite 3 beta toolchain. It is the right version to use when your Quasar application is being upgraded to `@quasar/app-vite` `>=3.0.0-rc.1`.
+The `0.1.0` release-candidate line moves the Quasar app extensions, including Q-Press, to the Quasar CLI Vite 3 RC toolchain. It is the right version to use when your Quasar application is being upgraded to `@quasar/app-vite` `>=3.0.0-rc.1`.
 
 ::: warning
 Q-Press and the Quasar app extension packages now target Quasar Vite projects using `@quasar/app-vite` `>=3.0.0-rc.1`. They are not intended for Webpack projects or JavaScript-only Quasar projects.

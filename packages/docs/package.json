@@ -1,6 +1,6 @@
 {
   "name": "mdplugins_docs",
-  "version": "0.1.0-beta.29",
+  "version": "0.1.0-rc.0",
   "private": true,
   "description": "Documentation site for MD-Plugins, Q-Press, and the Vite/Markdown plugin ecosystem.",
   "author": "Jeff <galbraith64@gmail.com>",
