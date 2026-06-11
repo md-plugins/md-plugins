@@ -68,6 +68,7 @@ This monorepo provides:
 ## Table of Contents
 
 - [Current Release](#current-release)
+- [Structure](#structure)
 - [Plugins](#plugins)
 - [Installation](#installation)
 - [Development](#development)
@@ -88,6 +89,18 @@ bun add @md-plugins/vite-md-plugin@beta
 bun add @md-plugins/vite-ssg-plugin@beta
 bun add @md-plugins/quasar-app-extension-q-press@beta
 ```
+
+## Structure
+
+This is a pnpm workspace mono-repo. You cannot use npm for building.
+
+- [/md-plugin-\*](packages) - standalone Markdown-it plugin packages
+- [/vite-md-plugin](packages/viteMdPlugin) - Vite Markdown-to-Vue SFC plugin
+- [/vite-examples-plugin](packages/viteExamplesPlugin) - Vite examples/source loader plugin
+- [/vite-ssg-plugin](packages/viteSsgPlugin) - Vite SSG route manifest and prerender plugin
+- [/q-press](packages/qPress) - Quasar app extension for Q-Press documentation sites
+- [/docs](packages/docs) - Q-Press documentation site with docs, demos, and examples
+- [live demo](https://md-plugins.netlify.app/) - **live Q-Press docs, demos, and examples**
 
 ## Plugins
 
