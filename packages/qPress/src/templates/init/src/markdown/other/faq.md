@@ -37,19 +37,19 @@ Use the individual `@md-plugins/md-plugin-*` packages when you already own the M
 
 ```tabs
 <<| bash pnpm |>>
-pnpm add @md-plugins/vite-md-plugin@beta
+pnpm add @md-plugins/vite-md-plugin
 <<| bash Bun |>>
-bun add @md-plugins/vite-md-plugin@beta
+bun add @md-plugins/vite-md-plugin
 <<| bash Yarn |>>
-yarn add @md-plugins/vite-md-plugin@beta
+yarn add @md-plugins/vite-md-plugin
 <<| bash npm |>>
-npm install @md-plugins/vite-md-plugin@beta
+npm install @md-plugins/vite-md-plugin
 ```
 
 For Q-Press in a Quasar CLI Vite project:
 
 ```bash
-quasar ext add @md-plugins/q-press@beta
+quasar ext add @md-plugins/q-press
 ```
 
 Refer to the installation section for each package when you need package-specific options.
@@ -60,11 +60,11 @@ Refer to the installation section for each package when you need package-specifi
 **A.** Update the app extension package, then invoke it so the generated files can be refreshed:
 
 ```bash
-pnpm up @md-plugins/quasar-app-extension-q-press@beta
+pnpm up @md-plugins/quasar-app-extension-q-press
 quasar ext invoke @md-plugins/q-press
 ```
 
-Choose `Overwrite All` if you want the generated `src/.q-press` files to match the current beta templates.
+Choose `Overwrite All` if you want the generated `src/.q-press` files to match the current release-candidate templates.
 :::
 
 :::details Q. Does Q-Press support Webpack projects?

@@ -1,6 +1,6 @@
 ---
 title: Upgrade Guide
-desc: Upgrade MD-Plugins and Q-Press to the 0.1.0 beta.
+desc: Upgrade MD-Plugins and Q-Press to the 0.1.0 release candidate.
 keys: Other
 related:
   - quasar-app-extensions/qpress/overview
@@ -33,13 +33,13 @@ For Q-Press projects, update the app extension package and then invoke it:
 
 ```tabs
 <<| bash pnpm |>>
-pnpm up @md-plugins/quasar-app-extension-q-press@beta
+pnpm up @md-plugins/quasar-app-extension-q-press
 <<| bash npm |>>
-npm install @md-plugins/quasar-app-extension-q-press@beta
+npm install @md-plugins/quasar-app-extension-q-press
 <<| bash yarn |>>
-yarn add @md-plugins/quasar-app-extension-q-press@beta
+yarn add @md-plugins/quasar-app-extension-q-press
 <<| bash bun |>>
-bun add @md-plugins/quasar-app-extension-q-press@beta
+bun add @md-plugins/quasar-app-extension-q-press
 ```
 
 Then invoke the app extension:
@@ -48,19 +48,19 @@ Then invoke the app extension:
 quasar ext invoke @md-plugins/q-press
 ```
 
-When prompted, choose `Overwrite All` if you want the generated Q-Press files to match the beta templates.
+When prompted, choose `Overwrite All` if you want the generated Q-Press files to match the release-candidate templates.
 
 For direct Vite plugin usage, update the packages you consume:
 
 ```tabs
 <<| bash pnpm |>>
-pnpm up @md-plugins/vite-md-plugin@beta @md-plugins/vite-examples-plugin@beta
+pnpm up @md-plugins/vite-md-plugin @md-plugins/vite-examples-plugin
 <<| bash npm |>>
-npm install @md-plugins/vite-md-plugin@beta @md-plugins/vite-examples-plugin@beta
+npm install @md-plugins/vite-md-plugin @md-plugins/vite-examples-plugin
 <<| bash yarn |>>
-yarn add @md-plugins/vite-md-plugin@beta @md-plugins/vite-examples-plugin@beta
+yarn add @md-plugins/vite-md-plugin @md-plugins/vite-examples-plugin
 <<| bash bun |>>
-bun add @md-plugins/vite-md-plugin@beta @md-plugins/vite-examples-plugin@beta
+bun add @md-plugins/vite-md-plugin @md-plugins/vite-examples-plugin
 ```
 
 ## Remove App-Level Shared Imports
@@ -129,7 +129,7 @@ Q-Press also uses `QCLI_*` values for Quasar CLI provided build-time values, suc
 
 ## Example Action Updates
 
-The beta templates include updated example actions for GitHub source links and CodePen playgrounds. If your project keeps customized Q-Press files, compare your copies of these files with the current template:
+The release-candidate templates include updated example actions for GitHub source links and CodePen playgrounds. If your project keeps customized Q-Press files, compare your copies of these files with the current template:
 
 - `src/.q-press/components/MarkdownExample.vue`
 - `src/.q-press/components/MarkdownCodepen.vue`

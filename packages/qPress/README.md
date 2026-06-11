@@ -4,7 +4,7 @@ Markdown documentation tooling for Quasar and Vite applications.
 
 See the [documentation](https://md-plugins.netlify.app/quasar-app-extensions/qpress/overview) for more information.
 
-> Current release candidate: `0.1.0-rc.0`.
+> Current release candidate: `0.1.0-rc.1`.
 >
 > Q-Press currently targets Quasar Vite projects using `@quasar/app-vite` `>=3.0.0-rc.1`. TypeScript processing is required.
 
@@ -40,12 +40,12 @@ See the [documentation](https://md-plugins.netlify.app/quasar-app-extensions/qpr
 - `pnpm i -D markdown-it @types/markdown-it`
 - `bun add -d markdown-it @types/markdown-it`
 
-3. Q-Press adds `shiki` to your project dependencies when invoked. If you are wiring the generated files manually, add it yourself:
+3. Q-Press adds its docs build helpers to your project devDependencies when invoked. If you are wiring the generated files manually, add them yourself:
 
-- `npm i shiki`
-- `yarn add shiki`
-- `pnpm add shiki`
-- `bun add shiki`
+- `npm i -D mermaid shiki @md-plugins/vite-ssg-plugin @vue/server-renderer`
+- `yarn add -D mermaid shiki @md-plugins/vite-ssg-plugin @vue/server-renderer`
+- `pnpm add -D mermaid shiki @md-plugins/vite-ssg-plugin @vue/server-renderer`
+- `bun add -d mermaid shiki @md-plugins/vite-ssg-plugin @vue/server-renderer`
 
 ## Modifications
 

@@ -110,17 +110,17 @@ yarn add -D markdown-it @types/markdown-it
 npm i -D markdown-it @types/markdown-it
 ```
 
-2. **Q-Press adds `mermaid`, `shiki`, `@md-plugins/vite-ssg-plugin`, and `@vue/server-renderer` to your project dependencies when invoked. If you are wiring the generated files manually, add them yourself:**
+2. **Q-Press adds `mermaid`, `shiki`, `@md-plugins/vite-ssg-plugin`, and `@vue/server-renderer` to your project dev dependencies when invoked. If you are wiring the generated files manually, add them yourself:**
 
 ```tabs
 <<| bash pnpm |>>
-pnpm add mermaid shiki @md-plugins/vite-ssg-plugin @vue/server-renderer
+pnpm add -D mermaid shiki @md-plugins/vite-ssg-plugin @vue/server-renderer
 <<| bash bun |>>
-bun add mermaid shiki @md-plugins/vite-ssg-plugin @vue/server-renderer
+bun add -d mermaid shiki @md-plugins/vite-ssg-plugin @vue/server-renderer
 <<| bash yarn |>>
-yarn add mermaid shiki @md-plugins/vite-ssg-plugin @vue/server-renderer
+yarn add -D mermaid shiki @md-plugins/vite-ssg-plugin @vue/server-renderer
 <<| bash npm |>>
-npm i mermaid shiki @md-plugins/vite-ssg-plugin @vue/server-renderer
+npm i -D mermaid shiki @md-plugins/vite-ssg-plugin @vue/server-renderer
 ```
 
 ## Configuration
@@ -347,7 +347,7 @@ If your project was generated from an older Q-Press version, rerun the extension
 quasar ext invoke @md-plugins/q-press
 ```
 
-Choose `Overwrite All` if you want the generated `src/.q-press` files to match the current beta templates.
+Choose `Overwrite All` if you want the generated `src/.q-press` files to match the current release-candidate templates.
 :::
 
 :::details Q. I have errors in my `routes.ts` file, what should I do?
