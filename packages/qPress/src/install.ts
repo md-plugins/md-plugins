@@ -5,7 +5,101 @@
  */
 
 import { defineInstallScript } from '@quasar/app-vite'
-import { existsSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
+import semver from 'semver'
+
+type DependencySection =
+  | 'dependencies'
+  | 'devDependencies'
+  | 'optionalDependencies'
+  | 'peerDependencies'
+
+type PackageJson = Partial<Record<DependencySection, Record<string, string>>>
+
+const dependencySections: DependencySection[] = [
+  'devDependencies',
+  'dependencies',
+  'optionalDependencies',
+  'peerDependencies',
+]
+
+const qPressDevDependencies = {
+  '@md-plugins/vite-ssg-plugin': '^0.1.0-rc.1',
+  '@vue/server-renderer': '^3.5.0',
+  mermaid: '^11.15.0',
+  shiki: '^4.1.0',
+}
+
+function readPackageJson(path: string): PackageJson {
+  try {
+    return JSON.parse(readFileSync(path, 'utf8')) as PackageJson
+  } catch {
+    return {}
+  }
+}
+
+function getDependencySection(pkgJson: PackageJson, name: string): DependencySection | undefined {
+  return dependencySections.find((section) => pkgJson[section]?.[name] !== undefined)
+}
+
+function shouldUpdateDependency(
+  existingRange: string,
+  desiredRange: string,
+  installedVersion?: string,
+): boolean {
+  const desiredMinimum = semver.minVersion(desiredRange)
+
+  if (desiredMinimum === null) {
+    return false
+  }
+
+  const existingMinimum = semver.minVersion(existingRange)
+
+  // Preserve package aliases, file/link/workspace ranges, and other ranges
+  // that semver cannot compare safely.
+  if (existingMinimum === null) {
+    return false
+  }
+
+  if (semver.gte(existingMinimum, desiredMinimum)) {
+    return false
+  }
+
+  if (installedVersion !== undefined && semver.valid(installedVersion) !== null) {
+    return semver.lt(installedVersion, desiredMinimum)
+  }
+
+  return true
+}
+
+function getDependencyPatch(
+  pkgJson: PackageJson,
+  getInstalledVersion: (name: string) => string | undefined,
+): Partial<Record<DependencySection, Record<string, string>>> {
+  return Object.entries(qPressDevDependencies).reduce<
+    Partial<Record<DependencySection, Record<string, string>>>
+  >((patch, [name, desiredRange]) => {
+    const existingSection = getDependencySection(pkgJson, name)
+
+    if (existingSection === undefined) {
+      patch.devDependencies ??= {}
+      patch.devDependencies[name] = desiredRange
+      return patch
+    }
+
+    const existingRange = pkgJson[existingSection]?.[name]
+
+    if (
+      existingRange !== undefined &&
+      shouldUpdateDependency(existingRange, desiredRange, getInstalledVersion(name))
+    ) {
+      patch[existingSection] ??= {}
+      patch[existingSection][name] = desiredRange
+    }
+
+    return patch
+  }, {})
+}
 
 export default defineInstallScript(async (api) => {
   api.compatibleWith('quasar', '^2.0.0')
@@ -28,12 +122,9 @@ export default defineInstallScript(async (api) => {
   }
 
   api.extendPackageJson({
-    devDependencies: {
-      '@md-plugins/vite-ssg-plugin': '^0.1.0-rc.1',
-      '@vue/server-renderer': '^3.5.0',
-      mermaid: '^11.15.0',
-      shiki: '^4.1.0',
-    },
+    ...getDependencyPatch(readPackageJson(api.resolve.app('package.json')), (name) =>
+      api.getPackageVersion(name),
+    ),
     scripts: {
       'build:ssg': 'quasar prepare && quasar build && qpress-ssg',
       'build:ssg:renderer': 'quasar prepare && quasar build -m ssr',
