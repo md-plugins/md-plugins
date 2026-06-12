@@ -103,7 +103,7 @@ function getDependencyPatch(
 
 export default defineInstallScript(async (api) => {
   api.compatibleWith('quasar', '^2.0.0')
-  api.compatibleWith('@quasar/app-vite', '>=3.0.0-rc.1')
+  api.compatibleWith('@quasar/app-vite', '>=3.0.0-rc.2')
 
   // project must have pinia installed
   if ((await api.getStorePackageName()) !== 'pinia') {

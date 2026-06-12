@@ -6,7 +6,7 @@ See the [documentation](https://md-plugins.netlify.app/quasar-app-extensions/qpr
 
 > Current release candidate: `0.1.0-rc.1`.
 >
-> Q-Press currently targets Quasar Vite projects using `@quasar/app-vite` `>=3.0.0-rc.1`. TypeScript processing is required.
+> Q-Press currently targets Quasar Vite projects using `@quasar/app-vite` `>=3.0.0-rc.2`. TypeScript processing is required.
 
 ## Features
 
