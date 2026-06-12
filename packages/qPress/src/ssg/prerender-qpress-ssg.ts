@@ -5,12 +5,20 @@ import { pathToFileURL } from 'node:url'
 import vuePlugin from '@vitejs/plugin-vue'
 import { quasar as quasarVitePlugin } from '@quasar/vite-plugin'
 import { viteMdPlugin } from '@md-plugins/vite-md-plugin'
-import { escapeJsonForHtml, prerenderSsgRoutes } from '@md-plugins/vite-ssg-plugin'
+import {
+  createSsgRouteManifest,
+  escapeJsonForHtml,
+  flattenStaticSsgRouterRoutes,
+  prerenderSsgRoutes,
+} from '@md-plugins/vite-ssg-plugin'
 import { renderToString } from '@vue/server-renderer'
 import { createServer } from 'vite'
 import type {
   PrerenderSsgRoutesResult,
+  SsgRouteExclusion,
   SsgRoute,
+  SsgRouteInput,
+  SsgRouteManifest,
   SsgRouteRenderContext,
   VueSsgAppFactoryResult,
 } from '@md-plugins/vite-ssg-plugin'
@@ -50,8 +58,17 @@ type QPressServerEntry = (
 export interface PrerenderQPressSsgOptions {
   appHtmlFile?: string
   appMountId?: string
+  concurrency?: number
+  crawlLinks?: boolean
+  exclude?: SsgRouteExclusion[]
+  includeRouterRoutes?: boolean
+  interval?: number
   manifestFile?: string
+  notFound?: 'error' | 'skip'
   outDir?: string
+  redirects?: 'error' | 'follow' | 'skip'
+  reportFile?: string | false
+  routerRoutesEntry?: string
   ssrDir?: string
   renderer?: QPressSsgRenderer
   srcDir?: string
@@ -63,6 +80,7 @@ const defaultOutDir = 'dist/spa'
 const defaultSsrDir = 'dist/ssr'
 const defaultServerEntry = 'server/server-entry.js'
 const defaultSrcDir = 'src'
+const defaultRouterRoutesEntry = 'router/routes.ts'
 const defaultSsgAppEntry = '.q-press/ssg/create-app.ts'
 
 function escapeRegExp(value: string): string {
@@ -419,6 +437,42 @@ async function loadSiteConfigSidebar(
   return Array.isArray(siteConfig.sidebar) ? siteConfig.sidebar : []
 }
 
+async function loadRouterSsgRoutes(
+  viteServer: ViteDevServer,
+  routerRoutesEntry: string,
+): Promise<string[]> {
+  if (!(await pathExists(routerRoutesEntry))) {
+    return []
+  }
+
+  const routesModule = (await viteServer.ssrLoadModule(routerRoutesEntry)) as {
+    default?: unknown
+  }
+
+  return Array.isArray(routesModule.default)
+    ? flattenStaticSsgRouterRoutes(routesModule.default)
+    : []
+}
+
+async function readSsgManifest(outDir: string, manifestFile: string): Promise<SsgRouteManifest> {
+  return JSON.parse(await readFile(join(outDir, manifestFile), 'utf8')) as SsgRouteManifest
+}
+
+function mergeRouterRoutesIntoManifest(
+  manifest: SsgRouteManifest,
+  routerRoutes: string[],
+): SsgRouteManifest {
+  const knownRoutePaths = new Set(manifest.routes.map((route) => route.path))
+  const routeInputs: SsgRouteInput[] = [
+    ...manifest.routes,
+    ...routerRoutes.filter((route) => !knownRoutePaths.has(route)),
+  ]
+
+  return createSsgRouteManifest(routeInputs, {
+    base: manifest.base,
+  })
+}
+
 async function createQPressSsgViteServer(appRoot: string, srcDir: string): Promise<ViteDevServer> {
   const markdownRoot = join(srcDir, 'markdown')
 
@@ -483,6 +537,7 @@ async function createQPressSourceRenderer(
   appMountId: string,
 ): Promise<{
   close: () => Promise<void>
+  discoverRoutes: (routerRoutesEntry: string) => Promise<string[]>
   renderRoute: (route: SsgRoute, context: SsgRouteRenderContext) => Promise<string>
 }> {
   await assertFile(
@@ -511,6 +566,7 @@ async function createQPressSourceRenderer(
 
     return {
       close: () => viteServer.close(),
+      discoverRoutes: (routerRoutesEntry) => loadRouterSsgRoutes(viteServer, routerRoutesEntry),
       async renderRoute(route, context) {
         const appResult = await createApp(route, context)
 
@@ -540,9 +596,18 @@ async function createQPressSourceRenderer(
 export async function prerenderQPressSsg({
   appHtmlFile,
   appMountId = defaultAppMountId,
+  concurrency,
+  crawlLinks,
+  exclude,
+  includeRouterRoutes = true,
+  interval,
   manifestFile,
+  notFound = 'skip',
   outDir = defaultOutDir,
+  redirects = 'follow',
+  reportFile,
   renderer = 'qpress',
+  routerRoutesEntry = defaultRouterRoutesEntry,
   srcDir = defaultSrcDir,
   ssgAppEntry = defaultSsgAppEntry,
   ssrDir = defaultSsrDir,
@@ -552,6 +617,8 @@ export async function prerenderQPressSsg({
   const appRoot = resolve()
   const resolvedSrcDir = resolve(srcDir)
   const resolvedSsgAppEntry = resolve(resolvedSrcDir, ssgAppEntry)
+  const resolvedManifestFile = manifestFile ?? 'q-press-ssg-routes.json'
+  const resolvedRouterRoutesEntry = resolve(resolvedSrcDir, routerRoutesEntry)
 
   await assertFile(
     join(resolvedOutDir, appHtmlFile ?? 'index.html'),
@@ -566,11 +633,11 @@ export async function prerenderQPressSsg({
   }
 
   if (manifestFile === undefined) {
-    const fallbackManifest = join(resolvedOutDir, 'q-press-ssg-routes.json')
+    const fallbackManifest = join(resolvedOutDir, resolvedManifestFile)
 
     await assertFile(
       fallbackManifest,
-      `Could not find q-press-ssg-routes.json in ${resolvedOutDir}. Make sure viteSsgPlugin is enabled for the SPA build.`,
+      `Could not find ${resolvedManifestFile} in ${resolvedOutDir}. Make sure viteSsgPlugin is enabled for the SPA build.`,
     )
   }
 
@@ -586,10 +653,25 @@ export async function prerenderQPressSsg({
     )
 
     try {
+      const mergedManifest = includeRouterRoutes
+        ? mergeRouterRoutesIntoManifest(
+            await readSsgManifest(resolvedOutDir, resolvedManifestFile),
+            await sourceRenderer.discoverRoutes(resolvedRouterRoutesEntry),
+          )
+        : undefined
+
       return await prerenderSsgRoutes({
         appHtmlFile,
+        concurrency,
+        crawlLinks,
+        exclude,
+        interval,
         manifestFile,
+        manifest: mergedManifest,
+        notFound,
         outDir: resolvedOutDir,
+        redirects,
+        reportFile,
         renderRoute: sourceRenderer.renderRoute,
       })
     } finally {
@@ -601,8 +683,15 @@ export async function prerenderQPressSsg({
 
   return prerenderSsgRoutes({
     appHtmlFile,
+    concurrency,
+    crawlLinks,
+    exclude,
+    interval,
     manifestFile,
+    notFound,
     outDir: resolvedOutDir,
+    redirects,
+    reportFile,
     renderRoute: (route, context) =>
       renderRouteWithQuasarSsr(route, context, serverEntry, appMountId),
   })

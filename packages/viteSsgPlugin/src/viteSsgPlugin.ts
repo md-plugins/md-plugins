@@ -73,6 +73,7 @@ export function viteSsgPlugin(options: ViteSsgPluginOptions = {}): Plugin {
     const routes = await resolveRouteInputs(options)
     manifest = createSsgRouteManifest(routes, {
       base: options.base ?? config?.base ?? '/',
+      exclude: options.exclude,
     })
 
     return manifest

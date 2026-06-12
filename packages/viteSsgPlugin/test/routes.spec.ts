@@ -8,13 +8,30 @@ import { discoverMarkdownSsgRoutes, markdownFileToRoutePath } from '../src/markd
 import { prerenderSsgRoutes } from '../src/prerender'
 import {
   createSsgRouteManifest,
+  flattenStaticSsgRouterRoutes,
+  isSsgRouteExcluded,
+  isStaticSsgRoutePath,
   normalizeSsgBase,
   normalizeSsgRoute,
   normalizeSsgRoutePath,
   routePathToHtmlFile,
   routePathToId,
 } from '../src/routes'
+import { viteSsgPlugin } from '../src/viteSsgPlugin'
 import { createVueSsgRouteRenderer, prerenderVueSsgRoutes } from '../src/vueRenderer'
+
+type TestViteSsgPlugin = {
+  configResolved(config: { base: string }): void
+  buildStart(): Promise<void>
+  generateBundle(
+    this: {
+      emitFile(asset: { type: 'asset'; fileName: string; source: string }): void
+      warn(message: string): void
+    },
+    outputOptions: Record<string, never>,
+    bundle: Record<string, unknown>,
+  ): Promise<void>
+}
 
 describe('SSG route helpers', () => {
   it('normalizes base paths', () => {
@@ -31,6 +48,13 @@ describe('SSG route helpers', () => {
       '/getting-started/introduction',
     )
     expect(normalizeSsgRoutePath('//other//releases/?from=home#top')).toBe('/other/releases')
+  })
+
+  it('identifies static route paths', () => {
+    expect(isStaticSsgRoutePath('/getting-started')).toBe(true)
+    expect(isStaticSsgRoutePath('/packages/:name')).toBe(false)
+    expect(isStaticSsgRoutePath('/:catchAll(.*)*')).toBe(false)
+    expect(isStaticSsgRoutePath('/assets/logo.png')).toBe(false)
   })
 
   it('maps route paths to static html files', () => {
@@ -89,10 +113,38 @@ describe('SSG route helpers', () => {
     })
   })
 
+  it('excludes route paths from manifests', () => {
+    expect(
+      createSsgRouteManifest(['/', '/drafts/private', '/admin'], {
+        exclude: ['/drafts/private', /^\/admin/],
+      }).routes.map((route) => route.path),
+    ).toEqual(['/'])
+
+    expect(isSsgRouteExcluded('/admin/users', [/^\/admin/])).toBe(true)
+  })
+
   it('rejects duplicate route paths after normalization', () => {
     expect(() => createSsgRouteManifest(['/other/releases', 'other/releases/'])).toThrow(
       'Duplicate SSG route path: /other/releases',
     )
+  })
+
+  it('flattens static Vue Router-style routes', () => {
+    expect(
+      flattenStaticSsgRouterRoutes(
+        [
+          {
+            path: '/',
+            children: [{ path: '' }, { path: 'getting-started' }, { path: 'packages/:name' }],
+          },
+          { path: '/theme-builder' },
+          { path: '/:catchAll(.*)*' },
+        ],
+        {
+          exclude: ['/theme-builder'],
+        },
+      ),
+    ).toEqual(['/', '/getting-started'])
   })
 })
 
@@ -133,6 +185,59 @@ describe('Markdown SSG route helpers', () => {
           source: 'markdown',
           file: 'landing-page.md',
         },
+      },
+    ])
+  })
+
+  it('returns no markdown routes from an empty content folder', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'md-plugins-empty-markdown-'))
+
+    expect(discoverMarkdownSsgRoutes({ root })).toEqual([])
+  })
+})
+
+describe('Vite SSG plugin', () => {
+  it('emits an empty manifest without route HTML when no markdown or routes are configured', async () => {
+    const emittedAssets: Array<{ fileName: string; source: string }> = []
+    const warnings: string[] = []
+    const appHtml =
+      '<html><head><title>Docs</title></head><body><div id="q-app"></div></body></html>'
+    const bundle = {
+      'index.html': {
+        type: 'asset',
+        fileName: 'index.html',
+        source: appHtml,
+      },
+    }
+    const plugin = viteSsgPlugin()
+    const pluginHooks = plugin as unknown as TestViteSsgPlugin
+
+    pluginHooks.configResolved({
+      base: '/',
+    })
+    await pluginHooks.buildStart()
+    await pluginHooks.generateBundle.call(
+      {
+        emitFile(asset: { type: 'asset'; fileName: string; source: string }) {
+          emittedAssets.push({
+            fileName: asset.fileName,
+            source: asset.source,
+          })
+        },
+        warn(message: string) {
+          warnings.push(message)
+        },
+      },
+      {},
+      bundle,
+    )
+
+    expect(warnings).toEqual([])
+    expect(bundle['index.html'].source).toBe(appHtml)
+    expect(emittedAssets).toEqual([
+      {
+        fileName: 'q-press-ssg-routes.json',
+        source: `${JSON.stringify({ base: '/', routes: [] }, null, 2)}\n`,
       },
     ])
   })
@@ -239,13 +344,89 @@ describe('SSG file prerendering', () => {
         path: '/',
         htmlFile: 'index.html',
         bytes: expect.any(Number),
+        milliseconds: expect.any(Number),
       },
       {
         path: '/guide',
         htmlFile: 'guide/index.html',
         bytes: expect.any(Number),
+        milliseconds: expect.any(Number),
       },
     ])
+  })
+
+  it('supports hooks, route crawling, redirects, skipped 404s, concurrency, and reports', async () => {
+    const outDir = await mkdtemp(join(tmpdir(), 'md-plugins-ssg-'))
+    const manifest = createSsgRouteManifest(['/', '/old-guide', '/missing', '/private'], {
+      exclude: ['/private'],
+    })
+    const renderOrder: string[] = []
+
+    await writeFile(
+      join(outDir, 'index.html'),
+      '<html><head><title>Docs</title></head><body><div id="q-app"></div></body></html>',
+    )
+    await writeFile(
+      join(outDir, 'q-press-ssg-routes.json'),
+      `${JSON.stringify(manifest, null, 2)}\n`,
+    )
+
+    const result = await prerenderSsgRoutes({
+      outDir,
+      concurrency: 2,
+      crawlLinks: true,
+      redirects: 'follow',
+      notFound: 'skip',
+      async renderRoute(route, { appHtml }) {
+        renderOrder.push(route.path)
+
+        if (route.path === '/old-guide') {
+          throw { url: '/guide/overview' }
+        }
+
+        if (route.path === '/missing') {
+          throw { code: 404 }
+        }
+
+        return appHtml.replace(
+          '<div id="q-app"></div>',
+          `<div id="q-app"><main>${route.path}<a href="advanced">Advanced</a><a href="https://example.com/nope">External</a></main></div>`,
+        )
+      },
+      onRouteRendered(html, route) {
+        return html.replace('</head>', `<meta name="route" content="${route.path}"></head>`)
+      },
+      onPageGenerated(page) {
+        return page.route.path === '/guide/advanced'
+          ? {
+              html: page.html.replace('Advanced', 'Crawled advanced'),
+            }
+          : undefined
+      },
+    })
+
+    expect(renderOrder).toContain('/')
+    expect(renderOrder).toContain('/old-guide')
+    expect(renderOrder).toContain('/guide/overview')
+    expect(renderOrder).toContain('/guide/advanced')
+    expect(result.routes.map((route) => route.path)).toContain('/guide/advanced')
+    expect(result.skipped).toEqual([
+      {
+        path: '/old-guide',
+        reason: 'redirected',
+        target: '/guide/overview',
+      },
+      {
+        path: '/missing',
+        reason: 'not-found',
+      },
+    ])
+    await expect(readFile(join(outDir, 'guide/advanced/index.html'), 'utf8')).resolves.toContain(
+      'Crawled advanced',
+    )
+    await expect(readFile(join(outDir, 'q-press-ssg-report.json'), 'utf8')).resolves.toContain(
+      '"routeCount"',
+    )
   })
 })
 

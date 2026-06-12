@@ -30,6 +30,7 @@ interface SsgRouteObject {
 }
 
 type SsgRouteInput = string | SsgRouteObject
+type SsgRouteExclusion = string | RegExp
 
 interface SsgRoute {
   path: string
@@ -46,6 +47,11 @@ interface SsgRouteManifest {
 }
 
 type SsgRouteSource = SsgRouteInput[] | (() => MaybePromise<SsgRouteInput[]>)
+
+interface SsgRouterRouteLike {
+  path?: string
+  children?: SsgRouterRouteLike[]
+}
 
 interface MarkdownSsgRoutesOptions {
   root: string
@@ -82,19 +88,76 @@ interface PrerenderSsgRoutesOptions extends SsgRouteHtmlOptions {
   appHtmlFile?: string
   manifestFile?: string
   manifest?: SsgRouteManifest
+  exclude?: SsgRouteExclusion[]
+  concurrency?: number
+  interval?: number
+  crawlLinks?: boolean
+  redirects?: 'error' | 'follow' | 'skip'
+  notFound?: 'error' | 'skip'
+  reportFile?: string | false
+  onRouteRendered?: SsgRouteRenderedHook
+  onPageGenerated?: SsgPageGeneratedHook
+  afterGenerate?: SsgAfterGenerateHook
 }
 
 interface PrerenderedSsgRoute {
   path: string
   htmlFile: string
   bytes: number
+  milliseconds?: number
+}
+
+interface SkippedSsgRoute {
+  path: string
+  reason: 'excluded' | 'not-found' | 'redirected' | 'skipped-redirect'
+  target?: string
+}
+
+interface SsgGenerationWarning {
+  path: string
+  message: string
+}
+
+interface SsgGenerationReport {
+  generatedAt: string
+  outDir: string
+  manifestFile: string
+  routeCount: number
+  generated: PrerenderedSsgRoute[]
+  skipped: SkippedSsgRoute[]
+  warnings: SsgGenerationWarning[]
 }
 
 interface PrerenderSsgRoutesResult {
   manifest: SsgRouteManifest
   outDir: string
   routes: PrerenderedSsgRoute[]
+  skipped: SkippedSsgRoute[]
+  warnings: SsgGenerationWarning[]
+  report?: SsgGenerationReport
 }
+
+interface SsgGeneratedPage {
+  route: SsgRoute
+  html: string
+  htmlFile: string
+  filePath: string
+}
+
+type SsgRouteRenderedHook = (
+  html: string,
+  route: SsgRoute,
+  context: SsgRouteRenderContext,
+) => MaybePromise<string | void>
+
+type SsgPageGeneratedHook = (
+  page: SsgGeneratedPage,
+  context: SsgRouteRenderContext,
+) => MaybePromise<Partial<Pick<SsgGeneratedPage, 'html' | 'htmlFile' | 'filePath'>> | void>
+
+type SsgAfterGenerateHook = (
+  result: Omit<PrerenderSsgRoutesResult, 'report'> & { report: SsgGenerationReport },
+) => MaybePromise<void>
 
 interface VueSsgRouterAdapter {
   push?: (location: unknown) => MaybePromise<unknown>
@@ -151,6 +214,7 @@ interface PrerenderVueSsgRoutesOptions
 interface ViteSsgPluginOptions {
   enabled?: boolean
   routes?: SsgRouteSource
+  exclude?: SsgRouteExclusion[]
   markdown?: MarkdownSsgRoutesOptions
   base?: string
   emitHtml?: boolean
@@ -163,6 +227,7 @@ interface ViteSsgPluginOptions {
 }
 
 declare function viteSsgPlugin(options?: ViteSsgPluginOptions): Plugin
+declare function flattenStaticSsgRouterRoutes(routes: SsgRouterRouteLike[]): string[]
 declare function prerenderSsgRoutes(
   options: PrerenderSsgRoutesOptions,
 ): Promise<PrerenderSsgRoutesResult>
@@ -195,6 +260,41 @@ viteSsgPlugin({
 
 The route values are written into the emitted manifest and the virtual module, so keep `meta`,
 `params`, and `data` JSON-safe.
+
+## Static Router Route Discovery
+
+Non-Markdown pages can be added from a Vue Router-style route table with
+`flattenStaticSsgRouterRoutes()`:
+
+```ts
+import { flattenStaticSsgRouterRoutes, viteSsgPlugin } from '@md-plugins/vite-ssg-plugin'
+import routes from './src/router/routes'
+
+viteSsgPlugin({
+  markdown: {
+    root: './src/markdown',
+  },
+  routes: flattenStaticSsgRouterRoutes(routes),
+})
+```
+
+The helper keeps static paths and skips parameterized, catch-all, and asset-looking routes. That
+means routes such as `/theme-builder` can be generated while `/packages/:name` waits for explicit
+parameter expansion.
+
+## Route Exclusions
+
+Use `exclude` when a route should stay out of the manifest or prerender pass:
+
+```ts
+viteSsgPlugin({
+  routes: ['/', '/drafts/private', '/admin/tools'],
+  exclude: ['/drafts/private', /^\/admin/],
+})
+```
+
+String exclusions are normalized and matched exactly. Regular expressions are tested against the
+normalized route path.
 
 ## Markdown Discovery
 
@@ -276,12 +376,70 @@ pnpm build:ssg
 
 `qpress-ssg` reads `q-press-ssg-routes.json`, renders every route with the generated Q-Press SSG app factory, and writes the route HTML files back into the built SPA output directory. Use `pnpm prerender:ssg` when `dist/spa` already exists and only the static prerender pass needs to run again.
 
+The output directory is configurable. Q-Press defaults to `dist/spa` because that keeps existing
+Netlify/static-host workflows simple, but non-Q-Press sites can choose a different output folder.
+
 Projects that already have a Quasar SSR bundle can opt into that renderer explicitly:
 
 ```bash
 pnpm build:ssg:renderer
 qpress-ssg --renderer quasar-ssr --out-dir dist/spa --ssr-dir dist/ssr
 ```
+
+The Q-Press runner also exposes the generic route controls:
+
+```bash
+qpress-ssg \
+  --out-dir dist/spa \
+  --crawl-links \
+  --exclude /drafts/private \
+  --concurrency 4 \
+  --interval 250 \
+  --report-file q-press-ssg-report.json
+```
+
+By default, Q-Press merges static routes from `src/router/routes.ts`, follows renderer redirects,
+skips renderer 404s, and writes a JSON generation report. Use `--no-router-routes`,
+`--redirects error`, `--not-found error`, or `--no-report` when a project needs stricter behavior.
+
+### Crawling, Redirects, and 404s
+
+`crawlLinks: true` scans rendered HTML for safe internal links and queues any missing static routes.
+External links, protocol links, hash-only links, dynamic route params, catch-all routes, and
+asset-looking URLs are ignored.
+
+Renderer errors with a string `url` property can be handled as redirects with
+`redirects: 'follow'`. Renderer errors with `code`, `status`, or `statusCode` set to `404` can be
+skipped with `notFound: 'skip'`. Generic `prerenderSsgRoutes()` stays strict by default, while the
+Q-Press runner defaults to following redirects and skipping 404 routes.
+
+### Hooks and Reports
+
+Use hooks when build tooling needs custom output paths, generated assets, or deploy diagnostics:
+
+```ts
+await prerenderSsgRoutes({
+  outDir: 'dist/spa',
+  manifest,
+  onRouteRendered(html, route) {
+    return html.replace('</head>', `<meta name="ssg-route" content="${route.path}"></head>`)
+  },
+  onPageGenerated(page) {
+    return page.route.path === '/guide'
+      ? {
+          htmlFile: 'guide.html',
+        }
+      : undefined
+  },
+  async afterGenerate(result) {
+    console.log(`Generated ${result.routes.length} pages`)
+  },
+})
+```
+
+By default, post-build prerendering writes `q-press-ssg-report.json` next to the route manifest. Pass
+`reportFile: false` to disable it or pass another filename to keep reports elsewhere inside
+`outDir`.
 
 ## Vue / Quasar Renderer Adapter
 
@@ -315,6 +473,18 @@ Runtime SSR and SSG are complementary, not mutually exclusive:
 - Keep browser-only examples behind client-only boundaries until docs examples have explicit
   SSR/SSG-safe behavior.
 
+## Browser-Only Examples
+
+Docs examples that touch `window`, `document`, canvas, media APIs, live animations, or clipboard APIs
+should be guarded during SSG. Prefer one of these patterns:
+
+- Render static explanatory markup during SSG, then mount the live demo after hydration.
+- Gate browser-only work behind `onMounted()`.
+- Use a route or component-level flag so the prerenderer can skip pages that are intentionally
+  client-only.
+- Keep CodePen exports and browser-only examples documented as client-runtime examples, not server
+  render requirements.
+
 ## Local Proving
 
 It is reasonable to create a local branch or throwaway script that boots a Quasar/Vue SSR app and
@@ -327,6 +497,5 @@ shared tooling.
 
 ## Current Gaps
 
-- Dynamic route parameter expansion needs a manifest strategy before generated release pages or
-  content-driven routes can be fully automated.
-- Live examples need clear opt-in or opt-out rules for SSR-safe rendering and client hydration.
+- Parameterized dynamic routes still need explicit expansion before they can be generated.
+- Browser-only examples need project-level conventions for static fallbacks or client-only opt-outs.

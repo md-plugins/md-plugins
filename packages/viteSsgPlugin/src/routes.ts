@@ -1,5 +1,6 @@
 import type {
   SsgRoute,
+  SsgRouteExclusion,
   SsgRouteInput,
   SsgRouteManifest,
   SsgRouteMeta,
@@ -7,7 +8,13 @@ import type {
 } from './types'
 
 export const defaultSsgManifestFile = 'q-press-ssg-routes.json'
+export const defaultSsgReportFile = 'q-press-ssg-report.json'
 export const defaultSsgVirtualModuleId = 'virtual:md-plugins/ssg-routes'
+
+export interface SsgRouterRouteLike {
+  path?: string
+  children?: SsgRouterRouteLike[]
+}
 
 export function normalizeSsgBase(base = '/'): string {
   const trimmed = base.trim()
@@ -49,6 +56,18 @@ export function normalizeSsgRoutePath(path: string): string {
   return compacted.replace(/\/+$/, '')
 }
 
+export function isStaticSsgRoutePath(path: string): boolean {
+  const normalized = normalizeSsgRoutePath(path)
+
+  return (
+    normalized.startsWith('/') &&
+    !normalized.startsWith('//') &&
+    !normalized.includes(':') &&
+    !normalized.includes('*') &&
+    !/\.[a-z0-9]+$/i.test(normalized)
+  )
+}
+
 export function routePathToHtmlFile(routePath: string): string {
   const normalized = normalizeSsgRoutePath(routePath)
 
@@ -70,6 +89,53 @@ export function routePathToId(routePath: string): string {
     .slice(1)
     .replace(/[^a-zA-Z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
+}
+
+export function isSsgRouteExcluded(path: string, exclude: SsgRouteExclusion[] = []): boolean {
+  const normalized = normalizeSsgRoutePath(path)
+
+  return exclude.some((pattern) =>
+    typeof pattern === 'string'
+      ? normalizeSsgRoutePath(pattern) === normalized
+      : pattern.test(normalized),
+  )
+}
+
+function joinRoutePaths(parentPath: string, childPath: string): string {
+  if (!childPath || childPath === '/') {
+    return parentPath || '/'
+  }
+
+  if (childPath.startsWith('/')) {
+    return childPath
+  }
+
+  return `${parentPath.replace(/\/+$/, '')}/${childPath}` || '/'
+}
+
+export function flattenStaticSsgRouterRoutes(
+  routes: SsgRouterRouteLike[],
+  { base = '', exclude = [] }: { base?: string; exclude?: SsgRouteExclusion[] } = {},
+): string[] {
+  const routePaths: string[] = []
+
+  function visit(route: SsgRouterRouteLike, parentPath: string): void {
+    const path = joinRoutePaths(parentPath, route.path ?? '')
+
+    if (isStaticSsgRoutePath(path) && !isSsgRouteExcluded(path, exclude)) {
+      routePaths.push(path)
+    }
+
+    for (const child of route.children ?? []) {
+      visit(child, path)
+    }
+  }
+
+  for (const route of routes) {
+    visit(route, base)
+  }
+
+  return Array.from(new Set(routePaths.map(normalizeSsgRoutePath)))
 }
 
 export function normalizeSsgRoute(input: SsgRouteInput): SsgRoute {
@@ -98,9 +164,11 @@ export function normalizeSsgRoute(input: SsgRouteInput): SsgRoute {
 
 export function createSsgRouteManifest(
   routeInputs: SsgRouteInput[],
-  { base = '/' }: { base?: string } = {},
+  { base = '/', exclude = [] }: { base?: string; exclude?: SsgRouteExclusion[] } = {},
 ): SsgRouteManifest {
-  const routes = routeInputs.map(normalizeSsgRoute)
+  const routes = routeInputs
+    .map(normalizeSsgRoute)
+    .filter((route) => !isSsgRouteExcluded(route.path, exclude))
   const routePaths = new Set<string>()
 
   for (const route of routes) {

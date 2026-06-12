@@ -276,48 +276,19 @@ useMeta({
 </script>
 ```
 
-### Static Route and SSG Output
+### Static Site Generation
 
-Q-Press installs the Vite SSG route plugin automatically. During a production SPA build, it emits a `q-press-ssg-routes.json` manifest and route-specific HTML shell files for Markdown routes.
+Q-Press installs the md-plugins Vite SSG route plugin (`@md-plugins/vite-ssg-plugin`) automatically. During a production SPA build, it emits a `q-press-ssg-routes.json` manifest and route-specific HTML shell files for Markdown routes.
 
 Installed projects also get first-class SSG scripts:
 
 ```bash
 pnpm build:ssg
 pnpm prerender:ssg
+pnpm preview:ssg
 ```
 
-`build:ssg` rebuilds the SPA output and runs `qpress-ssg` against `dist/spa`. The default Q-Press renderer uses the generated `src/.q-press/ssg/create-app.ts` app factory, so it does not require Quasar SSR mode. `prerender:ssg` reruns only the static prerender pass against existing SPA build output.
-
-```bash
-qpress-ssg --out-dir dist/spa
-```
-
-Projects that already have Quasar SSR mode enabled can opt into the SSR-bundle renderer with `qpress-ssg --renderer quasar-ssr --ssr-dir dist/ssr`. In both cases, the generated pages still deploy as static files from `dist/spa`, which keeps Netlify and other static-host workflows simple.
-
-### How Q-Press SSG Is Served
-
-Q-Press SSG is a static first-hit workflow. A direct request, browser refresh, or crawler visit to a
-known docs route can receive that route's generated `index.html` file instead of only the root SPA
-shell.
-
-```txt
-/other/upgrade-guide
-  -> dist/spa/other/upgrade-guide/index.html
-```
-
-That route file includes the prerendered page HTML, route-specific meta tags, and initial client
-state. The Vue/Quasar bundle then hydrates the page and takes over interactivity. After hydration,
-clicking docs links usually uses Vue Router SPA navigation, so the browser fetches route chunks
-instead of requesting each route's `index.html` file again.
-
-This is why SSG can be useful even though the client app still ships: the first response is more
-complete, while the hydrated app still keeps fast client-side navigation.
-
-SSG can help SEO and indexing because crawlers, link preview bots, and users receive route-specific
-content and metadata in the initial HTML response. It does not guarantee better search ranking by
-itself, but it makes docs pages easier for crawlers to read without depending on JavaScript
-rendering.
+The short version: Q-Press SSG gives direct requests, browser refreshes, crawlers, and link-preview bots route-specific HTML before the Vue/Quasar app hydrates. The output still deploys as static files, and the output directory is configurable. See [Q-Press SSG](/quasar-app-extensions/qpress/ssg) for the full workflow, CLI options, SSR notes, and deployment guidance.
 
 ## FAQ
 

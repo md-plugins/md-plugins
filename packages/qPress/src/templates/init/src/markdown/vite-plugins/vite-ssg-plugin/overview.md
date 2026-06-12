@@ -81,6 +81,10 @@ or accessible markup. It simply makes the route content available earlier and mo
 
 - **Route inventory**: Normalize explicit routes or discover Markdown pages from a Q-Press-style
   `src/markdown` folder.
+- **Router discovery**: Flatten static Vue Router route records when a docs site has non-Markdown
+  pages.
+- **Route controls**: Exclude paths, crawl rendered internal links, follow redirects, and skip 404s
+  during prerendering when a project opts in.
 - **Static route files**: Emit `index.html` files for known routes so static hosts can serve deep
   links without depending on a catch-all SPA rewrite.
 - **Route payloads**: Inject a small JSON route payload for diagnostics and future hydration
@@ -89,6 +93,8 @@ or accessible markup. It simply makes the route content available earlier and mo
   SSR-quality static HTML.
 - **Optional output**: Disable emitted output when a project only wants the virtual manifest or when
   SSG is not enabled for a build.
+- **Generation reports**: Emit JSON reports with generated, skipped, and discovered routes for CI
+  and deploy diagnostics.
 
 ## Installation
 
@@ -187,11 +193,16 @@ When a Q-Press project is ready to prerender actual Vue/Quasar HTML, use the gen
 ```bash
 pnpm build:ssg
 pnpm prerender:ssg
+pnpm preview:ssg
 ```
 
 `build:ssg` runs the normal SPA build and then lets `qpress-ssg` render static HTML from the generated Q-Press SSG app factory. This uses Vue's renderer at build time only and does not require Quasar SSR mode. Projects that already use Quasar SSR can opt into `qpress-ssg --renderer quasar-ssr`.
 
 Projects that need more control can import `createQPressSsgApp` from `src/.q-press/ssg/create-app` and pass it to `prerenderVueSsgRoutes()` directly.
+
+The default Q-Press output remains `dist/spa`, but both `qpress-ssg --out-dir` and the lower-level
+helpers accept a custom output directory. That keeps this plugin useful for future Quasar SSG work
+and for non-Q-Press md-plugins sites.
 
 ## Optional by Design
 

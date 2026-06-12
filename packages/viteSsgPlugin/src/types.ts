@@ -33,6 +33,8 @@ export interface SsgRouteManifest {
 
 export type SsgRouteSource = SsgRouteInput[] | (() => MaybePromise<SsgRouteInput[]>)
 
+export type SsgRouteExclusion = string | RegExp
+
 export interface MarkdownSsgRoutesOptions {
   /**
    * Directory containing Markdown pages.
@@ -109,19 +111,121 @@ export interface PrerenderSsgRoutesOptions extends SsgRouteHtmlOptions {
    * Manifest to use instead of reading one from disk.
    */
   manifest?: SsgRouteManifest
+
+  /**
+   * Routes to skip while prerendering. String values are matched after route
+   * normalization; RegExp values are tested against normalized route paths.
+   */
+  exclude?: SsgRouteExclusion[]
+
+  /**
+   * Number of routes to prerender at the same time. Defaults to 1.
+   */
+  concurrency?: number
+
+  /**
+   * Milliseconds to wait between prerender batches. Defaults to 0.
+   */
+  interval?: number
+
+  /**
+   * Crawl rendered HTML for safe internal links and enqueue missing routes.
+   * Defaults to false.
+   */
+  crawlLinks?: boolean
+
+  /**
+   * Redirect behavior for renderer errors with a string `url` property.
+   * Defaults to error to preserve strict generic behavior.
+   */
+  redirects?: 'error' | 'follow' | 'skip'
+
+  /**
+   * Not-found behavior for renderer errors with code/status/statusCode 404.
+   * Defaults to error to preserve strict generic behavior.
+   */
+  notFound?: 'error' | 'skip'
+
+  /**
+   * Optional JSON report file written inside outDir. Defaults to
+   * q-press-ssg-report.json. Pass false to disable report output.
+   */
+  reportFile?: string | false
+
+  /**
+   * Hook after a route is rendered and transformed, before crawling and writing.
+   */
+  onRouteRendered?: SsgRouteRenderedHook
+
+  /**
+   * Hook before a generated page is written. Can adjust html and output path.
+   */
+  onPageGenerated?: SsgPageGeneratedHook
+
+  /**
+   * Hook after all routes have completed and the report has been assembled.
+   */
+  afterGenerate?: SsgAfterGenerateHook
 }
 
 export interface PrerenderedSsgRoute {
   path: string
   htmlFile: string
   bytes: number
+  milliseconds?: number
+}
+
+export interface SkippedSsgRoute {
+  path: string
+  reason: 'excluded' | 'not-found' | 'redirected' | 'skipped-redirect'
+  target?: string
+}
+
+export interface SsgGenerationWarning {
+  path: string
+  message: string
+}
+
+export interface SsgGenerationReport {
+  generatedAt: string
+  outDir: string
+  manifestFile: string
+  routeCount: number
+  generated: PrerenderedSsgRoute[]
+  skipped: SkippedSsgRoute[]
+  warnings: SsgGenerationWarning[]
 }
 
 export interface PrerenderSsgRoutesResult {
   manifest: SsgRouteManifest
   outDir: string
   routes: PrerenderedSsgRoute[]
+  skipped: SkippedSsgRoute[]
+  warnings: SsgGenerationWarning[]
+  report?: SsgGenerationReport
 }
+
+export interface SsgGeneratedPage {
+  route: SsgRoute
+  html: string
+  htmlFile: string
+  filePath: string
+}
+
+export type SsgRouteRenderedHook = (
+  html: string,
+  route: SsgRoute,
+  context: SsgRouteRenderContext,
+) => MaybePromise<string | void>
+
+export type SsgPageGeneratedHook = (
+  page: SsgGeneratedPage,
+  context: SsgRouteRenderContext,
+) => MaybePromise<Partial<Pick<SsgGeneratedPage, 'html' | 'htmlFile' | 'filePath'>> | void>
+
+export type SsgAfterGenerateHook = (
+  result: Omit<PrerenderSsgRoutesResult, 'report'> & { report: SsgGenerationReport },
+) => MaybePromise<void>
 
 export interface VueSsgRouterAdapter {
   push?: (location: unknown) => MaybePromise<unknown>
@@ -215,6 +319,11 @@ export interface ViteSsgPluginOptions {
    * Static route declarations or a function that resolves them.
    */
   routes?: SsgRouteSource
+
+  /**
+   * Routes to exclude from the generated manifest.
+   */
+  exclude?: SsgRouteExclusion[]
 
   /**
    * Optional Markdown route discovery. This can be combined with explicit routes.
