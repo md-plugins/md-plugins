@@ -278,7 +278,7 @@ useMeta({
 
 ### Static Route and SSG Output
 
-Q-Press installs the Vite SSG route plugin automatically. During a production SPA build, it emits a `q-press-ssg-routes.json` manifest and route-specific HTML shell files for Markdown routes.
+Q-Press installs the md-plugins Vite SSG route plugin (`@md-plugins/vite-ssg-plugin`) automatically. During a production SPA build, it emits a `q-press-ssg-routes.json` manifest and route-specific HTML shell files for Markdown routes.
 
 Installed projects also get first-class SSG scripts:
 
