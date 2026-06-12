@@ -180,18 +180,18 @@ qpress-ssg --redirects error --not-found error
 
 Supported redirect modes are:
 
-| Mode     | Behavior                                       |
-| -------- | ---------------------------------------------- |
+| Mode     | Behavior                                        |
+| -------- | ----------------------------------------------- |
 | `follow` | Enqueue the redirect target and skip the route. |
-| `skip`   | Skip the redirecting route.                    |
-| `error`  | Fail the prerender run.                        |
+| `skip`   | Skip the redirecting route.                     |
+| `error`  | Fail the prerender run.                         |
 
 Supported 404 modes are:
 
-| Mode    | Behavior                 |
-| ------- | ------------------------ |
-| `skip`  | Skip the missing route.  |
-| `error` | Fail the prerender run.  |
+| Mode    | Behavior                |
+| ------- | ----------------------- |
+| `skip`  | Skip the missing route. |
+| `error` | Fail the prerender run. |
 
 ## Reports
 

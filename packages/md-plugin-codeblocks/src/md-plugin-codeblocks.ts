@@ -49,6 +49,12 @@ const DEFAULT_CODEBLOCK_PLUGIN_OPTIONS: CodeblockPluginOptions = {
   langList: defaultLangList,
 }
 
+/**
+ * Replaces Markdown fenced code blocks with highlighted Q-Press code components.
+ *
+ * The plugin supports language aliases, tabbed code fences, Shiki highlighting,
+ * copy buttons, twoslash hints, line numbers, and add/remove/highlight notation.
+ */
 export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
   md: MarkdownIt,
   options?: CodeblockPluginOptions | { codeblocksPlugin?: CodeblockPluginOptions },
@@ -114,6 +120,9 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
     }
   }
 
+  /**
+   * Parses a `tabs` code fence into tab labels and rendered tab panel content.
+   */
   function extractTabs(content: string) {
     const list: string[] = []
     const tabMap: TabMap = {}
@@ -165,6 +174,9 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
   const magicCommentRE = new RegExp(` *\\[\\[! (?<type>(${magicCommentList.join('|')}))\\]\\] *`)
   const magicCommentGlobalRE = new RegExp(magicCommentRE, 'g')
 
+  /**
+   * Resolves add/remove/highlight line ranges from fence attributes and magic comments.
+   */
   function extractCodeLineProps(lines: string[], attrs: { [key: string]: any }) {
     const acc: { [key: string]: string[] } = {}
 
@@ -186,6 +198,9 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
     return acc
   }
 
+  /**
+   * Creates per-line decoration metadata consumed by the Shiki transformer chain.
+   */
   function parseCodeLine(content: string, attrs: { [key: string]: any }): CodeLineProps[] {
     const lines = content.split('\n')
 
@@ -242,6 +257,9 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
     return acc
   }
 
+  /**
+   * Highlights one code fence and appends the configured copy button component.
+   */
   function getHighlightedContent(rawContent: string, attrs: { [key: string]: any }): string {
     const { lang, maxheight, twoslash } = attrs
 
@@ -272,6 +290,9 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
     )
   }
 
+  /**
+   * Parses square-bracket fence attributes such as `numbered`, `add=1`, or `maxheight=20rem`.
+   */
   function parseAttrs(rawAttrs: string | null): { [key: string]: any } {
     if (rawAttrs === null) return {}
 
@@ -286,6 +307,9 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
     return acc
   }
 
+  /**
+   * Pulls supported bare attributes out of the code fence title text.
+   */
   function extractBareAttrs(title: string | null): {
     attrs: { [key: string]: true }
     title: string | null
@@ -315,6 +339,9 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
     }
   }
 
+  /**
+   * Parses the fence info line into normalized rendering attributes.
+   */
   function parseDefinitionLine(token: Token): { lang: string; title: string | null; tabs?: any } {
     const match = token.info.trim().match(definitionLineRE)
 

@@ -16,6 +16,9 @@ export interface SsgRouterRouteLike {
   children?: SsgRouterRouteLike[]
 }
 
+/**
+ * Normalizes a Vite base value for use in generated SSG manifests and links.
+ */
 export function normalizeSsgBase(base = '/'): string {
   const trimmed = base.trim()
 
@@ -37,6 +40,9 @@ export function normalizeSsgBase(base = '/'): string {
   return withoutTrailingSlash || '/'
 }
 
+/**
+ * Normalizes a route path into an absolute path without query, hash, or trailing slash.
+ */
 export function normalizeSsgRoutePath(path: string): string {
   const trimmed = path.trim()
 
@@ -56,6 +62,9 @@ export function normalizeSsgRoutePath(path: string): string {
   return compacted.replace(/\/+$/, '')
 }
 
+/**
+ * Checks whether a route path can be emitted as a static HTML file.
+ */
 export function isStaticSsgRoutePath(path: string): boolean {
   const normalized = normalizeSsgRoutePath(path)
 
@@ -68,6 +77,9 @@ export function isStaticSsgRoutePath(path: string): boolean {
   )
 }
 
+/**
+ * Converts a route path to the HTML file emitted for that route.
+ */
 export function routePathToHtmlFile(routePath: string): string {
   const normalized = normalizeSsgRoutePath(routePath)
 
@@ -78,6 +90,9 @@ export function routePathToHtmlFile(routePath: string): string {
   return `${normalized.slice(1)}/index.html`
 }
 
+/**
+ * Converts a route path into a stable id for manifest entries and diagnostics.
+ */
 export function routePathToId(routePath: string): string {
   const normalized = normalizeSsgRoutePath(routePath)
 
@@ -91,6 +106,9 @@ export function routePathToId(routePath: string): string {
     .replace(/^-+|-+$/g, '')
 }
 
+/**
+ * Returns whether a normalized route path matches one of the configured exclusions.
+ */
 export function isSsgRouteExcluded(path: string, exclude: SsgRouteExclusion[] = []): boolean {
   const normalized = normalizeSsgRoutePath(path)
 
@@ -101,6 +119,9 @@ export function isSsgRouteExcluded(path: string, exclude: SsgRouteExclusion[] = 
   )
 }
 
+/**
+ * Joins parent and child Vue Router paths while respecting absolute child paths.
+ */
 function joinRoutePaths(parentPath: string, childPath: string): string {
   if (!childPath || childPath === '/') {
     return parentPath || '/'
@@ -113,6 +134,9 @@ function joinRoutePaths(parentPath: string, childPath: string): string {
   return `${parentPath.replace(/\/+$/, '')}/${childPath}` || '/'
 }
 
+/**
+ * Flattens Vue Router-style route records into static SSG route paths.
+ */
 export function flattenStaticSsgRouterRoutes(
   routes: SsgRouterRouteLike[],
   { base = '', exclude = [] }: { base?: string; exclude?: SsgRouteExclusion[] } = {},
@@ -138,6 +162,9 @@ export function flattenStaticSsgRouterRoutes(
   return Array.from(new Set(routePaths.map(normalizeSsgRoutePath)))
 }
 
+/**
+ * Converts a string or object route input into a complete manifest route entry.
+ */
 export function normalizeSsgRoute(input: SsgRouteInput): SsgRoute {
   const route =
     typeof input === 'string'
@@ -162,6 +189,9 @@ export function normalizeSsgRoute(input: SsgRouteInput): SsgRoute {
   }
 }
 
+/**
+ * Builds and validates an SSG route manifest from route inputs.
+ */
 export function createSsgRouteManifest(
   routeInputs: SsgRouteInput[],
   { base = '/', exclude = [] }: { base?: string; exclude?: SsgRouteExclusion[] } = {},

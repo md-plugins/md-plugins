@@ -40,6 +40,9 @@ const qPressGlobalsTsConfigPath = fileURLToPath(
   new URL('./q-press-globals.d.ts', import.meta.url),
 ).replace(/\\/g, '/')
 
+/**
+ * Converts Vite alias configuration into a mutable array shape.
+ */
 function normalizeAlias(alias: ViteAlias | undefined): ViteAliasEntry[] {
   if (Array.isArray(alias)) {
     return [...alias]
@@ -51,6 +54,9 @@ function normalizeAlias(alias: ViteAlias | undefined): ViteAliasEntry[] {
   }))
 }
 
+/**
+ * Adds a source alias so generated docs code can import Quasar internals safely.
+ */
 function addQuasarSourceAlias(viteConf: ViteConfigWithAlias, appDir: string): void {
   const alias = normalizeAlias(viteConf.resolve?.alias)
 
@@ -64,6 +70,9 @@ function addQuasarSourceAlias(viteConf: ViteConfigWithAlias, appDir: string): vo
   ]
 }
 
+/**
+ * Ensures Q-Press global type declarations are included in the app tsconfig.
+ */
 function addQPressGlobalsToTsConfig(tsConfig: QuasarTsConfig): void {
   tsConfig.files ??= []
 
@@ -72,11 +81,17 @@ function addQPressGlobalsToTsConfig(tsConfig: QuasarTsConfig): void {
   }
 }
 
+/**
+ * Appends a Vite plugin while preserving an existing plugin array.
+ */
 function addVitePlugin(viteConf: ViteConfigWithAlias, plugin: PluginOption): void {
   viteConf.plugins ??= []
   viteConf.plugins.push(plugin)
 }
 
+/**
+ * Wraps the app's TypeScript config extension hook with Q-Press type setup.
+ */
 function extendTypeScriptConfig(typescriptConfig: QuasarTypescriptConfig): void {
   const userExtendTsConfig = typescriptConfig.extendTsConfig
 

@@ -14,10 +14,16 @@ const DEFAULT_MERMAID_PLUGIN_OPTIONS: Required<MermaidPluginOptions> = {
   pageScripts: ["import MarkdownMermaid from '@/.q-press/components/MarkdownMermaid.vue'"],
 }
 
+/**
+ * Reads the language identifier from a fenced code token.
+ */
 function getFenceLang(token: Token): string {
   return token.info.trim().split(/\s+/, 1)[0] ?? ''
 }
 
+/**
+ * Extracts dot-prefixed classes from a fenced code block info string.
+ */
 function getFenceClass(token: Token): string {
   const info = token.info.trim()
   const attrsMatch = info.match(/\{(?<attrs>[^}]*)\}/)
@@ -32,10 +38,16 @@ function getFenceClass(token: Token): string {
   return classNames.join(' ')
 }
 
+/**
+ * Escapes a string as a Vue prop binding expression.
+ */
 function getVueBinding(md: MarkdownIt, value: string): string {
   return md.utils.escapeHtml(JSON.stringify(value))
 }
 
+/**
+ * Renders Mermaid fenced code blocks as either a Vue component or a plain pre block.
+ */
 export const mermaidPlugin: PluginWithOptions<MermaidPluginOptions> = (
   md: MarkdownIt,
   options?: MermaidPluginOptions | { mermaidPlugin?: MermaidPluginOptions },

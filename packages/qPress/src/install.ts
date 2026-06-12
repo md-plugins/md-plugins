@@ -30,6 +30,9 @@ const qPressDevDependencies = {
   shiki: '^4.1.0',
 }
 
+/**
+ * Reads the consuming app's package.json, returning an empty shape when absent.
+ */
 function readPackageJson(path: string): PackageJson {
   try {
     return JSON.parse(readFileSync(path, 'utf8')) as PackageJson
@@ -38,10 +41,19 @@ function readPackageJson(path: string): PackageJson {
   }
 }
 
+/**
+ * Finds which package.json dependency section currently owns a package.
+ */
 function getDependencySection(pkgJson: PackageJson, name: string): DependencySection | undefined {
   return dependencySections.find((section) => pkgJson[section]?.[name] !== undefined)
 }
 
+/**
+ * Decides whether Q-Press should update an existing dependency range.
+ *
+ * Comparable ranges are only updated when the desired range is newer. Non-semver
+ * ranges such as aliases, file links, and workspace ranges are preserved.
+ */
 function shouldUpdateDependency(
   existingRange: string,
   desiredRange: string,
@@ -72,6 +84,9 @@ function shouldUpdateDependency(
   return true
 }
 
+/**
+ * Builds the package.json patch needed for Q-Press runtime/dev dependencies.
+ */
 function getDependencyPatch(
   pkgJson: PackageJson,
   getInstalledVersion: (name: string) => string | undefined,

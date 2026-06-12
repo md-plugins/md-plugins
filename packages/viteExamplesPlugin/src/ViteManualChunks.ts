@@ -7,6 +7,9 @@ const exampleRE = /examples:([a-zA-Z0-9]+)$|src[\\/]examples[\\/]([a-zA-Z0-9-]+)
  * @param id - The module ID to analyze.
  * @returns A string representing the chunk name or `undefined`.
  */
+/**
+ * Places Quasar docs examples and related vendors into stable Vite manual chunks.
+ */
 export function viteManualChunks(id: string): string | undefined {
   if (vendorRE.test(id)) {
     return 'vendor'

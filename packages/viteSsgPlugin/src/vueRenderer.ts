@@ -12,14 +12,23 @@ import type {
 
 const vueServerRendererPackage = '@vue/server-renderer'
 
+/**
+ * Escapes a string for safe use inside a dynamically-created regular expression.
+ */
 function escapeRegExp(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 }
 
+/**
+ * Detects the object shape returned by Vue SSG app factories.
+ */
 function isVueSsgAppFactoryResult(value: unknown): value is VueSsgAppFactoryResult {
   return typeof value === 'object' && value !== null && 'app' in value
 }
 
+/**
+ * Lazily loads Vue's server renderer with a helpful install error.
+ */
 async function loadVueRenderToString(): Promise<VueSsgRenderToString> {
   try {
     const renderer = (await import(vueServerRendererPackage)) as {
@@ -45,6 +54,9 @@ async function loadVueRenderToString(): Promise<VueSsgRenderToString> {
   throw new Error('@vue/server-renderer did not export renderToString.')
 }
 
+/**
+ * Replaces the empty app mount element in a built HTML shell with rendered Vue HTML.
+ */
 function replaceMountElement(appHtml: string, renderedAppHtml: string, appMountId: string): string {
   const mountId = escapeRegExp(appMountId)
   const mountElementRE = new RegExp(
@@ -58,6 +70,9 @@ function replaceMountElement(appHtml: string, renderedAppHtml: string, appMountI
   return appHtml.replace(mountElementRE, `<$1$2>${renderedAppHtml}</$1>`)
 }
 
+/**
+ * Moves the app router to the target SSG route before rendering.
+ */
 async function pushRouterLocation(
   appResult: VueSsgAppFactoryResult,
   route: SsgRoute,
@@ -108,7 +123,7 @@ export function createVueSsgRouteRenderer(options: VueSsgRouteRendererOptions): 
 }
 
 /**
- * Convenience wrapper for projects that prerender after a normal Vite/Quasar build.
+ * Prerenders Vite/Quasar routes with a Vue app factory in one call.
  */
 export async function prerenderVueSsgRoutes(
   options: PrerenderVueSsgRoutesOptions,

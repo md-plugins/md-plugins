@@ -7,6 +7,12 @@
 
 import { defineIndexScript } from '@quasar/app-vite'
 
+/**
+ * Extends Quasar config so Markdown files can be imported as Vue components.
+ *
+ * This legacy app-extension runner keeps Markdown routing behavior aligned with
+ * the standalone Vite Markdown plugin.
+ */
 function extendConfig(config) {
   // make sure 'vueRouterMode' has 'history' mode
   if (config.build.vueRouterMode !== 'history') {

@@ -31,7 +31,10 @@ export interface ResolveHeadersOptions extends ResolveTitleOptions {
 }
 
 /**
- * Resolve headers from markdown-it tokens
+ * Builds a nested heading tree from markdown-it heading tokens.
+ *
+ * Existing heading `id` attributes are preserved. When a heading has no `id`,
+ * the configured `slugify` function creates one from the resolved heading text.
  */
 export const resolveHeadersFromTokens = (
   tokens: Token[],
@@ -47,6 +50,9 @@ export const resolveHeadersFromTokens = (
   const headers: MarkdownItHeader[] = []
   const stack: MarkdownItHeader[] = []
 
+  /**
+   * Inserts a heading into the current hierarchy based on its heading level.
+   */
   const pushHeader = (header: MarkdownItHeader): void => {
     // Ensure that headers at the same or higher level clear the stack
     while (stack.length > 0 && header.level <= stack[0]!.level) {

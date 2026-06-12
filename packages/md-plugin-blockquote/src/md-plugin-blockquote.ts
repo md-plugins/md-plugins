@@ -10,6 +10,9 @@ const DEFAULT_BLOCKQUOTE_OPTIONS: BlockquotePluginOptions = {
   blockquoteClass: 'markdown-blockquote',
 }
 
+/**
+ * Adds the configured CSS class to every rendered Markdown blockquote.
+ */
 export const blockquotePlugin: PluginWithOptions<BlockquotePluginOptions> = (
   md: MarkdownIt,
   options?: BlockquotePluginOptions | { blockquotePlugin?: BlockquotePluginOptions },

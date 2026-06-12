@@ -2,6 +2,9 @@ type AttributeSanitizer = (value: string | null) => string
 type AllowedAttributes = Record<string, AttributeSanitizer>
 type AllowedTags = Record<string, AllowedAttributes>
 
+/**
+ * Allows an attribute value through unchanged, defaulting null to an empty string.
+ */
 function unconstrained(value: string | null): string {
   return value ?? ''
 }
@@ -22,6 +25,9 @@ class HtmlWhitelistedSanitizer {
     this.allowedCss = css ?? ['border', 'margin', 'padding']
   }
 
+  /**
+   * Creates an attribute sanitizer that only allows configured URL prefixes.
+   */
   static makeUrlSanitizer(allowedUrls: string[]): AttributeSanitizer {
     return (value) => {
       if (value === null) {
@@ -32,10 +38,16 @@ class HtmlWhitelistedSanitizer {
     }
   }
 
+  /**
+   * Merges multiple allowed-attribute maps into one whitelist.
+   */
   static mergeMap(...maps: AllowedAttributes[]): AllowedAttributes {
     return Object.assign({}, ...maps)
   }
 
+  /**
+   * Builds the default HTML tag and attribute whitelist for release-note content.
+   */
   private static getDefaultTags(urls: string[]): AllowedTags {
     const globalAttributes = {
       dir: unconstrained,
@@ -70,6 +82,9 @@ class HtmlWhitelistedSanitizer {
     }
   }
 
+  /**
+   * Sanitizes an HTML string using the configured tag and attribute whitelist.
+   */
   sanitizeString(input: string): string {
     const div = this.doc.createElement('div')
     div.innerHTML = input
@@ -77,6 +92,9 @@ class HtmlWhitelistedSanitizer {
     return (this.sanitizeNode(div) as HTMLElement).innerHTML
   }
 
+  /**
+   * Recursively sanitizes a DOM node and its children.
+   */
   private sanitizeNode(node: Node): Node {
     const nodeName = node.nodeName.toLowerCase()
 
@@ -126,6 +144,9 @@ class HtmlWhitelistedSanitizer {
   }
 }
 
+/**
+ * Sanitizes release-note HTML before rendering it in the docs site.
+ */
 export default function runSanitizer(html: string): string {
   const parser = new HtmlWhitelistedSanitizer(true)
   return parser.sanitizeString(html)

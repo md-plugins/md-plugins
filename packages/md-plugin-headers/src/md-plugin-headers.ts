@@ -16,6 +16,9 @@ const DEFAULT_HEADERS_PLUGIN_OPTIONS: HeadersPluginOptions = {
   shouldAllowExample: true,
 }
 
+/**
+ * Converts rendered heading content into the id/title pair stored in the TOC.
+ */
 function parseContent(
   str: string,
   slugify: (str: string) => string,
@@ -30,6 +33,9 @@ function parseContent(
   }
 }
 
+/**
+ * Adds heading ids, copy handlers, and table-of-contents entries while rendering Markdown.
+ */
 export const headersPlugin: PluginWithOptions<HeadersPluginOptions> = (
   md: MarkdownIt,
   options?: HeadersPluginOptions | { headersPlugin?: HeadersPluginOptions },

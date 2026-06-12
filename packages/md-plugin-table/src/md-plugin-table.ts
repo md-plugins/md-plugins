@@ -14,6 +14,9 @@ const DEFAULT_TABLE_PLUGIN_OPTIONS: TablePluginOptions = {
   tableAttributes: [],
 }
 
+/**
+ * Rewrites Markdown table tokens to configured tags, classes, and attributes.
+ */
 export const tablePlugin: PluginWithOptions<TablePluginOptions> = (
   md,
   options?: TablePluginOptions | { tablePlugin?: TablePluginOptions },

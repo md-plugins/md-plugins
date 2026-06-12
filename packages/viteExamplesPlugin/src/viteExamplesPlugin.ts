@@ -20,6 +20,9 @@ let targetFolder = ''
  *          `import.meta.glob`, or undefined if the ID doesn't start with
  *          the resolvedIdPrefix.
  */
+/**
+ * Resolves virtual example modules during development.
+ */
 function devLoad(id: string): string | undefined {
   if (id.startsWith(resolvedIdPrefix)) {
     const query = `'/src/examples/${id.substring(id.indexOf(':') + 1)}/*.vue'`
@@ -41,6 +44,9 @@ function devLoad(id: string): string | undefined {
  * @param id - The resolved ID string starting with the resolvedIdPrefix.
  * @returns A string containing import and export statements for the example files,
  *          or undefined if the ID doesn't start with the resolvedIdPrefix.
+ */
+/**
+ * Resolves virtual example modules for production builds.
  */
 function prodLoad(id: string): string | undefined {
   if (id.startsWith(resolvedIdPrefix)) {
@@ -72,6 +78,9 @@ function prodLoad(id: string): string | undefined {
  *
  * @param isProd - A boolean indicating whether the Vite build is in production mode.
  * @returns A Vite plugin object.
+ */
+/**
+ * Creates the Vite plugin that backs the `examples:*` virtual module convention.
  */
 function vitePlugin(isProd: boolean): Plugin {
   if (!targetFolder) {
@@ -112,6 +121,9 @@ function vitePlugin(isProd: boolean): Plugin {
  *          The plugin object has a `name`, `enforce`, `resolveId`, and `load` property.
  *          The `resolveId` property resolves module IDs starting with "examples:" and returns a resolved ID.
  *          The `load` property loads example code based on the production or development environment.
+ */
+/**
+ * Creates the md-plugins examples plugin and configures its example source path.
  */
 export function viteExamplesPlugin({ isProd, path }: { isProd: boolean; path: string }): Plugin {
   targetFolder = path

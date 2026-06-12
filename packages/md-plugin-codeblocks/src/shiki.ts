@@ -81,10 +81,16 @@ export const themeOptions = {
   defaultColor: false,
 } as const
 
+/**
+ * Returns a loaded Shiki language or falls back to plain text highlighting.
+ */
 export function normalizeShikiLang(lang: string): string {
   return supportedLangSet.has(lang) ? lang : 'text'
 }
 
+/**
+ * Creates the ordered Shiki transformer list used by md-plugin-codeblocks.
+ */
 export function buildCodeBlockTransformers({
   codeClass,
   lineList,
@@ -116,6 +122,9 @@ const twoslashTransformer = transformerTwoslash({
   },
 })
 
+/**
+ * Adds the configured class and optional max-height style to the rendered `<pre>`.
+ */
 function preClassTransformer(preClass: string, maxheight?: string): ShikiTransformer {
   return {
     name: 'md-plugins:pre-class',
@@ -133,6 +142,9 @@ function preClassTransformer(preClass: string, maxheight?: string): ShikiTransfo
   }
 }
 
+/**
+ * Adds an optional class to the rendered `<code>` element.
+ */
 function codeClassTransformer(codeClass?: string): ShikiTransformer {
   return {
     name: 'md-plugins:code-class',
@@ -144,6 +156,9 @@ function codeClassTransformer(codeClass?: string): ShikiTransformer {
   }
 }
 
+/**
+ * Applies per-line classes and prefixes after Shiki has split the code into line spans.
+ */
 function lineDecorTransformer(lineList: CodeLineProps[]): ShikiTransformer {
   return {
     name: 'md-plugins:line-decor',
@@ -189,6 +204,9 @@ function lineDecorTransformer(lineList: CodeLineProps[]): ShikiTransformer {
   }
 }
 
+/**
+ * Checks whether a Shiki HAST line element contains a specific class.
+ */
 function lineHasClass(line: HastElement, className: string): boolean {
   const classValue = line.properties?.class
 
@@ -203,6 +221,9 @@ function lineHasClass(line: HastElement, className: string): boolean {
   return false
 }
 
+/**
+ * Reads all text content from a Shiki HAST line element.
+ */
 function lineTextContent(line: HastElement): string {
   let acc = ''
 

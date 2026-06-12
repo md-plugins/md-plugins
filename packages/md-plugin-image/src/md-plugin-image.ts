@@ -10,6 +10,9 @@ const DEFAULT_IMAGE_PLUGIN_OPTIONS: ImagePluginOptions = {
   imageClass: 'markdown-image',
 }
 
+/**
+ * Adds consistent image classes and supports width/height hints in image text.
+ */
 export const imagePlugin: PluginWithOptions<ImagePluginOptions> = (
   md: MarkdownIt,
   options?: ImagePluginOptions | { imagePlugin?: ImagePluginOptions },

@@ -1,3 +1,6 @@
+/**
+ * Converts Markdown table rows from GitHub release notes into Quasar table markup.
+ */
 function getTable(rows: string[]): string {
   const header = (rows[0] ?? '')
     .split('|')
@@ -28,6 +31,9 @@ function getTable(rows: string[]): string {
   )
 }
 
+/**
+ * Converts Markdown table blocks inside release notes into styled HTML tables.
+ */
 export default function parseMdTable(raw: string): string {
   let content = ''
   let tableRows: string[] = []

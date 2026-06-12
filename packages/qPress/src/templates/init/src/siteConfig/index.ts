@@ -102,6 +102,9 @@ export interface SiteConfig {
   sidebar: MenuItem[]
 }
 
+/**
+ * Normalizes a menu item into the path shape consumed by Q-Press navigation.
+ */
 function processMenuItem(item: MenuItem): MenuItem {
   return {
     name: item.name,

@@ -5,7 +5,10 @@ const rControl = /[\u0000-\u001f]/g
 const rSpecial = /[\s~`!@#$%^&*()\-_+=[\]{}|\\;:"'“”‘’<>,.?/]+/g
 
 /**
- * Default slugification function
+ * Converts arbitrary heading text into a stable URL-friendly slug.
+ *
+ * The result is lowercase, accent-free, hyphen-separated, and safe to use as a
+ * generated Markdown heading id.
  */
 export const slugify = (str: string): string =>
   str

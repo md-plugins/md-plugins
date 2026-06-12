@@ -14,7 +14,7 @@ const htmlUnescapeMap = {
 const htmlUnescapeRegexp = /&(amp|#38|lt|#60|gt|#62|apos|#39|quot|#34);/g
 
 /**
- * Unescape html chars
+ * Decodes the HTML entities emitted by {@link htmlEscape} and common numeric variants.
  */
 export const htmlUnescape = (str: string): string =>
   str.replace(htmlUnescapeRegexp, (char) => htmlUnescapeMap[char as keyof typeof htmlUnescapeMap])

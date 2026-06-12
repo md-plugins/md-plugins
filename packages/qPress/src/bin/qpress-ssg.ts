@@ -2,6 +2,9 @@
 
 import { prerenderQPressSsg } from '../ssg/prerender-qpress-ssg.js'
 
+/**
+ * Prints qpress-ssg command usage information.
+ */
 function printHelp(): void {
   process.stdout.write(`qpress-ssg
 
@@ -58,6 +61,9 @@ type CliOptions = {
   ssrDir?: string
 }
 
+/**
+ * Reads the value that follows a CLI flag.
+ */
 function readValue(args: string[], index: number, flag: string): string {
   const value = args[index + 1]
 
@@ -68,6 +74,9 @@ function readValue(args: string[], index: number, flag: string): string {
   return value
 }
 
+/**
+ * Reads a CLI flag value that must be an integer greater than zero.
+ */
 function readPositiveInteger(args: string[], index: number, flag: string): number {
   const value = Number(readValue(args, index, flag))
 
@@ -78,6 +87,9 @@ function readPositiveInteger(args: string[], index: number, flag: string): numbe
   return value
 }
 
+/**
+ * Reads a CLI flag value that must be zero or a positive integer.
+ */
 function readNonNegativeInteger(args: string[], index: number, flag: string): number {
   const value = Number(readValue(args, index, flag))
 
@@ -88,6 +100,9 @@ function readNonNegativeInteger(args: string[], index: number, flag: string): nu
   return value
 }
 
+/**
+ * Parses qpress-ssg CLI arguments into prerender options.
+ */
 function parseArgs(args: string[]): CliOptions & { help?: boolean } {
   const options: CliOptions & { help?: boolean } = {}
 
@@ -201,6 +216,9 @@ function parseArgs(args: string[]): CliOptions & { help?: boolean } {
   return options
 }
 
+/**
+ * Executes the qpress-ssg command and prints a concise generation summary.
+ */
 async function run(): Promise<void> {
   const options = parseArgs(process.argv.slice(2))
 

@@ -3,9 +3,7 @@ import type { MarkdownItEnv } from '@md-plugins/shared'
 import type { PluginSimple } from 'markdown-it'
 
 /**
- * Get markdown page title info
- *
- * Extract it into env
+ * Extracts the first `h1` title and heading flag into the Markdown environment.
  */
 export const titlePlugin: PluginSimple = (md): void => {
   // extract title to env

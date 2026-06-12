@@ -86,6 +86,9 @@ const createContainer: CreateContainerFn = (
   ]
 }
 
+/**
+ * Applies any user-supplied MarkdownIt plugins after the built-in md-plugins stack.
+ */
 function registerUserMarkdownItPlugins(
   md: MarkdownIt,
   plugins: MarkdownItPluginEntry[] | undefined,

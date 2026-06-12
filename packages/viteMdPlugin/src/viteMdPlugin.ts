@@ -34,6 +34,9 @@ function transform(code: string, id: string): string | null {
   }
 }
 
+/**
+ * Invalidates Markdown modules and triggers a full reload during Vite dev HMR.
+ */
 function hotUpdate({
   file,
   server,
@@ -59,8 +62,7 @@ function hotUpdate({
 }
 
 /**
- * A Vite plugin object that transforms Markdown content into Vue Single File Components (SFCs).
- * This plugin is configured with a path prefix and a navigation menu structure.
+ * Shared Vite plugin instance that delegates Markdown transforms to mdParse.
  */
 const mdPlugins: Plugin = {
   name: '@md-plugins/vite-md-plugin',
@@ -72,13 +74,7 @@ const mdPlugins: Plugin = {
 }
 
 /**
- * Creates a Vite plugin for processing Markdown files.
- * This plugin transforms Markdown content into Vue Single File Components (SFCs).
- *
- * @param path - The base path prefix to be used for routing or file resolution.
- * @param menu - An array of MenuItem objects representing the navigation menu structure.
- * @param config - Additional configuration options for the Markdown processing.
- * @returns A Vite plugin object with pre-configured settings for Markdown processing.
+ * Stores per-project Markdown configuration and returns the shared plugin instance.
  */
 function viteMdPlugin2(path: string, menu: MenuItem[], config: MarkdownOptions): Plugin {
   globalMenu = menu

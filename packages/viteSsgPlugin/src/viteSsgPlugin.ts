@@ -13,6 +13,9 @@ type BundleAsset = {
 
 type OutputBundle = Record<string, unknown>
 
+/**
+ * Narrows a Rollup bundle entry to an asset with string or byte source content.
+ */
 function isBundleAsset(entry: unknown): entry is BundleAsset {
   return (
     typeof entry === 'object' &&
@@ -25,16 +28,25 @@ function isBundleAsset(entry: unknown): entry is BundleAsset {
   )
 }
 
+/**
+ * Converts Rollup asset source data into UTF-8 text.
+ */
 function assetSourceToString(source: string | Uint8Array): string {
   return typeof source === 'string' ? source : Buffer.from(source).toString('utf8')
 }
 
+/**
+ * Finds the built app shell asset in the generated Vite bundle.
+ */
 function findHtmlAsset(bundle: OutputBundle, fileName: string): BundleAsset | undefined {
   return Object.values(bundle).find(
     (entry): entry is BundleAsset => isBundleAsset(entry) && entry.fileName === fileName,
   )
 }
 
+/**
+ * Serializes the manifest exposed through the virtual SSG routes module.
+ */
 function serializeManifestModule(manifest: SsgRouteManifest): string {
   const serializedManifest = JSON.stringify(manifest, null, 2)
 
@@ -46,6 +58,9 @@ function serializeManifestModule(manifest: SsgRouteManifest): string {
   ].join('\n')
 }
 
+/**
+ * Resolves configured route inputs and optional Markdown-discovered routes.
+ */
 async function resolveRouteInputs(
   options: Pick<ViteSsgPluginOptions, 'markdown' | 'routes'>,
 ): Promise<SsgRouteInput[]> {
@@ -63,12 +78,18 @@ async function resolveRouteInputs(
   return [...markdownRoutes, ...routeSource]
 }
 
+/**
+ * Creates the Vite plugin that emits SSG route manifests and optional route HTML shells.
+ */
 export function viteSsgPlugin(options: ViteSsgPluginOptions = {}): Plugin {
   const virtualModuleId = options.virtualModuleId ?? defaultSsgVirtualModuleId
   const resolvedVirtualModuleId = `\0${virtualModuleId}`
   let config: ResolvedConfig | undefined
   let manifest: SsgRouteManifest | undefined
 
+  /**
+   * Rebuilds the manifest from current route inputs.
+   */
   async function refreshManifest(): Promise<SsgRouteManifest> {
     const routes = await resolveRouteInputs(options)
     manifest = createSsgRouteManifest(routes, {
@@ -79,6 +100,9 @@ export function viteSsgPlugin(options: ViteSsgPluginOptions = {}): Plugin {
     return manifest
   }
 
+  /**
+   * Returns the cached manifest or creates it when the virtual module is loaded early.
+   */
   async function getManifest(): Promise<SsgRouteManifest> {
     return manifest ?? refreshManifest()
   }

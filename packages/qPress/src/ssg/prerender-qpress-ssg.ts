@@ -83,10 +83,16 @@ const defaultSrcDir = 'src'
 const defaultRouterRoutesEntry = 'router/routes.ts'
 const defaultSsgAppEntry = '.q-press/ssg/create-app.ts'
 
+/**
+ * Escapes a string for safe interpolation into a generated RegExp.
+ */
 function escapeRegExp(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 }
 
+/**
+ * Asserts that a required file exists before prerendering continues.
+ */
 async function assertFile(path: string, message: string): Promise<void> {
   try {
     await access(path)
@@ -95,6 +101,9 @@ async function assertFile(path: string, message: string): Promise<void> {
   }
 }
 
+/**
+ * Loads the compiled Quasar SSR server entry for renderer-backed prerendering.
+ */
 async function loadServerEntry(ssrDir: string): Promise<QPressServerEntry> {
   const serverEntryPath = join(ssrDir, defaultServerEntry)
 
@@ -120,6 +129,9 @@ async function loadServerEntry(ssrDir: string): Promise<QPressServerEntry> {
   return module.default
 }
 
+/**
+ * Checks whether a path is available without throwing.
+ */
 async function pathExists(path: string): Promise<boolean> {
   try {
     await access(path)
@@ -129,6 +141,9 @@ async function pathExists(path: string): Promise<boolean> {
   }
 }
 
+/**
+ * Creates the minimal Quasar SSR context needed to render a route.
+ */
 function createSsrContext(route: SsgRoute, onRenderedList: Array<() => unknown>): QPressSsrContext {
   return {
     _meta: {
@@ -152,10 +167,16 @@ function createSsrContext(route: SsgRoute, onRenderedList: Array<() => unknown>)
   }
 }
 
+/**
+ * Narrows unknown values to object-like records.
+ */
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null
 }
 
+/**
+ * Normalizes unknown SSR context data into the Q-Press context shape.
+ */
 function toQPressSsrContext(value: unknown): QPressSsrContext {
   const context = isRecord(value) ? value : {}
   const meta = isRecord(context._meta) ? context._meta : {}
@@ -180,12 +201,18 @@ function toQPressSsrContext(value: unknown): QPressSsrContext {
   }
 }
 
+/**
+ * Serializes Pinia/SSR state into the HTML shell safely.
+ */
 function createStateScript(state: unknown): string {
   const payload = escapeJsonForHtml(JSON.stringify(state))
 
   return `<script>window.__INITIAL_STATE__=${payload};document.currentScript.remove()</script>`
 }
 
+/**
+ * Injects content immediately after an opening HTML tag when content exists.
+ */
 function injectAfterOpeningTag(html: string, tag: string, content: string | undefined): string {
   if (!content) {
     return html
@@ -196,6 +223,9 @@ function injectAfterOpeningTag(html: string, tag: string, content: string | unde
   return html.replace(pattern, `<${tag}$1>${content}`)
 }
 
+/**
+ * Injects content immediately before a closing HTML tag when content exists.
+ */
 function injectBeforeClosingTag(html: string, tag: string, content: string | undefined): string {
   if (!content) {
     return html
@@ -208,6 +238,9 @@ function injectBeforeClosingTag(html: string, tag: string, content: string | und
     : `${html}${content}`
 }
 
+/**
+ * Appends SSR-provided attributes to an opening HTML tag.
+ */
 function appendOpeningTagAttrs(html: string, tag: string, attrs: string | undefined): string {
   const normalizedAttrs = attrs?.trim()
 
@@ -220,6 +253,9 @@ function appendOpeningTagAttrs(html: string, tag: string, attrs: string | undefi
   return html.replace(pattern, `<${tag}$1 ${normalizedAttrs}>`)
 }
 
+/**
+ * Merges SSR-provided body classes with any classes already present on `<body>`.
+ */
 function mergeBodyClasses(html: string, bodyClasses: string | undefined): string {
   if (!bodyClasses) {
     return html
@@ -232,6 +268,9 @@ function mergeBodyClasses(html: string, bodyClasses: string | undefined): string
   return html.replace(/<body\b([^>]*)>/i, `<body$1 class="${bodyClasses}">`)
 }
 
+/**
+ * Replaces the empty Quasar app mount element with server-rendered app HTML.
+ */
 function replaceMountElement(appHtml: string, renderedAppHtml: string, appMountId: string): string {
   const mountId = escapeRegExp(appMountId)
   const mountElementRE = new RegExp(
@@ -245,6 +284,9 @@ function replaceMountElement(appHtml: string, renderedAppHtml: string, appMountI
   return appHtml.replace(mountElementRE, `<$1$2>${renderedAppHtml}</$1>`)
 }
 
+/**
+ * Applies Quasar SSR meta output and initial state to the built app HTML shell.
+ */
 function applySsrMeta(
   appHtml: string,
   ssrContext: QPressSsrContext,
@@ -265,6 +307,9 @@ function applySsrMeta(
   return html
 }
 
+/**
+ * Runs Vue and Quasar rendered callbacks after route rendering.
+ */
 async function runRenderedCallbacks(appResult: VueSsgAppFactoryResult): Promise<void> {
   await appResult.onRendered?.()
 
@@ -275,6 +320,9 @@ async function runRenderedCallbacks(appResult: VueSsgAppFactoryResult): Promise<
   }
 }
 
+/**
+ * Navigates the app router to the target route before rendering.
+ */
 async function pushRouterLocation(
   appResult: VueSsgAppFactoryResult,
   route: SsgRoute,
@@ -295,6 +343,9 @@ async function pushRouterLocation(
   await router.isReady?.()
 }
 
+/**
+ * Renders one route through a compiled Quasar SSR server entry.
+ */
 async function renderRouteWithQuasarSsr(
   route: SsgRoute,
   context: SsgRouteRenderContext,
@@ -328,26 +379,41 @@ type QPressSiteConfigModule = {
   sidebar?: MenuItem[]
 }
 
+/**
+ * Creates a Node require function rooted at the consuming app.
+ */
 function createAppRequire(appRoot: string): NodeRequire {
   return createRequire(join(appRoot, 'package.json'))
 }
 
+/**
+ * Resolves the consuming app's @quasar/app-vite package entry.
+ */
 function resolveAppViteEntry(appRoot: string): string {
   return createAppRequire(appRoot).resolve('@quasar/app-vite')
 }
 
+/**
+ * Resolves Quasar's server build for source-mode SSG rendering.
+ */
 function resolveQuasarServerEntry(appRoot: string): string {
   const quasarPackagePath = createAppRequire(appRoot).resolve('quasar/package.json')
 
   return join(dirname(quasarPackagePath), 'dist/quasar.server.prod.js')
 }
 
+/**
+ * Resolves Quasar's client build so it can be aliased to the server build.
+ */
 function resolveQuasarClientEntry(appRoot: string): string {
   const quasarPackagePath = createAppRequire(appRoot).resolve('quasar/package.json')
 
   return join(dirname(quasarPackagePath), 'dist/quasar.client.js')
 }
 
+/**
+ * Creates Vite aliases required to load a Q-Press app source tree in SSR mode.
+ */
 function createAliasEntries(
   appRoot: string,
   srcDir: string,
@@ -383,6 +449,9 @@ function createAliasEntries(
   ]
 }
 
+/**
+ * Forces Quasar client imports to resolve to the server runtime while prerendering.
+ */
 function createQuasarServerAliasPlugin(appRoot: string): Plugin {
   const quasarServerEntry = resolveQuasarServerEntry(appRoot)
   const quasarClientEntry = resolveQuasarClientEntry(appRoot)
@@ -400,6 +469,9 @@ function createQuasarServerAliasPlugin(appRoot: string): Plugin {
   }
 }
 
+/**
+ * Detects stylesheet imports that should be ignored by the source SSG server.
+ */
 function isStyleRequest(source: string): boolean {
   return (
     /(?:\?|&)vue&type=style(?:&|$)/.test(source) ||
@@ -407,6 +479,9 @@ function isStyleRequest(source: string): boolean {
   )
 }
 
+/**
+ * Creates a Vite plugin that stubs styles during source-mode SSG rendering.
+ */
 function createSsgStyleStubPlugin(): Plugin {
   const styleStubId = '\0qpress-ssg-style-stub'
 
@@ -422,6 +497,9 @@ function createSsgStyleStubPlugin(): Plugin {
   }
 }
 
+/**
+ * Loads the app's Q-Press sidebar config for Markdown page metadata.
+ */
 async function loadSiteConfigSidebar(
   viteServer: ViteDevServer,
   srcDir: string,
@@ -437,6 +515,9 @@ async function loadSiteConfigSidebar(
   return Array.isArray(siteConfig.sidebar) ? siteConfig.sidebar : []
 }
 
+/**
+ * Loads static Vue Router route paths that should also be prerendered.
+ */
 async function loadRouterSsgRoutes(
   viteServer: ViteDevServer,
   routerRoutesEntry: string,
@@ -454,10 +535,16 @@ async function loadRouterSsgRoutes(
     : []
 }
 
+/**
+ * Reads the route manifest produced by the Vite SSG plugin.
+ */
 async function readSsgManifest(outDir: string, manifestFile: string): Promise<SsgRouteManifest> {
   return JSON.parse(await readFile(join(outDir, manifestFile), 'utf8')) as SsgRouteManifest
 }
 
+/**
+ * Adds discovered router routes to the manifest without duplicating Markdown routes.
+ */
 function mergeRouterRoutesIntoManifest(
   manifest: SsgRouteManifest,
   routerRoutes: string[],
@@ -473,6 +560,9 @@ function mergeRouterRoutesIntoManifest(
   })
 }
 
+/**
+ * Creates the temporary Vite SSR server used to render Q-Press source files.
+ */
 async function createQPressSsgViteServer(appRoot: string, srcDir: string): Promise<ViteDevServer> {
   const markdownRoot = join(srcDir, 'markdown')
 
@@ -515,6 +605,9 @@ async function createQPressSsgViteServer(appRoot: string, srcDir: string): Promi
   })
 }
 
+/**
+ * Loads the generated Q-Press SSG app factory from the consuming project.
+ */
 async function loadQPressSsgCreateApp(
   viteServer: ViteDevServer,
   ssgAppEntry: string,
@@ -530,6 +623,9 @@ async function loadQPressSsgCreateApp(
   return module.createQPressSsgApp
 }
 
+/**
+ * Creates the source-mode renderer used by the default qpress-ssg command.
+ */
 async function createQPressSourceRenderer(
   appRoot: string,
   srcDir: string,
@@ -593,6 +689,9 @@ async function createQPressSourceRenderer(
   }
 }
 
+/**
+ * Prerenders a Q-Press docs app into static route HTML.
+ */
 export async function prerenderQPressSsg({
   appHtmlFile,
   appMountId = defaultAppMountId,

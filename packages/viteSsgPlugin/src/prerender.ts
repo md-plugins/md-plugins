@@ -23,6 +23,9 @@ import type {
   SsgRouteManifest,
 } from './types'
 
+/**
+ * Reads the JSON SSG route manifest emitted by the Vite plugin.
+ */
 async function readSsgRouteManifest(
   outDir: string,
   manifestFile: string,
@@ -32,6 +35,9 @@ async function readSsgRouteManifest(
   return JSON.parse(manifestJson) as SsgRouteManifest
 }
 
+/**
+ * Joins an emitted asset path with the configured Vite base.
+ */
 function joinAssetHref(base: string, file: string): string {
   if (base === './') {
     return `./${file}`
@@ -44,6 +50,9 @@ function joinAssetHref(base: string, file: string): string {
   return `${base === '/' ? '' : base}/${file}`
 }
 
+/**
+ * Recursively collects CSS assets from the built output directory.
+ */
 async function collectCssFiles(outDir: string, dir = 'assets'): Promise<string[]> {
   const entries = await readdir(join(outDir, dir), {
     withFileTypes: true,
@@ -63,6 +72,9 @@ async function collectCssFiles(outDir: string, dir = 'assets'): Promise<string[]
   return files.sort()
 }
 
+/**
+ * Adds stylesheet links that Vite emitted but did not include in the app shell.
+ */
 async function injectMissingCssAssets(
   appHtml: string,
   outDir: string,
@@ -85,24 +97,39 @@ async function injectMissingCssAssets(
     : `${content}${appHtml}`
 }
 
+/**
+ * Normalizes route rendering concurrency to a safe positive integer.
+ */
 function clampConcurrency(concurrency: number | undefined): number {
   return Math.max(1, Math.floor(concurrency ?? 1))
 }
 
+/**
+ * Normalizes the optional delay between prerender batches.
+ */
 function clampInterval(interval: number | undefined): number {
   return Math.max(0, Math.floor(interval ?? 0))
 }
 
+/**
+ * Pauses prerender execution for the requested number of milliseconds.
+ */
 function wait(milliseconds: number): Promise<void> {
   return new Promise((resolvePromise) => {
     setTimeout(resolvePromise, milliseconds)
   })
 }
 
+/**
+ * Narrows unknown values to plain object-like records.
+ */
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null
 }
 
+/**
+ * Reads a redirect target from common redirect error shapes.
+ */
 function getRedirectTarget(error: unknown): string | undefined {
   if (!isRecord(error)) {
     return undefined
@@ -111,6 +138,9 @@ function getRedirectTarget(error: unknown): string | undefined {
   return typeof error.url === 'string' ? error.url : undefined
 }
 
+/**
+ * Detects common not-found error shapes thrown by renderers and routers.
+ */
 function isNotFoundError(error: unknown): boolean {
   if (!isRecord(error)) {
     return false
@@ -119,6 +149,9 @@ function isNotFoundError(error: unknown): boolean {
   return error.code === 404 || error.status === 404 || error.statusCode === 404
 }
 
+/**
+ * Extracts literal anchor href values from prerendered HTML.
+ */
 function extractAnchorHrefs(html: string): string[] {
   const hrefs: string[] = []
   const anchorHrefRE = /<a\b[^>]*\bhref\s*=\s*(["'])(.*?)\1/gi
@@ -131,10 +164,16 @@ function extractAnchorHrefs(html: string): string[] {
   return hrefs
 }
 
+/**
+ * Returns whether an href points outside the generated static site.
+ */
 function isExternalHref(href: string): boolean {
   return /^[a-z][a-z0-9+.-]*:/i.test(href) || href.startsWith('//')
 }
 
+/**
+ * Removes the configured base prefix from an absolute route path.
+ */
 function stripBaseFromPath(path: string, base: string): string {
   if (base === '/' || base === './' || base.startsWith('http://') || base.startsWith('https://')) {
     return path
@@ -149,6 +188,9 @@ function stripBaseFromPath(path: string, base: string): string {
   return path.startsWith(`${normalizedBase}/`) ? path.slice(normalizedBase.length) : path
 }
 
+/**
+ * Resolves a relative link target from the currently-rendered route path.
+ */
 function resolveHrefPath(hrefPath: string, fromRoutePath: string): string {
   if (hrefPath.startsWith('/')) {
     return hrefPath
@@ -159,6 +201,9 @@ function resolveHrefPath(hrefPath: string, fromRoutePath: string): string {
   return pathPosix.normalize(pathPosix.join(routeBase, hrefPath))
 }
 
+/**
+ * Converts an anchor href into an SSG route path when it targets a static route.
+ */
 function hrefToSsgRoutePath(href: string, base: string, fromRoutePath = '/'): string | undefined {
   const trimmed = href.trim()
 
@@ -182,6 +227,9 @@ function hrefToSsgRoutePath(href: string, base: string, fromRoutePath = '/'): st
   }
 }
 
+/**
+ * Finds internal route links in rendered HTML for optional crawl-based prerendering.
+ */
 function extractSsgRouteLinks(html: string, base: string, fromRoutePath: string): string[] {
   return Array.from(
     new Set(
@@ -192,6 +240,9 @@ function extractSsgRouteLinks(html: string, base: string, fromRoutePath: string)
   )
 }
 
+/**
+ * Creates the JSON report written after prerendering finishes.
+ */
 function createReport({
   generated,
   manifest,
@@ -218,6 +269,12 @@ function createReport({
   }
 }
 
+/**
+ * Prerenders every route in an SSG manifest into static HTML files.
+ *
+ * The renderer can use the default HTML-shell mode, a custom route renderer, or
+ * a framework-specific renderer such as the Vue adapter.
+ */
 export async function prerenderSsgRoutes({
   outDir,
   appHtmlFile = 'index.html',
@@ -261,6 +318,9 @@ export async function prerenderSsgRoutes({
   const maxConcurrency = clampConcurrency(concurrency)
   const batchInterval = clampInterval(interval)
 
+  /**
+   * Adds a discovered route to the queue when it is not excluded or already known.
+   */
   function enqueueRoute(routeInput: string | SsgRoute): SsgRoute | undefined {
     const route = normalizeSsgRoute(routeInput)
 
@@ -275,6 +335,9 @@ export async function prerenderSsgRoutes({
     return route
   }
 
+  /**
+   * Renders one route, writes its HTML file, and records timing/output metadata.
+   */
   async function renderOne(route: SsgRoute): Promise<void> {
     const start = performance.now()
     const routeIndex = resolvedManifest.routes.findIndex((entry) => entry.path === route.path)

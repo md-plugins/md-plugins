@@ -13,6 +13,9 @@ const DEFAULT_LINK_PLUGIN_OPTIONS: LinkPluginOptions = {
   pageScript: 'import MarkdownLink from "@/.q-press/components/MarkdownLink.vue"',
 }
 
+/**
+ * Rewrites Markdown links to the configured Vue link component and records its import.
+ */
 export const linkPlugin: PluginWithOptions<LinkPluginOptions> = (
   md: MarkdownIt,
   options?: LinkPluginOptions | { linkPlugin?: LinkPluginOptions },

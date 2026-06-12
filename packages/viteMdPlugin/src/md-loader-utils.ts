@@ -4,8 +4,7 @@ import type { MarkdownItEnv } from '@md-plugins/shared'
 import type { MenuItem, NavItem, FlatMenu, FlatMenuEntry } from './types'
 
 /**
- * Looks for "<script import>" which is a special tag for containing imports for a MD file.
- * It removes the tag and adds the content inside the tag to the userScripts set.
+ * Extracts `<script import>` blocks from rendered Markdown HTML.
  *
  * @param mdPageContent - The full Markdown content of the page.
  * @returns An object containing the Markdown content and a set of user scripts.
@@ -24,11 +23,7 @@ export function splitRenderedContent(mdPageContent: string) {
 }
 
 /**
- * Generates a navigation menu for a Markdown page based on the provided ID and environment.
- * The navigation menu includes links to the previous and next pages, if available.
- *
- * @param id - The unique identifier of the Markdown page.
- * @param env - The Markdown environment, which contains the frontmatter information.
+ * Adds previous/next navigation metadata for a Markdown page when it exists in the menu.
  */
 function createNav(id: string, env: MarkdownItEnv, flatMenu?: FlatMenu): void {
   if (flatMenu) {
@@ -53,10 +48,7 @@ function createNav(id: string, env: MarkdownItEnv, flatMenu?: FlatMenu): void {
 }
 
 /**
- * Parses a table of contents (TOC) array and generates a formatted list of TOC entries.
- *
- * @param toc - An array of TOC items, each with a `title` and `sub` property.
- * @returns A JSON string representation of the formatted TOC list.
+ * Converts TOC entries into the numbered structure consumed by MarkdownPageToc.
  */
 function parseToc(toc: TocItem[]) {
   let wasHeader = true // Introduction is auto prepended
@@ -90,15 +82,7 @@ function parseToc(toc: TocItem[]) {
 }
 
 /**
- * This function generates a Vue component based on the provided rendered content, code, and id.
- * It extracts relevant information from the frontmatter, generates navigation links, and prepares
- * the Vue component template with the processed content.
- *
- * @param rendered - The object containing the rendered content, including frontmatter, title, and HTML.
- * @param code - The code associated with the rendered content.
- * @param id - The unique identifier of the content.
- *
- * @returns A string representing the Vue component template with the processed content.
+ * Wraps rendered Markdown HTML in the generated Vue page component used by Q-Press docs.
  */
 export function getVueComponent(
   rendered: any,

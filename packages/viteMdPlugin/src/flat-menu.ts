@@ -56,7 +56,9 @@ function menuWalk(
   }
 }
 
-// Traverse the menu structure
+/**
+ * Flattens a nested sidebar menu and records previous/next relationships.
+ */
 export function generateFlatMenu(prefix: string, menu: MenuItem[]): FlatMenu {
   const menuNodes: FlatMenu = {}
   prev = null
@@ -69,13 +71,7 @@ export function generateFlatMenu(prefix: string, menu: MenuItem[]): FlatMenu {
 }
 
 /**
- * Converts a given entry to a related sidebar menu entry.
- * This function looks up the entry in the flatMenu and returns the corresponding FlatMenuEntry.
- * If the entry is not found, it logs an error and returns an empty FlatMenuEntry.
- *
- * @param entry - The path of the entry to convert, relative to the prefix
- * @param id - The ID associated with the entry, used for error logging
- * @returns A FlatMenuEntry object containing the name, category, and path of the related menu item
+ * Looks up a Markdown related-page entry from the flattened sidebar menu.
  */
 export function convertToRelated(
   prefix: string,
