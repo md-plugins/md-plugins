@@ -17,7 +17,21 @@ import {
   routePathToHtmlFile,
   routePathToId,
 } from '../src/routes'
+import { viteSsgPlugin } from '../src/viteSsgPlugin'
 import { createVueSsgRouteRenderer, prerenderVueSsgRoutes } from '../src/vueRenderer'
+
+type TestViteSsgPlugin = {
+  configResolved(config: { base: string }): void
+  buildStart(): Promise<void>
+  generateBundle(
+    this: {
+      emitFile(asset: { type: 'asset'; fileName: string; source: string }): void
+      warn(message: string): void
+    },
+    outputOptions: Record<string, never>,
+    bundle: Record<string, unknown>,
+  ): Promise<void>
+}
 
 describe('SSG route helpers', () => {
   it('normalizes base paths', () => {
@@ -171,6 +185,59 @@ describe('Markdown SSG route helpers', () => {
           source: 'markdown',
           file: 'landing-page.md',
         },
+      },
+    ])
+  })
+
+  it('returns no markdown routes from an empty content folder', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'md-plugins-empty-markdown-'))
+
+    expect(discoverMarkdownSsgRoutes({ root })).toEqual([])
+  })
+})
+
+describe('Vite SSG plugin', () => {
+  it('emits an empty manifest without route HTML when no markdown or routes are configured', async () => {
+    const emittedAssets: Array<{ fileName: string; source: string }> = []
+    const warnings: string[] = []
+    const appHtml =
+      '<html><head><title>Docs</title></head><body><div id="q-app"></div></body></html>'
+    const bundle = {
+      'index.html': {
+        type: 'asset',
+        fileName: 'index.html',
+        source: appHtml,
+      },
+    }
+    const plugin = viteSsgPlugin()
+    const pluginHooks = plugin as unknown as TestViteSsgPlugin
+
+    pluginHooks.configResolved({
+      base: '/',
+    })
+    await pluginHooks.buildStart()
+    await pluginHooks.generateBundle.call(
+      {
+        emitFile(asset: { type: 'asset'; fileName: string; source: string }) {
+          emittedAssets.push({
+            fileName: asset.fileName,
+            source: asset.source,
+          })
+        },
+        warn(message: string) {
+          warnings.push(message)
+        },
+      },
+      {},
+      bundle,
+    )
+
+    expect(warnings).toEqual([])
+    expect(bundle['index.html'].source).toBe(appHtml)
+    expect(emittedAssets).toEqual([
+      {
+        fileName: 'q-press-ssg-routes.json',
+        source: `${JSON.stringify({ base: '/', routes: [] }, null, 2)}\n`,
       },
     ])
   })
