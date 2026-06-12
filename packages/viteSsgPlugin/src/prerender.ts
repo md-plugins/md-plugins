@@ -1,12 +1,25 @@
 import { Buffer } from 'node:buffer'
 import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises'
-import { dirname, join, resolve } from 'node:path'
-import { defaultSsgManifestFile } from './routes'
+import { dirname, join, posix as pathPosix, resolve } from 'node:path'
+import {
+  createSsgRouteManifest,
+  defaultSsgManifestFile,
+  defaultSsgReportFile,
+  isSsgRouteExcluded,
+  isStaticSsgRoutePath,
+  normalizeSsgRoute,
+  normalizeSsgRoutePath,
+} from './routes'
 import { renderSsgRouteHtml } from './html'
 import type {
   PrerenderSsgRoutesOptions,
   PrerenderSsgRoutesResult,
   PrerenderedSsgRoute,
+  SkippedSsgRoute,
+  SsgGenerationReport,
+  SsgGenerationWarning,
+  SsgGeneratedPage,
+  SsgRoute,
   SsgRouteManifest,
 } from './types'
 
@@ -72,53 +85,323 @@ async function injectMissingCssAssets(
     : `${content}${appHtml}`
 }
 
+function clampConcurrency(concurrency: number | undefined): number {
+  return Math.max(1, Math.floor(concurrency ?? 1))
+}
+
+function clampInterval(interval: number | undefined): number {
+  return Math.max(0, Math.floor(interval ?? 0))
+}
+
+function wait(milliseconds: number): Promise<void> {
+  return new Promise((resolvePromise) => {
+    setTimeout(resolvePromise, milliseconds)
+  })
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null
+}
+
+function getRedirectTarget(error: unknown): string | undefined {
+  if (!isRecord(error)) {
+    return undefined
+  }
+
+  return typeof error.url === 'string' ? error.url : undefined
+}
+
+function isNotFoundError(error: unknown): boolean {
+  if (!isRecord(error)) {
+    return false
+  }
+
+  return error.code === 404 || error.status === 404 || error.statusCode === 404
+}
+
+function extractAnchorHrefs(html: string): string[] {
+  const hrefs: string[] = []
+  const anchorHrefRE = /<a\b[^>]*\bhref\s*=\s*(["'])(.*?)\1/gi
+  let match: RegExpExecArray | null
+
+  while ((match = anchorHrefRE.exec(html))) {
+    hrefs.push(match[2])
+  }
+
+  return hrefs
+}
+
+function isExternalHref(href: string): boolean {
+  return /^[a-z][a-z0-9+.-]*:/i.test(href) || href.startsWith('//')
+}
+
+function stripBaseFromPath(path: string, base: string): string {
+  if (base === '/' || base === './' || base.startsWith('http://') || base.startsWith('https://')) {
+    return path
+  }
+
+  const normalizedBase = normalizeSsgRoutePath(base)
+
+  if (path === normalizedBase) {
+    return '/'
+  }
+
+  return path.startsWith(`${normalizedBase}/`) ? path.slice(normalizedBase.length) : path
+}
+
+function resolveHrefPath(hrefPath: string, fromRoutePath: string): string {
+  if (hrefPath.startsWith('/')) {
+    return hrefPath
+  }
+
+  const routeBase = fromRoutePath === '/' ? '/' : pathPosix.dirname(fromRoutePath)
+
+  return pathPosix.normalize(pathPosix.join(routeBase, hrefPath))
+}
+
+function hrefToSsgRoutePath(href: string, base: string, fromRoutePath = '/'): string | undefined {
+  const trimmed = href.trim()
+
+  if (!trimmed || trimmed.startsWith('#') || isExternalHref(trimmed)) {
+    return undefined
+  }
+
+  const withoutHash = trimmed.split('#')[0] ?? ''
+  const withoutQuery = withoutHash.split('?')[0] ?? ''
+
+  if (!withoutQuery || withoutQuery.startsWith('.')) {
+    return undefined
+  }
+
+  try {
+    const routePath = stripBaseFromPath(resolveHrefPath(withoutQuery, fromRoutePath), base)
+
+    return isStaticSsgRoutePath(routePath) ? normalizeSsgRoutePath(routePath) : undefined
+  } catch {
+    return undefined
+  }
+}
+
+function extractSsgRouteLinks(html: string, base: string, fromRoutePath: string): string[] {
+  return Array.from(
+    new Set(
+      extractAnchorHrefs(html)
+        .map((href) => hrefToSsgRoutePath(href, base, fromRoutePath))
+        .filter((path): path is string => path !== undefined),
+    ),
+  )
+}
+
+function createReport({
+  generated,
+  manifest,
+  manifestFile,
+  outDir,
+  skipped,
+  warnings,
+}: {
+  generated: PrerenderedSsgRoute[]
+  manifest: SsgRouteManifest
+  manifestFile: string
+  outDir: string
+  skipped: SkippedSsgRoute[]
+  warnings: SsgGenerationWarning[]
+}): SsgGenerationReport {
+  return {
+    generatedAt: new Date().toISOString(),
+    outDir,
+    manifestFile,
+    routeCount: manifest.routes.length,
+    generated,
+    skipped,
+    warnings,
+  }
+}
+
 export async function prerenderSsgRoutes({
   outDir,
   appHtmlFile = 'index.html',
   manifestFile = defaultSsgManifestFile,
   manifest,
+  exclude,
+  concurrency,
+  interval,
+  crawlLinks = false,
+  redirects = 'error',
+  notFound = 'error',
+  reportFile = defaultSsgReportFile,
+  onRouteRendered,
+  onPageGenerated,
+  afterGenerate,
   renderRoute,
   transformHtml,
   injectRoutePayload,
 }: PrerenderSsgRoutesOptions): Promise<PrerenderSsgRoutesResult> {
   const resolvedOutDir = resolve(outDir)
-  const resolvedManifest = manifest ?? (await readSsgRouteManifest(resolvedOutDir, manifestFile))
+  const rawManifest = manifest ?? (await readSsgRouteManifest(resolvedOutDir, manifestFile))
+  const resolvedManifest = createSsgRouteManifest(rawManifest.routes, {
+    base: rawManifest.base,
+    exclude,
+  })
   const appHtml = await injectMissingCssAssets(
     await readFile(join(resolvedOutDir, appHtmlFile), 'utf8'),
     resolvedOutDir,
     resolvedManifest.base,
   )
   const routes: PrerenderedSsgRoute[] = []
+  const skipped: SkippedSsgRoute[] = rawManifest.routes
+    .filter((route) => isSsgRouteExcluded(route.path, exclude ?? []))
+    .map((route) => ({
+      path: route.path,
+      reason: 'excluded',
+    }))
+  const warnings: SsgGenerationWarning[] = []
+  const queue = [...resolvedManifest.routes]
+  const enqueuedPaths = new Set(queue.map((route) => route.path))
+  const maxConcurrency = clampConcurrency(concurrency)
+  const batchInterval = clampInterval(interval)
 
-  for (const [routeIndex, route] of resolvedManifest.routes.entries()) {
-    const html = await renderSsgRouteHtml(
-      route,
-      {
-        appHtml,
-        manifest: resolvedManifest,
-        routeIndex,
-      },
-      {
+  function enqueueRoute(routeInput: string | SsgRoute): SsgRoute | undefined {
+    const route = normalizeSsgRoute(routeInput)
+
+    if (isSsgRouteExcluded(route.path, exclude ?? []) || enqueuedPaths.has(route.path)) {
+      return undefined
+    }
+
+    enqueuedPaths.add(route.path)
+    resolvedManifest.routes.push(route)
+    queue.push(route)
+
+    return route
+  }
+
+  async function renderOne(route: SsgRoute): Promise<void> {
+    const start = performance.now()
+    const routeIndex = resolvedManifest.routes.findIndex((entry) => entry.path === route.path)
+    const context = {
+      appHtml,
+      manifest: resolvedManifest,
+      routeIndex,
+    }
+
+    try {
+      let html = await renderSsgRouteHtml(route, context, {
         renderRoute,
         transformHtml,
         injectRoutePayload,
-      },
-    )
-    const htmlPath = join(resolvedOutDir, route.htmlFile)
+      })
+      const renderedHtml = await onRouteRendered?.(html, route, context)
 
-    await mkdir(dirname(htmlPath), { recursive: true })
-    await writeFile(htmlPath, html)
+      if (typeof renderedHtml === 'string') {
+        html = renderedHtml
+      }
 
-    routes.push({
-      path: route.path,
-      htmlFile: route.htmlFile,
-      bytes: Buffer.byteLength(html),
-    })
+      if (crawlLinks) {
+        for (const linkedRoute of extractSsgRouteLinks(html, resolvedManifest.base, route.path)) {
+          enqueueRoute(linkedRoute)
+        }
+      }
+
+      const htmlPath = join(resolvedOutDir, route.htmlFile)
+      const page: SsgGeneratedPage = {
+        route,
+        html,
+        htmlFile: route.htmlFile,
+        filePath: htmlPath,
+      }
+      const pageUpdate = await onPageGenerated?.(page, context)
+      const finalHtml = pageUpdate?.html ?? page.html
+      const finalHtmlFile = pageUpdate?.htmlFile ?? page.htmlFile
+      const finalFilePath = pageUpdate?.filePath ?? join(resolvedOutDir, finalHtmlFile)
+
+      await mkdir(dirname(finalFilePath), { recursive: true })
+      await writeFile(finalFilePath, finalHtml)
+
+      routes.push({
+        path: route.path,
+        htmlFile: finalHtmlFile,
+        bytes: Buffer.byteLength(finalHtml),
+        milliseconds: Math.round(performance.now() - start),
+      })
+    } catch (error) {
+      const redirectTarget = getRedirectTarget(error)
+
+      if (redirectTarget !== undefined) {
+        if (redirects === 'follow') {
+          const target = hrefToSsgRoutePath(redirectTarget, resolvedManifest.base, route.path)
+
+          if (target) {
+            enqueueRoute(target)
+          }
+
+          skipped.push({
+            path: route.path,
+            reason: 'redirected',
+            target: target ?? redirectTarget,
+          })
+          return
+        }
+
+        if (redirects === 'skip') {
+          skipped.push({
+            path: route.path,
+            reason: 'skipped-redirect',
+            target: redirectTarget,
+          })
+          return
+        }
+      }
+
+      if (isNotFoundError(error) && notFound === 'skip') {
+        skipped.push({
+          path: route.path,
+          reason: 'not-found',
+        })
+        return
+      }
+
+      throw error
+    }
   }
 
-  return {
+  while (queue.length > 0) {
+    const batch = queue.splice(0, maxConcurrency)
+
+    await Promise.all(batch.map((route) => renderOne(route)))
+
+    if (queue.length > 0 && batchInterval > 0) {
+      await wait(batchInterval)
+    }
+  }
+
+  await writeFile(
+    join(resolvedOutDir, manifestFile),
+    `${JSON.stringify(resolvedManifest, null, 2)}\n`,
+  )
+
+  const report = createReport({
+    generated: routes,
+    manifest: resolvedManifest,
+    manifestFile,
+    outDir: resolvedOutDir,
+    skipped,
+    warnings,
+  })
+
+  if (reportFile !== false) {
+    await writeFile(join(resolvedOutDir, reportFile), `${JSON.stringify(report, null, 2)}\n`)
+  }
+
+  const result = {
     manifest: resolvedManifest,
     outDir: resolvedOutDir,
     routes,
+    skipped,
+    warnings,
+    report,
   }
+
+  await afterGenerate?.(result)
+
+  return result
 }
