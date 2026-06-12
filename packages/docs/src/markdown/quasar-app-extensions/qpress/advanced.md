@@ -136,6 +136,7 @@ Q-Press projects can prerender docs routes with the generated scripts:
 ```bash
 pnpm build:ssg
 pnpm prerender:ssg
+pnpm preview:ssg
 ```
 
 The `qpress-ssg` command reads `dist/spa/q-press-ssg-routes.json`, loads the generated Q-Press SSG app factory from `src/.q-press/ssg/create-app.ts`, renders each route at build time, and writes the prerendered HTML back into the SPA output folder. It does not require Quasar SSR mode.
@@ -144,15 +145,35 @@ The `qpress-ssg` command reads `dist/spa/q-press-ssg-routes.json`, loads the gen
 qpress-ssg --out-dir dist/spa
 ```
 
+Use `--out-dir` when the project wants the generated files somewhere other than the default
+`dist/spa`. Q-Press does not require a `dist/ssg` convention.
+
 To verify the generated static output locally from the repository root, build the docs package and serve the prerendered SPA output with Quasar's history fallback:
 
 ```bash
 pnpm --dir packages/docs build:ssg
 cd packages/docs
-quasar serve dist/spa --history
+pnpm preview:ssg
 ```
 
-The `serve` command comes from the global Quasar CLI. The `--history` flag is important because Q-Press docs use Vue Router history mode, and it keeps refreshed deep links such as `/vite-plugins/vite-ssg-plugin/advanced` working during local testing.
+The generated `preview:ssg` script uses Quasar's static server with the `--history` flag because
+Q-Press docs use Vue Router history mode. That keeps refreshed deep links such as
+`/vite-plugins/vite-ssg-plugin/advanced` working during local testing.
+
+The runner has additional controls for larger docs sites:
+
+```bash
+qpress-ssg \
+  --crawl-links \
+  --concurrency 4 \
+  --interval 250 \
+  --exclude /drafts/private \
+  --report-file q-press-ssg-report.json
+```
+
+By default, Q-Press merges static routes from `src/router/routes.ts`, follows renderer redirects,
+skips renderer 404s, and writes a JSON generation report. Use `--no-router-routes`,
+`--redirects error`, `--not-found error`, or `--no-report` when a project needs stricter behavior.
 
 If a project already has Quasar SSR mode enabled and wants to reuse that renderer instead, build the renderer and opt in explicitly:
 

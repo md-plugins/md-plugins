@@ -285,6 +285,7 @@ Installed projects also get first-class SSG scripts:
 ```bash
 pnpm build:ssg
 pnpm prerender:ssg
+pnpm preview:ssg
 ```
 
 `build:ssg` rebuilds the SPA output and runs `qpress-ssg` against `dist/spa`. The default Q-Press renderer uses the generated `src/.q-press/ssg/create-app.ts` app factory, so it does not require Quasar SSR mode. `prerender:ssg` reruns only the static prerender pass against existing SPA build output.
@@ -293,7 +294,22 @@ pnpm prerender:ssg
 qpress-ssg --out-dir dist/spa
 ```
 
-Projects that already have Quasar SSR mode enabled can opt into the SSR-bundle renderer with `qpress-ssg --renderer quasar-ssr --ssr-dir dist/ssr`. In both cases, the generated pages still deploy as static files from `dist/spa`, which keeps Netlify and other static-host workflows simple.
+Projects that already have Quasar SSR mode enabled can opt into the SSR-bundle renderer with `qpress-ssg --renderer quasar-ssr --ssr-dir dist/ssr`. In both cases, the generated pages still deploy as static files from the configured output folder. The default is `dist/spa`, which keeps Netlify and other static-host workflows simple, but projects can choose another output directory with `--out-dir`.
+
+The Q-Press runner also merges static routes from `src/router/routes.ts` by default, so standalone
+Vue pages can be generated alongside Markdown routes. Use `--no-router-routes` if a project wants
+the manifest to include only the routes emitted during the Vite build.
+
+When docs routes link to generated pages that are not already in the manifest, `--crawl-links` can
+scan rendered internal links and enqueue those pages:
+
+```bash
+qpress-ssg --crawl-links --concurrency 4 --exclude /drafts/private
+```
+
+Each run writes `q-press-ssg-report.json` next to the manifest unless `--no-report` is used. The
+report lists generated routes, skipped routes, and route counts so CI and static-host deploys are
+easier to debug.
 
 ### How Q-Press SSG Is Served
 

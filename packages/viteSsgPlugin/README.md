@@ -6,12 +6,16 @@ This package currently focuses on route inventory and static route output:
 
 - Normalize static route declarations.
 - Discover Q-Press Markdown routes from a `src/markdown` folder.
+- Flatten static Vue Router route records for non-Markdown pages.
+- Exclude routes from manifests or prerender passes.
 - Generate a route manifest during Vite builds.
 - Expose the same manifest through a virtual module.
 - Emit route-specific HTML files from the built app shell so static hosts can serve deep
   links without relying on a SPA fallback rewrite.
 - Accept a custom per-route renderer when a project is ready to generate fully prerendered
   route HTML.
+- Crawl safe internal links, follow redirects, skip 404s, and write generation reports during
+  post-build prerendering when those behaviors are enabled.
 
 By default, generated route HTML uses the built `index.html` app shell. That makes the output
 usable on Netlify or other static hosts today. Q-Press projects can use `qpress-ssg` for
@@ -38,6 +42,25 @@ export default {
   plugins: [
     viteSsgPlugin({
       routes: ['/', '/getting-started/introduction', '/other/releases'],
+    }),
+  ],
+}
+```
+
+To include static Vue Router routes:
+
+```ts
+import { flattenStaticSsgRouterRoutes, viteSsgPlugin } from '@md-plugins/vite-ssg-plugin'
+import routes from './src/router/routes'
+
+export default {
+  plugins: [
+    viteSsgPlugin({
+      markdown: {
+        root: './src/markdown',
+      },
+      routes: flattenStaticSsgRouterRoutes(routes),
+      exclude: ['/drafts/private', /^\/admin/],
     }),
   ],
 }
@@ -121,6 +144,10 @@ import { prerenderSsgRoutes } from '@md-plugins/vite-ssg-plugin'
 
 await prerenderSsgRoutes({
   outDir: 'dist/spa',
+  concurrency: 4,
+  crawlLinks: true,
+  redirects: 'follow',
+  notFound: 'skip',
   async renderRoute(route, { appHtml }) {
     const renderedAppHtml = await renderMyAppAt(route.path)
 
@@ -133,12 +160,20 @@ The helper reads `q-press-ssg-routes.json`, renders every route, and writes each
 `index.html` file. The renderer can be a Vue SSR renderer, a Quasar SSR adapter, or any
 project-specific static renderer.
 
+The output directory is configurable. Q-Press defaults to `dist/spa` because that keeps existing
+static-host deployments simple, but non-Q-Press projects can use another output folder.
+
+By default, post-build prerendering writes `q-press-ssg-report.json`. Pass `reportFile: false` to
+disable reports, or provide hooks such as `onRouteRendered`, `onPageGenerated`, and `afterGenerate`
+for custom output.
+
 ## Vue / Quasar Build-Time Rendering
 
 For Q-Press apps, run the generated Q-Press command after a normal SPA build:
 
 ```bash
 pnpm build:ssg
+pnpm preview:ssg
 ```
 
 Projects that already have a Quasar SSR bundle can opt into that renderer with
@@ -181,5 +216,4 @@ import ssgRouteManifest, { ssgRoutes } from 'virtual:md-plugins/ssg-routes'
 ## Next Steps
 
 - Add dynamic-route parameter expansion.
-- Define lazy client hydration behavior for examples and browser-only components.
-- Define how browser-only examples opt out of prerendering.
+- Define project conventions for browser-only examples and lazy client hydration.
