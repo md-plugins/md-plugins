@@ -129,103 +129,12 @@ vitePlugins: [
 ]
 ```
 
-## Q-Press SSG Runner
+## Static Site Generation
 
-Q-Press projects can prerender docs routes with the generated scripts:
+Q-Press includes a first-class static generation workflow for docs sites that need route-specific HTML, crawler-friendly metadata, and static-host deployment without requiring a runtime SSR server.
 
-```bash
-pnpm build:ssg
-pnpm prerender:ssg
-pnpm preview:ssg
-```
-
-The `qpress-ssg` command reads `dist/spa/q-press-ssg-routes.json`, loads the generated Q-Press SSG app factory from `src/.q-press/ssg/create-app.ts`, renders each route at build time, and writes the prerendered HTML back into the SPA output folder. It does not require Quasar SSR mode.
-
-```bash
-qpress-ssg --out-dir dist/spa
-```
-
-Use `--out-dir` when the project wants the generated files somewhere other than the default
-`dist/spa`. Q-Press does not require a `dist/ssg` convention.
-
-To verify the generated static output locally from the repository root, build the docs package and serve the prerendered SPA output with Quasar's history fallback:
-
-```bash
-pnpm --dir packages/docs build:ssg
-cd packages/docs
-pnpm preview:ssg
-```
-
-The generated `preview:ssg` script uses Quasar's static server with the `--history` flag because
-Q-Press docs use Vue Router history mode. That keeps refreshed deep links such as
-`/vite-plugins/vite-ssg-plugin/advanced` working during local testing.
-
-The runner has additional controls for larger docs sites:
-
-```bash
-qpress-ssg \
-  --crawl-links \
-  --concurrency 4 \
-  --interval 250 \
-  --exclude /drafts/private \
-  --report-file q-press-ssg-report.json
-```
-
-By default, Q-Press merges static routes from `src/router/routes.ts`, follows renderer redirects,
-skips renderer 404s, and writes a JSON generation report. Use `--no-router-routes`,
-`--redirects error`, `--not-found error`, or `--no-report` when a project needs stricter behavior.
-
-If a project already has Quasar SSR mode enabled and wants to reuse that renderer instead, build the renderer and opt in explicitly:
-
-```bash
-pnpm build:ssg:renderer
-qpress-ssg --renderer quasar-ssr --out-dir dist/spa --ssr-dir dist/ssr
-```
-
-Q-Press also keeps lower-level helpers available for custom build tooling:
-
-- `src/.q-press/ssg/create-app`: Creates a fresh Vue SSR app for each route, installs Quasar with
-  the Q-Press plugins, resolves the host Pinia store and router, and prepares a Quasar-style
-  `ssrContext`.
-- `src/.q-press/ssg/prerender`: Wraps `prerenderVueSsgRoutes()` with the generated Q-Press app
-  factory.
-
-If a project needs to customize the per-route SSR context or Quasar options, use the generated
-wrapper and pass `createAppOptions`:
-
-```ts
-await prerenderQPressSsgRoutes({
-  outDir: 'dist/spa',
-  createAppOptions(route) {
-    return {
-      ssrContext: {
-        url: route.path,
-        req: {
-          url: route.path,
-          headers: {
-            cookie: 'theme=dark',
-          },
-        },
-      },
-    }
-  },
-})
-```
-
-For lower-level control, import `createQPressSsgApp` directly and pass it to `prerenderVueSsgRoutes()` from `@md-plugins/vite-ssg-plugin`.
-
-```ts
-import { prerenderVueSsgRoutes } from '@md-plugins/vite-ssg-plugin'
-import { createQPressSsgApp } from './src/.q-press/ssg/create-app'
-
-await prerenderVueSsgRoutes({
-  outDir: 'dist/spa',
-  createApp: createQPressSsgApp,
-})
-```
-
-The generated factory is intentionally reusable instead of being tied to a single script. Run it from build tooling that understands the docs app's TypeScript, Vue, and alias configuration when the built `qpress-ssg` command is not enough.
+See [Q-Press SSG](/quasar-app-extensions/qpress/ssg) for the full runner workflow, CLI flags, output behavior, optional Quasar SSR renderer, reports, and browser-only content guidance.
 
 ## Where To Go Next
 
-Use the [viteExamplesPlugin](/vite-plugins/vite-examples-plugin/overview) docs when you need deeper example-source behavior, and use the [viteSsgPlugin](/vite-plugins/vite-ssg-plugin/overview) docs when you need lower-level SSG control outside the generated Q-Press runner.
+Use the [viteExamplesPlugin](/vite-plugins/vite-examples-plugin/overview) docs when you need deeper example-source behavior, use [Q-Press SSG](/quasar-app-extensions/qpress/ssg) for docs-site prerendering, and use the [viteSsgPlugin](/vite-plugins/vite-ssg-plugin/overview) docs when you need lower-level SSG control outside the generated Q-Press runner.
