@@ -17,6 +17,7 @@
     "build:ssg": "quasar prepare && quasar build && node ../qPress/bin/qpress-ssg.js",
     "build:ssg:renderer": "quasar prepare && quasar build -m ssr",
     "prerender:ssg": "node ../qPress/bin/qpress-ssg.js",
+    "preview:ssg": "quasar serve dist/spa --history",
     "build:ssr": "quasar prepare && quasar build -m ssr",
     "start:ssr": "cd dist/ssr && node index.js",
     "prepared": "quasar prepare"

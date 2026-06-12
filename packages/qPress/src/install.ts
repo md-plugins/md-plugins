@@ -129,6 +129,7 @@ export default defineInstallScript(async (api) => {
       'build:ssg': 'quasar prepare && quasar build && qpress-ssg',
       'build:ssg:renderer': 'quasar prepare && quasar build -m ssr',
       'prerender:ssg': 'qpress-ssg',
+      'preview:ssg': 'quasar serve dist/spa --history',
     },
   })
 
