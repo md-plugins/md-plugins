@@ -81,6 +81,10 @@ export interface CodepenConfig {
     packageName: string
     globalName: string
   }[]
+  modulePackages?: {
+    packageName: string
+    importUrl: string
+  }[]
 }
 
 export interface SiteConfig {
