@@ -131,7 +131,7 @@ function joinRoutePaths(parentPath: string, childPath: string): string {
     return childPath
   }
 
-  return `${parentPath.replace(/\/+$/, '')}/${childPath}` || '/'
+  return `${parentPath.replace(/\/+$/, '')}/${childPath}`
 }
 
 /**
