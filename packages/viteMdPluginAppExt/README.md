@@ -19,7 +19,7 @@ This App-Extension (app-ext) is for convenience only. For more granular control,
 
 > Current release candidate: `0.1.0-rc.4`.
 >
-> This app extension currently targets Quasar Vite projects using `@quasar/app-vite` `>=3.0.0-rc.2`.
+> This app extension currently targets Quasar Vite projects using `@quasar/app-vite` `>=3.0.0-rc.3`.
 
 ## Installation
 
