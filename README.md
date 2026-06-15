@@ -78,7 +78,7 @@ This monorepo provides:
 
 ## Current Release
 
-The current release-candidate line in this repository is `0.1.0-rc.3`. Packages in this line publish to npm under the `latest` dist-tag while Quasar app-vite is in its release-candidate window.
+The current release-candidate line in this repository is `0.1.0-rc.4`. Packages in this line publish to npm under the `latest` dist-tag while Quasar app-vite is in its release-candidate window.
 
 The `0.1.0` release-candidate line supports direct Markdown-it and Vite plugin usage in Vue/Vite projects, including Markdown transforms, live example source loading, and optional SSG route output. The Quasar app extensions in this repo target Quasar Vite projects using `@quasar/app-vite` `>=3.0.0-rc.2`. Repository development and CI use Node.js `>=22.13` and `pnpm@11.6.0`.
 
