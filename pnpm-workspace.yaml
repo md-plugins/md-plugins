@@ -119,4 +119,6 @@ minimumReleaseAgeExclude:
   - oxfmt@0.55.0
   - oxlint@1.70.0
   - vitest@4.1.9
+  - quasar@2.20.1
+  - vite-plugin-checker@0.14.3
 trustLockfile: true
