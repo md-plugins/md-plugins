@@ -121,4 +121,5 @@ minimumReleaseAgeExclude:
   - vitest@4.1.9
   - quasar@2.20.1
   - vite-plugin-checker@0.14.3
+  - vite-plugin-checker@0.14.4
 trustLockfile: true
