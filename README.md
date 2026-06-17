@@ -148,6 +148,15 @@ Build all packages and the SSG documentation output in the monorepo:
 pnpm build
 ```
 
+### Q-Press Template Notes
+
+Q-Press generated files have a source-of-truth flow that is easy to miss. The package build script at `packages/qPress/scripts/build.js` copies `packages/docs/src/.q-press` into both Q-Press template folders:
+
+- `packages/qPress/src/templates/init/src/_q-press`
+- `packages/qPress/src/templates/update/src/_q-press`
+
+When fixing generated Q-Press components, update `packages/docs/src/.q-press` first, then run `pnpm --filter @md-plugins/quasar-app-extension-q-press build` or `pnpm build:packages` so the init and update templates are regenerated from the same source. If only one template copy is edited, the next Q-Press build can overwrite the change.
+
 ### Running Tests
 
 Each package includes unit tests. To run all tests across the monorepo:

@@ -47,6 +47,15 @@ See the [documentation](https://md-plugins.netlify.app/quasar-app-extensions/qpr
 - `pnpm add -D mermaid shiki @md-plugins/vite-ssg-plugin @vue/server-renderer`
 - `bun add -d mermaid shiki @md-plugins/vite-ssg-plugin @vue/server-renderer`
 
+## Development Notes
+
+The generated Q-Press templates are copied from the docs app during the package build. `packages/qPress/scripts/build.js` copies `packages/docs/src/.q-press` into both template destinations:
+
+- `packages/qPress/src/templates/init/src/_q-press`
+- `packages/qPress/src/templates/update/src/_q-press`
+
+When changing generated Q-Press components, edit `packages/docs/src/.q-press` first and rebuild Q-Press so both `init` and `update` templates stay aligned. Editing only a template copy can be lost the next time the package build runs.
+
 ## Modifications
 
 1. Modify your `src/css/quasar.variables.scss`
