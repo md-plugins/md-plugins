@@ -191,7 +191,7 @@ const gettingStartedMenu: SiteMenuItem = {
 
 const mdPluginsMenu: SiteMenuItem = {
   name: 'MD Plugins',
-  mq: 600, // media query breakpoint
+  mq: 860, // media query breakpoint
   children: [
     {
       name: 'Blockquote',
@@ -286,7 +286,7 @@ const mdPluginsMenu: SiteMenuItem = {
 
 const vitePluginsMenu: SiteMenuItem = {
   name: 'Vite Plugins',
-  mq: 780, // media query breakpoint
+  mq: 1000, // media query breakpoint
   children: [
     {
       name: 'viteMdPlugin',
@@ -322,7 +322,7 @@ const vitePluginsMenu: SiteMenuItem = {
 
 const QuasarAppExts: SiteMenuItem = {
   name: 'Quasar App Extensions',
-  mq: 1020, // media query breakpoint
+  mq: 1330, // media query breakpoint
   children: [
     {
       name: 'viteMdPluginAppExt',
@@ -347,7 +347,7 @@ const QuasarAppExts: SiteMenuItem = {
 
 const otherMenu: SiteMenuItem = {
   name: 'Other',
-  mq: 1100, // media query breakpoint
+  mq: 1400, // media query breakpoint
   children: [
     {
       name: 'Releases',

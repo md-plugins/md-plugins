@@ -137,7 +137,6 @@
 
       <div class="markdown-header__links col row items-center no-wrap">
         <MarkdownHeaderTextLinks
-          class="gt-1400"
           :menu="siteConfig.links.secondaryHeaderLinks"
           nav-class="text-size-14 letter-spacing-100"
           mq-prefix="gt"
@@ -401,6 +400,7 @@ $mq-list:
   1190,
   1300 /* drawer */,
   1310,
+  1330,
   1400;
 @each $query in $mq-list {
   @media (min-width: #{$query}px) {
