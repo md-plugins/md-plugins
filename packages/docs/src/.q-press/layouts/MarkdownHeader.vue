@@ -137,7 +137,7 @@
 
       <div class="markdown-header__links col row items-center no-wrap">
         <MarkdownHeaderTextLinks
-          class="gt-780"
+          class="gt-1400"
           :menu="siteConfig.links.secondaryHeaderLinks"
           nav-class="text-size-14 letter-spacing-100"
           mq-prefix="gt"
