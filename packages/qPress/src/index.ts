@@ -8,6 +8,7 @@
 import { defineIndexScript } from '@quasar/app-vite'
 import { existsSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
+import { viteSearchPlugin } from '@md-plugins/vite-search-plugin'
 import { viteSsgPlugin } from '@md-plugins/vite-ssg-plugin'
 import type { PluginOption } from 'vite'
 
@@ -166,6 +167,14 @@ export default defineIndexScript((api) => {
       addVitePlugin(
         viteConf,
         viteSsgPlugin({
+          markdown: {
+            root: markdownPath,
+          },
+        }),
+      )
+      addVitePlugin(
+        viteConf,
+        viteSearchPlugin({
           markdown: {
             root: markdownPath,
           },

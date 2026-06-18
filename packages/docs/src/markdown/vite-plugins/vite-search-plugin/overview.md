@@ -2,6 +2,7 @@
 title: Vite Search Plugin
 desc: Generate search index data for Markdown and Q-Press documentation sites with static and hosted-search adapter output.
 related:
+  - vite-plugins/vite-search-plugin/search-ui
   - vite-plugins/vite-search-plugin/advanced
   - vite-plugins/vite-ssg-plugin/overview
   - quasar-app-extensions/qpress/overview
@@ -43,6 +44,9 @@ The plugin does not require a runtime server. The default JSON adapter works on 
 fetching the generated asset from the browser. Hosted services still need their own runtime search
 API, but the md-plugins build can produce the upload-ready data.
 
+Use the [Search UI](/vite-plugins/vite-search-plugin/search-ui) page when you want the default
+front-end component that reads the generated JSON index.
+
 ## Key Features
 
 - **Markdown discovery**: Scan one or more Markdown roots with Q-Press-style route conventions.
@@ -51,6 +55,7 @@ API, but the md-plugins build can produce the upload-ready data.
 - **Virtual module**: Import the generated index from `virtual:md-plugins/search-index`.
 - **Frontmatter controls**: Use fields such as `title`, `desc`, `tags`, `keys`, and `search: false`.
 - **Provider-neutral**: Keep service upload keys out of the browser and outside the core plugin.
+- **UI-ready**: Pair with `@md-plugins/search-ui` for a framework-agnostic search component.
 
 ## Installation
 

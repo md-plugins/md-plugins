@@ -3,6 +3,7 @@ title: Vite Search Plugin Advanced Topics
 desc: Advanced adapter, frontmatter, virtual module, and deployment guidance for the Vite Search Plugin.
 related:
   - vite-plugins/vite-search-plugin/overview
+  - vite-plugins/vite-search-plugin/search-ui
   - vite-plugins/vite-ssg-plugin/advanced
   - quasar-app-extensions/qpress/ssg
 ---

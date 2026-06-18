@@ -313,6 +313,7 @@ const vitePluginsMenu: SiteMenuItem = {
       name: 'viteSearchPlugin',
       children: [
         { name: 'Overview', path: '/vite-plugins/vite-search-plugin/overview' },
+        { name: 'Search UI', path: '/vite-plugins/vite-search-plugin/search-ui' },
         { name: 'Advanced', path: '/vite-plugins/vite-search-plugin/advanced' },
       ],
     },

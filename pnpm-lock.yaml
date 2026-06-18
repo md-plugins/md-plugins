@@ -38,15 +38,27 @@ importers:
 
   packages/docs:
     dependencies:
+      '@hono/node-server':
+        specifier: 2.0.5
+        version: 2.0.5(hono@4.12.25)
+      '@md-plugins/search-ui':
+        specifier: workspace:*
+        version: link:../searchUi
       '@quasar/extras':
         specifier: 2.0.1
         version: 2.0.1
+      hono:
+        specifier: 4.12.25
+        version: 4.12.25
       pinia:
         specifier: ^3.0.4
         version: 3.0.4(typescript@6.0.3)(vue@3.5.38(typescript@6.0.3))
       quasar:
         specifier: ^2.20.1
         version: 2.20.1
+      serialize-javascript:
+        specifier: 7.0.5
+        version: 7.0.5
       vue:
         specifier: ^3.5.38
         version: 3.5.38(typescript@6.0.3)
@@ -66,6 +78,9 @@ importers:
       '@md-plugins/vite-md-plugin':
         specifier: workspace:*
         version: link:../viteMdPlugin
+      '@md-plugins/vite-search-plugin':
+        specifier: workspace:*
+        version: link:../viteSearchPlugin
       '@md-plugins/vite-ssg-plugin':
         specifier: workspace:*
         version: link:../viteSsgPlugin
@@ -308,9 +323,15 @@ importers:
       '@md-plugins/md-plugin-title':
         specifier: workspace:*
         version: link:../md-plugin-title
+      '@md-plugins/search-ui':
+        specifier: workspace:*
+        version: link:../searchUi
       '@md-plugins/vite-md-plugin':
         specifier: workspace:*
         version: link:../viteMdPlugin
+      '@md-plugins/vite-search-plugin':
+        specifier: workspace:*
+        version: link:../viteSearchPlugin
       '@md-plugins/vite-ssg-plugin':
         specifier: workspace:*
         version: link:../viteSsgPlugin
@@ -345,6 +366,8 @@ importers:
       '@types/semver':
         specifier: ^7.7.1
         version: 7.7.1
+
+  packages/searchUi: {}
 
   packages/shared:
     devDependencies:
@@ -763,6 +786,12 @@ packages:
     engines: {node: '>=18'}
     cpu: [x64]
     os: [win32]
+
+  '@hono/node-server@2.0.5':
+    resolution: {integrity: sha512-yQFvDmyDo3y6rEOJZDUYPJ49DIKTPpIk4kGvm40xx4Ejne0Pu9a1+exxPN+C1UppWK/WGZX9F++/Xs231tE86g==}
+    engines: {node: '>=20'}
+    peerDependencies:
+      hono: ^4
 
   '@iconify/types@2.0.0':
     resolution: {integrity: sha512-+wluvCrRhXrhyOmRDJ3q8mux9JkKy5SJ/v8ol2tu4FVjyYvtEzkc/3pK15ET6RKg4b4w4BmTk1+gsCUhf21Ykg==}
@@ -2597,6 +2626,10 @@ packages:
   hast-util-whitespace@3.0.0:
     resolution: {integrity: sha512-88JUN06ipLwsnv+dVn+OIYOvAuvBMy/Qoi6O7mQHxdPXpjy+Cd6xRkWwux7DKO+4sYILtLBRIKgsdpS2gQc7qw==}
 
+  hono@4.12.25:
+    resolution: {integrity: sha512-2NFaIyNVgJmBs/ecmtGzlmluTFs5cHEWGTdu0t1HBwYzoGXOL5nUQBRMXsXWla5i4KkG//QMzVP88m1+I3fdAQ==}
+    engines: {node: '>=16.9.0'}
+
   hookable@5.5.3:
     resolution: {integrity: sha512-Yc+BQe8SvoXH1643Qez1zqLRmbA5rCL+sSmk6TVos0LWVfNIB7PGncdlId77WzLGSIB5KaWgTaNTs2lNVEI6VQ==}
 
@@ -4298,6 +4331,10 @@ snapshots:
 
   '@esbuild/win32-x64@0.25.12':
     optional: true
+
+  '@hono/node-server@2.0.5(hono@4.12.25)':
+    dependencies:
+      hono: 4.12.25
 
   '@iconify/types@2.0.0': {}
 
@@ -6174,6 +6211,8 @@ snapshots:
   hast-util-whitespace@3.0.0:
     dependencies:
       '@types/hast': 3.0.4
+
+  hono@4.12.25: {}
 
   hookable@5.5.3: {}
 

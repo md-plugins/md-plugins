@@ -110,17 +110,17 @@ yarn add -D markdown-it @types/markdown-it
 npm i -D markdown-it @types/markdown-it
 ```
 
-2. **Q-Press adds `mermaid`, `shiki`, `@md-plugins/vite-ssg-plugin`, and `@vue/server-renderer` to your project dev dependencies when invoked. If you are wiring the generated files manually, add them yourself:**
+2. **Q-Press adds `mermaid`, `shiki`, `@md-plugins/search-ui`, `@md-plugins/vite-search-plugin`, `@md-plugins/vite-ssg-plugin`, and `@vue/server-renderer` to your project dev dependencies when invoked. If you are wiring the generated files manually, add them yourself:**
 
 ```tabs
 <<| bash pnpm |>>
-pnpm add -D mermaid shiki @md-plugins/vite-ssg-plugin @vue/server-renderer
+pnpm add -D mermaid shiki @md-plugins/search-ui @md-plugins/vite-search-plugin @md-plugins/vite-ssg-plugin @vue/server-renderer
 <<| bash bun |>>
-bun add -d mermaid shiki @md-plugins/vite-ssg-plugin @vue/server-renderer
+bun add -d mermaid shiki @md-plugins/search-ui @md-plugins/vite-search-plugin @md-plugins/vite-ssg-plugin @vue/server-renderer
 <<| bash yarn |>>
-yarn add -D mermaid shiki @md-plugins/vite-ssg-plugin @vue/server-renderer
+yarn add -D mermaid shiki @md-plugins/search-ui @md-plugins/vite-search-plugin @md-plugins/vite-ssg-plugin @vue/server-renderer
 <<| bash npm |>>
-npm i -D mermaid shiki @md-plugins/vite-ssg-plugin @vue/server-renderer
+npm i -D mermaid shiki @md-plugins/search-ui @md-plugins/vite-search-plugin @md-plugins/vite-ssg-plugin @vue/server-renderer
 ```
 
 ## Configuration
@@ -279,6 +279,10 @@ useMeta({
 ### Static Site Generation
 
 Q-Press installs the md-plugins Vite SSG route plugin (`@md-plugins/vite-ssg-plugin`) automatically. During a production SPA build, it emits a `q-press-ssg-routes.json` manifest and route-specific HTML shell files for Markdown routes.
+
+Q-Press also installs `@md-plugins/vite-search-plugin` and `@md-plugins/search-ui` automatically.
+During the Vite build it emits `search/search-index.json`, then the generated header search uses
+that static index through the framework-agnostic `<md-search>` component.
 
 Installed projects also get first-class SSG scripts:
 
