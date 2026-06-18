@@ -281,8 +281,9 @@ useMeta({
 Q-Press installs the md-plugins Vite SSG route plugin (`@md-plugins/vite-ssg-plugin`) automatically. During a production SPA build, it emits a `q-press-ssg-routes.json` manifest and route-specific HTML shell files for Markdown routes.
 
 Q-Press also installs `@md-plugins/vite-search-plugin` and `@md-plugins/search-ui` automatically.
-During the Vite build it emits `search/search-index.json`, then the generated header search uses
-that static index through the framework-agnostic `<md-search>` component.
+During the Vite build it emits `search/search-index.json`. Q-Press renders that static index
+through its generated `MarkdownSearch.vue` wrapper, which uses the framework-agnostic `<md-search>`
+component internally.
 
 Installed projects also get first-class SSG scripts:
 
