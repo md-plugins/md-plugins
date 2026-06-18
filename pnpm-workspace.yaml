@@ -122,4 +122,6 @@ minimumReleaseAgeExclude:
   - quasar@2.20.1
   - vite-plugin-checker@0.14.3
   - vite-plugin-checker@0.14.4
+  - hono@4.12.26
+  - serialize-javascript@7.0.6
 trustLockfile: true
