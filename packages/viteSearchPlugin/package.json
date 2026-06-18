@@ -1,0 +1,61 @@
+{
+  "name": "@md-plugins/vite-search-plugin",
+  "version": "0.1.0-rc.8",
+  "description": "A Vite plugin that generates search index data for Markdown and Q-Press documentation sites.",
+  "keywords": [
+    "algolia",
+    "markdown",
+    "meilisearch",
+    "q-press",
+    "quasarframework",
+    "search",
+    "static-site-search",
+    "vite",
+    "vite-plugin"
+  ],
+  "homepage": "https://github.com/md-plugins",
+  "bugs": {
+    "url": "https://github.com/md-plugins/md-plugins/issues"
+  },
+  "license": "MIT",
+  "author": "hawkeye64 <galbraith64@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/md-plugins/md-plugins.git"
+  },
+  "files": [
+    "./dist"
+  ],
+  "type": "module",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      }
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "unbuild",
+    "clean": "rm -rf dist/ node_modules/",
+    "prepack": "pnpm build"
+  },
+  "dependencies": {
+    "@md-plugins/shared": "workspace:*",
+    "gray-matter": "^4.0.3",
+    "markdown-it": "^14.2.0",
+    "tinyglobby": "^0.2.17"
+  },
+  "devDependencies": {
+    "@types/markdown-it": "^14.1.2",
+    "vite": "^8.0.16"
+  },
+  "peerDependencies": {
+    "markdown-it": "^14.2.0"
+  }
+}

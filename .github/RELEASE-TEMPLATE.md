@@ -50,6 +50,7 @@ Install the package or packages used by your project.
 pnpm add -D @md-plugins/vite-md-plugin
 pnpm add -D @md-plugins/vite-examples-plugin
 pnpm add -D @md-plugins/vite-ssg-plugin
+pnpm add -D @md-plugins/vite-search-plugin
 pnpm add -D @md-plugins/quasar-app-extension-q-press
 ```
 
