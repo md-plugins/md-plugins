@@ -309,6 +309,13 @@ const vitePluginsMenu: SiteMenuItem = {
         { name: 'Advanced', path: '/vite-plugins/vite-ssg-plugin/advanced' },
       ],
     },
+    {
+      name: 'viteSearchPlugin',
+      children: [
+        { name: 'Overview', path: '/vite-plugins/vite-search-plugin/overview' },
+        { name: 'Advanced', path: '/vite-plugins/vite-search-plugin/advanced' },
+      ],
+    },
   ],
 }
 
