@@ -155,7 +155,7 @@ export const links = {
 }
 ```
 
-When you add new breakpoint values, also add them to the generated `$mq-list` in `src/css/quasar.variables.scss` or `src/css/quasar.variables.sass` so the matching `gt-*` and `lt-*` utility classes exist:
+When you add new breakpoint values, also add them to the generated `$mq-list` in `src/.q-press/layouts/MarkdownHeader.vue` so the matching `gt-*` and `lt-*` utility classes exist:
 
 ```scss
 $mq-list: 470, 860, 1000, 1330, 1400;
