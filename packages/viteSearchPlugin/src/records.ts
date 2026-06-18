@@ -5,6 +5,18 @@ import type { JsonValue, SearchRecord, SearchRecordType } from './types'
 const markdownExtensionRE = /\.md$/i
 const whitespaceRE = /\s+/g
 const htmlTagRE = /<[^>]+>/g
+const markdownImageRE = /!\[([^\]]*)\]\([^)]*\)/g
+const markdownLinkRE = /\[([^\]]+)\]\([^)]*\)/g
+const markdownReferenceLinkRE = /\[([^\]]+)\]\[[^\]]*\]/g
+const markdownInlineCodeRE = /`([^`]+)`/g
+const markdownStrongRE = /(\*\*|__)(.*?)\1/g
+const markdownEmphasisRE = /(\*|_)(.*?)\1/g
+const markdownStrikeRE = /~~(.*?)~~/g
+const markdownHeadingMarkerRE = /^#{1,6}\s+/gm
+const markdownBlockquoteMarkerRE = /^>\s?/gm
+const markdownListMarkerRE = /^\s*(?:[-*+]|\d+\.)\s+/gm
+const markdownReferenceDefinitionRE = /^\[[^\]]+\]:\s+\S+.*$/gm
+const spaceBeforePunctuationRE = /\s+([,.;:!?])/g
 
 /**
  * Normalizes string or array glob options into a concrete pattern list.
@@ -90,8 +102,20 @@ export function createSearchUrl(
  */
 export function normalizeSearchText(value: unknown): string {
   return String(value ?? '')
+    .replace(markdownReferenceDefinitionRE, ' ')
+    .replace(markdownImageRE, '$1')
+    .replace(markdownLinkRE, '$1')
+    .replace(markdownReferenceLinkRE, '$1')
+    .replace(markdownInlineCodeRE, '$1')
+    .replace(markdownStrongRE, '$2')
+    .replace(markdownEmphasisRE, '$2')
+    .replace(markdownStrikeRE, '$1')
+    .replace(markdownHeadingMarkerRE, ' ')
+    .replace(markdownBlockquoteMarkerRE, ' ')
+    .replace(markdownListMarkerRE, ' ')
     .replace(htmlTagRE, ' ')
     .replaceAll('|', ' ')
+    .replace(spaceBeforePunctuationRE, '$1')
     .replace(whitespaceRE, ' ')
     .trim()
 }

@@ -14,11 +14,28 @@ import {
 type TestViteSearchPlugin = {
   configResolved(config: { base: string }): void
   buildStart(): Promise<void>
+  configureServer(server: TestViteServer): void
   load(id: string): Promise<string | undefined>
   resolveId(id: string): string | undefined
   generateBundle(this: {
     emitFile(asset: { type: 'asset'; fileName: string; source: string | Uint8Array }): void
   }): Promise<void>
+}
+
+type TestViteMiddleware = (
+  request: { url?: string },
+  response: {
+    statusCode: number
+    setHeader(name: string, value: string): void
+    end(source: string | Uint8Array): void
+  },
+  next: (error?: Error) => void,
+) => Promise<void>
+
+type TestViteServer = {
+  middlewares: {
+    use(middleware: TestViteMiddleware): void
+  }
 }
 
 async function createMarkdownFixture(): Promise<string> {
@@ -58,6 +75,24 @@ overline: Guide
 # Advanced
 
 Adapter output can target hosted search.
+`,
+  )
+
+  await writeFile(
+    join(root, 'guide', 'markdown-content.md'),
+    `---
+title: Markdown Content
+desc: Use **hosted** \`search\` with [adapters](https://example.com).
+tags:
+  - markdown
+  - search
+---
+
+# \`Containers\` Plugin
+
+The \`containers\` plugin allows you to add **custom containers** for [callouts](https://example.com/callouts), warnings, and more in your Markdown content.
+
+![Search UI preview](./preview.png)
 `,
   )
 
@@ -146,6 +181,41 @@ describe('search index generation', () => {
       index.records.find((record) => record.type === 'page' && record.title === 'Home')?.url,
     ).toBe('/content')
   })
+
+  it('stores readable text instead of raw markdown syntax', async () => {
+    const root = await createMarkdownFixture()
+    const index = await createSearchIndex({
+      markdown: {
+        root,
+      },
+    })
+    const markdownRecords = index.records.filter(
+      (record) => record.path === '/guide/markdown-content',
+    )
+
+    expect(markdownRecords).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          type: 'page',
+          content: 'Use hosted search with adapters.',
+        }),
+        expect.objectContaining({
+          type: 'heading',
+          section: 'Containers Plugin',
+          content: 'Containers Plugin',
+        }),
+        expect.objectContaining({
+          type: 'content',
+          content:
+            'The containers plugin allows you to add custom containers for callouts, warnings, and more in your Markdown content. Search UI preview',
+        }),
+      ]),
+    )
+
+    markdownRecords.forEach((record) => {
+      expect(record.content).not.toMatch(/[`*_![\]()]/)
+    })
+  })
 })
 
 describe('viteSearchPlugin', () => {
@@ -233,6 +303,64 @@ describe('viteSearchPlugin', () => {
     const urls = JSON.parse(String(emittedAssets[0]?.source))
     expect(urls).toContain('/')
     expect(emittedAssets[0]?.fileName).toBe('search/urls.json')
+  })
+
+  it('serves generated search assets during dev', async () => {
+    const root = await createMarkdownFixture()
+    let middleware: TestViteMiddleware | undefined
+    const plugin = viteSearchPlugin({
+      markdown: {
+        root,
+      },
+    })
+    const pluginHooks = plugin as unknown as TestViteSearchPlugin
+
+    pluginHooks.configResolved({
+      base: '/docs/',
+    })
+    pluginHooks.configureServer({
+      middlewares: {
+        use(handler) {
+          middleware = handler
+        },
+      },
+    })
+
+    await pluginHooks.buildStart()
+
+    let body = ''
+    let contentType = ''
+    let nextCalled = false
+
+    await middleware?.(
+      {
+        url: '/docs/search/search-index.json',
+      },
+      {
+        statusCode: 0,
+        setHeader(name, value) {
+          if (name.toLowerCase() === 'content-type') {
+            contentType = value
+          }
+        },
+        end(source) {
+          body = String(source)
+        },
+      },
+      (error) => {
+        if (error !== undefined) {
+          throw error
+        }
+
+        nextCalled = true
+      },
+    )
+
+    const payload = JSON.parse(body)
+
+    expect(nextCalled).toBe(false)
+    expect(contentType).toBe('application/json; charset=utf-8')
+    expect(payload.records.length).toBeGreaterThan(0)
   })
 
   it('can consume the generated static JSON from disk', async () => {

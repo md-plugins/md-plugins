@@ -125,8 +125,24 @@ function getHeadingLevel(token: Token): number {
   return Number(token.tag.slice(1))
 }
 
+function getTokenContent(token: Token | undefined): string {
+  if (token === undefined) {
+    return ''
+  }
+
+  if (token.children !== null && token.children.length > 0) {
+    return normalizeSearchText(token.children.map(getTokenContent).join(' '))
+  }
+
+  if (token.type === 'hardbreak' || token.type === 'softbreak') {
+    return ' '
+  }
+
+  return normalizeSearchText(token.content)
+}
+
 function getInlineContent(token: Token | undefined): string {
-  return token?.type === 'inline' ? normalizeSearchText(token.content) : ''
+  return token?.type === 'inline' ? getTokenContent(token) : ''
 }
 
 function flushContentRecord(
@@ -244,7 +260,7 @@ function createRecordsFromTokens(context: PageContext, tokens: Token[]): SearchR
     }
 
     if (token.type === 'inline') {
-      const content = normalizeSearchText(token.content)
+      const content = getInlineContent(token)
       if (content.length > 0) {
         state.content.push(content)
       }

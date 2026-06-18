@@ -19,6 +19,14 @@ function serializeSearchModule(index: SearchIndex): string {
   ].join('\n')
 }
 
+function createAssetPath(base: string, fileName: string): string {
+  return `${base.replace(/\/$/, '')}/${fileName.replace(/^\//, '')}`.replace(/\/{2,}/g, '/')
+}
+
+function isAssetRequest(pathname: string, base: string, fileName: string): boolean {
+  return pathname === createAssetPath(base, fileName) || pathname === createAssetPath('/', fileName)
+}
+
 /**
  * Creates the Vite plugin that emits Markdown search index assets.
  */
@@ -51,6 +59,56 @@ export function viteSearchPlugin(options: ViteSearchPluginOptions = {}): Plugin 
 
     async buildStart() {
       await refreshIndex()
+    },
+
+    configureServer(server) {
+      if (options.enabled === false) {
+        return
+      }
+
+      server.middlewares.use(async (request, response, next) => {
+        const pathname = decodeURIComponent(
+          new URL(request.url ?? '/', 'http://md-plugins.local').pathname,
+        )
+
+        if (!pathname.includes('/search/')) {
+          next()
+          return
+        }
+
+        try {
+          const resolvedIndex = await refreshIndex()
+          const adapters = normalizeSearchAdapters(options.adapters)
+          const context = {
+            config,
+            index: resolvedIndex,
+            options,
+          }
+
+          for (const adapter of adapters) {
+            const outputs = await adapter.transform(resolvedIndex.records, context)
+
+            if (outputs === undefined) {
+              continue
+            }
+
+            const normalizedOutputs = Array.isArray(outputs) ? outputs : [outputs]
+
+            for (const output of normalizedOutputs) {
+              if (isAssetRequest(pathname, config?.base ?? '/', output.fileName)) {
+                response.statusCode = 200
+                response.setHeader('Content-Type', 'application/json; charset=utf-8')
+                response.end(output.source)
+                return
+              }
+            }
+          }
+
+          next()
+        } catch (error) {
+          next(error as Error)
+        }
+      })
     },
 
     resolveId(id) {
