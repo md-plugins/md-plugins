@@ -4,6 +4,9 @@ desc: Upgrade MD-Plugins and Q-Press to the 0.1.0 release candidate.
 keys: Other
 related:
   - quasar-app-extensions/qpress/overview
+  - quasar-app-extensions/qpress/site-config
+  - vite-plugins/vite-search-plugin/overview
+  - vite-plugins/vite-search-plugin/search-ui
   - quasar-app-extensions/vite-md-plugin-app-ext/overview
   - vite-plugins/vite-md-plugin/overview
 ---
@@ -49,6 +52,130 @@ quasar ext invoke @md-plugins/q-press
 ```
 
 When prompted, choose `Overwrite All` if you want the generated Q-Press files to match the release-candidate templates.
+
+## Add Search To Existing Q-Press Sites
+
+New Q-Press projects include static docs search automatically. Existing Q-Press sites need the new search dependencies, Vite plugin setup, generated search layout, and adjusted header breakpoints.
+
+The safest upgrade path is to update and invoke Q-Press, then choose `Overwrite All` so the generated shell files are refreshed together:
+
+```bash
+quasar ext invoke @md-plugins/q-press
+```
+
+If your project carries local edits in generated Q-Press files and you cannot overwrite everything, compare your project against the current generated versions of these files:
+
+- `src/.q-press/layouts/MarkdownHeader.vue`
+- `src/.q-press/layouts/MarkdownSearch.vue`
+- `src/siteConfig/index.ts`
+- `quasar.config.ts`
+
+Install the search packages if they were not added during the invoke step:
+
+```tabs
+<<| bash pnpm |>>
+pnpm add -D @md-plugins/search-ui @md-plugins/vite-search-plugin
+<<| bash npm |>>
+npm install -D @md-plugins/search-ui @md-plugins/vite-search-plugin
+<<| bash yarn |>>
+yarn add -D @md-plugins/search-ui @md-plugins/vite-search-plugin
+<<| bash bun |>>
+bun add -D @md-plugins/search-ui @md-plugins/vite-search-plugin
+```
+
+Add the search plugin to `quasar.config.ts` so the production build emits a static index:
+
+```ts
+import { viteSearchPlugin } from '@md-plugins/vite-search-plugin'
+
+// inside build.vitePlugins
+viteSearchPlugin({
+  markdown: {
+    root: ctx.appPaths.srcDir + '/markdown',
+    // Optional: keep generated test pages, drafts, or private docs out of search.
+    // exclude: ['__*.md', 'drafts/**'],
+  },
+})
+```
+
+The generated Q-Press search layout fetches the static index from:
+
+```txt
+/search/search-index.json
+```
+
+After building, open that URL in the browser to confirm the index is available. Static hosts such as Netlify can serve this file directly; no search server is required for the default JSON search adapter.
+
+### Header Breakpoints After Adding Search
+
+The search control uses header space, so existing menu breakpoints usually need to move. The goal is not to hide the whole navigation early. Keep the top-level menu container visible, give each top-level menu item its own `mq`, and let the `More` menu show only the items that no longer fit.
+
+For example, this site uses progressively larger breakpoints so the header shows as many top-level items as possible:
+
+```ts
+const gettingStartedMenu = {
+  name: 'Getting Started',
+  mq: 470,
+  // children...
+}
+
+const mdPluginsMenu = {
+  name: 'MD Plugins',
+  mq: 860,
+  // children...
+}
+
+const vitePluginsMenu = {
+  name: 'Vite Plugins',
+  mq: 1000,
+  // children...
+}
+
+const quasarAppExtsMenu = {
+  name: 'Quasar App Extensions',
+  mq: 1330,
+  // children...
+}
+
+const otherMenu = {
+  name: 'Other',
+  mq: 1400,
+  // children...
+}
+
+export const links = {
+  secondaryHeaderLinks: [
+    gettingStartedMenu,
+    mdPluginsMenu,
+    vitePluginsMenu,
+    quasarAppExtsMenu,
+    otherMenu,
+  ],
+  moreLinks: [gettingStartedMenu, mdPluginsMenu, vitePluginsMenu, quasarAppExtsMenu, otherMenu],
+}
+```
+
+When you add new breakpoint values, also add them to the generated `$mq-list` in `src/css/quasar.variables.scss` or `src/css/quasar.variables.sass` so the matching `gt-*` and `lt-*` utility classes exist:
+
+```scss
+$mq-list: 470, 860, 1000, 1330, 1400;
+
+@each $query in $mq-list {
+  @media (min-width: #{$query}px) {
+    .lt-#{$query} {
+      display: none;
+    }
+  }
+
+  @media (max-width: #{$query - 1}px) {
+    .gt-#{$query} {
+      display: none;
+    }
+  }
+}
+```
+
+After changing breakpoints, resize the docs site around each `mq` value. At wide widths such as `1400px`, users should still see multiple top-level menu groups, not just `More`. At narrow phone widths, the search should collapse to an icon trigger and the `More` menu should keep hidden sections reachable.
 
 For direct Vite plugin usage, update the packages you consume:
 
