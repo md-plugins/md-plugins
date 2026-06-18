@@ -150,12 +150,12 @@
       <article class="resource-card resource-card--primary">
         <div class="resource-card__eyebrow">Ecosystem</div>
         <h2 class="resource-card__title">
-          Markdown authoring, Vite transforms, and Quasar docs tooling in one stack
+          Markdown authoring, Vite transforms, search indexes, and Quasar docs tooling in one stack
         </h2>
         <p class="resource-card__body">
           Use the Markdown-it and Vite plugins directly in Vue and Vite projects, or move up to the
-          Quasar app extensions when you want docs-site scaffolding, examples, and Q-Press
-          integration.
+          Quasar app extensions when you want docs-site scaffolding, examples, search data, and
+          Q-Press integration.
         </p>
 
         <div class="resource-card__actions">
@@ -177,6 +177,11 @@
           <router-link to="/vite-plugins/vite-ssg-plugin/overview" class="resource-link">
             <q-icon name="route" />
             <span>SSG Plugin</span>
+          </router-link>
+
+          <router-link to="/vite-plugins/vite-search-plugin/overview" class="resource-link">
+            <q-icon name="search" />
+            <span>Search Plugin</span>
           </router-link>
 
           <a
@@ -224,15 +229,15 @@ const logoAlt = 'Markdown Plugins Logo'
 const githubRepoUrl = 'https://github.com/md-plugins/md-plugins'
 const heroEyebrow = 'Markdown + Vue + Quasar'
 const heroLede =
-  'Build richer Markdown experiences with a layered toolset: authoring plugins, Vite transforms, example loaders, and Quasar documentation scaffolding that all speak the same language.'
+  'Build richer Markdown experiences with a layered toolset: authoring plugins, Vite transforms, example loaders, search indexes, and Quasar documentation scaffolding that all speak the same language.'
 const previewKicker = 'Plugin Families'
 const previewTitle = 'Start small with a single plugin, or grow into a full documentation workflow'
 const previewBody =
-  'MD Plugins covers multiple layers of the stack, from Markdown syntax helpers and imported content to Vue SFC generation and full Q-Press documentation sites.'
+  'MD Plugins covers multiple layers of the stack, from Markdown syntax helpers and imported content to Vue SFC generation, search index data, and full Q-Press documentation sites.'
 const sectionTitle =
   'One toolkit for authored content, markdown-driven UI, and documentation workflows'
 const sectionText =
-  'MD Plugins stays useful at different scales: a single Markdown-it enhancement, a Vite pipeline for docs-style content, or a complete Quasar docs site with shared conventions and examples.'
+  'MD Plugins stays useful at different scales: a single Markdown-it enhancement, a Vite pipeline for docs-style content, or a complete Quasar docs site with shared conventions, examples, static routes, and search-ready output.'
 
 const heroPills = [
   'Markdown-it',
@@ -240,6 +245,7 @@ const heroPills = [
   'Vue SFCs',
   'Q-Press',
   'Quasar App Extensions',
+  'Search Indexes',
   'Docs Tooling',
 ]
 
@@ -250,9 +256,9 @@ const familyHighlights = [
     body: 'Authoring helpers for quotes, code, containers, imports, Mermaid, tables, shared helpers, and more.',
   },
   {
-    value: '3',
+    value: '4',
     label: 'Vite Plugins',
-    body: 'Transform Markdown, import example source, and generate static route output.',
+    body: 'Transform Markdown, import example source, generate static route output, and emit search indexes.',
   },
   {
     value: '2',
@@ -281,6 +287,11 @@ const featureCards = [
     icon: 'route',
     title: 'Static Route Output',
     body: 'Inventory docs routes and emit static HTML files so deep links can work cleanly on static hosts.',
+  },
+  {
+    icon: 'search',
+    title: 'Search Index Output',
+    body: 'Generate normalized search records for static JSON, Meilisearch, Algolia, or custom provider adapters.',
   },
   {
     icon: 'integration_instructions',
@@ -383,6 +394,11 @@ const vitePlugins = [
     desc: 'Inventory docs routes, emit static route HTML, and bridge Vue or Quasar build-time rendering.',
     path: '/vite-plugins/vite-ssg-plugin/overview',
   },
+  {
+    name: 'Vite Search Plugin',
+    desc: 'Generate provider-neutral search index data for static hosts, Meilisearch, Algolia, or custom adapters.',
+    path: '/vite-plugins/vite-search-plugin/overview',
+  },
 ]
 
 const appExtensions = [
@@ -407,8 +423,9 @@ const pluginGroups = [
   },
   {
     eyebrow: 'Vite',
-    title: 'Build Markdown-driven Vue pages, example systems, and static route output',
-    body: 'Move from authored text to app-ready content when pages need components, embedded demos, raw source visibility, or SSG-friendly deep links.',
+    title:
+      'Build Markdown-driven Vue pages, example systems, search indexes, and static route output',
+    body: 'Move from authored text to app-ready content when pages need components, embedded demos, raw source visibility, SSG-friendly deep links, or search data.',
     items: vitePlugins,
   },
   {

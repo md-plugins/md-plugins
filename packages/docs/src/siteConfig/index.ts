@@ -447,7 +447,7 @@ const config = {
   lang: 'en-US',
   title: productName,
   description:
-    'MD-Plugins provides Markdown-it plugins, Vite plugins, and Quasar app extensions for Vue/Vite content workflows, Q-Press docs sites, and SSG-ready documentation.',
+    'MD-Plugins provides Markdown-it plugins, Vite plugins, and Quasar app extensions for Vue/Vite content workflows, Q-Press docs sites, and SSG/search-ready documentation.',
   theme: 'doc',
   version: version,
   copyright: {

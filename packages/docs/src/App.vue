@@ -16,7 +16,7 @@ useMeta({
 
   meta: getMeta(
     'MD-Plugins - Markdown tooling for Vite, Vue, and Quasar',
-    'MD-Plugins provides Markdown-it plugins, Vite plugins, and Quasar app extensions for Vue/Vite content workflows, Q-Press docs sites, and SSG-ready documentation.',
+    'MD-Plugins provides Markdown-it plugins, Vite plugins, and Quasar app extensions for Vue/Vite content workflows, Q-Press docs sites, and SSG/search-ready documentation.',
   ),
 })
 </script>
