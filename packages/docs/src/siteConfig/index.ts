@@ -264,6 +264,13 @@ const mdPluginsMenu: SiteMenuItem = {
       ],
     },
     {
+      name: 'Steps',
+      children: [
+        { name: 'Overview', path: '/md-plugins/steps/overview' },
+        { name: 'Advanced', path: '/md-plugins/steps/advanced' },
+      ],
+    },
+    {
       name: 'Table',
       children: [
         { name: 'Overview', path: '/md-plugins/table/overview' },

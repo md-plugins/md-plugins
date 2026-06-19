@@ -69,6 +69,9 @@ importers:
       '@md-plugins/md-plugin-headers':
         specifier: workspace:*
         version: link:../md-plugin-headers
+      '@md-plugins/md-plugin-steps':
+        specifier: workspace:*
+        version: link:../md-plugin-steps
       '@md-plugins/quasar-app-extension-q-press':
         specifier: workspace:*
         version: link:../qPress
@@ -260,6 +263,24 @@ importers:
       markdown-it:
         specifier: ^14.2.0
         version: 14.2.0
+
+  packages/md-plugin-steps:
+    devDependencies:
+      '@md-plugins/shared':
+        specifier: workspace:*
+        version: link:../shared
+      '@types/markdown-it':
+        specifier: ^14.1.2
+        version: 14.1.2
+      '@types/markdown-it-container':
+        specifier: ^4.0.0
+        version: 4.0.0
+      markdown-it:
+        specifier: ^14.2.0
+        version: 14.2.0
+      markdown-it-container:
+        specifier: ^4.0.0
+        version: 4.0.0
 
   packages/md-plugin-table:
     devDependencies:

@@ -1,0 +1,56 @@
+{
+  "name": "@md-plugins/md-plugin-steps",
+  "version": "0.1.0-rc.9",
+  "description": "A markdown-it plugin for rendering wizard-like numbered step blocks.",
+  "keywords": [
+    "markdown-it",
+    "quasarframework",
+    "steps",
+    "types",
+    "vue"
+  ],
+  "homepage": "https://github.com/md-plugins",
+  "bugs": {
+    "url": "https://github.com/md-plugins/md-plugins/issues"
+  },
+  "license": "MIT",
+  "author": "hawkeye64 <galbraith64@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/md-plugins/md-plugins.git"
+  },
+  "files": [
+    "./dist"
+  ],
+  "type": "module",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      }
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "unbuild",
+    "clean": "rm -rf dist/ node_modules/",
+    "test": "vitest",
+    "prepack": "pnpm build"
+  },
+  "devDependencies": {
+    "@md-plugins/shared": "workspace:*",
+    "@types/markdown-it": "^14.1.2",
+    "@types/markdown-it-container": "^4.0.0",
+    "markdown-it": "^14.2.0",
+    "markdown-it-container": "^4.0.0"
+  },
+  "peerDependencies": {
+    "markdown-it": "^14.2.0",
+    "markdown-it-container": "^4.0.0"
+  }
+}

@@ -35,6 +35,7 @@
   },
   "devDependencies": {
     "@md-plugins/md-plugin-headers": "workspace:*",
+    "@md-plugins/md-plugin-steps": "workspace:*",
     "@md-plugins/quasar-app-extension-q-press": "workspace:*",
     "@md-plugins/vite-examples-plugin": "workspace:*",
     "@md-plugins/vite-md-plugin": "workspace:*",

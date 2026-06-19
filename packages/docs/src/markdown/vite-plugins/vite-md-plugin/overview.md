@@ -44,6 +44,7 @@ The `viteMdPlugin` is built on top of the following plugins:
 | `@md-plugins/md-plugin-imports`     | Extracts and processes `<script import>` blocks from Markdown.          | [README](packages/md-plugin-imports/README.md)     | [Docs](/md-plugins/imports/overview)     |
 | `@md-plugins/md-plugin-link`        | Converts Markdown links into Vue components for SPA-friendly routing.   | [README](packages/md-plugin-link/README.md)        | [Docs](/md-plugins/link/overview)        |
 | `@md-plugins/md-plugin-mermaid`     | Renders Mermaid fenced code blocks as diagrams.                         | [README](packages/md-plugin-mermaid/README.md)     | [Docs](/md-plugins/mermaid/overview)     |
+| `@md-plugins/md-plugin-steps`       | Renders wizard-like numbered steps for tutorials and install flows.     | [README](packages/md-plugin-steps/README.md)       | [Docs](/md-plugins/steps/overview)       |
 | `@md-plugins/md-plugin-table`       | Adds custom classes and attributes to Markdown tables.                  | [README](packages/md-plugin-table/README.md)       | [Docs](/md-plugins/table/overview)       |
 | `@md-plugins/md-plugin-title`       | Extracts the first header in Markdown as the page title.                | [README](packages/md-plugin-title/README.md)       | [Docs](/md-plugins/title/overview)       |
 | `@md-plugins/md-plugin-frontmatter` | Extracts and processes frontmatter content from Markdown files.         | [README](packages/md-plugin-frontmatter/README.md) | [Docs](/md-plugins/frontmatter/overview) |

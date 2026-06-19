@@ -20,6 +20,7 @@ A collection of Markdown-it plugins, Vite plugins, and Quasar app extensions for
 ![@md-plugins/md-plugin-inlinecode](https://img.shields.io/npm/v/@md-plugins/md-plugin-inlinecode?label=@md-plugins/md-plugin-inlinecode)
 ![@md-plugins/md-plugin-link](https://img.shields.io/npm/v/@md-plugins/md-plugin-link?label=@md-plugins/md-plugin-link)
 ![@md-plugins/md-plugin-mermaid](https://img.shields.io/npm/v/@md-plugins/md-plugin-mermaid?label=@md-plugins/md-plugin-mermaid)
+![@md-plugins/md-plugin-steps](https://img.shields.io/npm/v/@md-plugins/md-plugin-steps?label=@md-plugins/md-plugin-steps)
 ![@md-plugins/md-plugin-table](https://img.shields.io/npm/v/@md-plugins/md-plugin-table?label=@md-plugins/md-plugin-table)
 ![@md-plugins/md-plugin-title](https://img.shields.io/npm/v/@md-plugins/md-plugin-title?label=@md-plugins/md-plugin-title)
 ![@md-plugins/shared](https://img.shields.io/npm/v/@md-plugins/shared?label=@md-plugins/shared)
@@ -128,6 +129,7 @@ This is a pnpm workspace mono-repo. You cannot use npm for building.
 | `@md-plugins/md-plugin-inlinecode`                | Adds a custom class to inline code blocks for styling.                                                               | [README](packages/md-plugin-inlinecode/README.md)  |
 | `@md-plugins/md-plugin-link`                      | Converts Markdown links into Vue components for SPA-friendly routing.                                                | [README](packages/md-plugin-link/README.md)        |
 | `@md-plugins/md-plugin-mermaid`                   | Renders Mermaid fenced code blocks as diagrams.                                                                      | [README](packages/md-plugin-mermaid/README.md)     |
+| `@md-plugins/md-plugin-steps`                     | Renders wizard-like numbered steps for tutorials, migrations, and install flows.                                     | [README](packages/md-plugin-steps/README.md)       |
 | `@md-plugins/md-plugin-table`                     | Adds custom classes and attributes to Markdown tables.                                                               | [README](packages/md-plugin-table/README.md)       |
 | `@md-plugins/md-plugin-title`                     | Extracts the first header in Markdown as the page title.                                                             | [README](packages/md-plugin-title/README.md)       |
 | `@md-plugins/md-plugin-frontmatter`               | Extracts and processes frontmatter content from Markdown files.                                                      | [README](packages/md-plugin-frontmatter/README.md) |

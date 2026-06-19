@@ -4,6 +4,7 @@
 import { defineConfig } from '#q-app'
 import type { Plugin } from 'vite'
 
+import { stepsPlugin } from '@md-plugins/md-plugin-steps'
 import { viteMdPlugin, type MenuItem } from '@md-plugins/vite-md-plugin'
 import { viteExamplesPlugin, viteManualChunks } from '@md-plugins/vite-examples-plugin'
 import { viteSearchPlugin } from '@md-plugins/vite-search-plugin'
@@ -114,6 +115,9 @@ export default defineConfig(async (ctx) => {
           {
             path: ctx.appPaths.srcDir + '/markdown',
             menu: sidebar as MenuItem[],
+            config: {
+              markdownItPlugins: [stepsPlugin],
+            },
           },
         ],
         viteExamplesPlugin({
