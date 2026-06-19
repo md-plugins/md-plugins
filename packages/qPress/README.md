@@ -4,7 +4,7 @@ Markdown documentation tooling for Quasar and Vite applications.
 
 See the [documentation](https://md-plugins.netlify.app/quasar-app-extensions/qpress/overview) for more information.
 
-> Current release candidate: `0.1.0-rc.8`.
+> Current release candidate: `0.1.0-rc.9`.
 >
 > Q-Press currently targets Quasar Vite projects using `@quasar/app-vite` `>=3.0.0-rc.3`. TypeScript processing is required.
 
@@ -18,6 +18,9 @@ See the [documentation](https://md-plugins.netlify.app/quasar-app-extensions/qpr
 - **siteConfig**
 - **CSS Themes**
 - **Automatic Routing**
+- **Static Search Indexes**
+- **Search UI**
+- **SSG Build Helpers**
 
 ## Installation
 
@@ -42,10 +45,10 @@ See the [documentation](https://md-plugins.netlify.app/quasar-app-extensions/qpr
 
 3. Q-Press adds its docs build helpers to your project devDependencies when invoked. If you are wiring the generated files manually, add them yourself:
 
-- `npm i -D mermaid shiki @md-plugins/vite-ssg-plugin @vue/server-renderer`
-- `yarn add -D mermaid shiki @md-plugins/vite-ssg-plugin @vue/server-renderer`
-- `pnpm add -D mermaid shiki @md-plugins/vite-ssg-plugin @vue/server-renderer`
-- `bun add -d mermaid shiki @md-plugins/vite-ssg-plugin @vue/server-renderer`
+- `npm i -D mermaid shiki @md-plugins/search-ui @md-plugins/vite-search-plugin @md-plugins/vite-ssg-plugin @vue/server-renderer`
+- `yarn add -D mermaid shiki @md-plugins/search-ui @md-plugins/vite-search-plugin @md-plugins/vite-ssg-plugin @vue/server-renderer`
+- `pnpm add -D mermaid shiki @md-plugins/search-ui @md-plugins/vite-search-plugin @md-plugins/vite-ssg-plugin @vue/server-renderer`
+- `bun add -d mermaid shiki @md-plugins/search-ui @md-plugins/vite-search-plugin @md-plugins/vite-ssg-plugin @vue/server-renderer`
 
 ## Development Notes
 
@@ -77,6 +80,7 @@ When changing generated Q-Press components, edit `packages/docs/src/.q-press` fi
 
 - ```ts
   import { viteMdPlugin, type MenuItem, type MarkdownOptions } from '@md-plugins/vite-md-plugin'
+  import { viteSearchPlugin } from '@md-plugins/vite-search-plugin'
 
   export default defineConfig(async (ctx) => {
     // Dynamically import siteConfig
@@ -94,8 +98,19 @@ When changing generated Q-Press components, edit `packages/docs/src/.q-press` fi
               // options: myOptions as MarkdownOptions
             },
           ],
+          viteSearchPlugin({
+            markdown: {
+              root: ctx.appPaths.srcDir + '/markdown',
+              // Optional: keep generated test pages, drafts, or private docs out of search.
+              exclude: [/\/__/],
+            },
+          }),
           // ...
   ```
+
+  The search plugin emits `search/search-index.json` during production builds. The generated
+  `MarkdownSearch.vue` wrapper uses `@md-plugins/search-ui` to provide the header search control
+  and route selected results through Vue Router.
 
 4. Modify your `src/routes/routes.ts`
 
