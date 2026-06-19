@@ -124,4 +124,6 @@ minimumReleaseAgeExclude:
   - vite-plugin-checker@0.14.4
   - hono@4.12.26
   - serialize-javascript@7.0.6
+  - '@types/node@26.0.0'
+  - semver@7.8.5
 trustLockfile: true

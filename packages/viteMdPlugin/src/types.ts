@@ -9,6 +9,7 @@ import type { ImagePluginOptions } from '@md-plugins/md-plugin-image'
 import type { InlineCodePluginOptions } from '@md-plugins/md-plugin-inlinecode'
 import type { LinkPluginOptions } from '@md-plugins/md-plugin-link'
 import type { MermaidPluginOptions } from '@md-plugins/md-plugin-mermaid'
+import type { StepsPluginOptions } from '@md-plugins/md-plugin-steps'
 import type { TablePluginOptions } from '@md-plugins/md-plugin-table'
 
 export type MarkdownItPlugin = (md: MarkdownIt, ...params: any[]) => void
@@ -27,6 +28,7 @@ export interface MarkdownOptions extends Options {
   inlineCodePlugin?: InlineCodePluginOptions
   linkPlugin?: LinkPluginOptions
   mermaidPlugin?: MermaidPluginOptions
+  stepsPlugin?: StepsPluginOptions
   tablePlugin?: TablePluginOptions
   markdownItPlugins?: MarkdownItPluginEntry[]
   preProcess?: (env: MarkdownItEnv) => void

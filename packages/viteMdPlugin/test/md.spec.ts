@@ -25,6 +25,29 @@ describe('createMarkdownRenderer', () => {
     expect(result.html).toContain('<br>')
   })
 
+  it('renders built-in steps containers', () => {
+    const renderer = createMarkdownRenderer()
+    const result = renderer.render(
+      `::: steps
+
+## Install the package
+
+Add the package.
+
+## Register the plugin
+
+Use the default Q-Press markdown stack.
+:::`,
+      {},
+    )
+
+    expect(result.html).toContain('<div class="markdown-steps" role="list">')
+    expect(result.html).toContain('<div class="markdown-step__marker" aria-hidden="true">1</div>')
+    expect(result.html).toContain('<h3 class="markdown-step__title">Install the package</h3>')
+    expect(result.html).toContain('Use the default Q-Press markdown stack.')
+    expect(result.html).not.toContain('<p>::: steps</p>')
+  })
+
   it('registers user supplied MarkdownIt plugins', () => {
     const renderer = createMarkdownRenderer({
       markdownItPlugins: [

@@ -12,6 +12,7 @@ import { imagePlugin } from '@md-plugins/md-plugin-image'
 import { codeblocksPlugin } from '@md-plugins/md-plugin-codeblocks'
 import { blockquotePlugin } from '@md-plugins/md-plugin-blockquote'
 import { mermaidPlugin } from '@md-plugins/md-plugin-mermaid'
+import { stepsPlugin } from '@md-plugins/md-plugin-steps'
 import { tablePlugin } from '@md-plugins/md-plugin-table'
 import { titlePlugin } from '@md-plugins/md-plugin-title'
 import type {
@@ -144,6 +145,7 @@ export function createMarkdownRenderer(options: MarkdownOptions = {}): MarkdownR
   ]
 
   md.use(containersPlugin, containers, createContainer, md)
+  md.use(stepsPlugin, { ...options.stepsPlugin })
   md.use(blockquotePlugin, { blockquoteClass: 'markdown-note', ...options })
   md.use(tablePlugin, {
     tableClass: 'markdown-table',

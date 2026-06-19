@@ -213,11 +213,11 @@ ul {
   grid-template-columns: 36px minmax(0, 1fr);
   gap: 16px;
   padding: 18px;
-  color: var(--qpress-text-primary);
-  background: var(--qpress-surface-panel);
-  border: 1px solid var(--qpress-border-strong);
+  color: $steps-text;
+  background: $steps-bg;
+  border: 1px solid $steps-border-color;
   border-radius: $generic-border-radius;
-  box-shadow: $shadow--small;
+  box-shadow: $steps-shadow;
 }
 
 .markdown-step__marker {
@@ -225,8 +225,8 @@ ul {
   place-items: center;
   width: 36px;
   height: 36px;
-  color: $brand-light;
-  background: $brand-primary;
+  color: $steps-marker-color;
+  background: $steps-marker-bg;
   border-radius: 999px;
   font-weight: 700;
   line-height: 1;
@@ -242,7 +242,7 @@ ul {
 
 .markdown-step__title {
   margin: 0 0 10px;
-  color: var(--qpress-text-primary);
+  color: $steps-title-color;
   font-size: 1.15em;
   font-weight: 700;
   line-height: 1.25;
@@ -830,6 +830,22 @@ body.body--dark {
       border-color: $negative;
       background-color: color.scale($negative, $lightness: -80%);
     }
+  }
+
+  .markdown-step {
+    color: $steps-text-dark;
+    background: $steps-bg-dark;
+    border-color: $steps-border-color-dark;
+    box-shadow: $steps-shadow-dark;
+  }
+
+  .markdown-step__marker {
+    color: $steps-marker-color-dark;
+    background: $steps-marker-bg-dark;
+  }
+
+  .markdown-step__title {
+    color: $steps-title-color-dark;
   }
 
   .markdown-h2 {

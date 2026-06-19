@@ -20,6 +20,7 @@ import { ImagePluginOptions } from '@md-plugins/md-plugin-image'
 import { InlineCodePluginOptions } from '@md-plugins/md-plugin-inlinecode'
 import { LinkPluginOptions } from '@md-plugins/md-plugin-link'
 import { MermaidPluginOptions } from '@md-plugins/md-plugin-mermaid'
+import { StepsPluginOptions } from '@md-plugins/md-plugin-steps'
 import { TablePluginOptions } from '@md-plugins/md-plugin-table'
 
 type MarkdownItPlugin = (md: MarkdownIt, ...params: any[]) => void
@@ -38,6 +39,7 @@ interface MarkdownOptions extends Options {
   inlineCodePlugin?: InlineCodePluginOptions
   linkPlugin?: LinkPluginOptions
   mermaidPlugin?: MermaidPluginOptions
+  stepsPlugin?: StepsPluginOptions
   tablePlugin?: TablePluginOptions
   markdownItPlugins?: MarkdownItPluginEntry[]
 }
@@ -136,7 +138,7 @@ export default defineConfig({
 
 ### Using Other Markdown-It Plugins
 
-The `viteMdPlugin` already includes the md-plugins used by Q-Press, plus inserted text support for `++text++`. If you need additional Markdown-it syntax, install the plugin and pass it through `config.markdownItPlugins`.
+The `viteMdPlugin` already includes the md-plugins used by Q-Press, including `::: steps` support, plus inserted text support for `++text++`. If you need additional Markdown-it syntax, install the plugin and pass it through `config.markdownItPlugins`.
 
 ```tabs
 <<| bash pnpm |>>
@@ -271,7 +273,7 @@ export interface MenuItem {
 - **Type**: `MarkdownOptions`
 - **Description**: Additional configuration options for the Markdown processor and bundled md-plugins.
 
-Use `config.markdownItPlugins` for extra Markdown-it syntax that md-plugins does not bundle by default. Use `config.mermaidPlugin` to customize Mermaid rendering.
+Use `config.markdownItPlugins` for extra Markdown-it syntax that md-plugins does not bundle by default. Use `config.mermaidPlugin` to customize Mermaid rendering and `config.stepsPlugin` to customize numbered step blocks.
 
 ```ts
 import { viteMdPlugin } from '@md-plugins/vite-md-plugin'
@@ -285,6 +287,10 @@ viteMdPlugin({
     mermaidPlugin: {
       renderMode: 'component',
       componentName: 'MarkdownMermaid',
+    },
+    stepsPlugin: {
+      titleTag: 'h3',
+      enableAlternateMarker: true,
     },
   },
 })
