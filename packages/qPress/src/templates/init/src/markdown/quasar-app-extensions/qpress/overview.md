@@ -148,7 +148,7 @@ Import Q-Press styles:
 ### Modify `quasar.config.ts`
 
 ```ts [maxheight=400px]
-import { defineConfig } from '@quasar/app-vite'
+import { defineConfig } from '#q-app'
 import type { Plugin } from 'vite'
 import { viteMdPlugin, type MenuItem, type MarkdownOptions } from '@md-plugins/vite-md-plugin'
 

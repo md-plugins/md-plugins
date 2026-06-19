@@ -1,7 +1,7 @@
 // Configuration for your app
 // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file
 
-import { defineConfig } from '@quasar/app-vite'
+import { defineConfig } from '#q-app'
 import type { Plugin } from 'vite'
 
 import { viteMdPlugin, type MenuItem } from '@md-plugins/vite-md-plugin'

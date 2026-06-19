@@ -41,7 +41,7 @@ These settings solve three common problems:
 The app extension does not generate your docs shell or menu for you. You still install and configure `@md-plugins/vite-md-plugin` in `quasar.config.ts`.
 
 ```ts
-import { defineConfig } from '#q-app/wrappers'
+import { defineConfig } from '#q-app'
 import type { Plugin } from 'vite'
 
 import { viteMdPlugin, type MenuItem } from '@md-plugins/vite-md-plugin'

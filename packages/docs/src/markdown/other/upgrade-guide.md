@@ -26,7 +26,7 @@ The core Markdown-it plugins and direct Vite plugins are not Quasar-only. You ca
 - For Q-Press or the Quasar app extensions, make sure your app is already on a Quasar Vite setup.
 - For Q-Press or the Quasar app extensions, upgrade the app to `@quasar/app-vite` `>=3.0.0-rc.2`.
 - Use TypeScript in the consuming Quasar project when using the Quasar app extensions.
-- Import `defineConfig` in `quasar.config.ts` directly from `@quasar/app-vite`.
+- Import `defineConfig` in `quasar.config.ts` from the generated `#q-app` alias.
 - Use `/// <reference types="@quasar/app-vite/client" />` in `src/env.d.ts`.
 - Commit or stash local changes before invoking Q-Press, because the update flow can overwrite files in `src/.q-press`.
 
