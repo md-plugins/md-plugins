@@ -120,7 +120,7 @@ The following classes are in SCSS format.
   &:not(.markdown-note--tip, .markdown-note--warning, .markdown-note--danger) {
     color: $brand-light-text;
     background-color: $brand-light-bg;
-    border-color: $separator-color;
+    border-color: $brand-border-color-light;
     // .markdown-note__title,
     .markdown-link,
     .markdown-token {

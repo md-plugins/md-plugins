@@ -8,7 +8,7 @@ The Mermaid plugin turns `mermaid` and `mmd` fenced code blocks into diagrams. I
 ## Example
 
 ```mermaid
-flowchart LR
+flowchart TD
   Markdown[Markdown file] --> Plugin[md-plugin-mermaid]
   Plugin --> Component[MarkdownMermaid]
   Component --> Diagram[Rendered diagram]
@@ -18,7 +18,7 @@ flowchart LR
 
 ````markdown
 ```mermaid
-flowchart LR
+flowchart TD
   Markdown[Markdown file] --> Plugin[md-plugin-mermaid]
   Plugin --> Component[MarkdownMermaid]
   Component --> Diagram[Rendered diagram]
@@ -69,5 +69,5 @@ md.use(mermaidPlugin, {
 That renders Mermaid-compatible HTML:
 
 ```html
-<pre class="mermaid"><code>flowchart LR...</code></pre>
+<pre class="mermaid"><code>flowchart TD...</code></pre>
 ```
