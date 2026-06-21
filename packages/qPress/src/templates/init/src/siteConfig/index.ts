@@ -1,6 +1,13 @@
 import { fabGithub, fabXTwitter } from '@quasar/extras/fontawesome-v7'
 import { version, productName } from '../../package.json'
 import { slugify } from '../.q-press/components/markdown-utils'
+import type { AnnouncementBannerConfig, PrivacyConsentConfig } from '../.q-press/types/config'
+export type {
+  AnnouncementActionConfig,
+  AnnouncementBannerConfig,
+  PrivacyConsentCategoryConfig,
+  PrivacyConsentConfig,
+} from '../.q-press/types/config'
 
 export interface SocialLink {
   name: string
@@ -99,6 +106,8 @@ export interface SiteConfig {
   codepen?: CodepenConfig
   license: LicenseConfig
   privacy: PrivacyConfig
+  announcement?: AnnouncementBannerConfig
+  privacyConsent?: PrivacyConsentConfig
   logoConfig: LogoConfig
   versionConfig: versionConfig
   config: UIConfig
@@ -472,6 +481,28 @@ const config = {
     label: 'Privacy Policy',
     link: '/privacy-policy',
   } as PrivacyConfig,
+  announcement: {
+    enabled: false,
+    id: 'md-plugins-release-announcement-v1',
+    message: 'Q-Press now supports configurable announcements.',
+    tone: 'info',
+    dismissible: true,
+  } as AnnouncementBannerConfig,
+  privacyConsent: {
+    enabled: false,
+    id: 'md-plugins-privacy-consent-v1',
+    mode: 'consent',
+    title: 'Privacy preferences',
+    message:
+      'Choose whether this documentation site can enable optional analytics or third-party embeds.',
+    policyLink: '/privacy-policy',
+    expirationDays: 180,
+    categories: [
+      { id: 'necessary', label: 'Necessary', required: true },
+      { id: 'analytics', label: 'Analytics' },
+      { id: 'embeds', label: 'Third-party embeds' },
+    ],
+  } as PrivacyConsentConfig,
   logoConfig: {
     showLogo: true,
     logoLight:

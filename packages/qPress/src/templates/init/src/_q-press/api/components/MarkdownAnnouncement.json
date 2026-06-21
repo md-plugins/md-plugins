@@ -1,0 +1,19 @@
+{
+  "type": "component",
+  "meta": {
+    "docsUrl": "https://path-to-your-docs/markdown-announcement"
+  },
+  "props": {
+    "config": {
+      "type": "AnnouncementBannerConfig",
+      "desc": "Site announcement settings from siteConfig.announcement. The banner is shown only when enabled is true, the optional startAt/endAt window is active, and the current id has not been dismissed.",
+      "category": "content"
+    }
+  },
+  "methods": {
+    "dismiss": {
+      "desc": "Dismisses the current announcement id and stores the dismissal in localStorage.",
+      "returns": null
+    }
+  }
+}

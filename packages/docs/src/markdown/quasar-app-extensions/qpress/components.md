@@ -5,15 +5,17 @@ desc: Components for the Q-Press App Extension for Quasar.
 
 Q-Press ships components for the generated docs shell and for Markdown-authored content. Most projects do not need to import the shell components directly, but content authors will use a small set of Markdown components regularly.
 
-| Component           | Typical use                                                          |
-| ------------------- | -------------------------------------------------------------------- |
-| `MarkdownPage`      | Wrap custom page layouts that still need Q-Press page behavior.      |
-| `MarkdownExample`   | Render a live Vue example from `src/examples`.                       |
-| `MarkdownApi`       | Render Quasar-style component API JSON.                              |
-| `MarkdownCardTitle` | Add card-style section headers inside Markdown pages.                |
-| `MarkdownCardLink`  | Add compact link cards for related docs or external resources.       |
-| `MarkdownCodepen`   | Open examples in CodePen with the site's configured dependencies.    |
-| `MarkdownPrerender` | Control content that should behave differently during SSG prerender. |
+| Component                | Typical use                                                          |
+| ------------------------ | -------------------------------------------------------------------- |
+| `MarkdownAnnouncement`   | Render a site-wide dismissible announcement from Site Config.        |
+| `MarkdownPage`           | Wrap custom page layouts that still need Q-Press page behavior.      |
+| `MarkdownExample`        | Render a live Vue example from `src/examples`.                       |
+| `MarkdownApi`            | Render Quasar-style component API JSON.                              |
+| `MarkdownCardTitle`      | Add card-style section headers inside Markdown pages.                |
+| `MarkdownCardLink`       | Add compact link cards for related docs or external resources.       |
+| `MarkdownCodepen`        | Open examples in CodePen with the site's configured dependencies.    |
+| `MarkdownPrerender`      | Control content that should behave differently during SSG prerender. |
+| `MarkdownPrivacyConsent` | Render a static-host-friendly privacy notice or consent prompt.      |
 
 The remaining components are primarily used by the generated layout, header, drawer, table-of-contents, and code rendering system. They are documented here for advanced customization and debugging.
 
@@ -21,6 +23,7 @@ The remaining components are primarily used by the generated layout, header, dra
 
 <script import>
 import DarkModeToggleApi from '@/.q-press/api/components/DarkModeToggle.json'
+import MarkdownAnnouncementApi from '@/.q-press/api/components/MarkdownAnnouncement.json'
 import MarkdownApiApi from '@/.q-press/api/components/MarkdownApi.json'
 import MarkdownCardLinkApi from '@/.q-press/api/components/MarkdownCardLink.json'
 import MarkdownCardTitleApi from '@/.q-press/api/components/MarkdownCardTitle.json'
@@ -45,10 +48,12 @@ import MarkdownPageTocApi from '@/.q-press/api/components/MarkdownPageToc.json'
 
 import MarkdownTreeApi from '@/.q-press/api/components/MarkdownTree.json'
 import MarkdownPrerenderApi from '@/.q-press/api/components/MarkdownPrerender.json'
+import MarkdownPrivacyConsentApi from '@/.q-press/api/components/MarkdownPrivacyConsent.json'
 
 </script>
 
 <MarkdownApi :api="DarkModeToggleApi" name="DarkModeToggle"/>
+<MarkdownApi :api="MarkdownAnnouncementApi" name="MarkdownAnnouncement"/>
 <MarkdownApi :api="MarkdownApiApi" name="MarkdownApi"/>
 <MarkdownApi :api="MarkdownCardLinkApi" name="MarkdownCardLink"/>
 <MarkdownApi :api="MarkdownCardTitleApi" name="MarkdownCardTitle"/>
@@ -72,4 +77,5 @@ import MarkdownPrerenderApi from '@/.q-press/api/components/MarkdownPrerender.js
 <!-- No <MarkdownApi :api="MarkdownPageTocApi" name="MarkdownPageToc"/> -->
 
 <MarkdownApi :api="MarkdownPrerenderApi" name="MarkdownPrerender"/>
+<MarkdownApi :api="MarkdownPrivacyConsentApi" name="MarkdownPrivacyConsent"/>
 <MarkdownApi :api="MarkdownTreeApi" name="MarkdownTree"/>

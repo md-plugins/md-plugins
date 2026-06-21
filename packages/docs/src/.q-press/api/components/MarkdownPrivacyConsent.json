@@ -1,0 +1,34 @@
+{
+  "type": "component",
+  "meta": {
+    "docsUrl": "https://path-to-your-docs/markdown-privacy-consent"
+  },
+  "props": {
+    "config": {
+      "type": "PrivacyConsentConfig",
+      "desc": "Privacy notice or consent settings from siteConfig.privacyConsent. The component stores the visitor choice and emits qpress:privacy-consent for optional script or embed gating.",
+      "category": "content"
+    }
+  },
+  "events": {
+    "qpress:privacy-consent": {
+      "desc": "Browser CustomEvent dispatched on window after a saved privacy choice is read or written.",
+      "params": {
+        "detail": {
+          "type": "StoredPrivacyConsent",
+          "desc": "Stored consent id, accepted flag, category choices, savedAt, and optional expiresAt values."
+        }
+      }
+    }
+  },
+  "methods": {
+    "savePrimaryChoice": {
+      "desc": "Stores the acknowledgement or accept-all choice.",
+      "returns": null
+    },
+    "rejectOptional": {
+      "desc": "Stores required categories only and rejects optional categories.",
+      "returns": null
+    }
+  }
+}

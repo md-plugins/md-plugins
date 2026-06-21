@@ -20,6 +20,8 @@ Think of `src/siteConfig/index.ts` as the public contract for your docs shell. I
 | `githubEditRootSrc` and `githubSourceRootSrc`      | Source locations used by edit, source, and example links.                                          |
 | `codepen`                                          | External CSS, scripts, setup code, and package globals used when examples open in CodePen.         |
 | `license`, `privacy`, `copyright`                  | Footer legal links and ownership text.                                                             |
+| `announcement`                                     | Optional dismissible top-of-page docs announcement.                                                |
+| `privacyConsent`                                   | Optional privacy notice or consent prompt for static-hosted docs.                                  |
 
 ## Recommended Editing Flow
 
@@ -202,6 +204,66 @@ const links = {
 | More menu | `links.moreLinks`                                                           | Header items that should collapse at smaller widths.               |
 | Sidebar   | `sidebar`                                                                   | Full documentation outline and nested sections.                    |
 | Footer    | `links.footerLinks`, `links.socialLinks`, `license`, `privacy`, `copyright` | Sponsor links, external references, legal links, and social links. |
+
+## Announcements
+
+Use `announcement` for calm site-wide notices such as releases, maintenance windows, upgrade warnings, or sponsor messages. Announcements are intentionally separate from privacy consent and marketing popups.
+
+```ts [twoslash]
+const announcement = {
+  enabled: true,
+  id: 'qpress-2026-06-release',
+  message: 'Q-Press 0.1.0 includes improved SSG and themed docs components.',
+  tone: 'info',
+  startAt: '2026-06-01T00:00:00Z',
+  endAt: '2026-06-30T23:59:59Z',
+  dismissible: true,
+  action: {
+    label: 'Read release notes',
+    link: '/other/releases',
+  },
+}
+```
+
+`id` is the versioned dismissal key. When a visitor dismisses the banner, Q-Press stores that id in `localStorage`. Change the id when you want dismissed visitors to see a new announcement. Use `startAt` and `endAt` when a normal docs announcement should only be visible during a planned window.
+
+## Privacy Consent
+
+Use `privacyConsent` only for privacy notices or consent prompts. This is separate from announcements because privacy consent can require accept, reject, customize, category-level preferences, policy links, expiration, and optional script or embed gating.
+
+```ts [twoslash]
+const privacyConsent = {
+  enabled: true,
+  id: 'privacy-consent-v1',
+  mode: 'consent',
+  title: 'Privacy preferences',
+  message:
+    'Choose whether this documentation site can enable optional analytics or third-party embeds.',
+  policyLink: '/privacy-policy',
+  expirationDays: 180,
+  categories: [
+    { id: 'necessary', label: 'Necessary', required: true },
+    { id: 'analytics', label: 'Analytics' },
+    { id: 'embeds', label: 'Third-party embeds' },
+  ],
+}
+```
+
+`expirationDays` starts when the visitor saves their choice. Q-Press stores both `savedAt` and a computed `expiresAt`, then asks again after the saved choice expires.
+
+When a consent choice is read or saved, Q-Press dispatches a `qpress:privacy-consent` event on `window`. Site owners can listen for this event before loading optional analytics, marketing pixels, or third-party embeds:
+
+```ts
+window.addEventListener('qpress:privacy-consent', (event) => {
+  const consent = event.detail
+
+  if (consent.categories.analytics === true) {
+    // Load optional analytics here.
+  }
+})
+```
+
+Q-Press keeps this feature static-host friendly, but it cannot provide legal advice. Site owners remain responsible for local privacy, cookie, and consent requirements.
 
 ## CodePen Links
 
