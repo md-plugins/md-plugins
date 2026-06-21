@@ -77,6 +77,9 @@ or `qpress.config.mjs`:
 }
 ```
 
+Unknown config keys and invalid value types fail fast so typos do not silently change
+release checks.
+
 Use `qpress ssg` to prerender Q-Press routes into static HTML. The older `qpress-ssg`
 command remains available as a backwards-compatible alias, but new scripts should prefer
 `qpress ssg` so all Q-Press tooling is grouped under one command.

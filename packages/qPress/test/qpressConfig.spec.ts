@@ -82,4 +82,87 @@ describe('qpress config', () => {
       await rm(root, { force: true, recursive: true })
     }
   })
+
+  it('rejects unknown top-level config keys', async () => {
+    const root = await createProject()
+
+    try {
+      await writeFile(
+        join(root, 'qpress.config.json'),
+        JSON.stringify({
+          checks: {},
+        }),
+      )
+
+      await expect(loadQPressCliConfig({ cwd: root })).rejects.toThrow(
+        'Unknown Q-Press config key "config.checks"',
+      )
+    } finally {
+      await rm(root, { force: true, recursive: true })
+    }
+  })
+
+  it('rejects unknown check config keys', async () => {
+    const root = await createProject()
+
+    try {
+      await writeFile(
+        join(root, 'qpress.config.json'),
+        JSON.stringify({
+          check: {
+            allowRoute: ['/theme-builder'],
+          },
+        }),
+      )
+
+      await expect(loadQPressCliConfig({ cwd: root })).rejects.toThrow(
+        'Unknown Q-Press config key "check.allowRoute"',
+      )
+    } finally {
+      await rm(root, { force: true, recursive: true })
+    }
+  })
+
+  it('rejects invalid check config value types', async () => {
+    const root = await createProject()
+
+    try {
+      await writeFile(
+        join(root, 'qpress.config.json'),
+        JSON.stringify({
+          check: {
+            allowedRoutes: '/theme-builder',
+            checkUnreachable: 'true',
+          },
+        }),
+      )
+
+      await expect(loadQPressCliConfig({ cwd: root })).rejects.toThrow(
+        'Q-Press config "check.allowedRoutes" must be an array of strings',
+      )
+    } finally {
+      await rm(root, { force: true, recursive: true })
+    }
+  })
+
+  it('rejects string values for boolean check config options', async () => {
+    const root = await createProject()
+
+    try {
+      await writeFile(
+        join(root, 'qpress.config.json'),
+        JSON.stringify({
+          check: {
+            checkUnreachable: 'true',
+          },
+        }),
+      )
+
+      await expect(loadQPressCliConfig({ cwd: root })).rejects.toThrow(
+        'Q-Press config "check.checkUnreachable" must be a boolean',
+      )
+    } finally {
+      await rm(root, { force: true, recursive: true })
+    }
+  })
 })

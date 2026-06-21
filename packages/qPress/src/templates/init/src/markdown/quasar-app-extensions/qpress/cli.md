@@ -107,6 +107,8 @@ Put check options under the `check` key:
 
 CLI flags override config values. Repeated list options such as `allowedRoutes` and `ignoreFiles` merge with the config values.
 
+Unknown config keys and invalid value types fail fast with a clear error. For example, `allowedRoutes` must be an array of strings and `checkUnreachable` must be a boolean.
+
 Use an explicit config file when needed:
 
 ```bash
