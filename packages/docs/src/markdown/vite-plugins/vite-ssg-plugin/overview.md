@@ -196,11 +196,11 @@ pnpm prerender:ssg
 pnpm preview:ssg
 ```
 
-`build:ssg` runs the normal SPA build and then lets `qpress-ssg` render static HTML from the generated Q-Press SSG app factory. This uses Vue's renderer at build time only and does not require Quasar SSR mode. Projects that already use Quasar SSR can opt into `qpress-ssg --renderer quasar-ssr`.
+`build:ssg` runs the normal SPA build and then lets `qpress ssg` render static HTML from the generated Q-Press SSG app factory. This uses Vue's renderer at build time only and does not require Quasar SSR mode. Projects that already use Quasar SSR can opt into `qpress ssg --renderer quasar-ssr`.
 
 Projects that need more control can import `createQPressSsgApp` from `src/.q-press/ssg/create-app` and pass it to `prerenderVueSsgRoutes()` directly.
 
-The default Q-Press output remains `dist/spa`, but both `qpress-ssg --out-dir` and the lower-level
+The default Q-Press output remains `dist/spa`, but both `qpress ssg --out-dir` and the lower-level
 helpers accept a custom output directory. That keeps this plugin useful for future Quasar SSG work
 and for non-Q-Press md-plugins sites.
 

@@ -11,6 +11,12 @@
     "skipLibCheck": true,
     "target": "esnext"
   },
-  "include": ["./src/index.ts", "./src/install.ts", "./src/bin/**/*.ts", "./src/ssg/**/*.ts"],
+  "include": [
+    "./src/index.ts",
+    "./src/install.ts",
+    "./src/bin/**/*.ts",
+    "./src/check/**/*.ts",
+    "./src/ssg/**/*.ts"
+  ],
   "exclude": ["./node_modules"]
 }

@@ -21,6 +21,7 @@ See the [documentation](https://md-plugins.netlify.app/quasar-app-extensions/qpr
 - **Static Search Indexes**
 - **Search UI**
 - **SSG Build Helpers**
+- **Q-Press CLI**
 
 ## Installation
 
@@ -49,6 +50,22 @@ See the [documentation](https://md-plugins.netlify.app/quasar-app-extensions/qpr
 - `yarn add -D mermaid shiki @md-plugins/search-ui @md-plugins/vite-search-plugin @md-plugins/vite-ssg-plugin @vue/server-renderer`
 - `pnpm add -D mermaid shiki @md-plugins/search-ui @md-plugins/vite-search-plugin @md-plugins/vite-ssg-plugin @vue/server-renderer`
 - `bun add -d mermaid shiki @md-plugins/search-ui @md-plugins/vite-search-plugin @md-plugins/vite-ssg-plugin @vue/server-renderer`
+
+## Q-Press CLI
+
+Q-Press exposes one primary CLI command with focused subcommands:
+
+```bash
+qpress check
+qpress ssg
+```
+
+Use `qpress check` before release or CI builds to validate Markdown routes, internal links,
+`MarkdownExample` files, Q-Press API JSON, and common SSG-unsafe example patterns.
+
+Use `qpress ssg` to prerender Q-Press routes into static HTML. The older `qpress-ssg`
+command remains available as a backwards-compatible alias, but new scripts should prefer
+`qpress ssg` so all Q-Press tooling is grouped under one command.
 
 ## Development Notes
 

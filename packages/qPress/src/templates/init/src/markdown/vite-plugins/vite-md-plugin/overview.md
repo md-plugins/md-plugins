@@ -35,21 +35,21 @@ flowchart TD
 
 The `viteMdPlugin` is built on top of the following plugins:
 
-| Plugin                              | Description                                                             | Readme                                             | Docs                                     |
-| ----------------------------------- | ----------------------------------------------------------------------- | -------------------------------------------------- | ---------------------------------------- |
-| `@md-plugins/md-plugin-codeblocks`  | Enhances code block rendering with syntax highlighting, tabs, and more. | [README](packages/md-plugin-codeblocks/README.md)  | [Docs](/md-plugins/codeblocks/overview)  |
-| `@md-plugins/md-plugin-blockquote`  | Adds customizable CSS classes to blockquotes.                           | [README](packages/md-plugin-blockquote/README.md)  | [Docs](/md-plugins/blockquote/overview)  |
-| `@md-plugins/md-plugin-headers`     | Extracts and processes headers for generating ToCs or managing headers. | [README](packages/md-plugin-headers/README.md)     | [Docs](/md-plugins/headers/overview)     |
-| `@md-plugins/md-plugin-inlinecode`  | Adds a custom class to inline code blocks for styling.                  | [README](packages/md-plugin-inlinecode/README.md)  | [Docs](/md-plugins/inline-code/overview) |
-| `@md-plugins/md-plugin-imports`     | Extracts and processes `<script import>` blocks from Markdown.          | [README](packages/md-plugin-imports/README.md)     | [Docs](/md-plugins/imports/overview)     |
-| `@md-plugins/md-plugin-link`        | Converts Markdown links into Vue components for SPA-friendly routing.   | [README](packages/md-plugin-link/README.md)        | [Docs](/md-plugins/link/overview)        |
-| `@md-plugins/md-plugin-mermaid`     | Renders Mermaid fenced code blocks as diagrams.                         | [README](packages/md-plugin-mermaid/README.md)     | [Docs](/md-plugins/mermaid/overview)     |
-| `@md-plugins/md-plugin-steps`       | Renders wizard-like numbered steps for tutorials and install flows.     | [README](packages/md-plugin-steps/README.md)       | [Docs](/md-plugins/steps/overview)       |
-| `@md-plugins/md-plugin-table`       | Adds custom classes and attributes to Markdown tables.                  | [README](packages/md-plugin-table/README.md)       | [Docs](/md-plugins/table/overview)       |
-| `@md-plugins/md-plugin-title`       | Extracts the first header in Markdown as the page title.                | [README](packages/md-plugin-title/README.md)       | [Docs](/md-plugins/title/overview)       |
-| `@md-plugins/md-plugin-frontmatter` | Extracts and processes frontmatter content from Markdown files.         | [README](packages/md-plugin-frontmatter/README.md) | [Docs](/md-plugins/frontmatter/overview) |
-| `@md-plugins/md-plugin-containers`  | Adds custom containers for callouts, warnings, and more.                | [README](packages/md-plugin-containers/README.md)  | [Docs](/md-plugins/containers/overview)  |
-| `@md-plugins/shared`                | Internal shared utilities and types used by the bundled plugins.        | [README](packages/shared/README.md)                | [Docs](/md-plugins/shared/overview)      |
+| Plugin                              | Description                                                             | Readme                                                                                     | Docs                                     |
+| ----------------------------------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ | ---------------------------------------- |
+| `@md-plugins/md-plugin-codeblocks`  | Enhances code block rendering with syntax highlighting, tabs, and more. | [README](https://github.com/md-plugins/md-plugins/tree/dev/packages/md-plugin-codeblocks)  | [Docs](/md-plugins/codeblocks/overview)  |
+| `@md-plugins/md-plugin-blockquote`  | Adds customizable CSS classes to blockquotes.                           | [README](https://github.com/md-plugins/md-plugins/tree/dev/packages/md-plugin-blockquote)  | [Docs](/md-plugins/blockquote/overview)  |
+| `@md-plugins/md-plugin-headers`     | Extracts and processes headers for generating ToCs or managing headers. | [README](https://github.com/md-plugins/md-plugins/tree/dev/packages/md-plugin-headers)     | [Docs](/md-plugins/headers/overview)     |
+| `@md-plugins/md-plugin-inlinecode`  | Adds a custom class to inline code blocks for styling.                  | [README](https://github.com/md-plugins/md-plugins/tree/dev/packages/md-plugin-inlinecode)  | [Docs](/md-plugins/inline-code/overview) |
+| `@md-plugins/md-plugin-imports`     | Extracts and processes `<script import>` blocks from Markdown.          | [README](https://github.com/md-plugins/md-plugins/tree/dev/packages/md-plugin-imports)     | [Docs](/md-plugins/imports/overview)     |
+| `@md-plugins/md-plugin-link`        | Converts Markdown links into Vue components for SPA-friendly routing.   | [README](https://github.com/md-plugins/md-plugins/tree/dev/packages/md-plugin-link)        | [Docs](/md-plugins/link/overview)        |
+| `@md-plugins/md-plugin-mermaid`     | Renders Mermaid fenced code blocks as diagrams.                         | [README](https://github.com/md-plugins/md-plugins/tree/dev/packages/md-plugin-mermaid)     | [Docs](/md-plugins/mermaid/overview)     |
+| `@md-plugins/md-plugin-steps`       | Renders wizard-like numbered steps for tutorials and install flows.     | [README](https://github.com/md-plugins/md-plugins/tree/dev/packages/md-plugin-steps)       | [Docs](/md-plugins/steps/overview)       |
+| `@md-plugins/md-plugin-table`       | Adds custom classes and attributes to Markdown tables.                  | [README](https://github.com/md-plugins/md-plugins/tree/dev/packages/md-plugin-table)       | [Docs](/md-plugins/table/overview)       |
+| `@md-plugins/md-plugin-title`       | Extracts the first header in Markdown as the page title.                | [README](https://github.com/md-plugins/md-plugins/tree/dev/packages/md-plugin-title)       | [Docs](/md-plugins/title/overview)       |
+| `@md-plugins/md-plugin-frontmatter` | Extracts and processes frontmatter content from Markdown files.         | [README](https://github.com/md-plugins/md-plugins/tree/dev/packages/md-plugin-frontmatter) | [Docs](/md-plugins/frontmatter/overview) |
+| `@md-plugins/md-plugin-containers`  | Adds custom containers for callouts, warnings, and more.                | [README](https://github.com/md-plugins/md-plugins/tree/dev/packages/md-plugin-containers)  | [Docs](/md-plugins/containers/overview)  |
+| `@md-plugins/shared`                | Internal shared utilities and types used by the bundled plugins.        | [README](https://github.com/md-plugins/md-plugins/tree/dev/packages/shared)                | [Docs](/md-plugins/shared/overview)      |
 
 ## Installation
 

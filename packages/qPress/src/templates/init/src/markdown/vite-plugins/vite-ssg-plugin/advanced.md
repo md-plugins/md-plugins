@@ -374,7 +374,7 @@ For Q-Press, use the first-class command after building the SPA:
 pnpm build:ssg
 ```
 
-`qpress-ssg` reads `q-press-ssg-routes.json`, renders every route with the generated Q-Press SSG app factory, and writes the route HTML files back into the built SPA output directory. Use `pnpm prerender:ssg` when `dist/spa` already exists and only the static prerender pass needs to run again.
+`qpress ssg` reads `q-press-ssg-routes.json`, renders every route with the generated Q-Press SSG app factory, and writes the route HTML files back into the built SPA output directory. Use `pnpm prerender:ssg` when `dist/spa` already exists and only the static prerender pass needs to run again.
 
 The output directory is configurable. Q-Press defaults to `dist/spa` because that keeps existing
 Netlify/static-host workflows simple, but non-Q-Press sites can choose a different output folder.
@@ -383,13 +383,13 @@ Projects that already have a Quasar SSR bundle can opt into that renderer explic
 
 ```bash
 pnpm build:ssg:renderer
-qpress-ssg --renderer quasar-ssr --out-dir dist/spa --ssr-dir dist/ssr
+qpress ssg --renderer quasar-ssr --out-dir dist/spa --ssr-dir dist/ssr
 ```
 
 The Q-Press runner also exposes the generic route controls:
 
 ```bash
-qpress-ssg \
+qpress ssg \
   --out-dir dist/spa \
   --crawl-links \
   --exclude /drafts/private \
@@ -492,7 +492,7 @@ feeds it into `prerenderVueSsgRoutes()` while the workflow is still being proven
 
 That scratch harness should not be committed as finalized docs-site code. Commit the reusable
 plugin behavior, the documented options, the generated Q-Press app-factory template, and reusable
-runner behavior such as `qpress-ssg`; leave one-off local test wiring out unless it belongs in the
+runner behavior such as `qpress ssg`; leave one-off local test wiring out unless it belongs in the
 shared tooling.
 
 ## Current Gaps

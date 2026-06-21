@@ -88,7 +88,7 @@ pnpm --dir packages/docs preview:ssg
 By default, Q-Press writes static route files into the SPA output folder:
 
 ```bash
-qpress-ssg --out-dir dist/spa
+qpress ssg --out-dir dist/spa
 ```
 
 That default keeps Netlify and other static-host deployments simple because the app still publishes one folder.
@@ -96,7 +96,7 @@ That default keeps Netlify and other static-host deployments simple because the 
 The output folder is configurable. Q-Press does not require a `dist/ssg` convention:
 
 ```bash
-qpress-ssg --out-dir path/to/static-output
+qpress ssg --out-dir path/to/static-output
 ```
 
 This matters because Quasar may add first-party SSG later. Q-Press keeps its output configurable so projects can avoid conflicting with future Quasar conventions and so lower-level md-plugins users can choose their own static layout.
@@ -105,13 +105,15 @@ This matters because Quasar may add first-party SSG later. Q-Press keeps its out
 
 The default Q-Press renderer does not require Quasar SSR mode.
 
-The `qpress-ssg` command reads the SPA route manifest, loads the generated Q-Press app factory from `src/.q-press/ssg/create-app.ts`, renders each route at build time, and writes the prerendered HTML back into the configured output folder.
+The `qpress ssg` command reads the SPA route manifest, loads the generated Q-Press app factory from `src/.q-press/ssg/create-app.ts`, renders each route at build time, and writes the prerendered HTML back into the configured output folder.
 
 ```bash
-qpress-ssg --out-dir dist/spa
+qpress ssg --out-dir dist/spa
 ```
 
 That gives static-host deployment without running an SSR server in production.
+
+The older `qpress-ssg` binary remains available as a backwards-compatible alias, but new scripts should use `qpress ssg` so all Q-Press tooling is grouped under one CLI.
 
 ## Optional Quasar SSR Renderer
 
@@ -119,7 +121,7 @@ Projects that already have Quasar SSR mode enabled can reuse that renderer expli
 
 ```bash
 pnpm build:ssg:renderer
-qpress-ssg --renderer quasar-ssr --out-dir dist/spa --ssr-dir dist/ssr
+qpress ssg --renderer quasar-ssr --out-dir dist/spa --ssr-dir dist/ssr
 ```
 
 This is optional. It exists for users who already maintain SSR wiring and want the prerender step to reuse the SSR bundle.
@@ -133,13 +135,13 @@ The Q-Press runner also merges static routes from `src/router/routes.ts` by defa
 Use `--no-router-routes` when a project wants the prerender manifest to include only the routes emitted during the Vite build:
 
 ```bash
-qpress-ssg --no-router-routes
+qpress ssg --no-router-routes
 ```
 
 Use `--router-routes-entry` when the router routes live somewhere else:
 
 ```bash
-qpress-ssg --router-routes-entry src/router/routes.ts
+qpress ssg --router-routes-entry src/router/routes.ts
 ```
 
 ## Crawling Linked Routes
@@ -147,7 +149,7 @@ qpress-ssg --router-routes-entry src/router/routes.ts
 When docs pages link to routes that are not already in the manifest, `--crawl-links` can scan rendered internal links and enqueue those pages:
 
 ```bash
-qpress-ssg --crawl-links
+qpress ssg --crawl-links
 ```
 
 Link crawling is opt-in so builds stay deterministic. It only follows safe internal route links and ignores external URLs, hashes, mail links, telephone links, and asset-looking paths.
@@ -155,7 +157,7 @@ Link crawling is opt-in so builds stay deterministic. It only follows safe inter
 For larger docs sites, combine crawling with concurrency controls:
 
 ```bash
-qpress-ssg --crawl-links --concurrency 4 --interval 250
+qpress ssg --crawl-links --concurrency 4 --interval 250
 ```
 
 ## Excluding Routes
@@ -163,7 +165,7 @@ qpress-ssg --crawl-links --concurrency 4 --interval 250
 Use `--exclude` for private drafts, dev-only pages, search-only routes, or pages that intentionally remain SPA-only:
 
 ```bash
-qpress-ssg --exclude /drafts/private --exclude /internal/tools
+qpress ssg --exclude /drafts/private --exclude /internal/tools
 ```
 
 The lower-level `@md-plugins/vite-ssg-plugin` APIs also support string and `RegExp` exclusions when building custom SSG tooling.
@@ -175,7 +177,7 @@ By default, Q-Press follows renderer redirects and skips renderer 404s during pr
 Use stricter behavior when CI should fail instead:
 
 ```bash
-qpress-ssg --redirects error --not-found error
+qpress ssg --redirects error --not-found error
 ```
 
 Supported redirect modes are:
@@ -198,8 +200,8 @@ Supported 404 modes are:
 Each run writes `q-press-ssg-report.json` next to the manifest unless reports are disabled:
 
 ```bash
-qpress-ssg --report-file q-press-ssg-report.json
-qpress-ssg --no-report
+qpress ssg --report-file q-press-ssg-report.json
+qpress ssg --no-report
 ```
 
 The report lists generated routes, skipped routes, warnings, render timing, and route counts. It is meant for CI, Netlify deploy debugging, and release review.
@@ -268,7 +270,7 @@ await prerenderVueSsgRoutes({
 })
 ```
 
-The generated factory is intentionally reusable instead of being tied to a single script. Run it from build tooling that understands the docs app's TypeScript, Vue, and alias configuration when the built `qpress-ssg` command is not enough.
+The generated factory is intentionally reusable instead of being tied to a single script. Run it from build tooling that understands the docs app's TypeScript, Vue, and alias configuration when the built `qpress ssg` command is not enough.
 
 ## When To Use The Lower-Level Plugin
 

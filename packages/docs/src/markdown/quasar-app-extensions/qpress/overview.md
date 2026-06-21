@@ -288,6 +288,7 @@ component internally.
 Installed projects also get first-class SSG scripts:
 
 ```bash
+pnpm check:qpress
 pnpm build:ssg
 pnpm prerender:ssg
 pnpm preview:ssg
