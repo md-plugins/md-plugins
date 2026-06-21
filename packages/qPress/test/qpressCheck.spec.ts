@@ -139,6 +139,94 @@ import MissingApi from '@/.q-press/api/components/Missing.json'
     }
   })
 
+  it('reports siteConfig navigation routes that do not exist', async () => {
+    const root = await createProject({
+      'src/markdown/landing-page.md': `---
+title: Home
+desc: Landing page.
+---
+`,
+      'src/siteConfig/index.ts': `export default {
+  sidebar: [
+    { name: 'Missing', path: '/missing-page' },
+    { name: 'Source', link: 'https://github.com/md-plugins/md-plugins' },
+  ],
+}
+`,
+    })
+
+    try {
+      const result = await checkQPressProject({ cwd: root })
+      const errors = result.errors.map((diagnostic) => diagnostic.code)
+
+      expect(errors).toContain('navigation-route-missing')
+    } finally {
+      await rm(root, { force: true, recursive: true })
+    }
+  })
+
+  it('allows custom siteConfig navigation routes', async () => {
+    const root = await createProject({
+      'src/markdown/landing-page.md': `---
+title: Home
+desc: Landing page.
+---
+`,
+      'src/siteConfig/index.ts': `export default {
+  sidebar: [{ name: 'Theme Builder', path: '/theme-builder' }],
+}
+`,
+    })
+
+    try {
+      const result = await checkQPressProject({
+        allowedRoutes: ['/theme-builder'],
+        cwd: root,
+      })
+
+      expect(result.errors).toEqual([])
+    } finally {
+      await rm(root, { force: true, recursive: true })
+    }
+  })
+
+  it('can warn about Markdown routes that are not reachable from siteConfig navigation', async () => {
+    const root = await createProject({
+      'src/markdown/guides/hidden.md': `---
+title: Hidden
+desc: Hidden page.
+---
+`,
+      'src/markdown/guides/intro.md': `---
+title: Intro
+desc: Intro page.
+---
+`,
+      'src/markdown/landing-page.md': `---
+title: Home
+desc: Landing page.
+---
+`,
+      'src/siteConfig/index.ts': `export default {
+  sidebar: [{ name: 'Intro', path: '/guides/intro' }],
+}
+`,
+    })
+
+    try {
+      const result = await checkQPressProject({
+        checkUnreachable: true,
+        cwd: root,
+      })
+      const warnings = result.warnings.map((diagnostic) => diagnostic.code)
+
+      expect(result.errors).toEqual([])
+      expect(warnings).toContain('navigation-route-unreachable')
+    } finally {
+      await rm(root, { force: true, recursive: true })
+    }
+  })
+
   it('warns about missing frontmatter and SSG-risky example globals', async () => {
     const root = await createProject({
       'src/examples/Demo/BrowserOnly.vue': `<script setup lang="ts">

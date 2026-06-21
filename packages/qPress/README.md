@@ -61,7 +61,9 @@ qpress ssg
 ```
 
 Use `qpress check` before release or CI builds to validate Markdown routes, internal links,
-`MarkdownExample` files, Q-Press API JSON, and common SSG-unsafe example patterns.
+siteConfig navigation routes, `MarkdownExample` files, Q-Press API JSON, and common
+SSG-unsafe example patterns. Unreachable Markdown page warnings are available with
+`qpress check --check-unreachable` for stricter release checks.
 
 Use `qpress ssg` to prerender Q-Press routes into static HTML. The older `qpress-ssg`
 command remains available as a backwards-compatible alias, but new scripts should prefer

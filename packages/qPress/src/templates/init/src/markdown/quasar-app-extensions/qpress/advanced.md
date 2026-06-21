@@ -80,40 +80,6 @@ import MarkdownExampleApi from '@/.q-press/api/components/MarkdownExample.json'
 
 API cards are most useful when a component has enough props, slots, or events that prose would become hard to scan.
 
-## Project Validation
-
-Q-Press includes a first-party check command for the docs-specific problems that are easy to miss during normal TypeScript and lint checks:
-
-```bash
-qpress check
-```
-
-The checker scans Markdown routes, internal links, `MarkdownExample` file references, imported Q-Press API JSON, and common browser-only globals in examples that can surprise SSG builds.
-
-Installed Q-Press projects also get a package script:
-
-```bash
-pnpm check:qpress
-```
-
-Errors fail the command. Warnings, such as missing frontmatter or SSG-risky browser globals, are reported without failing by default. Use `--fail-on-warnings` when CI should treat warnings as blockers:
-
-```bash
-qpress check --fail-on-warnings
-```
-
-If your docs include custom Vue routes that are valid but not generated from Markdown, allow them explicitly:
-
-```bash
-qpress check --allow-route /theme-builder
-```
-
-If your docs folder includes intentional scratch pages, fixtures, or generated drafts that should not participate in release checks, ignore them explicitly:
-
-```bash
-qpress check --ignore-file "__*.md"
-```
-
 ## viteExamplesPlugin
 
 ### Installation
@@ -171,4 +137,4 @@ See [Q-Press SSG](/quasar-app-extensions/qpress/ssg) for the full runner workflo
 
 ## Where To Go Next
 
-Use the [viteExamplesPlugin](/vite-plugins/vite-examples-plugin/overview) docs when you need deeper example-source behavior, use [Q-Press SSG](/quasar-app-extensions/qpress/ssg) for docs-site prerendering, and use the [viteSsgPlugin](/vite-plugins/vite-ssg-plugin/overview) docs when you need lower-level SSG control outside the generated Q-Press runner.
+Use the [Q-Press CLI](/quasar-app-extensions/qpress/cli) docs when you want release validation or prerender commands, use the [viteExamplesPlugin](/vite-plugins/vite-examples-plugin/overview) docs when you need deeper example-source behavior, use [Q-Press SSG](/quasar-app-extensions/qpress/ssg) for docs-site prerendering, and use the [viteSsgPlugin](/vite-plugins/vite-ssg-plugin/overview) docs when you need lower-level SSG control outside the generated Q-Press runner.

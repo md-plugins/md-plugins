@@ -361,6 +361,7 @@ const QuasarAppExts: SiteMenuItem = {
       children: [
         { name: 'Overview', path: '/quasar-app-extensions/qpress/overview' },
         { name: 'Advanced', path: '/quasar-app-extensions/qpress/advanced' },
+        { name: 'CLI', path: '/quasar-app-extensions/qpress/cli' },
         { name: 'SSG', path: '/quasar-app-extensions/qpress/ssg' },
         { name: 'Themes', path: '/quasar-app-extensions/qpress/themes' },
         { name: 'Site Config', path: '/quasar-app-extensions/qpress/site-config' },

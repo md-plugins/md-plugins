@@ -21,12 +21,15 @@ export type QPressCheckRoute = {
 export type QPressCheckOptions = {
   allowedRoutes?: string[]
   apiDir?: string
+  checkNavigation?: boolean
   checkSsgUnsafe?: boolean
+  checkUnreachable?: boolean
   cwd?: string
   examplesDir?: string
   ignoreFiles?: string[]
   landingPage?: string
   markdownDir?: string
+  siteConfigDir?: string
   srcDir?: string
 }
 
@@ -52,6 +55,7 @@ const apiImportRegex = /from\s+['"]@\/\.q-press\/api\/([^'"]+\.json)['"]/g
 const markdownLinkRegex = /\[[^\]]+\]\(([^)\s]+)(?:\s+["'][^"']+["'])?\)/g
 const htmlLinkRegex = /\b(?:href|to)=["']([^"']+)["']/g
 const exampleAttrRegex = /\b(?:file|src|example|component)=["']([^"']+)["']/i
+const siteConfigRouteRegex = /\b(?:path|route|to|href|link|url)\s*:\s*(['"`])([^'"`]+)\1/g
 const browserGlobalRegex =
   /\b(window|document|localStorage|sessionStorage|navigator|ResizeObserver|IntersectionObserver|MutationObserver)\b/
 const guardedBrowserGlobalRegex =
@@ -59,6 +63,14 @@ const guardedBrowserGlobalRegex =
 
 const skippedDirectories = new Set(['.git', '.quasar', 'dist', 'node_modules'])
 const sourceExtensions = new Set(['.js', '.jsx', '.ts', '.tsx', '.vue'])
+const siteConfigExtensions = new Set(['.js', '.json', '.ts'])
+
+type SiteConfigRouteReference = {
+  file: string
+  line: number
+  route: string
+  value: string
+}
 
 /**
  * Runs Q-Press project checks against Markdown routes, API JSON, examples, and SSG-risky code.
@@ -71,6 +83,7 @@ export async function checkQPressProject(
   const markdownRoot = resolve(srcRoot, options.markdownDir ?? 'markdown')
   const examplesRoot = resolve(srcRoot, options.examplesDir ?? 'examples')
   const apiRoot = resolve(srcRoot, options.apiDir ?? '.q-press/api')
+  const siteConfigRoot = resolve(srcRoot, options.siteConfigDir ?? 'siteConfig')
   const landingPage = options.landingPage ?? 'landing-page.md'
   const ignoreFileMatchers = (options.ignoreFiles ?? []).map(createPathMatcher)
   const diagnostics: QPressCheckDiagnostic[] = []
@@ -89,6 +102,15 @@ export async function checkQPressProject(
   checkDuplicateRoutes(markdownFiles, diagnostics)
   await checkMarkdownFiles(markdownFiles, routeSet, examplesRoot, apiRoot, diagnostics)
   await checkApiJson(apiRoot, diagnostics)
+
+  const navigationRoutes =
+    options.checkNavigation === false
+      ? new Set<string>()
+      : await checkSiteConfigNavigation(siteConfigRoot, routeSet, diagnostics)
+
+  if (options.checkUnreachable === true) {
+    checkUnreachableMarkdownRoutes(markdownFiles, navigationRoutes, diagnostics)
+  }
 
   if (options.checkSsgUnsafe !== false) {
     await checkSsgUnsafeExamples(examplesRoot, diagnostics)
@@ -416,6 +438,110 @@ async function checkApiJson(apiRoot: string, diagnostics: QPressCheckDiagnostic[
 }
 
 /**
+ * Reports siteConfig navigation links that do not match a Markdown or allowed route.
+ */
+async function checkSiteConfigNavigation(
+  siteConfigRoot: string,
+  routeSet: Set<string>,
+  diagnostics: QPressCheckDiagnostic[],
+): Promise<Set<string>> {
+  const navigationRoutes = new Set<string>(['/'])
+
+  if (!(await pathExists(siteConfigRoot))) {
+    return navigationRoutes
+  }
+
+  const routeReferences = await readSiteConfigRouteReferences(siteConfigRoot)
+
+  for (const reference of routeReferences) {
+    navigationRoutes.add(reference.route)
+
+    if (routeSet.has(reference.route)) {
+      continue
+    }
+
+    diagnostics.push({
+      code: 'navigation-route-missing',
+      file: reference.file,
+      hint: 'Add the target Markdown page, fix the siteConfig route, or pass --allow-route for custom Vue routes.',
+      line: reference.line,
+      message: `siteConfig navigation points to a route that qpress check could not find: ${reference.value}.`,
+      route: reference.route,
+      severity: 'error',
+    })
+  }
+
+  return navigationRoutes
+}
+
+/**
+ * Reports Markdown pages that are not referenced by siteConfig navigation.
+ */
+function checkUnreachableMarkdownRoutes(
+  markdownFiles: MarkdownFile[],
+  navigationRoutes: Set<string>,
+  diagnostics: QPressCheckDiagnostic[],
+): void {
+  if (navigationRoutes.size <= 1) {
+    return
+  }
+
+  for (const markdownFile of markdownFiles) {
+    if (navigationRoutes.has(markdownFile.route)) {
+      continue
+    }
+
+    diagnostics.push({
+      code: 'navigation-route-unreachable',
+      file: markdownFile.file,
+      hint: 'Add the route to siteConfig navigation, remove the page, or omit --check-unreachable for intentional hidden pages.',
+      message: `Markdown route is not referenced from siteConfig navigation: ${markdownFile.route}.`,
+      route: markdownFile.route,
+      severity: 'warning',
+    })
+  }
+}
+
+/**
+ * Reads route-like values from siteConfig files without executing user application code.
+ */
+async function readSiteConfigRouteReferences(
+  siteConfigRoot: string,
+): Promise<SiteConfigRouteReference[]> {
+  const files = await collectFiles(siteConfigRoot, (file) =>
+    siteConfigExtensions.has(extname(file)),
+  )
+  const references = await Promise.all(
+    files.map(async (absolutePath) => {
+      const content = await fs.readFile(absolutePath, 'utf8')
+      const maskedContent = maskSourceComments(content)
+      const file = normalizeRelativePath(relative(siteConfigRoot, absolutePath))
+      const references: SiteConfigRouteReference[] = []
+
+      for (const match of maskedContent.matchAll(siteConfigRouteRegex)) {
+        const value = match[2]
+        const route = resolveSiteConfigRoute(value)
+
+        if (route === undefined) {
+          continue
+        }
+
+        references.push({
+          file,
+          line: lineNumberForIndex(content, match.index ?? 0),
+          route,
+          value,
+        })
+      }
+
+      return references
+    }),
+  )
+
+  return references.flat()
+}
+
+/**
  * Reports common browser-only globals in examples as SSG-safety warnings.
  */
 async function checkSsgUnsafeExamples(
@@ -560,6 +686,29 @@ function resolveInternalRoute(href: string, currentRoute: string): string | unde
 }
 
 /**
+ * Resolves absolute internal siteConfig links into route paths.
+ */
+function resolveSiteConfigRoute(href: string): string | undefined {
+  const cleanHref = href.trim().split('#')[0]?.split('?')[0] ?? ''
+
+  if (
+    cleanHref === '' ||
+    cleanHref.startsWith('#') ||
+    !cleanHref.startsWith('/') ||
+    cleanHref.startsWith('//') ||
+    /^[a-z][a-z0-9+.-]*:/i.test(cleanHref)
+  ) {
+    return undefined
+  }
+
+  if (hasStaticAssetExtension(cleanHref)) {
+    return undefined
+  }
+
+  return normalizeRoutePath(cleanHref.endsWith('.md') ? cleanHref.slice(0, -3) : cleanHref)
+}
+
+/**
  * Normalizes routes for route-set lookup.
  */
 function normalizeRoutePath(path: string): string {
@@ -659,6 +808,17 @@ function maskMarkdownCode(content: string): string {
     .replace(/```[\s\S]*?```/g, maskNonNewlineCharacters)
     .replace(/~~~[\s\S]*?~~~/g, maskNonNewlineCharacters)
     .replace(/`[^`\n]*`/g, (match) => ' '.repeat(match.length))
+}
+
+/**
+ * Replaces JavaScript/TypeScript comments with whitespace while preserving line numbers.
+ */
+function maskSourceComments(content: string): string {
+  return content
+    .replace(/\/\*[\s\S]*?\*\//g, maskNonNewlineCharacters)
+    .replace(/(^|[^:])\/\/.*$/gm, (match, prefix: string) => {
+      return `${prefix}${' '.repeat(match.length - prefix.length)}`
+    })
 }
 
 /**

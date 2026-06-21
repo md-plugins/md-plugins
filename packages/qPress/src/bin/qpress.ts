@@ -51,9 +51,13 @@ Options:
   --markdown-dir <dir>  Markdown directory inside src-dir. Defaults to markdown.
   --examples-dir <dir>  Examples directory inside src-dir. Defaults to examples.
   --api-dir <dir>       API JSON directory inside src-dir. Defaults to .q-press/api.
+  --site-config-dir <dir>
+                       siteConfig directory inside src-dir. Defaults to siteConfig.
   --landing-page <file> Landing page Markdown filename. Defaults to landing-page.md.
   --ignore-file <glob>  Ignore a Markdown file path. Can be repeated.
   --allow-route <route> Treat a custom non-Markdown route as valid. Can be repeated.
+  --no-navigation       Skip siteConfig navigation route checks.
+  --check-unreachable   Warn when Markdown routes are not referenced by siteConfig navigation.
   --no-ssg-unsafe       Skip browser-global SSG-safety warnings for example files.
   --fail-on-warnings    Exit with code 1 when warnings are found.
   --json                Print machine-readable JSON.
@@ -109,6 +113,10 @@ function parseCheckArgs(args: string[]): CheckCliOptions {
         options.apiDir = readValue(args, index, arg)
         index += 1
         break
+      case '--site-config-dir':
+        options.siteConfigDir = readValue(args, index, arg)
+        index += 1
+        break
       case '--landing-page':
         options.landingPage = readValue(args, index, arg)
         index += 1
@@ -122,6 +130,12 @@ function parseCheckArgs(args: string[]): CheckCliOptions {
         options.allowedRoutes ??= []
         options.allowedRoutes.push(readValue(args, index, arg))
         index += 1
+        break
+      case '--no-navigation':
+        options.checkNavigation = false
+        break
+      case '--check-unreachable':
+        options.checkUnreachable = true
         break
       case '--no-ssg-unsafe':
         options.checkSsgUnsafe = false
