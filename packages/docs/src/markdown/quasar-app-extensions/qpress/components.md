@@ -8,6 +8,7 @@ Q-Press ships components for the generated docs shell and for Markdown-authored 
 | Component                | Typical use                                                          |
 | ------------------------ | -------------------------------------------------------------------- |
 | `MarkdownAnnouncement`   | Render a site-wide dismissible announcement from Site Config.        |
+| `MarkdownCampaigns`      | Render restrained opt-in campaign dialogs from Site Config.          |
 | `MarkdownPage`           | Wrap custom page layouts that still need Q-Press page behavior.      |
 | `MarkdownExample`        | Render a live Vue example from `src/examples`.                       |
 | `MarkdownApi`            | Render Quasar-style component API JSON.                              |
@@ -25,6 +26,7 @@ The remaining components are primarily used by the generated layout, header, dra
 import DarkModeToggleApi from '@/.q-press/api/components/DarkModeToggle.json'
 import MarkdownAnnouncementApi from '@/.q-press/api/components/MarkdownAnnouncement.json'
 import MarkdownApiApi from '@/.q-press/api/components/MarkdownApi.json'
+import MarkdownCampaignsApi from '@/.q-press/api/components/MarkdownCampaigns.json'
 import MarkdownCardLinkApi from '@/.q-press/api/components/MarkdownCardLink.json'
 import MarkdownCardTitleApi from '@/.q-press/api/components/MarkdownCardTitle.json'
 import MarkdownCodeApi from '@/.q-press/api/components/MarkdownCode.json'
@@ -55,6 +57,7 @@ import MarkdownPrivacyConsentApi from '@/.q-press/api/components/MarkdownPrivacy
 <MarkdownApi :api="DarkModeToggleApi" name="DarkModeToggle"/>
 <MarkdownApi :api="MarkdownAnnouncementApi" name="MarkdownAnnouncement"/>
 <MarkdownApi :api="MarkdownApiApi" name="MarkdownApi"/>
+<MarkdownApi :api="MarkdownCampaignsApi" name="MarkdownCampaigns"/>
 <MarkdownApi :api="MarkdownCardLinkApi" name="MarkdownCardLink"/>
 <MarkdownApi :api="MarkdownCardTitleApi" name="MarkdownCardTitle"/>
 <MarkdownApi :api="MarkdownCodeApi" name="MarkdownCode"/>

@@ -538,6 +538,97 @@ kbd {
   transform: translateY(12px);
 }
 
+.qpress-campaign {
+  width: min(520px, calc(100vw - 32px));
+  color: var(--qpress-text-primary);
+  background: var(--qpress-surface-raised-strong);
+  border: 1px solid var(--qpress-border-strong);
+  border-radius: $generic-border-radius;
+  box-shadow: var(--qpress-shadow-large);
+
+  &--success {
+    border-color: $positive;
+  }
+
+  &--warning {
+    border-color: $warning;
+  }
+
+  &--danger {
+    border-color: $negative;
+  }
+
+  &--sponsor {
+    border-color: $brand-accent;
+  }
+
+  &__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    padding-bottom: 8px;
+  }
+
+  &__eyebrow {
+    margin: 0 0 6px;
+    color: $brand-primary;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  &__title {
+    margin: 0;
+    color: var(--qpress-text-primary);
+    font-size: clamp(1.35rem, 4vw, 1.85rem);
+    font-weight: 800;
+    line-height: 1.14;
+  }
+
+  &__close {
+    color: var(--qpress-text-primary);
+  }
+
+  &__body {
+    color: var(--qpress-text-body);
+    line-height: 1.5;
+
+    p {
+      margin: 0;
+    }
+  }
+
+  &__actions {
+    gap: 8px;
+    padding: 8px 16px 16px;
+  }
+
+  &__button {
+    font-weight: 800;
+  }
+
+  &__button--primary {
+    color: var(--qpress-action-solid-text) !important;
+    background: var(--qpress-action-solid-bg) !important;
+  }
+
+  &__button--ghost {
+    color: var(--qpress-action-ghost-text) !important;
+    background: var(--qpress-action-ghost-bg) !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .qpress-campaign,
+  .qpress-consent,
+  .qpress-announcement {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
 @media (max-width: 700px) {
   .qpress-announcement__inner {
     align-items: flex-start;

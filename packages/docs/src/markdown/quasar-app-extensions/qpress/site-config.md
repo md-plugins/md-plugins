@@ -22,6 +22,7 @@ Think of `src/siteConfig/index.ts` as the public contract for your docs shell. I
 | `license`, `privacy`, `copyright`                  | Footer legal links and ownership text.                                                             |
 | `announcement`                                     | Optional dismissible top-of-page docs announcement.                                                |
 | `privacyConsent`                                   | Optional privacy notice or consent prompt for static-hosted docs.                                  |
+| `campaigns`                                        | Optional restrained popup/dialog campaigns with route, date, trigger, and frequency controls.      |
 
 ## Recommended Editing Flow
 
@@ -264,6 +265,41 @@ window.addEventListener('qpress:privacy-consent', (event) => {
 ```
 
 Q-Press keeps this feature static-host friendly, but it cannot provide legal advice. Site owners remain responsible for local privacy, cookie, and consent requirements.
+
+## Campaigns
+
+Use `campaigns` for intentionally restrained opt-in prompts such as sponsor messages, release campaigns, route-specific upgrade notices, or limited-time calls to action. Campaigns are separate from announcements and privacy consent so normal docs notices stay calm and consent behavior stays focused on privacy requirements.
+
+```ts [twoslash]
+const campaigns = [
+  {
+    enabled: true,
+    id: 'sponsor-qpress-v1',
+    title: 'Support Q-Press maintenance',
+    message: 'If Q-Press is useful in your workflow, consider sponsoring ongoing maintenance.',
+    tone: 'sponsor',
+    startAt: '2026-06-01T00:00:00Z',
+    endAt: '2026-06-30T23:59:59Z',
+    includeRoutes: ['/quasar-app-extensions/qpress/*'],
+    excludeRoutes: ['/privacy-policy'],
+    trigger: { type: 'scroll-depth', scrollDepth: 65 },
+    frequency: { strategy: 'days', days: 30, maxViews: 3 },
+    device: 'desktop',
+    mobileFallback: 'none',
+    closeOnEsc: true,
+    closeOnBackdrop: true,
+    action: {
+      label: 'Sponsor Jeff',
+      link: 'https://github.com/sponsors/hawkeye64',
+      external: true,
+    },
+  },
+]
+```
+
+Campaign triggers currently support `load`, `delay`, `scroll-depth`, and desktop `exit-intent`. Route patterns support exact paths and simple trailing-wildcard prefixes such as `/guides/*`. Frequency defaults to `once`; use `session`, `days`, or `always` only when the message genuinely needs that behavior. Keep campaigns disabled by default and avoid mobile exit-intent patterns.
+
+Use `device: 'desktop'`, `device: 'mobile'`, or `device: 'all'` to target a campaign to the right viewport class. `mobileFallback: 'load'` is only for cases where an `exit-intent` campaign is allowed on mobile but needs a touch-safe trigger instead.
 
 ## CodePen Links
 

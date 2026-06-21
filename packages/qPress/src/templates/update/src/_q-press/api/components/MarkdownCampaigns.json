@@ -1,0 +1,29 @@
+{
+  "type": "component",
+  "meta": {
+    "docsUrl": "https://path-to-your-docs/markdown-campaigns"
+  },
+  "props": {
+    "campaigns": {
+      "type": "CampaignConfig[]",
+      "desc": "Opt-in campaign settings from siteConfig.campaigns. The component arms the first eligible campaign for the current route, date window, viewport, trigger, and frequency rules.",
+      "category": "content"
+    }
+  },
+  "methods": {
+    "openCampaign": {
+      "desc": "Opens the active campaign after its configured trigger fires.",
+      "params": {
+        "campaign": {
+          "type": "CampaignConfig",
+          "desc": "Eligible campaign to display."
+        }
+      },
+      "returns": null
+    },
+    "closeCampaign": {
+      "desc": "Closes the active campaign and allows the dialog hide handler to persist dismissal state.",
+      "returns": null
+    }
+  }
+}

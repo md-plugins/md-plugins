@@ -1,10 +1,18 @@
 import { fabGithub, fabXTwitter } from '@quasar/extras/fontawesome-v7'
 import { version, productName } from '../../package.json'
 import { slugify } from '../.q-press/components/markdown-utils'
-import type { AnnouncementBannerConfig, PrivacyConsentConfig } from '../.q-press/types/config'
+import type {
+  AnnouncementBannerConfig,
+  CampaignConfig,
+  PrivacyConsentConfig,
+} from '../.q-press/types/config'
 export type {
   AnnouncementActionConfig,
   AnnouncementBannerConfig,
+  CampaignActionConfig,
+  CampaignConfig,
+  CampaignFrequencyConfig,
+  CampaignTriggerConfig,
   PrivacyConsentCategoryConfig,
   PrivacyConsentConfig,
 } from '../.q-press/types/config'
@@ -108,6 +116,7 @@ export interface SiteConfig {
   privacy: PrivacyConfig
   announcement?: AnnouncementBannerConfig
   privacyConsent?: PrivacyConsentConfig
+  campaigns?: CampaignConfig[]
   logoConfig: LogoConfig
   versionConfig: versionConfig
   config: UIConfig
@@ -503,6 +512,25 @@ const config = {
       { id: 'embeds', label: 'Third-party embeds' },
     ],
   } as PrivacyConsentConfig,
+  campaigns: [
+    {
+      enabled: false,
+      id: 'md-plugins-sponsor-campaign-v1',
+      title: 'Support md-plugins',
+      message: 'If Q-Press is helping your docs workflow, consider sponsoring ongoing maintenance.',
+      tone: 'sponsor',
+      includeRoutes: ['/quasar-app-extensions/qpress/*'],
+      trigger: { type: 'scroll-depth', scrollDepth: 65 },
+      frequency: { strategy: 'days', days: 30, maxViews: 3 },
+      device: 'desktop',
+      mobileFallback: 'none',
+      action: {
+        label: 'Sponsor Jeff',
+        link: 'https://github.com/sponsors/hawkeye64',
+        external: true,
+      },
+    },
+  ] as CampaignConfig[],
   logoConfig: {
     showLogo: true,
     logoLight:
