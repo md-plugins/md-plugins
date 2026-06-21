@@ -48,6 +48,12 @@ type MarkdownFile = QPressCheckRoute & {
   maskedContent: string
 }
 
+type FrontmatterRouteReference = {
+  line: number
+  route: string
+  value: string
+}
+
 const markdownExampleTagRegex = /<MarkdownExample\b[^>]*>/g
 const markdownExtensionRegex = /\.md$/i
 const frontmatterRegex = /^---\r?\n([\s\S]*?)\r?\n---/
@@ -248,6 +254,7 @@ async function checkMarkdownFiles(
   await Promise.all(
     markdownFiles.map(async (markdownFile) => {
       checkFrontmatter(markdownFile, diagnostics)
+      checkFrontmatterRoutes(markdownFile, routeSet, diagnostics)
       checkInternalLinks(markdownFile, routeSet, diagnostics)
       await checkExampleReferences(markdownFile, examplesRoot, diagnostics)
       await checkApiImports(markdownFile, apiRoot, diagnostics)
@@ -284,6 +291,31 @@ function checkFrontmatter(markdownFile: MarkdownFile, diagnostics: QPressCheckDi
         severity: 'warning',
       })
     }
+  }
+}
+
+/**
+ * Reports route-like frontmatter entries that do not match a known Markdown or allowed route.
+ */
+function checkFrontmatterRoutes(
+  markdownFile: MarkdownFile,
+  routeSet: Set<string>,
+  diagnostics: QPressCheckDiagnostic[],
+): void {
+  for (const reference of readRelatedFrontmatterRoutes(markdownFile.content)) {
+    if (routeSet.has(reference.route)) {
+      continue
+    }
+
+    diagnostics.push({
+      code: 'frontmatter-route-missing',
+      file: markdownFile.file,
+      hint: 'Add the target Markdown page, fix the frontmatter route, or pass --allow-route for custom Vue routes.',
+      line: reference.line,
+      message: `Frontmatter related route points to a route that qpress check could not find: ${reference.value}.`,
+      route: reference.route,
+      severity: 'error',
+    })
   }
 }
 
@@ -649,6 +681,91 @@ function readFrontmatter(content: string): Map<string, string> | undefined {
   }
 
   return frontmatter
+}
+
+/**
+ * Reads related-route entries from simple YAML-style frontmatter.
+ */
+function readRelatedFrontmatterRoutes(content: string): FrontmatterRouteReference[] {
+  const match = content.match(frontmatterRegex)
+
+  if (match === null) {
+    return []
+  }
+
+  const frontmatterStartLine = lineNumberForIndex(content, match.index ?? 0)
+  const references: FrontmatterRouteReference[] = []
+  const lines = match[1].split(/\r?\n/)
+
+  for (let index = 0; index < lines.length; index += 1) {
+    const line = lines[index]
+    const relatedScalar = line.match(/^related:\s*(.+)$/)
+
+    if (relatedScalar !== null) {
+      addFrontmatterRouteReference(references, relatedScalar[1], frontmatterStartLine + index + 1)
+      continue
+    }
+
+    if (!/^related:\s*$/.test(line)) {
+      continue
+    }
+
+    for (let listIndex = index + 1; listIndex < lines.length; listIndex += 1) {
+      const listLine = lines[listIndex]
+
+      if (/^\S/.test(listLine)) {
+        break
+      }
+
+      const item = listLine.match(/^\s*-\s+(.+)$/)
+
+      if (item !== null) {
+        addFrontmatterRouteReference(references, item[1], frontmatterStartLine + listIndex + 1)
+      }
+    }
+  }
+
+  return references
+}
+
+/**
+ * Adds a normalized frontmatter route reference when the value is route-like.
+ */
+function addFrontmatterRouteReference(
+  references: FrontmatterRouteReference[],
+  value: string,
+  line: number,
+): void {
+  const route = resolveFrontmatterRoute(value)
+
+  if (route === undefined) {
+    return
+  }
+
+  references.push({
+    line,
+    route,
+    value: value.trim(),
+  })
+}
+
+/**
+ * Resolves a frontmatter route value into the route path used by Q-Press.
+ */
+function resolveFrontmatterRoute(value: string): string | undefined {
+  const cleanValue = value.trim().replace(/^['"]|['"]$/g, '')
+
+  if (
+    cleanValue === '' ||
+    cleanValue.startsWith('#') ||
+    /^[a-z][a-z0-9+.-]*:/i.test(cleanValue) ||
+    cleanValue.startsWith('//') ||
+    hasStaticAssetExtension(cleanValue)
+  ) {
+    return undefined
+  }
+
+  return normalizeRoutePath(cleanValue.endsWith('.md') ? cleanValue.slice(0, -3) : cleanValue)
 }
 
 /**

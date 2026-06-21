@@ -61,8 +61,8 @@ qpress ssg
 ```
 
 Use `qpress check` before release or CI builds to validate Markdown routes, internal links,
-siteConfig navigation routes, `MarkdownExample` files, Q-Press API JSON, and common
-SSG-unsafe example patterns. Unreachable Markdown page warnings are available with
+`related` frontmatter routes, siteConfig navigation routes, `MarkdownExample` files,
+Q-Press API JSON, and common SSG-unsafe example patterns. Unreachable Markdown page warnings are available with
 `qpress check --check-unreachable` for stricter release checks.
 
 Check options can be kept in a project-local config file such as `qpress.config.json`

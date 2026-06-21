@@ -66,6 +66,7 @@ The checker scans:
 
 - Markdown route duplicates
 - Broken internal Markdown and HTML links
+- Broken `related` frontmatter routes
 - Broken `siteConfig` navigation routes
 - Missing `MarkdownExample` source files
 - Missing imported Q-Press API JSON files
@@ -130,6 +131,8 @@ pnpm exec qpress check --allow-route /theme-builder
 ```
 
 You can repeat `--allow-route` for multiple routes.
+
+The same route set is used for Markdown links, `related` frontmatter, and `siteConfig` navigation, so one allowed route covers all three places.
 
 ## Navigation Checks
 

@@ -63,6 +63,74 @@ import ExampleApi from '@/.q-press/api/components/Example.json'
     }
   })
 
+  it('reports related frontmatter routes that do not exist', async () => {
+    const root = await createProject({
+      'src/markdown/landing-page.md': `---
+title: Home
+desc: Landing page.
+related:
+  - guides/missing
+---
+`,
+    })
+
+    try {
+      const result = await checkQPressProject({ cwd: root })
+      const errors = result.errors.map((diagnostic) => diagnostic.code)
+
+      expect(errors).toContain('frontmatter-route-missing')
+    } finally {
+      await rm(root, { force: true, recursive: true })
+    }
+  })
+
+  it('allows custom related frontmatter routes', async () => {
+    const root = await createProject({
+      'src/markdown/landing-page.md': `---
+title: Home
+desc: Landing page.
+related:
+  - theme-builder
+---
+`,
+    })
+
+    try {
+      const result = await checkQPressProject({
+        allowedRoutes: ['/theme-builder'],
+        cwd: root,
+      })
+
+      expect(result.errors).toEqual([])
+    } finally {
+      await rm(root, { force: true, recursive: true })
+    }
+  })
+
+  it('supports scalar related frontmatter routes', async () => {
+    const root = await createProject({
+      'src/markdown/guides/intro.md': `---
+title: Intro
+desc: Intro page.
+---
+`,
+      'src/markdown/landing-page.md': `---
+title: Home
+desc: Landing page.
+related: guides/intro
+---
+`,
+    })
+
+    try {
+      const result = await checkQPressProject({ cwd: root })
+
+      expect(result.errors).toEqual([])
+    } finally {
+      await rm(root, { force: true, recursive: true })
+    }
+  })
+
   it('reports duplicate Markdown routes', async () => {
     const root = await createProject({
       'src/markdown/guides.md': `---
