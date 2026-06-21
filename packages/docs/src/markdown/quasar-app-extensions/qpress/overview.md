@@ -131,7 +131,7 @@ Quasar CLI Vite 3 already generates a `tsconfig.json` with JSON module support. 
 
 ### Modify `src/css/quasar.variables.scss`
 
-Import a Q-Press theme (`default`, `sunrise`, `newspaper`, `tawny`, `mystic`, your own or a 3rd-party theme):
+Import a Q-Press theme (`copperline`, `default`, `evergreen`, `mystic`, `newspaper`, `signal`, `sunrise`, `tawny`, your own or a 3rd-party theme):
 
 ```scss
 @import '../.q-press/css/themes/sunrise.scss';
