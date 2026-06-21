@@ -6,18 +6,32 @@ related:
   - quasar-app-extensions/qpress/advanced
 ---
 
-Q-Press exposes one primary CLI command with focused subcommands:
+Q-Press exposes one primary CLI command with focused subcommands. The CLI is installed as a project-local npm binary, not a global shell command:
 
 ```bash
-qpress check
-qpress ssg
+pnpm exec qpress check
+pnpm exec qpress ssg
 ```
+
+Inside package scripts, you can call `qpress` directly because npm, pnpm, yarn, and bun add local binaries to the script PATH.
 
 The older `qpress-ssg` binary remains available as a backwards-compatible alias, but new scripts should prefer `qpress ssg` so all Q-Press tooling is grouped under one command.
 
+## Help Output
+
+Every command supports `--help`:
+
+```bash
+pnpm exec qpress --help
+pnpm exec qpress check --help
+pnpm exec qpress ssg --help
+```
+
+Use these when you need the current option list from the installed package.
+
 ## How Projects Get The CLI
 
-The CLI is provided by the installed `@md-plugins/quasar-app-extension-q-press` package through its npm `bin` entries. It is not copied into your app source by the generated template.
+The CLI is provided by the installed `@md-plugins/quasar-app-extension-q-press` package through its npm `bin` entries. It is not copied into your app source by the generated template and is not installed globally.
 
 When you install or update Q-Press, run the app-extension invoke flow so your generated scripts point at the current command names:
 
@@ -36,10 +50,16 @@ pnpm preview:ssg
 
 ## Project Validation
 
-Use `qpress check` before release or CI builds to catch docs-specific problems that normal TypeScript and lint checks do not always see:
+Use `qpress check` before release or CI builds to catch docs-specific problems that normal TypeScript and lint checks do not always see. Run it directly through your package manager:
 
 ```bash
-qpress check
+pnpm exec qpress check
+```
+
+Or use the generated package script:
+
+```bash
+pnpm check:qpress
 ```
 
 The checker scans:
@@ -58,7 +78,7 @@ Errors fail the command. Warnings, such as missing frontmatter or SSG-risky brow
 Use `--fail-on-warnings` when CI should treat warnings as blockers:
 
 ```bash
-qpress check --fail-on-warnings
+pnpm exec qpress check --fail-on-warnings
 ```
 
 ## Custom Routes
@@ -66,7 +86,7 @@ qpress check --fail-on-warnings
 If your docs include custom Vue routes that are valid but not generated from Markdown, allow them explicitly:
 
 ```bash
-qpress check --allow-route /theme-builder
+pnpm exec qpress check --allow-route /theme-builder
 ```
 
 You can repeat `--allow-route` for multiple routes.
@@ -78,13 +98,13 @@ Q-Press checks configured `siteConfig` routes by default, including `path`, `rou
 External URLs and static assets are ignored. If your siteConfig lives somewhere other than `src/siteConfig`, point the checker at it:
 
 ```bash
-qpress check --site-config-dir docsConfig
+pnpm exec qpress check --site-config-dir docsConfig
 ```
 
 If you need to temporarily skip navigation validation:
 
 ```bash
-qpress check --no-navigation
+pnpm exec qpress check --no-navigation
 ```
 
 ## Unreachable Pages
@@ -92,7 +112,7 @@ qpress check --no-navigation
 Hidden pages are sometimes intentional, so unreachable-page warnings are opt-in. Enable them when you want release checks to flag Markdown routes that are not referenced from configured navigation:
 
 ```bash
-qpress check --check-unreachable
+pnpm exec qpress check --check-unreachable
 ```
 
 This is useful before public releases, but it may be too strict for sites that intentionally keep custom tools, release archives, or private drafts out of the main menu.
@@ -102,7 +122,7 @@ This is useful before public releases, but it may be too strict for sites that i
 If your docs folder includes intentional scratch pages, fixtures, or generated drafts that should not participate in release checks, ignore them explicitly:
 
 ```bash
-qpress check --ignore-file "__*.md"
+pnpm exec qpress check --ignore-file "__*.md"
 ```
 
 You can repeat `--ignore-file` for multiple patterns. The checker does not hard-code any filename conventions, so ignored files stay visible and intentional.
@@ -112,13 +132,13 @@ You can repeat `--ignore-file` for multiple patterns. The checker does not hard-
 Use JSON output when another script needs to consume diagnostics:
 
 ```bash
-qpress check --json
+pnpm exec qpress check --json
 ```
 
 Use quiet output when CI should only print failures:
 
 ```bash
-qpress check --quiet
+pnpm exec qpress check --quiet
 ```
 
 ## Static Site Generation
@@ -126,7 +146,7 @@ qpress check --quiet
 Use `qpress ssg` to prerender Q-Press routes into static HTML:
 
 ```bash
-qpress ssg --out-dir dist/spa
+pnpm exec qpress ssg --out-dir dist/spa
 ```
 
 The SSG command reads the generated route manifest, uses the Q-Press app factory, renders each route at build time, and writes route-specific HTML into your static output folder.
