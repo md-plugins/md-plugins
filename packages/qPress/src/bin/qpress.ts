@@ -5,12 +5,15 @@ import {
   formatQPressCheckResult,
   type QPressCheckOptions,
 } from '../check/qpress-check.js'
+import { loadQPressCliConfig, type QPressCheckCliConfig } from './qpress-config.js'
 import { runQPressSsgCli } from './qpress-ssg-command.js'
 
 type CheckCliOptions = QPressCheckOptions & {
+  config?: string
   failOnWarnings?: boolean
   help?: boolean
   json?: boolean
+  noConfig?: boolean
   quiet?: boolean
 }
 
@@ -47,6 +50,8 @@ Usage:
 
 Options:
   --root <dir>          Project root. Defaults to the current directory.
+  --config <file>       Config file relative to root. Defaults to qpress.config.*.
+  --no-config           Skip loading qpress config.
   --src-dir <dir>       App source directory. Defaults to src.
   --markdown-dir <dir>  Markdown directory inside src-dir. Defaults to markdown.
   --examples-dir <dir>  Examples directory inside src-dir. Defaults to examples.
@@ -96,6 +101,13 @@ function parseCheckArgs(args: string[]): CheckCliOptions {
       case '--root':
         options.cwd = readValue(args, index, arg)
         index += 1
+        break
+      case '--config':
+        options.config = readValue(args, index, arg)
+        index += 1
+        break
+      case '--no-config':
+        options.noConfig = true
         break
       case '--src-dir':
         options.srcDir = readValue(args, index, arg)
@@ -158,16 +170,53 @@ function parseCheckArgs(args: string[]): CheckCliOptions {
 }
 
 /**
+ * Merges qpress check config with CLI options, keeping CLI flags highest precedence.
+ */
+function mergeCheckOptions(
+  configOptions: QPressCheckCliConfig | undefined,
+  cliOptions: CheckCliOptions,
+): CheckCliOptions {
+  if (configOptions === undefined) {
+    return cliOptions
+  }
+
+  return {
+    ...configOptions,
+    ...cliOptions,
+    allowedRoutes: mergeStringLists(configOptions.allowedRoutes, cliOptions.allowedRoutes),
+    ignoreFiles: mergeStringLists(configOptions.ignoreFiles, cliOptions.ignoreFiles),
+  }
+}
+
+/**
+ * Merges repeated string-list options while preserving order and uniqueness.
+ */
+function mergeStringLists(
+  configValues: string[] | undefined,
+  cliValues: string[] | undefined,
+): string[] | undefined {
+  const values = [...(configValues ?? []), ...(cliValues ?? [])]
+
+  return values.length === 0 ? undefined : [...new Set(values)]
+}
+
+/**
  * Runs qpress check and returns the intended process exit code.
  */
 async function runCheck(args: string[]): Promise<number> {
-  const options = parseCheckArgs(args)
+  const cliOptions = parseCheckArgs(args)
 
-  if (options.help === true) {
+  if (cliOptions.help === true) {
     printCheckHelp()
     return 0
   }
 
+  const config = await loadQPressCliConfig({
+    configFile: cliOptions.config,
+    cwd: cliOptions.cwd ?? process.cwd(),
+    loadConfig: cliOptions.noConfig !== true,
+  })
+  const options = mergeCheckOptions(config.check, cliOptions)
   const result = await checkQPressProject(options)
 
   if (options.json === true) {

@@ -1,0 +1,6 @@
+{
+  "check": {
+    "allowedRoutes": ["/another-page"],
+    "ignoreFiles": ["__*.md"]
+  }
+}

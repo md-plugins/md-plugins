@@ -65,6 +65,18 @@ siteConfig navigation routes, `MarkdownExample` files, Q-Press API JSON, and com
 SSG-unsafe example patterns. Unreachable Markdown page warnings are available with
 `qpress check --check-unreachable` for stricter release checks.
 
+Check options can be kept in a project-local config file such as `qpress.config.json`
+or `qpress.config.mjs`:
+
+```json
+{
+  "check": {
+    "allowedRoutes": ["/theme-builder"],
+    "ignoreFiles": ["__*.md"]
+  }
+}
+```
+
 Use `qpress ssg` to prerender Q-Press routes into static HTML. The older `qpress-ssg`
 command remains available as a backwards-compatible alias, but new scripts should prefer
 `qpress ssg` so all Q-Press tooling is grouped under one command.

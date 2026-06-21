@@ -81,6 +81,44 @@ Use `--fail-on-warnings` when CI should treat warnings as blockers:
 pnpm exec qpress check --fail-on-warnings
 ```
 
+## Configuration File
+
+Q-Press can load project-local check options from a config file in the project root. This keeps package scripts readable as validation grows.
+
+Supported filenames:
+
+- `qpress.config.json`
+- `qpress.config.mjs`
+- `qpress.config.js`
+- `qpress.config.cjs`
+- `.qpressrc.json`
+
+Put check options under the `check` key:
+
+```json
+{
+  "check": {
+    "allowedRoutes": ["/theme-builder"],
+    "ignoreFiles": ["__*.md"],
+    "checkUnreachable": true
+  }
+}
+```
+
+CLI flags override config values. Repeated list options such as `allowedRoutes` and `ignoreFiles` merge with the config values.
+
+Use an explicit config file when needed:
+
+```bash
+pnpm exec qpress check --config docs-qpress.config.mjs
+```
+
+Skip config loading for debugging or one-off CI checks:
+
+```bash
+pnpm exec qpress check --no-config
+```
+
 ## Custom Routes
 
 If your docs include custom Vue routes that are valid but not generated from Markdown, allow them explicitly:

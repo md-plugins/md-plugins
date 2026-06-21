@@ -6,7 +6,7 @@
   "author": "Jeff <galbraith64@gmail.com>",
   "type": "module",
   "scripts": {
-    "check:qpress": "node ../qPress/bin/qpress.js check --ignore-file '__*.md' --allow-route /another-page",
+    "check:qpress": "node ../qPress/bin/qpress.js check",
     "check-types": "quasar prepare && vue-tsc --noEmit -p tsconfig.json",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
