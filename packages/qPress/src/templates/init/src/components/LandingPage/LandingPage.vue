@@ -1062,7 +1062,7 @@ const supportItems = [
   --landing-resource-link-text: var(--qpress-resource-link-text);
   --landing-resource-item-border: var(--qpress-resource-item-border);
   --landing-resource-item-bg: var(--qpress-resource-item-bg);
-  --landing-accent-text: var(--qpress-color-primary);
+  --landing-accent-text: var(--qpress-meta-text);
   --landing-mesh-color: var(--qpress-mesh-color);
   --landing-hero-glow-1: var(--qpress-hero-glow-primary);
   --landing-hero-glow-2: var(--qpress-hero-glow-secondary);

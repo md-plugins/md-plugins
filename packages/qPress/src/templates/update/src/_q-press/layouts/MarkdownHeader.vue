@@ -230,7 +230,7 @@ const hasMoreLinks = computed(() => siteConfig.links.moreLinks.length > 0)
 
   &__primary {
     height: 72px;
-    border-bottom: 1px solid $separator-color;
+    border-bottom: 1px solid $brand-border-color-light;
   }
 
   &__secondary {
@@ -321,7 +321,7 @@ const hasMoreLinks = computed(() => siteConfig.links.moreLinks.length > 0)
 
 .markdown-header-menu {
   letter-spacing: $letter-spacing-brand;
-  border: 1px solid $separator-color;
+  border: 1px solid $brand-border-color-light;
   font-size: ($font-size - 2px);
   box-shadow: none !important;
   background-color: #fff;
@@ -361,12 +361,12 @@ const hasMoreLinks = computed(() => siteConfig.links.moreLinks.length > 0)
 
 body.body--dark {
   .markdown-header__primary {
-    border-bottom-color: $separator-dark-color;
+    border-bottom-color: $brand-border-color-dark;
   }
 
   .markdown-header-menu {
     background: $dark-bg;
-    border-color: $separator-dark-color;
+    border-color: $brand-border-color-dark;
 
     .q-item.q-router-link--active,
     .q-item--active {

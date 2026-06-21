@@ -26,6 +26,15 @@
           <code class="qpress-theme-preview__code qpress-theme-preview__code--light"
             >markdown-token</code
           >
+          <div class="qpress-theme-preview__step qpress-theme-preview__step--light">
+            <span class="qpress-theme-preview__step-marker qpress-theme-preview__step-marker--light"
+              >1</span
+            >
+            <div class="qpress-theme-preview__step-body">
+              <strong>Install package</strong>
+              <p>Run the install command and keep markdown content readable.</p>
+            </div>
+          </div>
         </section>
 
         <section class="qpress-theme-preview__panel qpress-theme-preview__panel--dark">
@@ -41,6 +50,15 @@
           <code class="qpress-theme-preview__code qpress-theme-preview__code--dark"
             >markdown-token</code
           >
+          <div class="qpress-theme-preview__step qpress-theme-preview__step--dark">
+            <span class="qpress-theme-preview__step-marker qpress-theme-preview__step-marker--dark"
+              >2</span
+            >
+            <div class="qpress-theme-preview__step-body">
+              <strong>Configure docs</strong>
+              <p>Steps should feel like another Q-Press panel, not a separate theme.</p>
+            </div>
+          </div>
         </section>
       </div>
     </article>
@@ -52,6 +70,9 @@ type ThemePalette = {
   primary: string
   secondary: string
   accent: string
+  medium: string
+  lightBorder: string
+  darkBorder: string
   lightBg: string
   lightText: string
   lightCodeBg: string
@@ -79,6 +100,9 @@ const themes: ThemePreview[] = [
       primary: '#00bfff',
       secondary: '#4b555c',
       accent: '#ea5e13',
+      medium: '#6b7f86',
+      lightBorder: '#ea5e13',
+      darkBorder: 'rgba(107, 127, 134, 0.68)',
       lightBg: '#fefefe',
       lightText: '#4d4d4d',
       lightCodeBg: '#f5f5f5',
@@ -98,6 +122,9 @@ const themes: ThemePreview[] = [
       primary: '#8a2be2',
       secondary: '#00ced1',
       accent: '#ff4500',
+      medium: '#9370db',
+      lightBorder: '#ff4500',
+      darkBorder: 'rgba(147, 112, 219, 0.68)',
       lightBg: '#e6e6fa',
       lightText: '#4b0082',
       lightCodeBg: '#f8f8ff',
@@ -117,6 +144,9 @@ const themes: ThemePreview[] = [
       primary: '#8793fc',
       secondary: '#333333',
       accent: '#666666',
+      medium: '#808080',
+      lightBorder: '#666666',
+      darkBorder: 'rgba(128, 128, 128, 0.68)',
       lightBg: '#f5f5f5',
       lightText: '#333333',
       lightCodeBg: '#f5f5f5',
@@ -136,6 +166,9 @@ const themes: ThemePreview[] = [
       primary: '#e74c3c',
       secondary: '#5186bb',
       accent: '#f39c12',
+      medium: '#95a5a6',
+      lightBorder: '#f39c12',
+      darkBorder: 'rgba(236, 240, 241, 0.28)',
       lightBg: '#ecf0f1',
       lightText: '#2c3e50',
       lightCodeBg: '#ecf0f1',
@@ -155,6 +188,9 @@ const themes: ThemePreview[] = [
       primary: '#8b4513',
       secondary: '#a0522d',
       accent: '#d2691e',
+      medium: '#c19a6b',
+      lightBorder: '#8b4513',
+      darkBorder: 'rgba(210, 105, 30, 0.62)',
       lightBg: '#f5f5dc',
       lightText: '#5c4033',
       lightCodeBg: '#fdfdfd',
@@ -174,6 +210,9 @@ const themes: ThemePreview[] = [
       primary: '#14b8a6',
       secondary: '#3f8f68',
       accent: '#f59e0b',
+      medium: '#6b8f7a',
+      lightBorder: '#f59e0b',
+      darkBorder: 'rgba(107, 143, 122, 0.68)',
       lightBg: '#f3faf6',
       lightText: '#173b2f',
       lightCodeBg: '#e6f6ee',
@@ -192,6 +231,9 @@ function getThemeStyle(theme: ThemePreview): Record<string, string> {
     '--qpress-theme-primary': theme.palette.primary,
     '--qpress-theme-secondary': theme.palette.secondary,
     '--qpress-theme-accent': theme.palette.accent,
+    '--qpress-theme-medium': theme.palette.medium,
+    '--qpress-theme-light-border': theme.palette.lightBorder,
+    '--qpress-theme-dark-border': theme.palette.darkBorder,
     '--qpress-theme-light-bg': theme.palette.lightBg,
     '--qpress-theme-light-text': theme.palette.lightText,
     '--qpress-theme-light-code-bg': theme.palette.lightCodeBg,
@@ -215,7 +257,7 @@ function getThemeStyle(theme: ThemePreview): Record<string, string> {
 
 .qpress-theme-preview {
   overflow: hidden;
-  border: 1px solid var(--qpress-theme-accent);
+  border: 1px solid var(--qpress-theme-light-border);
   border-radius: 16px;
   background: var(--qpress-theme-light-bg);
   box-shadow: 0 18px 36px -28px var(--qpress-theme-shadow);
@@ -228,7 +270,7 @@ function getThemeStyle(theme: ThemePreview): Record<string, string> {
     background:
       linear-gradient(135deg, rgba(255, 255, 255, 0.08), transparent 42%),
       var(--qpress-theme-dark-bg);
-    border-bottom: 5px solid var(--qpress-theme-accent);
+    border-bottom: 5px solid var(--qpress-theme-dark-border);
 
     p {
       margin: 0;
@@ -269,7 +311,7 @@ function getThemeStyle(theme: ThemePreview): Record<string, string> {
     &--dark {
       color: var(--qpress-theme-dark-text);
       background: var(--qpress-theme-dark-bg);
-      border-left: 1px solid var(--qpress-theme-accent);
+      border-left: 1px solid var(--qpress-theme-dark-border);
 
       .qpress-theme-preview__swatch {
         border-color: rgba(255, 255, 255, 0.22);
@@ -317,6 +359,58 @@ function getThemeStyle(theme: ThemePreview): Record<string, string> {
       background: var(--qpress-theme-dark-code-bg);
     }
   }
+
+  &__step {
+    display: grid;
+    grid-template-columns: 32px minmax(0, 1fr);
+    gap: 12px;
+    align-items: start;
+    padding: 14px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    box-shadow: 0 10px 20px -18px var(--qpress-theme-shadow);
+
+    p {
+      margin: 4px 0 0;
+      line-height: 1.45;
+    }
+
+    &--light {
+      color: var(--qpress-theme-light-text);
+      background: var(--qpress-theme-light-code-bg);
+      border-color: var(--qpress-theme-light-border);
+    }
+
+    &--dark {
+      color: var(--qpress-theme-dark-text);
+      background: var(--qpress-theme-dark-code-bg);
+      border-color: var(--qpress-theme-dark-border);
+    }
+  }
+
+  &__step-marker {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-weight: 700;
+    line-height: 1;
+
+    &--light {
+      color: var(--qpress-theme-light-bg);
+      background: var(--qpress-theme-primary);
+    }
+
+    &--dark {
+      color: var(--qpress-theme-dark-bg);
+      background: var(--qpress-theme-primary);
+    }
+  }
+
+  &__step-body {
+    min-width: 0;
+  }
 }
 
 @media (max-width: 600px) {
@@ -329,7 +423,7 @@ function getThemeStyle(theme: ThemePreview): Record<string, string> {
   }
 
   .qpress-theme-preview__panel--dark {
-    border-top: 1px solid var(--qpress-theme-accent);
+    border-top: 1px solid var(--qpress-theme-dark-border);
     border-left: 0;
   }
 }
