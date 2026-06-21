@@ -23,10 +23,12 @@ const themePaths = [
 ]
 
 const themeFiles = [
+  'copperline.scss',
   'default.scss',
   'evergreen.scss',
   'mystic.scss',
   'newspaper.scss',
+  'signal.scss',
   'sunrise.scss',
   'tawny.scss',
 ]

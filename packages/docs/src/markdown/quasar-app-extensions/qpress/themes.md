@@ -52,32 +52,32 @@ Use Sass variables when you are defining a theme, and use runtime CSS variables 
 
 ### What Changes What
 
-| Theme input                                           | Runtime result                                                                                                        | Visible effect                                                                                 |
-| ----------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| `$brand-primary`                                      | `--qpress-color-primary`, `--qpress-rgb-primary`, action/chip/icon tokens                                             | Menu accents, pills, highlighted values, icon blocks, primary CTAs, and landing-page accents.  |
-| `$brand-secondary`                                    | `--qpress-color-secondary`, `--qpress-rgb-secondary`, secondary shadow mixes                                          | Secondary palette color available for custom components and subtle depth.                      |
-| `$brand-accent`                                       | `--qpress-color-accent`, `--qpress-rgb-accent`                                                                        | Extra accent color available for custom components.                                            |
-| `$brand-border-color-light` and `$brand-border-color-dark` | `--qpress-border-subtle`, `--qpress-border-strong`, pill, tile, resource, search, and highlighted border tokens | Shared border language for cards, panels, sections, Steps, code gutters, and search surfaces.  |
-| `$brand-light-bg` and `$brand-dark-bg`                | `--qpress-surface-page`, `--qpress-surface-panel`, hero start/end tokens                                              | Page background, panel background, and landing-page hero atmosphere.                           |
-| `$brand-light-text` and `$brand-dark-text`            | `--qpress-text-primary`, `--qpress-text-body`, `--qpress-text-muted`, `--qpress-text-soft`                            | Headings, paragraph text, helper text, and lower-emphasis copy.                                |
-| `$brand-light` and `$dark-pill`                       | `--qpress-surface-base`, `--qpress-surface-raised`, pill/chip/action backgrounds                                      | Cards, raised panels, pills, chips, and ghost buttons.                                         |
-| `$steps-*` variables                                  | Generated `.markdown-steps`, `.markdown-step`, `.markdown-step__marker`, and `.markdown-step__title` styles           | Numbered instructional flows that inherit the same panel, border, text, and marker tone.       |
-| `$shadow--large`, `$shadow--medium`, `$shadow--small` | Shadow tokens and component shadows                                                                                   | Depth on cards, hero sections, and elevated controls.                                          |
+| Theme input                                                | Runtime result                                                                                                  | Visible effect                                                                                |
+| ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| `$brand-primary`                                           | `--qpress-color-primary`, `--qpress-rgb-primary`, action/chip/icon tokens                                       | Menu accents, pills, highlighted values, icon blocks, primary CTAs, and landing-page accents. |
+| `$brand-secondary`                                         | `--qpress-color-secondary`, `--qpress-rgb-secondary`, secondary shadow mixes                                    | Secondary palette color available for custom components and subtle depth.                     |
+| `$brand-accent`                                            | `--qpress-color-accent`, `--qpress-rgb-accent`                                                                  | Extra accent color available for custom components.                                           |
+| `$brand-border-color-light` and `$brand-border-color-dark` | `--qpress-border-subtle`, `--qpress-border-strong`, pill, tile, resource, search, and highlighted border tokens | Shared border language for cards, panels, sections, Steps, code gutters, and search surfaces. |
+| `$brand-light-bg` and `$brand-dark-bg`                     | `--qpress-surface-page`, `--qpress-surface-panel`, hero start/end tokens                                        | Page background, panel background, and landing-page hero atmosphere.                          |
+| `$brand-light-text` and `$brand-dark-text`                 | `--qpress-text-primary`, `--qpress-text-body`, `--qpress-text-muted`, `--qpress-text-soft`                      | Headings, paragraph text, helper text, and lower-emphasis copy.                               |
+| `$brand-light` and `$dark-pill`                            | `--qpress-surface-base`, `--qpress-surface-raised`, pill/chip/action backgrounds                                | Cards, raised panels, pills, chips, and ghost buttons.                                        |
+| `$steps-*` variables                                       | Generated `.markdown-steps`, `.markdown-step`, `.markdown-step__marker`, and `.markdown-step__title` styles     | Numbered instructional flows that inherit the same panel, border, text, and marker tone.      |
+| `$shadow--large`, `$shadow--medium`, `$shadow--small`      | Shadow tokens and component shadows                                                                             | Depth on cards, hero sections, and elevated controls.                                         |
 
 ### Token Families
 
-| Family               | Tokens                                                                                                                                                                                                                                                                                  | Use them for                                                 |
-| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
-| Base colors          | `--qpress-color-primary`, `--qpress-color-secondary`, `--qpress-color-accent`, `--qpress-color-light`, `--qpress-color-dark`                                                                                                                                                            | Direct color references.                                     |
-| RGB channels         | `--qpress-rgb-primary`, `--qpress-rgb-secondary`, `--qpress-rgb-accent`, `--qpress-rgb-light`, `--qpress-rgb-dark`, `--qpress-rgb-text`, `--qpress-rgb-surface`, `--qpress-rgb-surface-raised`                                                                                         | Opacity-aware color mixes with `rgb(var(--token) / 0.24)`.   |
-| Text                 | `--qpress-text-primary`, `--qpress-text-body`, `--qpress-text-muted`, `--qpress-text-soft`, `--qpress-meta-text`                                                                                                                                                                        | Headings, body copy, support text, and soft labels.          |
-| Surfaces             | `--qpress-surface-page`, `--qpress-surface-base`, `--qpress-surface-raised`, `--qpress-surface-raised-strong`, `--qpress-surface-panel`, `--qpress-panel-gradient-top`, `--qpress-panel-gradient-bottom`                                                                                | Page backgrounds, cards, panels, and stronger card states.   |
-| Borders and shadows  | `--qpress-border-subtle`, `--qpress-border-strong`, `--qpress-card-shadow`, `--qpress-shadow-large`, `--qpress-pill-border`, `--qpress-highlight-border`, `--qpress-tile-border`, `--qpress-tile-hover-border`, `--qpress-resource-item-border`, `--qpress-tile-hover-shadow`          | Card outlines, section dividers, search surfaces, and elevation. |
-| Actions              | `--qpress-action-solid-bg`, `--qpress-action-solid-text`, `--qpress-action-solid-shadow`, `--qpress-action-ghost-bg`, `--qpress-action-ghost-text`                                                                                                                                      | Primary and secondary buttons.                               |
-| Chips and pills      | `--qpress-chip-bg`, `--qpress-chip-text`, `--qpress-pill-bg`, `--qpress-pill-border`, `--qpress-pill-text`                                                                                                                                                                              | Small labels, feature tags, and compact link pills.          |
-| Highlights and icons | `--qpress-highlight-bg`, `--qpress-highlight-border`, `--qpress-highlight-value`, `--qpress-highlight-label`, `--qpress-icon-bg`, `--qpress-icon-color`, `--qpress-accent-line`                                                                                                        | Stats cards, icon tiles, callout headers, and accent rules.  |
-| Tiles and resources  | `--qpress-tile-bg`, `--qpress-tile-border`, `--qpress-tile-hover-bg`, `--qpress-tile-hover-border`, `--qpress-tile-hover-shadow`, `--qpress-resource-link-bg`, `--qpress-resource-link-text`, `--qpress-resource-item-bg`, `--qpress-resource-item-border`, `--qpress-spot-accent` | Landing-page feature cards, resource cards, and link groups. |
-| Hero atmosphere      | `--qpress-mesh-color`, `--qpress-hero-glow-primary`, `--qpress-hero-glow-secondary`, `--qpress-hero-start`, `--qpress-hero-end`                                                                                                                                                         | Landing-page backgrounds and decorative glows.               |
+| Family               | Tokens                                                                                                                                                                                                                                                                             | Use them for                                                     |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| Base colors          | `--qpress-color-primary`, `--qpress-color-secondary`, `--qpress-color-accent`, `--qpress-color-light`, `--qpress-color-dark`                                                                                                                                                       | Direct color references.                                         |
+| RGB channels         | `--qpress-rgb-primary`, `--qpress-rgb-secondary`, `--qpress-rgb-accent`, `--qpress-rgb-light`, `--qpress-rgb-dark`, `--qpress-rgb-text`, `--qpress-rgb-surface`, `--qpress-rgb-surface-raised`                                                                                     | Opacity-aware color mixes with `rgb(var(--token) / 0.24)`.       |
+| Text                 | `--qpress-text-primary`, `--qpress-text-body`, `--qpress-text-muted`, `--qpress-text-soft`, `--qpress-meta-text`                                                                                                                                                                   | Headings, body copy, support text, and soft labels.              |
+| Surfaces             | `--qpress-surface-page`, `--qpress-surface-base`, `--qpress-surface-raised`, `--qpress-surface-raised-strong`, `--qpress-surface-panel`, `--qpress-panel-gradient-top`, `--qpress-panel-gradient-bottom`                                                                           | Page backgrounds, cards, panels, and stronger card states.       |
+| Borders and shadows  | `--qpress-border-subtle`, `--qpress-border-strong`, `--qpress-card-shadow`, `--qpress-shadow-large`, `--qpress-pill-border`, `--qpress-highlight-border`, `--qpress-tile-border`, `--qpress-tile-hover-border`, `--qpress-resource-item-border`, `--qpress-tile-hover-shadow`      | Card outlines, section dividers, search surfaces, and elevation. |
+| Actions              | `--qpress-action-solid-bg`, `--qpress-action-solid-text`, `--qpress-action-solid-shadow`, `--qpress-action-ghost-bg`, `--qpress-action-ghost-text`                                                                                                                                 | Primary and secondary buttons.                                   |
+| Chips and pills      | `--qpress-chip-bg`, `--qpress-chip-text`, `--qpress-pill-bg`, `--qpress-pill-border`, `--qpress-pill-text`                                                                                                                                                                         | Small labels, feature tags, and compact link pills.              |
+| Highlights and icons | `--qpress-highlight-bg`, `--qpress-highlight-border`, `--qpress-highlight-value`, `--qpress-highlight-label`, `--qpress-icon-bg`, `--qpress-icon-color`, `--qpress-accent-line`                                                                                                    | Stats cards, icon tiles, callout headers, and accent rules.      |
+| Tiles and resources  | `--qpress-tile-bg`, `--qpress-tile-border`, `--qpress-tile-hover-bg`, `--qpress-tile-hover-border`, `--qpress-tile-hover-shadow`, `--qpress-resource-link-bg`, `--qpress-resource-link-text`, `--qpress-resource-item-bg`, `--qpress-resource-item-border`, `--qpress-spot-accent` | Landing-page feature cards, resource cards, and link groups.     |
+| Hero atmosphere      | `--qpress-mesh-color`, `--qpress-hero-glow-primary`, `--qpress-hero-glow-secondary`, `--qpress-hero-start`, `--qpress-hero-end`                                                                                                                                                    | Landing-page backgrounds and decorative glows.                   |
 
 Steps styling is generated from Sass theme inputs instead of runtime `--qpress-*` tokens. By default, `$steps-border-color-light` and `$steps-border-color-dark` point back to the shared brand border variables so Steps match cards, code panels, and search UI.
 
@@ -322,25 +322,25 @@ When setting up your menu system, you may need to adjust the media query breakpo
 
 These breakpoints create the `.lt-*` and `.gt-*` utility classes used by the generated Q-Press header. They also need to match the `mq` values in `src/siteConfig/index.ts`.
 
-| Breakpoint | Correlation |
-| --- | --- |
+| Breakpoint          | Correlation                                                                                                                                     |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
 | `mq` on a menu item | Q-Press renders that menu item with either `gt-{mq}` or `lt-{mq}`. If the value is missing from `$mq-list`, the generated class will not exist. |
-| `.gt-{mq}` | Visible at `{mq}px` and wider. Used by primary and secondary header links. |
-| `.lt-{mq}` | Visible below `{mq}px`. Used by the `More` menu, drawer button, and compact header controls. |
-| `1300 /* drawer */` | Default drawer/menu-button breakpoint in the generated layout. Keep this in sync if you customize the drawer behavior. |
-| `1400` | Default breakpoint for showing social icon links directly in the header instead of keeping them inside `More`. |
+| `.gt-{mq}`          | Visible at `{mq}px` and wider. Used by primary and secondary header links.                                                                      |
+| `.lt-{mq}`          | Visible below `{mq}px`. Used by the `More` menu, drawer button, and compact header controls.                                                    |
+| `1300 /* drawer */` | Default drawer/menu-button breakpoint in the generated layout. Keep this in sync if you customize the drawer behavior.                          |
+| `1400`              | Default breakpoint for showing social icon links directly in the header instead of keeping them inside `More`.                                  |
 
 For example, if `src/siteConfig/index.ts` contains a menu item with `mq: 1330`, then `$mq-list` must include `1330` so Q-Press can generate `.gt-1330` and `.lt-1330`.
 
 The generated Q-Press site uses these menu correlations by default:
 
-| Default value | Used by |
-| --- | --- |
-| `470` | `Getting Started` header menu item. |
-| `860` | `MD Plugins` header menu item. |
-| `1000` | `Vite Plugins` header menu item. |
-| `1330` | `Quasar App Extensions` header menu item. |
-| `1400` | `Other` header menu item and social icon links. |
+| Default value | Used by                                         |
+| ------------- | ----------------------------------------------- |
+| `470`         | `Getting Started` header menu item.             |
+| `860`         | `MD Plugins` header menu item.                  |
+| `1000`        | `Vite Plugins` header menu item.                |
+| `1330`        | `Quasar App Extensions` header menu item.       |
+| `1400`        | `Other` header menu item and social icon links. |
 
 If you add a menu item, widen labels, enable search, or change header actions, adjust the affected `mq` values and keep `$mq-list` in sync.
 
