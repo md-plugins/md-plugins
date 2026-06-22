@@ -8,8 +8,18 @@
       },
       {
         "docsUrl": "/quasar-app-extensions/qpress/components",
+        "input": "src/.q-press/components/MarkdownApi.vue",
+        "output": "src/.q-press/api/components/MarkdownApi.json"
+      },
+      {
+        "docsUrl": "/quasar-app-extensions/qpress/components",
         "input": "src/.q-press/components/MarkdownCardLink.vue",
         "output": "src/.q-press/api/components/MarkdownCardLink.json"
+      },
+      {
+        "docsUrl": "/quasar-app-extensions/qpress/components",
+        "input": "src/.q-press/components/MarkdownCardTitle.vue",
+        "output": "src/.q-press/api/components/MarkdownCardTitle.json"
       },
       {
         "docsUrl": "/quasar-app-extensions/qpress/components",
@@ -18,8 +28,88 @@
       },
       {
         "docsUrl": "/quasar-app-extensions/qpress/components",
+        "input": "src/.q-press/components/MarkdownCodepen.vue",
+        "output": "src/.q-press/api/components/MarkdownCodepen.json"
+      },
+      {
+        "docsUrl": "/quasar-app-extensions/qpress/components",
+        "input": "src/.q-press/components/MarkdownCopyButton.vue",
+        "output": "src/.q-press/api/components/MarkdownCopyButton.json"
+      },
+      {
+        "docsUrl": "/quasar-app-extensions/qpress/components",
         "input": "src/.q-press/components/MarkdownExample.vue",
         "output": "src/.q-press/api/components/MarkdownExample.json"
+      },
+      {
+        "docsUrl": "/quasar-app-extensions/qpress/components",
+        "input": "src/.q-press/components/MarkdownLink.vue",
+        "output": "src/.q-press/api/components/MarkdownLink.json"
+      },
+      {
+        "docsUrl": "/quasar-app-extensions/qpress/components",
+        "input": "src/.q-press/components/MarkdownTree.vue",
+        "output": "src/.q-press/api/components/MarkdownTree.json"
+      },
+      {
+        "docsUrl": "/quasar-app-extensions/qpress/components",
+        "input": "src/.q-press/layouts/MarkdownAnnouncement.vue",
+        "output": "src/.q-press/api/components/MarkdownAnnouncement.json"
+      },
+      {
+        "docsUrl": "/quasar-app-extensions/qpress/components",
+        "input": "src/.q-press/layouts/MarkdownCampaigns.vue",
+        "output": "src/.q-press/api/components/MarkdownCampaigns.json"
+      },
+      {
+        "docsUrl": "/quasar-app-extensions/qpress/components",
+        "input": "src/.q-press/layouts/MarkdownDrawerSidebar.vue",
+        "output": "src/.q-press/api/components/MarkdownDrawerSidebar.json"
+      },
+      {
+        "docsUrl": "/quasar-app-extensions/qpress/components",
+        "input": "src/.q-press/layouts/MarkdownDrawerToc.vue",
+        "output": "src/.q-press/api/components/MarkdownDrawerToc.json"
+      },
+      {
+        "docsUrl": "/quasar-app-extensions/qpress/components",
+        "input": "src/.q-press/layouts/MarkdownHeader.vue",
+        "output": "src/.q-press/api/components/MarkdownHeader.json"
+      },
+      {
+        "docsUrl": "/quasar-app-extensions/qpress/components",
+        "input": "src/.q-press/layouts/MarkdownHeaderIconLinks.vue",
+        "output": "src/.q-press/api/components/MarkdownHeaderIconLinks.json"
+      },
+      {
+        "docsUrl": "/quasar-app-extensions/qpress/components",
+        "input": "src/.q-press/layouts/MarkdownHeaderTextLinks.vue",
+        "output": "src/.q-press/api/components/MarkdownHeaderTextLinks.json"
+      },
+      {
+        "docsUrl": "/quasar-app-extensions/qpress/components",
+        "input": "src/.q-press/layouts/MarkdownLayout.vue",
+        "output": "src/.q-press/api/components/MarkdownLayout.json"
+      },
+      {
+        "docsUrl": "/quasar-app-extensions/qpress/components",
+        "input": "src/.q-press/layouts/MarkdownPage.vue",
+        "output": "src/.q-press/api/components/MarkdownPage.json"
+      },
+      {
+        "docsUrl": "/quasar-app-extensions/qpress/components",
+        "input": "src/.q-press/layouts/MarkdownPageFooter.vue",
+        "output": "src/.q-press/api/components/MarkdownPageFooter.json"
+      },
+      {
+        "docsUrl": "/quasar-app-extensions/qpress/components",
+        "input": "src/.q-press/layouts/MarkdownPageToc.vue",
+        "output": "src/.q-press/api/components/MarkdownPageToc.json"
+      },
+      {
+        "docsUrl": "/quasar-app-extensions/qpress/components",
+        "input": "src/.q-press/layouts/MarkdownPrivacyConsent.vue",
+        "output": "src/.q-press/api/components/MarkdownPrivacyConsent.json"
       },
       {
         "docsUrl": "/quasar-app-extensions/qpress/overview",
