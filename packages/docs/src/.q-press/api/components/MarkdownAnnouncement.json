@@ -1,19 +1,16 @@
 {
+  "generated_at": "2026-06-22T19:26:50.120Z",
   "type": "component",
   "meta": {
-    "docsUrl": "https://path-to-your-docs/markdown-announcement"
+    "docsUrl": "/quasar-app-extensions/qpress/components"
   },
   "props": {
     "config": {
+      "desc": "Announcement settings from `siteConfig.announcement`.",
+      "required": false,
+      "tsType": "AnnouncementBannerConfig | undefined",
       "type": "AnnouncementBannerConfig",
-      "desc": "Site announcement settings from siteConfig.announcement. The banner is shown only when enabled is true, the optional startAt/endAt window is active, and the current id has not been dismissed.",
       "category": "content"
-    }
-  },
-  "methods": {
-    "dismiss": {
-      "desc": "Dismisses the current announcement id and stores the dismissal in localStorage.",
-      "returns": null
     }
   }
 }
