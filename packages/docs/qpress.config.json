@@ -13,6 +13,11 @@
       },
       {
         "docsUrl": "/quasar-app-extensions/qpress/components",
+        "input": "src/.q-press/components/MarkdownApiEntry.ts",
+        "output": "src/.q-press/api/components/MarkdownApiEntry.json"
+      },
+      {
+        "docsUrl": "/quasar-app-extensions/qpress/components",
         "input": "src/.q-press/components/MarkdownCardLink.vue",
         "output": "src/.q-press/api/components/MarkdownCardLink.json"
       },

@@ -847,10 +847,24 @@ export default defineComponent({
   name: 'DocApiEntry',
 
   props: {
+    /**
+     * API section type being rendered.
+     *
+     * @category content
+     * @example 'props'
+     * @example 'methods'
+     */
     type: {
       type: String as PropType<string>,
       required: true,
     },
+
+    /**
+     * API definition entries for the selected section.
+     *
+     * @category content
+     * @example { modelValue: { type: 'String', desc: 'Current model value.' } }
+     */
     definition: {
       type: [Object, String] as PropType<Record<string, any> | string>,
       required: true,
