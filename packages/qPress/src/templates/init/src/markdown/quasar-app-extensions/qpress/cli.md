@@ -176,7 +176,7 @@ If you need to run the docs checks without generated API drift checks, use:
 pnpm exec qpress check --no-api
 ```
 
-The generator currently extracts exported TypeScript functions, exported `const` arrow/function expressions, object-style Vue SFC props, simple emits, and template slots. It reads JSDoc descriptions plus `@param`, `@returns`, `@example`, `@category`, `@since`, and `@deprecated` tags, then emits the same JSON shape used by `MarkdownApi`. Repeat `@example` for multiple examples. For prop categories, repeat `@category` or separate names with `|` or `,`; props without a category render in MarkdownApi's default group.
+The generator currently extracts exported TypeScript functions, exported `const` arrow/function expressions, object-style Vue SFC props, simple emits, and template slots. It reads JSDoc descriptions plus `@param`, `@returns`, `@example`, `@category`, `@since`, and `@deprecated` tags, then emits the same JSON shape used by `MarkdownApi`. Repeat `@example` for multiple examples. For prop categories, repeat `@category` or separate names with `|` or `,`; props without a category render in MarkdownApi's default group. For slot descriptions, add JSDoc to a `<script setup>` `defineSlots` type declaration.
 
 Configure entries under `api.entries`:
 

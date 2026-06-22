@@ -235,9 +235,10 @@ function populateTypeScriptApi(
 
 function populateVueComponentApi(api: GeneratedApiJson, inputPath: string, source: string): number {
   const scriptSetup = extractScriptSetup(source)
+  let sourceFile: ts.SourceFile | undefined
 
   if (scriptSetup !== undefined) {
-    const sourceFile = ts.createSourceFile(inputPath, scriptSetup, ts.ScriptTarget.Latest, true)
+    sourceFile = ts.createSourceFile(inputPath, scriptSetup, ts.ScriptTarget.Latest, true)
     const props = extractVueProps(sourceFile)
     const events = extractVueEvents(sourceFile)
 
@@ -250,7 +251,7 @@ function populateVueComponentApi(api: GeneratedApiJson, inputPath: string, sourc
     }
   }
 
-  const slots = extractVueSlots(source)
+  const slots = extractVueSlots(source, sourceFile)
 
   if (Object.keys(slots).length > 0) {
     api.slots = slots
@@ -608,8 +609,11 @@ function getVueEventPayloadType(node: ts.Expression, sourceFile: ts.SourceFile):
   return node.getText(sourceFile)
 }
 
-function extractVueSlots(source: string): Record<string, GeneratedApiProperty> {
-  const slots: Record<string, GeneratedApiProperty> = {}
+function extractVueSlots(
+  source: string,
+  sourceFile: ts.SourceFile | undefined,
+): Record<string, GeneratedApiProperty> {
+  const slots = sourceFile === undefined ? {} : extractVueDefinedSlots(sourceFile)
   const template = /<template(?:\s[^>]*)?>([\s\S]*?)<\/template>/i.exec(source)?.[1]
 
   if (template === undefined) {
@@ -623,8 +627,37 @@ function extractVueSlots(source: string): Record<string, GeneratedApiProperty> {
     const slotTag = match[0]
     const name = /\sname=["']([^"']+)["']/.exec(slotTag)?.[1] ?? 'default'
 
-    slots[name] = {
+    slots[name] ??= {
       desc: '',
+    }
+  }
+
+  return slots
+}
+
+function extractVueDefinedSlots(sourceFile: ts.SourceFile): Record<string, GeneratedApiProperty> {
+  const slotsCall = findMacroCall(sourceFile, 'defineSlots')
+  const slotsType = slotsCall?.typeArguments?.[0]
+
+  if (slotsType === undefined || !ts.isTypeLiteralNode(slotsType)) {
+    return {}
+  }
+
+  const slots: Record<string, GeneratedApiProperty> = {}
+
+  for (const member of slotsType.members) {
+    if (!ts.isMethodSignature(member) && !ts.isPropertySignature(member)) {
+      continue
+    }
+
+    const name = getMemberName(member, sourceFile)
+
+    if (name === undefined) {
+      continue
+    }
+
+    slots[name] = {
+      desc: readJSDoc(member, sourceFile).desc,
     }
   }
 

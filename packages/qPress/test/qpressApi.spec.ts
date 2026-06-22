@@ -437,6 +437,13 @@ function select() {
   emit('select', { id: 1 })
   emit('update:modelValue', 'active')
 }
+
+defineSlots<{
+  /**
+   * Custom content inside the card link.
+   */
+  default(): unknown
+}>()
 </script>
 `,
       'src/components/TypedEvents.vue': `
@@ -508,7 +515,7 @@ const emit = defineEmits({
         },
       })
       expect(generated.slots.default).toEqual({
-        desc: '',
+        desc: 'Custom content inside the card link.',
       })
 
       await generateQPressApi({

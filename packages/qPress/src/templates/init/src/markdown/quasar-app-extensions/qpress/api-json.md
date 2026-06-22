@@ -137,13 +137,24 @@ The first implementation focuses on TypeScript function exports and Vue SFC basi
 - Exported `const` function expressions.
 - Object-style `<script setup>` `defineProps`.
 - Simple array-style and object-style `<script setup>` `defineEmits`.
-- Template `<slot>` usage.
+- Template `<slot>` usage, with descriptions from `defineSlots` JSDoc when provided.
 - JSDoc descriptions.
 - `@param`, `@returns`, `@example`, `@category`, `@since`, and `@deprecated`.
 - TypeScript signatures.
 - Local interface and type-literal return definitions when the return type points directly at them.
 
 Use repeated `@example` tags to emit multiple examples. Use `@category` on prop JSDoc to place generated props into MarkdownApi category tabs; repeat the tag or separate names with `|` or `,` when a prop belongs to more than one category. Props without `@category` omit the field and render in MarkdownApi's default group.
+
+Use `defineSlots` when slot descriptions should be generated from source:
+
+```ts
+defineSlots<{
+  /**
+   * Slot for custom content inside the link.
+   */
+  default(): unknown
+}>()
+```
 
 ## What Still Needs Review
 

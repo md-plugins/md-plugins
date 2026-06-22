@@ -26,6 +26,13 @@ const props = defineProps({
    */
   external: Boolean,
 })
+
+defineSlots<{
+  /**
+   * Slot for custom content inside the link.
+   */
+  default(): unknown
+}>()
 </script>
 
 <style lang="scss">
