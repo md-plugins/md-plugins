@@ -9,6 +9,7 @@ related:
 Q-Press exposes one primary CLI command with focused subcommands. The CLI is installed as a project-local npm binary, not a global shell command:
 
 ```bash
+pnpm exec qpress api generate
 pnpm exec qpress check
 pnpm exec qpress ssg
 ```
@@ -23,6 +24,9 @@ Every command supports `--help`:
 
 ```bash
 pnpm exec qpress --help
+pnpm exec qpress api --help
+pnpm exec qpress api generate --help
+pnpm exec qpress api check --help
 pnpm exec qpress check --help
 pnpm exec qpress ssg --help
 ```
@@ -71,6 +75,7 @@ The checker scans:
 - Missing `MarkdownExample` source files
 - Missing imported Q-Press API JSON files
 - Malformed API JSON files
+- Stale generated API JSON when `api.entries` is configured
 - Missing frontmatter title or description warnings
 - Common browser-only globals in examples that can surprise SSG builds
 
@@ -98,6 +103,17 @@ Put check options under the `check` key:
 
 ```json
 {
+  "api": {
+    "generatedSuffix": ".generated",
+    "entries": [
+      {
+        "input": "src/utils/timestamp.ts",
+        "output": "src/.q-press/api/composables/timestamp.json",
+        "group": "functions",
+        "docsUrl": "/api/timestamp"
+      }
+    ]
+  },
   "check": {
     "allowedRoutes": ["/theme-builder"],
     "ignoreFiles": ["__*.md"],
@@ -121,6 +137,84 @@ Skip config loading for debugging or one-off CI checks:
 ```bash
 pnpm exec qpress check --no-config
 ```
+
+## API JSON Generation
+
+Use `qpress api` when you want TypeScript exports and JSDoc to become the source of truth for Q-Press API JSON.
+
+`generate` writes review files next to your configured API JSON output paths:
+
+```bash
+pnpm exec qpress api generate
+```
+
+For example, an entry with this output path:
+
+```text
+src/.q-press/api/composables/timestamp.json
+```
+
+Generates this review file:
+
+```text
+src/.q-press/api/composables/timestamp.generated.json
+```
+
+Review the generated file before publishing it. If the generated descriptions, examples, categories, params, returns, or slot scopes are thin, update the TypeScript/JSDoc and run the generator again. Generated JSON includes a top-level `generated_at` timestamp; drift checks ignore that field so timestamp churn does not fail CI.
+
+Run `check` when CI should report stale or missing API JSON without writing files:
+
+```bash
+pnpm exec qpress api check
+```
+
+`qpress check` also runs these stale generated API checks automatically when `api.entries` is configured. This keeps the normal release validator aware of API drift without requiring a second command in most CI scripts.
+
+If you need to run the docs checks without generated API drift checks, use:
+
+```bash
+pnpm exec qpress check --no-api
+```
+
+The generator extracts exported TypeScript functions, exported `const` arrow/function expressions, object-style and typed Vue SFC props/emits/slots, and TypeScript `defineComponent({ props, emits, slots, setup })` component surfaces. It can follow local prop type aliases, local imported prop declarations, `withDefaults(defineProps<T>(), defaults)`, local imported prop/emit spreads, `SlotsType<T>` declarations, render-function slot usage, and `expose({ ... })` methods when they resolve to local TypeScript source.
+
+It reads JSDoc descriptions plus `@param`, `@returns`, `@example`, `@category`, `@since`, and `@deprecated` tags, then emits the same JSON shape used by `MarkdownApi`. Repeat `@example` for multiple examples. For prop categories, repeat `@category` or separate names with `|` or `,`; props without a category render in MarkdownApi's default group.
+
+Use explicit metadata tags for fields that should not be guessed from source: `@values`, `@applicable`, `@default`, `@required`, `@type`, `@ts-type`, and `@api-exemption`. Function, event, and slot-scope params can use `@param-values name ...`, `@param-example name ...`, `@param-default name ...`, `@param-required name false`, `@param-type name ...`, `@param-ts-type name ...`, and `@param-api-exemption name examples`. Return metadata can use `@returns-example`, `@returns-type`, `@returns-ts-type`, and `@returns-api-exemption`.
+
+See [API JSON](/quasar-app-extensions/qpress/api-json) for full source examples covering exported functions, typed props, runtime props, emits, custom events, slots, exposed methods, return definitions, metadata tags, generated output, and review output.
+
+Configure entries under `api.entries`:
+
+```json
+{
+  "api": {
+    "entries": [
+      {
+        "input": "src/utils/timestamp.ts",
+        "output": "src/.q-press/api/composables/timestamp.json",
+        "group": "functions",
+        "docsUrl": "/api/timestamp"
+      }
+    ]
+  }
+}
+```
+
+Use `group: "functions"` for composables and utilities, or `group: "methods"` when the generated API should appear under the Methods tab.
+
+You can also run a one-off comparison without config:
+
+```bash
+pnpm exec qpress api generate \
+  --input src/utils/timestamp.ts \
+  --output src/.q-press/api/composables/timestamp.json \
+  --type plugin \
+  --group methods \
+  --docs-url /api/timestamp
+```
+
+For one-off runs, `--type`, `--group`, and `--docs-url` mirror the matching `api.entries` fields. Use them when you are probing a new source file and want the generated review file to resemble the final API JSON shape. `docsUrl` is passed through to `MarkdownApi` as the Docs button target, so Q-Press docs commonly use a route path.
 
 ## Custom Routes
 

@@ -20,6 +20,10 @@ const examplesPath = path.resolve(__dirname, '../../docs/src/examples')
 const siteConfigPath = path.resolve(__dirname, '../../docs/src/siteConfig')
 const pagesPath = path.resolve(__dirname, '../../docs/src/pages')
 
+const copyGeneratedSources = {
+  filter: (src) => /\.generated\.json$/.test(src) === false,
+}
+
 // The "update" folder only gets the '_q-press' folder.
 fse.removeSync(initPath)
 fse.removeSync(updatePath)
@@ -27,8 +31,8 @@ fse.removeSync(distTemplatesPath)
 
 fse.copySync(globalsPath, distGlobalsPath)
 
-fse.copySync(qPressPath, path.join(initPath, 'src/_q-press'))
-fse.copySync(qPressPath, path.join(updatePath, 'src/_q-press'))
+fse.copySync(qPressPath, path.join(initPath, 'src/_q-press'), copyGeneratedSources)
+fse.copySync(qPressPath, path.join(updatePath, 'src/_q-press'), copyGeneratedSources)
 
 fse.copySync(componentsPath, path.join(initPath, 'src/components'))
 fse.copySync(markdownPath, path.join(initPath, 'src/markdown'))

@@ -1,29 +1,16 @@
 {
+  "generated_at": "2026-06-22T19:26:50.122Z",
   "type": "component",
   "meta": {
-    "docsUrl": "https://path-to-your-docs/markdown-campaigns"
+    "docsUrl": "/quasar-app-extensions/qpress/components"
   },
   "props": {
     "campaigns": {
-      "type": "CampaignConfig[]",
-      "desc": "Opt-in campaign settings from siteConfig.campaigns. The component arms the first eligible campaign for the current route, date window, viewport, trigger, and frequency rules.",
+      "desc": "Opt-in campaign settings from `siteConfig.campaigns`.",
+      "required": false,
+      "tsType": "CampaignConfig[] | undefined",
+      "type": "Array",
       "category": "content"
-    }
-  },
-  "methods": {
-    "openCampaign": {
-      "desc": "Opens the active campaign after its configured trigger fires.",
-      "params": {
-        "campaign": {
-          "type": "CampaignConfig",
-          "desc": "Eligible campaign to display."
-        }
-      },
-      "returns": null
-    },
-    "closeCampaign": {
-      "desc": "Closes the active campaign and allows the dialog hide handler to persist dismissal state.",
-      "returns": null
     }
   }
 }

@@ -45,7 +45,6 @@ import MarkdownLayoutApi from '@/.q-press/api/components/MarkdownLayout.json'
 import MarkdownLinkApi from '@/.q-press/api/components/MarkdownLink.json'
 import MarkdownPageApi from '@/.q-press/api/components/MarkdownPage.json'
 import MarkdownPageFooterApi from '@/.q-press/api/components/MarkdownPageFooter.json'
-import MarkdownPageSidebarApi from '@/.q-press/api/components/MarkdownPageSidebar.json'
 import MarkdownPageTocApi from '@/.q-press/api/components/MarkdownPageToc.json'
 
 import MarkdownTreeApi from '@/.q-press/api/components/MarkdownTree.json'
@@ -76,7 +75,6 @@ import MarkdownPrivacyConsentApi from '@/.q-press/api/components/MarkdownPrivacy
 <MarkdownApi :api="MarkdownLinkApi" name="MarkdownLink"/>
 <MarkdownApi :api="MarkdownPageApi" name="MarkdownPage"/>
 <MarkdownApi :api="MarkdownPageFooterApi" name="MarkdownPageFooter"/>
-<!-- No <MarkdownApi :api="MarkdownPageSidebarApi" name="MarkdownPageSidebar"/> -->
 <!-- No <MarkdownApi :api="MarkdownPageTocApi" name="MarkdownPageToc"/> -->
 
 <MarkdownApi :api="MarkdownPrerenderApi" name="MarkdownPrerender"/>

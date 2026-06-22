@@ -76,7 +76,11 @@ interface StoredPrivacyConsent {
 }
 
 const props = defineProps<{
-  /** Privacy consent settings from `siteConfig.privacyConsent`. */
+  /**
+   * Privacy consent settings from `siteConfig.privacyConsent`.
+   *
+   * @category content
+   */
   config?: PrivacyConsentConfig | undefined
 }>()
 
@@ -151,9 +155,14 @@ function readStoredConsent(): StoredPrivacyConsent | null {
   }
 }
 
-/** Emits the consent state so optional analytics or embeds can load after consent. */
-function emitConsent(consent: StoredPrivacyConsent): void {
-  window.dispatchEvent(new CustomEvent('qpress:privacy-consent', { detail: consent }))
+/**
+ * Browser CustomEvent dispatched on window after a saved privacy choice is read or written.
+ *
+ * @event qpress:privacy-consent
+ * @param detail Stored consent id, accepted flag, category choices, savedAt, and optional expiresAt values.
+ */
+function emitConsent(detail: StoredPrivacyConsent): void {
+  window.dispatchEvent(new CustomEvent('qpress:privacy-consent', { detail }))
 }
 
 /** Persists and broadcasts a consent choice. */
@@ -182,7 +191,11 @@ function saveConsent(accepted: boolean, categoryValues: Record<string, boolean>)
   emitConsent(consent)
 }
 
-/** Stores an all-accepted consent or notice acknowledgement. */
+/**
+ * Stores the acknowledgement or accept-all choice.
+ *
+ * @api
+ */
 function savePrimaryChoice(): void {
   const categoryValues: Record<string, boolean> = {}
 
@@ -194,7 +207,11 @@ function savePrimaryChoice(): void {
   saveConsent(true, categoryValues)
 }
 
-/** Stores required categories only and rejects optional categories. */
+/**
+ * Stores required categories only and rejects optional categories.
+ *
+ * @api
+ */
 function rejectOptional(): void {
   const categoryValues: Record<string, boolean> = {}
 

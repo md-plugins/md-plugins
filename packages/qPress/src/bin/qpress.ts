@@ -5,6 +5,7 @@ import {
   formatQPressCheckResult,
   type QPressCheckOptions,
 } from '../check/qpress-check.js'
+import { runQPressApiCli } from './qpress-api-command.js'
 import { loadQPressCliConfig, type QPressCheckCliConfig } from './qpress-config.js'
 import { runQPressSsgCli } from './qpress-ssg-command.js'
 
@@ -29,6 +30,7 @@ Usage:
   qpress <command> [options]
 
 Commands:
+  api     Generate or check Q-Press API JSON from TypeScript exports and JSDoc.
   check   Validate Q-Press Markdown routes, examples, API JSON, and SSG-risky examples.
   ssg     Prerender Q-Press routes into static HTML.
 
@@ -61,6 +63,7 @@ Options:
   --landing-page <file> Landing page Markdown filename. Defaults to landing-page.md.
   --ignore-file <glob>  Ignore a Markdown file path. Can be repeated.
   --allow-route <route> Treat a custom non-Markdown route as valid. Can be repeated.
+  --no-api              Skip configured qpress api stale checks.
   --no-navigation       Skip siteConfig navigation route checks.
   --check-unreachable   Warn when Markdown routes are not referenced by siteConfig navigation.
   --no-ssg-unsafe       Skip browser-global SSG-safety warnings for example files.
@@ -143,6 +146,9 @@ function parseCheckArgs(args: string[]): CheckCliOptions {
         options.allowedRoutes.push(readValue(args, index, arg))
         index += 1
         break
+      case '--no-api':
+        options.checkGeneratedApi = false
+        break
       case '--no-navigation':
         options.checkNavigation = false
         break
@@ -217,6 +223,8 @@ async function runCheck(args: string[]): Promise<number> {
     loadConfig: cliOptions.noConfig !== true,
   })
   const options = mergeCheckOptions(config.check, cliOptions)
+  options.apiEntries = options.checkGeneratedApi === false ? undefined : config.api?.entries
+  options.apiGeneratedSuffix = config.api?.generatedSuffix
   const result = await checkQPressProject(options)
 
   if (options.json === true) {
@@ -243,6 +251,11 @@ async function run(): Promise<void> {
 
   if (command === 'check') {
     process.exitCode = await runCheck(args)
+    return
+  }
+
+  if (command === 'api') {
+    process.exitCode = await runQPressApiCli(args)
     return
   }
 
