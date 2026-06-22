@@ -1,8 +1,17 @@
-import { h, ref, computed, defineComponent, type PropType } from 'vue'
+import { h, ref, computed, defineComponent, type PropType, type SlotsType } from 'vue'
 import { QCard, QTabs, QTab, QTabPanels, QSeparator } from 'quasar'
+
+interface MarkdownPrerenderSlots {
+  /**
+   * Prerendered Markdown or example content.
+   */
+  default?: () => unknown
+}
 
 export default defineComponent({
   name: 'MarkdownPrerender',
+
+  slots: Object as SlotsType<MarkdownPrerenderSlots>,
 
   props: {
     /**
