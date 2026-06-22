@@ -2,6 +2,26 @@
   "api": {
     "entries": [
       {
+        "docsUrl": "/quasar-app-extensions/qpress/components",
+        "input": "src/.q-press/components/DarkModeToggle.vue",
+        "output": "src/.q-press/api/components/DarkModeToggle.json"
+      },
+      {
+        "docsUrl": "/quasar-app-extensions/qpress/components",
+        "input": "src/.q-press/components/MarkdownCardLink.vue",
+        "output": "src/.q-press/api/components/MarkdownCardLink.json"
+      },
+      {
+        "docsUrl": "/quasar-app-extensions/qpress/components",
+        "input": "src/.q-press/components/MarkdownCode.vue",
+        "output": "src/.q-press/api/components/MarkdownCode.json"
+      },
+      {
+        "docsUrl": "/quasar-app-extensions/qpress/components",
+        "input": "src/.q-press/components/MarkdownExample.vue",
+        "output": "src/.q-press/api/components/MarkdownExample.json"
+      },
+      {
         "docsUrl": "/quasar-app-extensions/qpress/overview",
         "input": "src/.q-press/composables/dark.ts",
         "output": "src/.q-press/api/composables/dark.json"
