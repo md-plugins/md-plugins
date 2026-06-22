@@ -308,6 +308,97 @@ export function parseValue(input: string | number): string | number {
     }
   })
 
+  it('infers returned object definitions from local functions', async () => {
+    const root = await createProject({
+      'src/.q-press/api/composables/scroll.json': '{"type":"component"}\n',
+      'src/composables/scroll.ts': `
+/**
+ * Provides anchor scrolling and active table-of-contents tracking.
+ *
+ * @returns Scroll helpers.
+ */
+export function useScroll() {
+  /**
+   * Scrolls the page to the HTML element with the specified ID.
+   *
+   * @param id - The ID of the HTML element to scroll to.
+   */
+  function scrollTo(id: string) {
+  }
+
+  /**
+   * Handles the page scroll event.
+   *
+   * @param position - Current vertical scroll position.
+   */
+  function onPageScroll({ position }: { position: number }) {
+    void position
+  }
+
+  return {
+    scrollTo,
+    onPageScroll,
+  }
+}
+`,
+    })
+
+    try {
+      await generateQPressApi({
+        cwd: root,
+        entries: [
+          {
+            input: 'src/composables/scroll.ts',
+            output: 'src/.q-press/api/composables/scroll.json',
+          },
+        ],
+      })
+      const generated = JSON.parse(
+        await readFile(join(root, 'src/.q-press/api/composables/scroll.generated.json'), 'utf8'),
+      )
+
+      expect(generated.functions.useScroll.tsSignature).toBe('function useScroll(): Object')
+      expect(generated.functions.useScroll.returns).toEqual({
+        definition: {
+          onPageScroll: {
+            desc: 'Handles the page scroll event.',
+            params: {
+              position: {
+                desc: 'Current vertical scroll position.',
+                required: true,
+                tsType: 'number',
+                type: 'number',
+              },
+            },
+            required: true,
+            returns: null,
+            tsSignature: 'function onPageScroll({ position }: { position: number }): void',
+            type: 'Function',
+          },
+          scrollTo: {
+            desc: 'Scrolls the page to the HTML element with the specified ID.',
+            params: {
+              id: {
+                desc: 'The ID of the HTML element to scroll to.',
+                required: true,
+                tsType: 'string',
+                type: 'string',
+              },
+            },
+            required: true,
+            returns: null,
+            tsSignature: 'function scrollTo(id: string): void',
+            type: 'Function',
+          },
+        },
+        desc: 'Scroll helpers.',
+        type: 'Object',
+      })
+    } finally {
+      await rm(root, { force: true, recursive: true })
+    }
+  })
+
   it('checks stale API JSON without writing comparison files', async () => {
     const root = await createProject({
       'src/.q-press/api/helpers/math.json': '{"type":"component"}\n',

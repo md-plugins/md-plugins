@@ -74,6 +74,8 @@ type GeneratedApiJson = {
   type: string
 }
 
+type FunctionLikeNode = ts.FunctionDeclaration | ts.ArrowFunction | ts.FunctionExpression
+
 const defaultGeneratedSuffix = '.generated'
 
 /**
@@ -248,7 +250,7 @@ function extractExportedFunctions(sourceFile: ts.SourceFile): Record<string, Gen
 }
 
 function createFunctionEntry(
-  node: ts.FunctionDeclaration | ts.ArrowFunction | ts.FunctionExpression,
+  node: FunctionLikeNode,
   sourceFile: ts.SourceFile,
   options: {
     fallbackJSDocNode?: ts.Node
@@ -257,11 +259,12 @@ function createFunctionEntry(
 ): GeneratedApiProperty {
   const docs = readJSDoc(node, sourceFile, options.fallbackJSDocNode)
   const returnType = getReturnType(node, sourceFile)
-  const returnProperties = getReturnProperties(returnType, sourceFile)
+  const returnProperties =
+    getReturnProperties(returnType, sourceFile) ?? getReturnedObjectProperties(node, sourceFile)
   const entry: GeneratedApiProperty = {
     desc: docs.desc,
     params: createParams(node, docs, sourceFile),
-    tsSignature: getFunctionSignature(node, sourceFile, options.name),
+    tsSignature: getFunctionSignature(node, sourceFile, options.name, returnProperties),
     type: 'Function',
   }
 
@@ -280,11 +283,15 @@ function createFunctionEntry(
   if (returnType === 'void') {
     entry.returns = null
   } else {
+    const type = returnType === 'unknown' && returnProperties !== undefined ? 'Object' : returnType
     entry.returns = {
       definition: returnProperties,
       desc: docs.returns,
-      tsType: returnType,
-      type: returnType,
+      type,
+    }
+
+    if (returnType !== 'unknown') {
+      entry.returns.tsType = returnType
     }
   }
 
@@ -292,7 +299,7 @@ function createFunctionEntry(
 }
 
 function createParams(
-  node: ts.FunctionDeclaration | ts.ArrowFunction | ts.FunctionExpression,
+  node: FunctionLikeNode,
   docs: JSDocDetails,
   sourceFile: ts.SourceFile,
 ): Record<string, GeneratedApiProperty> | undefined {
@@ -303,6 +310,11 @@ function createParams(
   const params: Record<string, GeneratedApiProperty> = {}
 
   for (const parameter of node.parameters) {
+    if (ts.isObjectBindingPattern(parameter.name)) {
+      Object.assign(params, createObjectBindingParams(parameter, parameter.name, docs, sourceFile))
+      continue
+    }
+
     const name = getParameterName(parameter, sourceFile)
     const doc = docs.params.get(name)
 
@@ -311,6 +323,37 @@ function createParams(
       required: parameter.questionToken === undefined && parameter.initializer === undefined,
       tsType: parameter.type?.getText(sourceFile) ?? 'unknown',
       type: parameter.type?.getText(sourceFile) ?? 'unknown',
+    }
+  }
+
+  return params
+}
+
+function createObjectBindingParams(
+  parameter: ts.ParameterDeclaration,
+  binding: ts.ObjectBindingPattern,
+  docs: JSDocDetails,
+  sourceFile: ts.SourceFile,
+): Record<string, GeneratedApiProperty> {
+  const params: Record<string, GeneratedApiProperty> = {}
+
+  for (const element of binding.elements) {
+    if (!ts.isIdentifier(element.name)) {
+      continue
+    }
+
+    const name = element.propertyName?.getText(sourceFile) ?? element.name.text
+    const type = getObjectBindingElementType(parameter.type, name, sourceFile)
+
+    params[name] = {
+      desc: docs.params.get(name) ?? '',
+      required:
+        parameter.questionToken === undefined &&
+        parameter.initializer === undefined &&
+        element.initializer === undefined &&
+        isObjectBindingElementOptional(parameter.type, name) === false,
+      tsType: type,
+      type,
     }
   }
 
@@ -338,7 +381,7 @@ function readJSDoc(node: ts.Node, sourceFile: ts.SourceFile, fallbackNode?: ts.N
   if (docs?.tags !== undefined) {
     for (const tag of docs.tags) {
       if (ts.isJSDocParameterTag(tag)) {
-        params.set(tag.name.getText(sourceFile), normalizeComment(tag.comment))
+        params.set(tag.name.getText(sourceFile), normalizeTagComment(tag.comment))
       } else if (ts.isJSDocReturnTag(tag)) {
         returns = normalizeComment(tag.comment)
       } else {
@@ -401,6 +444,10 @@ function normalizeComment(comment: unknown): string {
   return cleanupComment(String(comment))
 }
 
+function normalizeTagComment(comment: unknown): string {
+  return normalizeComment(comment).replace(/^-\s*/, '')
+}
+
 function cleanupComment(comment: string): string {
   return comment
     .replace(/\r\n/g, '\n')
@@ -411,11 +458,22 @@ function cleanupComment(comment: string): string {
     .trim()
 }
 
-function getReturnType(
-  node: ts.FunctionDeclaration | ts.ArrowFunction | ts.FunctionExpression,
-  sourceFile: ts.SourceFile,
-): string {
-  return node.type?.getText(sourceFile) ?? 'unknown'
+function getReturnType(node: FunctionLikeNode, sourceFile: ts.SourceFile): string {
+  if (node.type !== undefined) {
+    return node.type.getText(sourceFile)
+  }
+
+  if (ts.isArrowFunction(node) && !ts.isBlock(node.body)) {
+    return ts.isObjectLiteralExpression(node.body) ? 'Object' : 'unknown'
+  }
+
+  const body = getFunctionBody(node)
+
+  if (body !== undefined && hasReturnExpression(body) === false) {
+    return 'void'
+  }
+
+  return 'unknown'
 }
 
 function getReturnProperties(
@@ -513,10 +571,193 @@ function getMemberType(
   return member.type?.getText(sourceFile) ?? 'unknown'
 }
 
+function getObjectBindingElementType(
+  type: ts.TypeNode | undefined,
+  name: string,
+  sourceFile: ts.SourceFile,
+): string {
+  const member = getObjectBindingMember(type, name)
+
+  return member?.type?.getText(sourceFile) ?? 'unknown'
+}
+
+function isObjectBindingElementOptional(type: ts.TypeNode | undefined, name: string): boolean {
+  return getObjectBindingMember(type, name)?.questionToken !== undefined
+}
+
+function getObjectBindingMember(
+  type: ts.TypeNode | undefined,
+  name: string,
+): ts.PropertySignature | undefined {
+  if (type === undefined || !ts.isTypeLiteralNode(type)) {
+    return undefined
+  }
+
+  return type.members.find(
+    (member): member is ts.PropertySignature =>
+      ts.isPropertySignature(member) &&
+      ((ts.isIdentifier(member.name) && member.name.text === name) ||
+        (ts.isStringLiteral(member.name) && member.name.text === name)),
+  )
+}
+
+function getReturnedObjectProperties(
+  node: FunctionLikeNode,
+  sourceFile: ts.SourceFile,
+): Record<string, GeneratedApiProperty> | undefined {
+  const returnedObject = getReturnedObjectLiteral(node)
+
+  if (returnedObject === undefined) {
+    return undefined
+  }
+
+  const localFunctions = getLocalFunctions(node)
+  const properties: Record<string, GeneratedApiProperty> = {}
+
+  for (const property of returnedObject.properties) {
+    const name = getObjectPropertyName(property, sourceFile)
+
+    if (name === undefined) {
+      continue
+    }
+
+    if (ts.isShorthandPropertyAssignment(property)) {
+      const localFunction = localFunctions.get(name)
+
+      properties[name] =
+        localFunction === undefined
+          ? createReturnedValueProperty('unknown')
+          : createReturnedFunctionProperty(name, localFunction, sourceFile)
+
+      continue
+    }
+
+    if (ts.isPropertyAssignment(property)) {
+      if (isFunctionLikeInitializer(property.initializer)) {
+        properties[name] = createReturnedFunctionProperty(name, property.initializer, sourceFile)
+      } else {
+        properties[name] = createReturnedValueProperty(property.initializer.getText(sourceFile))
+      }
+    }
+  }
+
+  return Object.keys(properties).length === 0 ? undefined : properties
+}
+
+function getReturnedObjectLiteral(node: FunctionLikeNode): ts.ObjectLiteralExpression | undefined {
+  if (ts.isArrowFunction(node) && ts.isObjectLiteralExpression(node.body)) {
+    return node.body
+  }
+
+  const body = getFunctionBody(node)
+
+  if (body === undefined) {
+    return undefined
+  }
+
+  for (const statement of body.statements) {
+    if (
+      ts.isReturnStatement(statement) &&
+      statement.expression !== undefined &&
+      ts.isObjectLiteralExpression(statement.expression)
+    ) {
+      return statement.expression
+    }
+  }
+
+  return undefined
+}
+
+function getLocalFunctions(node: FunctionLikeNode): Map<string, FunctionLikeNode> {
+  const functions = new Map<string, FunctionLikeNode>()
+  const body = getFunctionBody(node)
+
+  if (body === undefined) {
+    return functions
+  }
+
+  for (const statement of body.statements) {
+    if (ts.isFunctionDeclaration(statement) && statement.name !== undefined) {
+      functions.set(statement.name.text, statement)
+      continue
+    }
+
+    if (ts.isVariableStatement(statement)) {
+      for (const declaration of statement.declarationList.declarations) {
+        if (
+          ts.isIdentifier(declaration.name) &&
+          declaration.initializer !== undefined &&
+          isFunctionLikeInitializer(declaration.initializer)
+        ) {
+          functions.set(declaration.name.text, declaration.initializer)
+        }
+      }
+    }
+  }
+
+  return functions
+}
+
+function createReturnedFunctionProperty(
+  name: string,
+  node: FunctionLikeNode,
+  sourceFile: ts.SourceFile,
+): GeneratedApiProperty {
+  return {
+    ...createFunctionEntry(node, sourceFile, { name }),
+    required: true,
+  }
+}
+
+function createReturnedValueProperty(type: string): GeneratedApiProperty {
+  return {
+    desc: '',
+    required: true,
+    tsType: type,
+    type,
+  }
+}
+
+function getObjectPropertyName(
+  property: ts.ObjectLiteralElementLike,
+  sourceFile: ts.SourceFile,
+): string | undefined {
+  if (ts.isSpreadAssignment(property)) {
+    return undefined
+  }
+
+  const name = property.name
+
+  if (name === undefined) {
+    return undefined
+  }
+
+  if (ts.isIdentifier(name) || ts.isStringLiteral(name) || ts.isNumericLiteral(name)) {
+    return name.text
+  }
+
+  return name.getText(sourceFile)
+}
+
+function getFunctionBody(node: FunctionLikeNode): ts.Block | undefined {
+  return node.body !== undefined && ts.isBlock(node.body) ? node.body : undefined
+}
+
+function hasReturnExpression(body: ts.Block): boolean {
+  for (const statement of body.statements) {
+    if (ts.isReturnStatement(statement) && statement.expression !== undefined) {
+      return true
+    }
+  }
+
+  return false
+}
+
 function getFunctionSignature(
-  node: ts.FunctionDeclaration | ts.ArrowFunction | ts.FunctionExpression,
+  node: FunctionLikeNode,
   sourceFile: ts.SourceFile,
   fallbackName?: string,
+  returnProperties?: Record<string, GeneratedApiProperty>,
 ): string | undefined {
   const name = ts.isFunctionDeclaration(node) && node.name ? node.name.text : fallbackName
 
@@ -527,7 +768,9 @@ function getFunctionSignature(
   const params = node.parameters
     .map((parameter) => getParameterSignature(parameter, sourceFile))
     .join(', ')
-  const returnType = getReturnType(node, sourceFile)
+  const rawReturnType = getReturnType(node, sourceFile)
+  const returnType =
+    rawReturnType === 'unknown' && returnProperties !== undefined ? 'Object' : rawReturnType
 
   return `function ${name}(${params}): ${returnType}`
 }
