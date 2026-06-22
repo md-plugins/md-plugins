@@ -333,28 +333,41 @@ function createVuePropEntry(
   sourceFile: ts.SourceFile,
 ): GeneratedApiProperty | undefined {
   if (ts.isPropertyAssignment(property)) {
+    const docs = readJSDoc(property, sourceFile)
+
     if (ts.isIdentifier(property.initializer)) {
-      return {
-        desc: readJSDoc(property, sourceFile).desc,
-        type: property.initializer.text,
-      }
+      return applyJSDocMetadata(
+        {
+          desc: docs.desc,
+          type: property.initializer.text,
+        },
+        docs,
+      )
     }
 
     if (!ts.isObjectLiteralExpression(property.initializer)) {
-      return {
-        desc: readJSDoc(property, sourceFile).desc,
-        type: getVuePropType(property.initializer, sourceFile),
-      }
+      return applyJSDocMetadata(
+        {
+          desc: docs.desc,
+          type: getVuePropType(property.initializer, sourceFile),
+        },
+        docs,
+      )
     }
 
-    return createVueObjectPropEntry(property.initializer, sourceFile, readJSDoc(property, sourceFile))
+    return createVueObjectPropEntry(property.initializer, sourceFile, docs)
   }
 
   if (ts.isShorthandPropertyAssignment(property)) {
-    return {
-      desc: readJSDoc(property, sourceFile).desc,
-      type: property.name.text,
-    }
+    const docs = readJSDoc(property, sourceFile)
+
+    return applyJSDocMetadata(
+      {
+        desc: docs.desc,
+        type: property.name.text,
+      },
+      docs,
+    )
   }
 
   return undefined
@@ -388,6 +401,21 @@ function createVueObjectPropEntry(
         prop.default = defaultValue
       }
     }
+  }
+
+  if (docs.examples.length > 0) {
+    prop.examples = docs.examples
+  }
+
+  return applyJSDocMetadata(prop, docs)
+}
+
+function applyJSDocMetadata(
+  prop: GeneratedApiProperty,
+  docs: JSDocDetails,
+): GeneratedApiProperty {
+  if (docs.category !== undefined) {
+    prop.category = docs.category
   }
 
   if (docs.examples.length > 0) {
@@ -765,6 +793,7 @@ function createObjectBindingParams(
 }
 
 type JSDocDetails = {
+  category?: string
   deprecated?: string | boolean
   desc: string
   examples: string[]
@@ -778,6 +807,7 @@ function readJSDoc(node: ts.Node, sourceFile: ts.SourceFile, fallbackNode?: ts.N
     getLastJSDoc(node) ?? (fallbackNode === undefined ? undefined : getLastJSDoc(fallbackNode))
   const params = new Map<string, string>()
   const examples: string[] = []
+  let category: string | undefined
   let deprecated: string | boolean | undefined
   let returns = ''
   let since: string | undefined
@@ -793,6 +823,8 @@ function readJSDoc(node: ts.Node, sourceFile: ts.SourceFile, fallbackNode?: ts.N
 
         if (tagName === 'example') {
           examples.push(normalizeComment(tag.comment))
+        } else if (tagName === 'category') {
+          category = normalizeComment(tag.comment)
         } else if (tagName === 'deprecated') {
           deprecated = normalizeComment(tag.comment) || true
         } else if (tagName === 'since') {
@@ -803,6 +835,7 @@ function readJSDoc(node: ts.Node, sourceFile: ts.SourceFile, fallbackNode?: ts.N
   }
 
   return {
+    category,
     deprecated,
     desc: normalizeComment(docs?.comment),
     examples,

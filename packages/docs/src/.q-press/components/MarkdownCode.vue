@@ -14,6 +14,8 @@ import { highlightCode, parseHighlightedBlock } from './MarkdownCodeHighlighter'
 const props = defineProps({
   /**
    * Code string to render with syntax highlighting.
+   *
+   * @category content
    */
   code: {
     type: String,
@@ -21,6 +23,8 @@ const props = defineProps({
   },
   /**
    * Maximum height for the rendered code block.
+   *
+   * @category style
    */
   maxHeight: {
     type: String,
@@ -29,6 +33,8 @@ const props = defineProps({
 
   /**
    * Language identifier used by the syntax highlighter.
+   *
+   * @category content
    */
   lang: {
     type: String,

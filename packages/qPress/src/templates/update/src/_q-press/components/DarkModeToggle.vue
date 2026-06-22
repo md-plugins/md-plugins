@@ -22,6 +22,8 @@ import { mdiMoonWaningCrescent, mdiWhiteBalanceSunny } from '@quasar/extras/mdi-
 const props = defineProps({
   /**
    * Icon name displayed for the dark mode state.
+   *
+   * @category content
    */
   darkIcon: {
     type: String,
@@ -29,6 +31,8 @@ const props = defineProps({
   },
   /**
    * Icon name displayed for the light mode state.
+   *
+   * @category content
    */
   lightIcon: {
     type: String,

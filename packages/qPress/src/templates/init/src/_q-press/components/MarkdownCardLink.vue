@@ -11,6 +11,8 @@
 const props = defineProps({
   /**
    * Target URL or route path for the card link.
+   *
+   * @category navigation
    */
   to: {
     type: String,
@@ -19,6 +21,8 @@ const props = defineProps({
 
   /**
    * Whether the link should open as an external anchor.
+   *
+   * @category navigation
    */
   external: Boolean,
 })

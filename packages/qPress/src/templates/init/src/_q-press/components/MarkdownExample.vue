@@ -120,6 +120,8 @@ type MarkdownExamples = {
 const props = defineProps({
   /**
    * Title displayed above the example.
+   *
+   * @category content
    */
   title: {
     type: String,
@@ -127,6 +129,8 @@ const props = defineProps({
   },
   /**
    * Vue example file name without the .vue extension.
+   *
+   * @category content
    */
   file: {
     type: String,
@@ -134,18 +138,26 @@ const props = defineProps({
   },
   /**
    * Hide the CodePen edit action.
+   *
+   * @category behavior
    */
   noEdit: Boolean, // no codepen edit
   /**
    * Constrain the rendered example area to vertical scrolling.
+   *
+   * @category content
    */
   scrollable: Boolean,
   /**
    * Allow the example content to manage overflow.
+   *
+   * @category behavior
    */
   overflow: Boolean,
   /**
    * Hide the GitHub source action.
+   *
+   * @category behavior
    */
   noGithub: Boolean, // no GitHub link
 })
