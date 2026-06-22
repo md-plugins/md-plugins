@@ -1,6 +1,16 @@
 {
+  "api": {
+    "entries": [
+      {
+        "docsUrl": "/quasar-app-extensions/qpress/overview",
+        "input": "src/.q-press/composables/dark.ts",
+        "output": "src/.q-press/api/composables/dark.json"
+      }
+    ]
+  },
   "check": {
     "allowedRoutes": ["/another-page"],
+    "checkGeneratedApi": false,
     "ignoreFiles": ["__*.md"]
   }
 }
