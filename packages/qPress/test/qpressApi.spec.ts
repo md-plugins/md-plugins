@@ -560,7 +560,6 @@ function saveNotice(): void {}
         scope: {
           scope: {
             desc: 'Slot props provided to custom content.',
-            required: true,
             tsType: '{ active: boolean }',
             type: 'Object',
           },

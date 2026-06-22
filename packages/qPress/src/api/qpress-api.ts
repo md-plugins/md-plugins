@@ -796,7 +796,6 @@ function createSlotScope(
 
     scope[name] = {
       desc: docs.params.get(name) ?? '',
-      required: parameter.questionToken === undefined && parameter.initializer === undefined,
       tsType: parameter.type?.getText(sourceFile) ?? 'unknown',
       type: normalizeApiType(parameter.type?.getText(sourceFile) ?? 'unknown'),
     }
