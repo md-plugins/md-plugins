@@ -103,6 +103,18 @@ export const today = (): string => '2036-06-08'
       expect(existing).toBe('{"type":"component"}\n')
       expect(result.entries[0]?.differsFromOutput).toBe(true)
       expect(result.entries[0]?.exportCount).toBe(3)
+      expect(result.entries[0]?.fieldChanges).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            path: '$.functions',
+            type: 'added',
+          }),
+          expect.objectContaining({
+            path: '$.meta',
+            type: 'added',
+          }),
+        ]),
+      )
       expect(generated.meta.docsUrl).toBe('/api/timestamp')
       expect(generated.functions.parseTimestamp.desc).toBe(
         'Converts a supported input into a timestamp.',
@@ -181,6 +193,14 @@ export function add(left: number, right: number): number {
           code: 'api-output-stale',
         }),
       ])
+      expect(result.diagnostics[0]?.fieldChanges).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            path: '$.methods',
+            type: 'added',
+          }),
+        ]),
+      )
 
       await expect(
         readFile(join(root, 'src/.q-press/api/helpers/math.generated.json'), 'utf8'),

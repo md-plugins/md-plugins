@@ -19,9 +19,17 @@ export type QPressApiGenerateOptions = {
   generatedSuffix?: string
 }
 
+export type QPressApiFieldChange = {
+  current?: unknown
+  generated?: unknown
+  path: string
+  type: 'added' | 'changed' | 'removed'
+}
+
 export type QPressApiGeneratedEntry = {
   differsFromOutput: boolean | null
   exportCount: number
+  fieldChanges: QPressApiFieldChange[]
   generatedOutputPath: string
   inputPath: string
   outputPath: string
@@ -33,6 +41,7 @@ export type QPressApiGenerateResult = {
 
 export type QPressApiCheckDiagnostic = {
   code: 'api-output-missing' | 'api-output-stale'
+  fieldChanges: QPressApiFieldChange[]
   generatedOutputPath: string
   inputPath: string
   outputPath: string
@@ -88,6 +97,7 @@ export async function generateQPressApi(
       )
       const generatedContent = stringifyApiJson(generated.api)
       const currentOutput = await readOptionalFile(outputPath)
+      const fieldChanges = getApiFieldChanges(currentOutput, generated.api)
 
       await fs.mkdir(dirname(generatedOutputPath), { recursive: true })
       await fs.writeFile(generatedOutputPath, generatedContent)
@@ -96,6 +106,7 @@ export async function generateQPressApi(
         differsFromOutput:
           currentOutput === null ? null : normalizeNewline(currentOutput) !== generatedContent,
         exportCount: generated.exportCount,
+        fieldChanges,
         generatedOutputPath,
         inputPath: generated.inputPath,
         outputPath,
@@ -125,12 +136,14 @@ export async function checkQPressApi(
     )
     const generatedContent = stringifyApiJson(generated.api)
     const currentOutput = await readOptionalFile(outputPath)
+    const fieldChanges = getApiFieldChanges(currentOutput, generated.api)
     const differsFromOutput =
       currentOutput === null ? null : normalizeNewline(currentOutput) !== generatedContent
 
     entries.push({
       differsFromOutput,
       exportCount: generated.exportCount,
+      fieldChanges,
       generatedOutputPath,
       inputPath: generated.inputPath,
       outputPath,
@@ -139,6 +152,7 @@ export async function checkQPressApi(
     if (currentOutput === null) {
       diagnostics.push({
         code: 'api-output-missing',
+        fieldChanges,
         generatedOutputPath,
         inputPath: generated.inputPath,
         outputPath,
@@ -146,6 +160,7 @@ export async function checkQPressApi(
     } else if (differsFromOutput === true) {
       diagnostics.push({
         code: 'api-output-stale',
+        fieldChanges,
         generatedOutputPath,
         inputPath: generated.inputPath,
         outputPath,
@@ -553,6 +568,77 @@ function isFunctionLikeInitializer(
 
 function stringifyApiJson(api: GeneratedApiJson): string {
   return `${JSON.stringify(api, null, 2)}\n`
+}
+
+function getApiFieldChanges(
+  currentOutput: string | null,
+  generatedApi: GeneratedApiJson,
+): QPressApiFieldChange[] {
+  if (currentOutput === null) {
+    return []
+  }
+
+  try {
+    return diffJsonFields(JSON.parse(currentOutput), generatedApi)
+  } catch {
+    return [
+      {
+        generated: generatedApi,
+        path: '$',
+        type: 'changed',
+      },
+    ]
+  }
+}
+
+function diffJsonFields(
+  currentValue: unknown,
+  generatedValue: unknown,
+  path = '$',
+): QPressApiFieldChange[] {
+  if (isPlainRecord(currentValue) && isPlainRecord(generatedValue)) {
+    const changes: QPressApiFieldChange[] = []
+    const keys = new Set([...Object.keys(currentValue), ...Object.keys(generatedValue)])
+
+    for (const key of Array.from(keys).sort()) {
+      const childPath = `${path}.${key}`
+
+      if (!(key in currentValue)) {
+        changes.push({
+          generated: generatedValue[key],
+          path: childPath,
+          type: 'added',
+        })
+      } else if (!(key in generatedValue)) {
+        changes.push({
+          current: currentValue[key],
+          path: childPath,
+          type: 'removed',
+        })
+      } else {
+        changes.push(...diffJsonFields(currentValue[key], generatedValue[key], childPath))
+      }
+    }
+
+    return changes
+  }
+
+  if (JSON.stringify(currentValue) === JSON.stringify(generatedValue)) {
+    return []
+  }
+
+  return [
+    {
+      current: currentValue,
+      generated: generatedValue,
+      path,
+      type: 'changed',
+    },
+  ]
+}
+
+function isPlainRecord(value: unknown): value is Record<string, unknown> {
+  return Array.isArray(value) === false && typeof value === 'object' && value !== null
 }
 
 async function readOptionalFile(path: string): Promise<string | null> {

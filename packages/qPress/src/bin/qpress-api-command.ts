@@ -212,6 +212,10 @@ function formatGenerateResult(entries: Awaited<ReturnType<typeof generateQPressA
           : 'matches committed output'
 
     lines.push(`- ${entry.generatedOutputPath} (${entry.exportCount} exports, ${drift})`)
+
+    if (entry.fieldChanges.length > 0) {
+      lines.push(`  Field changes: ${formatFieldChangeSummary(entry.fieldChanges)}`)
+    }
   }
 
   return `${lines.join('\n')}\n`
@@ -234,7 +238,37 @@ function formatCheckResult(
     }
     lines.push(`  Source: ${diagnostic.inputPath}`)
     lines.push(`  Compare with: ${diagnostic.generatedOutputPath}`)
+
+    if (diagnostic.fieldChanges.length > 0) {
+      lines.push(`  Field changes: ${formatFieldChangeSummary(diagnostic.fieldChanges)}`)
+      diagnostic.fieldChanges.slice(0, 10).forEach((change) => {
+        lines.push(`    - ${change.type}: ${change.path}`)
+      })
+
+      if (diagnostic.fieldChanges.length > 10) {
+        lines.push(`    - ...and ${diagnostic.fieldChanges.length - 10} more`)
+      }
+    }
   }
 
   return `${lines.join('\n')}\n`
+}
+
+function formatFieldChangeSummary(
+  changes: Awaited<ReturnType<typeof checkQPressApi>>['diagnostics'][number]['fieldChanges'],
+): string {
+  const summary = changes.reduce(
+    (acc, change) => {
+      acc[change.type] += 1
+
+      return acc
+    },
+    {
+      added: 0,
+      changed: 0,
+      removed: 0,
+    },
+  )
+
+  return `${summary.added} added, ${summary.changed} changed, ${summary.removed} removed`
 }
