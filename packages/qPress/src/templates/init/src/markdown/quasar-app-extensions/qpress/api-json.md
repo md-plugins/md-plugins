@@ -101,12 +101,32 @@ Once the generated output is trusted, remove `checkGeneratedApi: false` so norma
 
 ## Adoption Workflow
 
-1. Add one low-risk `api.entries` target.
-2. Run `pnpm exec qpress api generate`.
-3. Compare the committed API JSON with the generated comparison file.
-4. Preserve curated fields that the generator does not know how to produce yet.
-5. Run `pnpm exec qpress api check` to confirm the remaining drift is understood.
-6. Commit config, docs, or tests first; adopt generated JSON only after review.
+::: steps
+
+### Add a low-risk target
+
+Add one low-risk `api.entries` target.
+
+### Generate comparison JSON
+
+Run `pnpm exec qpress api generate`.
+
+### Compare the output
+
+Compare the committed API JSON with the generated comparison file.
+
+### Preserve curated fields
+
+Preserve curated fields that the generator does not know how to produce yet.
+
+### Check the drift
+
+Run `pnpm exec qpress api check` to confirm the remaining drift is understood.
+
+### Adopt only after review
+
+Commit config, docs, or tests first; adopt generated JSON only after review.
+:::
 
 ## What The Generator Currently Extracts
 
