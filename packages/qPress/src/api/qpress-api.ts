@@ -53,7 +53,9 @@ export type QPressApiCheckResult = {
 }
 
 type GeneratedApiProperty = {
+  __exemption?: string[]
   addedIn?: string
+  applicable?: string[]
   category?: string
   default?: string
   definition?: Record<string, GeneratedApiProperty>
@@ -775,12 +777,17 @@ function getSlotPropScope(
       continue
     }
 
-    scope[name] = {
-      desc: readJSDoc(member, sourceFile).desc,
-      required: member.questionToken === undefined,
-      tsType: getMemberType(member, sourceFile),
-      type: normalizeApiType(getMemberType(member, sourceFile)),
-    }
+    const docs = readJSDoc(member, sourceFile)
+
+    scope[name] = applyJSDocMetadata(
+      {
+        desc: docs.desc,
+        required: member.questionToken === undefined,
+        tsType: getMemberType(member, sourceFile),
+        type: normalizeApiType(getMemberType(member, sourceFile)),
+      },
+      docs,
+    )
   }
 
   return Object.keys(scope).length === 0 ? undefined : scope
@@ -1303,10 +1310,6 @@ function createVueObjectPropEntry(
     }
   }
 
-  if (docs.examples.length > 0) {
-    prop.examples = docs.examples
-  }
-
   return applyJSDocMetadata(prop, docs)
 }
 
@@ -1314,12 +1317,57 @@ function applyJSDocMetadata(
   prop: GeneratedApiProperty,
   docs: JSDocDetails,
 ): GeneratedApiProperty {
+  applyPropertyMetadata(prop, docs.metadata)
+
   if (docs.category !== undefined) {
     prop.category = docs.category
   }
 
   if (docs.examples.length > 0) {
-    prop.examples = docs.examples
+    prop.examples = [...(prop.examples ?? []), ...docs.examples]
+  }
+
+  return prop
+}
+
+function applyPropertyMetadata(
+  prop: GeneratedApiProperty,
+  metadata: GeneratedApiPropertyMetadata | undefined,
+): GeneratedApiProperty {
+  if (metadata === undefined) {
+    return prop
+  }
+
+  if (metadata.__exemption !== undefined) {
+    prop.__exemption = metadata.__exemption
+  }
+
+  if (metadata.applicable !== undefined) {
+    prop.applicable = metadata.applicable
+  }
+
+  if (metadata.default !== undefined) {
+    prop.default = metadata.default
+  }
+
+  if (metadata.examples !== undefined) {
+    prop.examples = [...(prop.examples ?? []), ...metadata.examples]
+  }
+
+  if (metadata.required !== undefined) {
+    prop.required = metadata.required
+  }
+
+  if (metadata.tsType !== undefined) {
+    prop.tsType = metadata.tsType
+  }
+
+  if (metadata.type !== undefined) {
+    prop.type = metadata.type
+  }
+
+  if (metadata.values !== undefined) {
+    prop.values = metadata.values
   }
 
   return prop
@@ -1632,11 +1680,14 @@ function createSlotScope(
   for (const parameter of parameters) {
     const name = getParameterName(parameter, sourceFile)
 
-    scope[name] = {
-      desc: docs.params.get(name) ?? '',
-      tsType: parameter.type?.getText(sourceFile) ?? 'unknown',
-      type: normalizeApiType(parameter.type?.getText(sourceFile) ?? 'unknown'),
-    }
+    scope[name] = applyPropertyMetadata(
+      {
+        desc: docs.params.get(name) ?? '',
+        tsType: parameter.type?.getText(sourceFile) ?? 'unknown',
+        type: normalizeApiType(parameter.type?.getText(sourceFile) ?? 'unknown'),
+      },
+      docs.paramMetadata.get(name),
+    )
   }
 
   return scope
@@ -1851,6 +1902,10 @@ function createFunctionEntry(
     entry.examples = docs.examples
   }
 
+  if (docs.category !== undefined) {
+    entry.category = docs.category
+  }
+
   if (docs.since !== undefined) {
     entry.addedIn = docs.since
   }
@@ -1859,15 +1914,20 @@ function createFunctionEntry(
     entry.deprecated = docs.deprecated
   }
 
+  applyPropertyMetadata(entry, docs.metadata)
+
   if (returnType === 'void') {
     entry.returns = null
   } else {
     const type = returnType === 'unknown' && returnProperties !== undefined ? 'Object' : returnType
-    entry.returns = {
-      definition: returnProperties,
-      desc: docs.returns,
-      type,
-    }
+    entry.returns = applyPropertyMetadata(
+      {
+        definition: returnProperties,
+        desc: docs.returns,
+        type,
+      },
+      docs.returnsMetadata,
+    )
 
     if (returnType !== 'unknown') {
       entry.returns.tsType = returnType
@@ -1897,12 +1957,15 @@ function createParams(
     const name = getParameterName(parameter, sourceFile)
     const doc = docs.params.get(name)
 
-    params[name] = {
-      desc: doc ?? '',
-      required: parameter.questionToken === undefined && parameter.initializer === undefined,
-      tsType: parameter.type?.getText(sourceFile) ?? 'unknown',
-      type: parameter.type?.getText(sourceFile) ?? 'unknown',
-    }
+    params[name] = applyPropertyMetadata(
+      {
+        desc: doc ?? '',
+        required: parameter.questionToken === undefined && parameter.initializer === undefined,
+        tsType: parameter.type?.getText(sourceFile) ?? 'unknown',
+        type: parameter.type?.getText(sourceFile) ?? 'unknown',
+      },
+      docs.paramMetadata.get(name),
+    )
   }
 
   return params
@@ -1924,16 +1987,19 @@ function createObjectBindingParams(
     const name = element.propertyName?.getText(sourceFile) ?? element.name.text
     const type = getObjectBindingElementType(parameter.type, name, sourceFile)
 
-    params[name] = {
-      desc: docs.params.get(name) ?? '',
-      required:
-        parameter.questionToken === undefined &&
-        parameter.initializer === undefined &&
-        element.initializer === undefined &&
-        isObjectBindingElementOptional(parameter.type, name) === false,
-      tsType: type,
-      type,
-    }
+    params[name] = applyPropertyMetadata(
+      {
+        desc: docs.params.get(name) ?? '',
+        required:
+          parameter.questionToken === undefined &&
+          parameter.initializer === undefined &&
+          element.initializer === undefined &&
+          isObjectBindingElementOptional(parameter.type, name) === false,
+        tsType: type,
+        type,
+      },
+      docs.paramMetadata.get(name),
+    )
   }
 
   return params
@@ -1946,21 +2012,39 @@ type JSDocDetails = {
   desc: string
   event?: string
   examples: string[]
+  metadata: GeneratedApiPropertyMetadata
+  paramMetadata: Map<string, GeneratedApiPropertyMetadata>
   params: Map<string, string>
   returns: string
+  returnsMetadata: GeneratedApiPropertyMetadata
   since?: string
 }
+
+type GeneratedApiPropertyMetadata = Pick<
+  Partial<GeneratedApiProperty>,
+  | '__exemption'
+  | 'applicable'
+  | 'default'
+  | 'examples'
+  | 'required'
+  | 'tsType'
+  | 'type'
+  | 'values'
+>
 
 function readJSDoc(node: ts.Node, sourceFile: ts.SourceFile, fallbackNode?: ts.Node): JSDocDetails {
   const docs =
     getLastJSDoc(node) ?? (fallbackNode === undefined ? undefined : getLastJSDoc(fallbackNode))
   const params = new Map<string, string>()
+  const paramMetadata = new Map<string, GeneratedApiPropertyMetadata>()
   const examples: string[] = []
   const categories: string[] = []
   let api = false
   let deprecated: string | boolean | undefined
   let event: string | undefined
+  const metadata: GeneratedApiPropertyMetadata = {}
   let returns = ''
+  const returnsMetadata: GeneratedApiPropertyMetadata = {}
   let since: string | undefined
 
   if (docs?.tags !== undefined) {
@@ -1982,6 +2066,30 @@ function readJSDoc(node: ts.Node, sourceFile: ts.SourceFile, fallbackNode?: ts.N
           deprecated = normalizeComment(tag.comment) || true
         } else if (tagName === 'event') {
           event = normalizeComment(tag.comment)
+        } else if (tagName === 'values') {
+          metadata.values = normalizeListTag(tag.comment)
+        } else if (tagName === 'applicable') {
+          metadata.applicable = normalizeListTag(tag.comment)
+        } else if (tagName === 'api-exemption' || tagName === 'exemption') {
+          metadata.__exemption = normalizeListTag(tag.comment)
+        } else if (tagName === 'default') {
+          metadata.default = normalizeComment(tag.comment)
+        } else if (tagName === 'required') {
+          metadata.required = normalizeBooleanTag(tag.comment)
+        } else if (tagName === 'type') {
+          metadata.type = normalizeComment(tag.comment)
+        } else if (tagName === 'tsType' || tagName === 'ts-type') {
+          metadata.tsType = normalizeComment(tag.comment)
+        } else if (tagName.startsWith('param-')) {
+          applyNamedMetadataTag(paramMetadata, tagName.slice('param-'.length), tag.comment)
+        } else if (tagName.startsWith('returns-') || tagName.startsWith('return-')) {
+          applyMetadataTag(
+            returnsMetadata,
+            tagName.startsWith('returns-')
+              ? tagName.slice('returns-'.length)
+              : tagName.slice('return-'.length),
+            tag.comment,
+          )
         } else if (tagName === 'since') {
           since = normalizeComment(tag.comment)
         }
@@ -1996,10 +2104,89 @@ function readJSDoc(node: ts.Node, sourceFile: ts.SourceFile, fallbackNode?: ts.N
     desc: normalizeComment(docs?.comment),
     event,
     examples,
+    metadata,
+    paramMetadata,
     params,
     returns,
+    returnsMetadata,
     since,
   }
+}
+
+function applyNamedMetadataTag(
+  metadata: Map<string, GeneratedApiPropertyMetadata>,
+  tagName: string,
+  comment: unknown,
+): void {
+  const named = splitNamedTagComment(comment)
+
+  if (named === undefined) {
+    return
+  }
+
+  const entry = metadata.get(named.name) ?? {}
+
+  applyMetadataTag(entry, tagName, named.value)
+  metadata.set(named.name, entry)
+}
+
+function applyMetadataTag(
+  metadata: GeneratedApiPropertyMetadata,
+  tagName: string,
+  comment: unknown,
+): void {
+  if (tagName === 'values') {
+    metadata.values = normalizeListTag(comment)
+  } else if (tagName === 'applicable') {
+    metadata.applicable = normalizeListTag(comment)
+  } else if (tagName === 'api-exemption' || tagName === 'exemption') {
+    metadata.__exemption = normalizeListTag(comment)
+  } else if (tagName === 'example') {
+    metadata.examples = [...(metadata.examples ?? []), normalizeComment(comment)]
+  } else if (tagName === 'default') {
+    metadata.default = normalizeComment(comment)
+  } else if (tagName === 'required') {
+    metadata.required = normalizeBooleanTag(comment)
+  } else if (tagName === 'type') {
+    metadata.type = normalizeComment(comment)
+  } else if (tagName === 'tsType' || tagName === 'ts-type') {
+    metadata.tsType = normalizeComment(comment)
+  }
+}
+
+function splitNamedTagComment(comment: unknown): { name: string; value: string } | undefined {
+  const normalized = normalizeComment(comment)
+  const match = /^(\S+)\s+([\s\S]+)$/.exec(normalized)
+
+  if (match === null) {
+    return undefined
+  }
+
+  return {
+    name: match[1],
+    value: match[2],
+  }
+}
+
+function normalizeListTag(comment: unknown): string[] {
+  return normalizeComment(comment)
+    .split(/[|,]/)
+    .map((value) => value.trim())
+    .filter(Boolean)
+}
+
+function normalizeBooleanTag(comment: unknown): boolean | undefined {
+  const normalized = normalizeComment(comment).toLowerCase()
+
+  if (normalized === 'true') {
+    return true
+  }
+
+  if (normalized === 'false') {
+    return false
+  }
+
+  return undefined
 }
 
 function normalizeCategories(comment: unknown): string[] {
@@ -2110,12 +2297,17 @@ function getReturnProperties(
       continue
     }
 
-    properties[name] = {
-      desc: readJSDoc(member, sourceFile).desc,
-      required: member.questionToken === undefined,
-      tsType: getMemberType(member, sourceFile),
-      type: getMemberType(member, sourceFile),
-    }
+    const docs = readJSDoc(member, sourceFile)
+
+    properties[name] = applyJSDocMetadata(
+      {
+        desc: docs.desc,
+        required: member.questionToken === undefined,
+        tsType: getMemberType(member, sourceFile),
+        type: getMemberType(member, sourceFile),
+      },
+      docs,
+    )
   }
 
   return Object.keys(properties).length === 0 ? undefined : properties

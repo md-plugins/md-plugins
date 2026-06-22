@@ -48,8 +48,12 @@ type ParserReturn = {
  * Converts a supported input into a timestamp.
  *
  * @param input Date or date-time string.
+ * @param-values input '2036-06-08' | '2036-06'
+ * @param-example input '2036-06-08'
  * @param now Optional timestamp used for relative flags.
  * @returns Parsed timestamp, or null when invalid.
+ * @returns-example null
+ * @returns-api-exemption examples
  * @example parseTimestamp('2036-06-08')
  * @since 0.1.0
  */
@@ -123,16 +127,20 @@ export const today = (): string => '2036-06-08'
       expect(generated.functions.parseTimestamp.addedIn).toBe('0.1.0')
       expect(generated.functions.parseTimestamp.params.input).toEqual({
         desc: 'Date or date-time string.',
+        examples: ["'2036-06-08'"],
         required: true,
         tsType: 'string',
         type: 'string',
+        values: ["'2036-06-08'", "'2036-06'"],
       })
       expect(generated.functions.parseTimestamp.tsSignature).toBe(
         'function parseTimestamp(input: string, now?: Timestamp | null): Timestamp | null',
       )
       expect(generated.functions.parseTimestamp.params.now.required).toBe(false)
       expect(generated.functions.parseTimestamp.returns).toEqual({
+        __exemption: ['examples'],
         desc: 'Parsed timestamp, or null when invalid.',
+        examples: ['null'],
         tsType: 'Timestamp | null',
         type: 'Timestamp | null',
       })
@@ -425,6 +433,13 @@ const props = defineProps({
     required: true,
   },
   external: Boolean,
+  /**
+   * Visual tone for the card.
+   *
+   * @values 'primary' | 'secondary'
+   * @applicable card, link
+   * @api-exemption examples
+   */
   tone: {
     type: [String, Number],
     default: 'primary',
@@ -455,6 +470,8 @@ const emit = defineEmits({
    * Emitted when the selected mode changes.
    *
    * @param mode Current selected mode.
+   * @param-values mode 'dark' | 'light'
+   * @param-example mode 'dark'
    */
   'update:mode': (mode: 'dark' | 'light') => true,
 })
@@ -495,6 +512,8 @@ function emitNotice(detail: NoticeConfig): void {
  * Stores the current notice choice.
  *
  * @api
+ * @category actions
+ * @api-exemption examples
  */
 function saveNotice(): void {}
 </script>
@@ -531,9 +550,12 @@ function saveNotice(): void {}
         type: 'Boolean',
       })
       expect(generated.props.tone).toEqual({
+        __exemption: ['examples'],
+        applicable: ['card', 'link'],
         default: 'primary',
-        desc: '',
+        desc: 'Visual tone for the card.',
         type: 'String | Number',
+        values: ["'primary'", "'secondary'"],
       })
       expect(generated.props.external.category).toBeUndefined()
       expect(generated.props.external.examples).toBeUndefined()
@@ -587,9 +609,11 @@ function saveNotice(): void {}
         params: {
           mode: {
             desc: 'Current selected mode.',
+            examples: ["'dark'"],
             required: true,
             tsType: "'dark' | 'light'",
             type: "'dark' | 'light'",
+            values: ["'dark'", "'light'"],
           },
         },
       })
@@ -636,6 +660,8 @@ function saveNotice(): void {}
         },
       })
       expect(typedPropsGenerated.methods.saveNotice).toEqual({
+        __exemption: ['examples'],
+        category: 'actions',
         desc: 'Stores the current notice choice.',
         returns: null,
         tsSignature: 'function saveNotice(): void',

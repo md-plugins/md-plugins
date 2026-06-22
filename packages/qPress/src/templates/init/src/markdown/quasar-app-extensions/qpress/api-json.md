@@ -59,7 +59,7 @@ Q-Press writes this review file:
 src/.q-press/api/composables/dark.generated.json
 ```
 
-Review the generated file before adoption. The generated output is intentionally pure generator output so you can compare it with the existing hand-authored file and see which curated fields are still missing from generation.
+Review the generated file before adoption. The generated output is intentionally pure generator output so you can compare it with the existing hand-authored file and see which source or JSDoc details are still missing.
 
 ## Check For Drift
 
@@ -115,9 +115,9 @@ Run `pnpm exec qpress api generate`.
 
 Compare the committed API JSON with the generated comparison file.
 
-### Preserve curated fields
+### Move metadata to source
 
-Preserve curated fields that the generator does not know how to produce yet.
+Move missing descriptions, examples, categories, accepted values, and event details into TypeScript/JSDoc.
 
 ### Check the drift
 
@@ -130,20 +130,70 @@ Commit config, docs, or tests first; adopt generated JSON only after review.
 
 ## What The Generator Currently Extracts
 
-The first implementation focuses on TypeScript function exports and Vue SFC basics:
+The generator focuses on TypeScript source plus explicit JSDoc metadata:
 
 - Exported function declarations.
 - Exported `const` arrow functions.
 - Exported `const` function expressions.
 - Object-style `<script setup>` `defineProps`.
 - Simple array-style and object-style `<script setup>` `defineEmits`.
+- TypeScript `defineComponent({ props, emits, slots, setup })` component declarations.
+- Imported prop and emit spreads when they resolve to local TypeScript source.
+- `SlotsType<T>` slot declarations and render-function slot usage.
+- Public methods exposed through `setup(..., { expose })`.
 - Template `<slot>` usage, with descriptions from `defineSlots` JSDoc when provided.
 - JSDoc descriptions.
-- `@param`, `@returns`, `@example`, `@category`, `@since`, and `@deprecated`.
+- `@param`, `@returns`, `@example`, `@category`, `@since`, `@deprecated`, and explicit API metadata tags.
 - TypeScript signatures.
 - Local interface and type-literal return definitions when the return type points directly at them.
+- Simple accepted values from validator arrays such as `['day', 'week'].includes(value)`.
 
 Use repeated `@example` tags to emit multiple examples. Use `@category` on prop JSDoc to place generated props into MarkdownApi category tabs; repeat the tag or separate names with `|` or `,` when a prop belongs to more than one category. Props without `@category` omit the field and render in MarkdownApi's default group.
+
+Use explicit metadata tags when TypeScript cannot safely infer a field:
+
+```ts
+/**
+ * Calendar view mode.
+ *
+ * @category behavior
+ * @values 'day' | 'week' | 'month'
+ * @applicable calendar, scheduler
+ * @default 'day'
+ * @api-exemption examples
+ */
+view: {
+  type: String,
+  default: 'day',
+}
+```
+
+Supported property-level metadata tags:
+
+- `@values value | value` for accepted values.
+- `@applicable name, name` for project-specific applicability labels.
+- `@default value` when the runtime default needs a documented form.
+- `@required true` or `@required false` to override requiredness.
+- `@type Type` and `@ts-type Type` when the displayed type needs to be explicit.
+- `@api-exemption field, field` for Quasar-style `__exemption` values.
+
+Use parameter and return variants for functions, events, and slot scopes:
+
+```ts
+/**
+ * Emitted when the selected mode changes.
+ *
+ * @event update:mode
+ * @param mode Current selected mode.
+ * @param-values mode 'dark' | 'light'
+ * @param-example mode 'dark'
+ */
+function emitMode(mode: 'dark' | 'light'): void {}
+```
+
+Parameter metadata tags start with the parameter name: `@param-values name ...`, `@param-example name ...`, `@param-default name ...`, `@param-required name false`, `@param-type name Type`, `@param-ts-type name Type`, and `@param-api-exemption name examples`.
+
+Return metadata uses `@returns-*` or `@return-*`, such as `@returns-example null`, `@returns-type Timestamp`, `@returns-ts-type Timestamp`, and `@returns-api-exemption examples`.
 
 Use `defineSlots` when slot descriptions should be generated from source:
 
@@ -158,8 +208,8 @@ defineSlots<{
 
 ## What Still Needs Review
 
-Generated output is not a complete replacement for all hand-authored API JSON yet.
+Generated output is not a complete replacement for all existing API JSON yet.
 
-Areas that still need careful review include component companion metadata, accepted values, curated examples, richer event payload descriptions, imported type expansion, overload documentation, and deeply nested type definitions.
+Areas that still need careful review include richer event payload descriptions, imported type expansion, overload documentation, re-exported symbols, default-exported function naming, and deeply nested type definitions.
 
 The safe rule is simple: generate for comparison, review the diff, and only adopt what is better than the current API page.

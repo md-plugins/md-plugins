@@ -176,7 +176,11 @@ If you need to run the docs checks without generated API drift checks, use:
 pnpm exec qpress check --no-api
 ```
 
-The generator currently extracts exported TypeScript functions, exported `const` arrow/function expressions, object-style Vue SFC props, simple emits, and template slots. It reads JSDoc descriptions plus `@param`, `@returns`, `@example`, `@category`, `@since`, and `@deprecated` tags, then emits the same JSON shape used by `MarkdownApi`. Repeat `@example` for multiple examples. For prop categories, repeat `@category` or separate names with `|` or `,`; props without a category render in MarkdownApi's default group. For slot descriptions, add JSDoc to a `<script setup>` `defineSlots` type declaration.
+The generator extracts exported TypeScript functions, exported `const` arrow/function expressions, object-style Vue SFC props/emits/slots, and TypeScript `defineComponent({ props, emits, slots, setup })` component surfaces. It can follow local imported prop/emit spreads, `SlotsType<T>` declarations, render-function slot usage, and `expose({ ... })` methods when they resolve to local TypeScript source.
+
+It reads JSDoc descriptions plus `@param`, `@returns`, `@example`, `@category`, `@since`, and `@deprecated` tags, then emits the same JSON shape used by `MarkdownApi`. Repeat `@example` for multiple examples. For prop categories, repeat `@category` or separate names with `|` or `,`; props without a category render in MarkdownApi's default group.
+
+Use explicit metadata tags for fields that should not be guessed from source: `@values`, `@applicable`, `@default`, `@required`, `@type`, `@ts-type`, and `@api-exemption`. Function, event, and slot-scope params can use `@param-values name ...`, `@param-example name ...`, `@param-default name ...`, `@param-required name false`, `@param-type name ...`, `@param-ts-type name ...`, and `@param-api-exemption name examples`. Return metadata can use `@returns-example`, `@returns-type`, `@returns-ts-type`, and `@returns-api-exemption`.
 
 Configure entries under `api.entries`:
 
