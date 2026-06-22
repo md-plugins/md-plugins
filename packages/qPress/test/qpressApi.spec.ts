@@ -428,7 +428,24 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['select'])
+const emit = defineEmits(['select', 'update:modelValue'])
+
+function select() {
+  emit('select', { id: 1 })
+  emit('update:modelValue', 'active')
+}
+</script>
+`,
+      'src/components/TypedEvents.vue': `
+<script setup lang="ts">
+const emit = defineEmits({
+  /**
+   * Emitted when the selected mode changes.
+   *
+   * @param mode Current selected mode.
+   */
+  'update:mode': (mode: 'dark' | 'light') => true,
+})
 </script>
 `,
     })
@@ -450,7 +467,7 @@ const emit = defineEmits(['select'])
         ),
       )
 
-      expect(result.entries[0]?.exportCount).toBe(5)
+      expect(result.entries[0]?.exportCount).toBe(6)
       expect(generated.props.to).toEqual({
         desc: 'Target URL or route.',
         examples: ["'/docs'"],
@@ -468,10 +485,52 @@ const emit = defineEmits(['select'])
       })
       expect(generated.events.select).toEqual({
         desc: '',
-        params: {},
+        params: {
+          value: {
+            desc: '',
+            type: 'Object',
+          },
+        },
+      })
+      expect(generated.events['update:modelValue']).toEqual({
+        desc: '',
+        params: {
+          modelValue: {
+            desc: '',
+            type: 'String',
+          },
+        },
       })
       expect(generated.slots.default).toEqual({
         desc: '',
+      })
+
+      await generateQPressApi({
+        cwd: root,
+        entries: [
+          {
+            input: 'src/components/TypedEvents.vue',
+            output: 'src/.q-press/api/components/TypedEvents.json',
+          },
+        ],
+      })
+      const typedGenerated = JSON.parse(
+        await readFile(
+          join(root, 'src/.q-press/api/components/TypedEvents.generated.json'),
+          'utf8',
+        ),
+      )
+
+      expect(typedGenerated.events['update:mode']).toEqual({
+        desc: 'Emitted when the selected mode changes.',
+        params: {
+          mode: {
+            desc: 'Current selected mode.',
+            required: true,
+            tsType: "'dark' | 'light'",
+            type: "'dark' | 'light'",
+          },
+        },
       })
     } finally {
       await rm(root, { force: true, recursive: true })

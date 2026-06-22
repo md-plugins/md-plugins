@@ -401,22 +401,183 @@ function extractVueEvents(sourceFile: ts.SourceFile): Record<string, GeneratedAp
   const emitsCall = findMacroCall(sourceFile, 'defineEmits')
   const emitsArg = emitsCall?.arguments[0]
 
-  if (emitsArg === undefined || !ts.isArrayLiteralExpression(emitsArg)) {
+  if (emitsArg === undefined) {
     return {}
   }
 
   const events: Record<string, GeneratedApiProperty> = {}
 
-  for (const element of emitsArg.elements) {
-    if (ts.isStringLiteral(element)) {
-      events[element.text] = {
-        desc: '',
-        params: {},
+  if (ts.isArrayLiteralExpression(emitsArg)) {
+    for (const element of emitsArg.elements) {
+      if (ts.isStringLiteral(element)) {
+        events[element.text] = {
+          desc: '',
+          params: {},
+        }
+      }
+    }
+  } else if (ts.isObjectLiteralExpression(emitsArg)) {
+    for (const property of emitsArg.properties) {
+      const name = getObjectPropertyName(property, sourceFile)
+
+      if (name === undefined || !ts.isPropertyAssignment(property)) {
+        continue
+      }
+
+      const docs = readJSDoc(property, sourceFile)
+      const params = isFunctionLikeInitializer(property.initializer)
+        ? createParams(property.initializer, docs, sourceFile)
+        : undefined
+
+      events[name] = {
+        desc: docs.desc,
+        params: params ?? {},
       }
     }
   }
 
+  applyVueEventPayloads(events, sourceFile)
+
   return events
+}
+
+function applyVueEventPayloads(
+  events: Record<string, GeneratedApiProperty>,
+  sourceFile: ts.SourceFile,
+): void {
+  const emitNames = getVueEmitBindingNames(sourceFile)
+
+  if (emitNames.size === 0) {
+    return
+  }
+
+  const visit = (node: ts.Node) => {
+    if (
+      ts.isCallExpression(node) &&
+      ts.isIdentifier(node.expression) &&
+      emitNames.has(node.expression.text) &&
+      ts.isStringLiteral(node.arguments[0])
+    ) {
+      const eventName = node.arguments[0].text
+      const event = events[eventName]
+
+      if (event !== undefined) {
+        event.params = mergeGeneratedParams(
+          event.params,
+          createVueEventPayloadParams(eventName, node.arguments.slice(1), sourceFile),
+        )
+      }
+    }
+
+    ts.forEachChild(node, visit)
+  }
+
+  visit(sourceFile)
+}
+
+function mergeGeneratedParams(
+  current: Record<string, GeneratedApiProperty> | undefined,
+  generated: Record<string, GeneratedApiProperty>,
+): Record<string, GeneratedApiProperty> {
+  const params = { ...(current ?? {}) }
+
+  for (const [name, generatedParam] of Object.entries(generated)) {
+    params[name] =
+      params[name] === undefined
+        ? generatedParam
+        : {
+            ...generatedParam,
+            ...params[name],
+          }
+  }
+
+  return params
+}
+
+function getVueEmitBindingNames(sourceFile: ts.SourceFile): Set<string> {
+  const names = new Set<string>()
+
+  for (const statement of sourceFile.statements) {
+    if (!ts.isVariableStatement(statement)) {
+      continue
+    }
+
+    for (const declaration of statement.declarationList.declarations) {
+      if (
+        ts.isIdentifier(declaration.name) &&
+        declaration.initializer !== undefined &&
+        ts.isCallExpression(declaration.initializer) &&
+        ts.isIdentifier(declaration.initializer.expression) &&
+        declaration.initializer.expression.text === 'defineEmits'
+      ) {
+        names.add(declaration.name.text)
+      }
+    }
+  }
+
+  return names
+}
+
+function createVueEventPayloadParams(
+  eventName: string,
+  args: ts.NodeArray<ts.Expression> | ts.Expression[],
+  sourceFile: ts.SourceFile,
+): Record<string, GeneratedApiProperty> {
+  const params: Record<string, GeneratedApiProperty> = {}
+
+  args.forEach((arg, index) => {
+    const name = getVueEventPayloadParamName(eventName, index)
+
+    if (params[name] === undefined) {
+      params[name] = {
+        desc: '',
+        type: getVueEventPayloadType(arg, sourceFile),
+      }
+    }
+  })
+
+  return params
+}
+
+function getVueEventPayloadParamName(eventName: string, index: number): string {
+  if (index > 0) {
+    return `arg${index + 1}`
+  }
+
+  const updateMatch = /^update:(.+)$/.exec(eventName)
+
+  return updateMatch?.[1] ?? 'value'
+}
+
+function getVueEventPayloadType(node: ts.Expression, sourceFile: ts.SourceFile): string {
+  if (ts.isConditionalExpression(node)) {
+    const whenTrue = getVueEventPayloadType(node.whenTrue, sourceFile)
+    const whenFalse = getVueEventPayloadType(node.whenFalse, sourceFile)
+
+    return whenTrue === whenFalse ? whenTrue : `${whenTrue} | ${whenFalse}`
+  }
+
+  if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) {
+    return 'String'
+  }
+
+  if (node.kind === ts.SyntaxKind.TrueKeyword || node.kind === ts.SyntaxKind.FalseKeyword) {
+    return 'Boolean'
+  }
+
+  if (ts.isNumericLiteral(node)) {
+    return 'Number'
+  }
+
+  if (ts.isObjectLiteralExpression(node)) {
+    return 'Object'
+  }
+
+  if (ts.isArrayLiteralExpression(node)) {
+    return 'Array'
+  }
+
+  return node.getText(sourceFile)
 }
 
 function extractVueSlots(source: string): Record<string, GeneratedApiProperty> {

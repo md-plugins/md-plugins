@@ -36,7 +36,14 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['update:mode'])
+const emit = defineEmits({
+  /**
+   * Emitted when the mode is toggled.
+   *
+   * @param mode - The current mode ('dark' or 'light').
+   */
+  'update:mode': (mode: 'dark' | 'light') => mode === 'dark' || mode === 'light',
+})
 
 const $q = useQuasar()
 const { toggleDark } = useDark()
