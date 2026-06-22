@@ -46,7 +46,11 @@ import { mdiClose } from '@quasar/extras/mdi-v7'
 import type { AnnouncementBannerConfig } from '../types/config'
 
 const props = defineProps<{
-  /** Announcement settings from `siteConfig.announcement`. */
+  /**
+   * Announcement settings from `siteConfig.announcement`.
+   *
+   * @category content
+   */
   config?: AnnouncementBannerConfig | undefined
 }>()
 

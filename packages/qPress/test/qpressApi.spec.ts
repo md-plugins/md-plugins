@@ -460,6 +460,28 @@ const emit = defineEmits({
 })
 </script>
 `,
+      'src/components/TypedProps.vue': `
+<script setup lang="ts">
+type NoticeConfig = {
+  enabled: boolean
+}
+
+const props = defineProps<{
+  /**
+   * Privacy consent settings from site config.
+   *
+   * @category content
+   */
+  config?: NoticeConfig | undefined
+  /**
+   * Whether the notice is active.
+   *
+   * @category state
+   */
+  active: boolean
+}>()
+</script>
+`,
     })
 
     try {
@@ -554,6 +576,37 @@ const emit = defineEmits({
             type: "'dark' | 'light'",
           },
         },
+      })
+
+      await generateQPressApi({
+        cwd: root,
+        entries: [
+          {
+            input: 'src/components/TypedProps.vue',
+            output: 'src/.q-press/api/components/TypedProps.json',
+          },
+        ],
+      })
+      const typedPropsGenerated = JSON.parse(
+        await readFile(
+          join(root, 'src/.q-press/api/components/TypedProps.generated.json'),
+          'utf8',
+        ),
+      )
+
+      expect(typedPropsGenerated.props.config).toEqual({
+        category: 'content',
+        desc: 'Privacy consent settings from site config.',
+        required: false,
+        tsType: 'NoticeConfig | undefined',
+        type: 'NoticeConfig',
+      })
+      expect(typedPropsGenerated.props.active).toEqual({
+        category: 'state',
+        desc: 'Whether the notice is active.',
+        required: true,
+        tsType: 'boolean',
+        type: 'Boolean',
       })
     } finally {
       await rm(root, { force: true, recursive: true })

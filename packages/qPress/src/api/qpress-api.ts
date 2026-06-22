@@ -307,7 +307,11 @@ function extractVueProps(sourceFile: ts.SourceFile): Record<string, GeneratedApi
   const propsCall = findMacroCall(sourceFile, 'defineProps')
   const propsArg = propsCall?.arguments[0]
 
-  if (propsArg === undefined || !ts.isObjectLiteralExpression(propsArg)) {
+  if (propsArg === undefined) {
+    return extractTypedVueProps(propsCall, sourceFile)
+  }
+
+  if (!ts.isObjectLiteralExpression(propsArg)) {
     return {}
   }
 
@@ -328,6 +332,57 @@ function extractVueProps(sourceFile: ts.SourceFile): Record<string, GeneratedApi
   }
 
   return props
+}
+
+function extractTypedVueProps(
+  propsCall: ts.CallExpression | undefined,
+  sourceFile: ts.SourceFile,
+): Record<string, GeneratedApiProperty> {
+  const propsType = propsCall?.typeArguments?.[0]
+
+  if (propsType === undefined || !ts.isTypeLiteralNode(propsType)) {
+    return {}
+  }
+
+  const props: Record<string, GeneratedApiProperty> = {}
+
+  for (const member of propsType.members) {
+    if (!ts.isPropertySignature(member)) {
+      continue
+    }
+
+    const name = getMemberName(member, sourceFile)
+
+    if (name === undefined) {
+      continue
+    }
+
+    const docs = readJSDoc(member, sourceFile)
+    const type = getVueTypedPropType(member, sourceFile)
+
+    props[name] = applyJSDocMetadata(
+      {
+        desc: docs.desc,
+        required: member.questionToken === undefined,
+        tsType: member.type?.getText(sourceFile) ?? 'unknown',
+        type,
+      },
+      docs,
+    )
+  }
+
+  return props
+}
+
+function getVueTypedPropType(member: ts.PropertySignature, sourceFile: ts.SourceFile): string {
+  const type = member.type?.getText(sourceFile) ?? 'unknown'
+  const withoutUndefined = type
+    .split('|')
+    .map((part) => part.trim())
+    .filter((part) => part !== 'undefined')
+    .join(' | ')
+
+  return normalizeApiType(withoutUndefined || type)
 }
 
 function createVuePropEntry(

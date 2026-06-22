@@ -76,7 +76,11 @@ interface StoredPrivacyConsent {
 }
 
 const props = defineProps<{
-  /** Privacy consent settings from `siteConfig.privacyConsent`. */
+  /**
+   * Privacy consent settings from `siteConfig.privacyConsent`.
+   *
+   * @category content
+   */
   config?: PrivacyConsentConfig | undefined
 }>()
 

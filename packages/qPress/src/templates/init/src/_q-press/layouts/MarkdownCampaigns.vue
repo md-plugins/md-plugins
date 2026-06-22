@@ -74,7 +74,11 @@ interface StoredCampaignState {
 }
 
 const props = defineProps<{
-  /** Opt-in campaign settings from `siteConfig.campaigns`. */
+  /**
+   * Opt-in campaign settings from `siteConfig.campaigns`.
+   *
+   * @category content
+   */
   campaigns?: CampaignConfig[] | undefined
 }>()
 
