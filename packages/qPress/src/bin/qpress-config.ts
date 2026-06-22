@@ -1,7 +1,13 @@
 import { promises as fs } from 'node:fs'
 import { extname, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
+import type { QPressApiGenerateEntry, QPressApiEntryGroup } from '../api/qpress-api.js'
 import type { QPressCheckOptions } from '../check/qpress-check.js'
+
+export type QPressApiCliConfig = {
+  entries?: QPressApiGenerateEntry[]
+  generatedSuffix?: string
+}
 
 export type QPressCheckCliConfig = QPressCheckOptions & {
   failOnWarnings?: boolean
@@ -10,6 +16,7 @@ export type QPressCheckCliConfig = QPressCheckOptions & {
 }
 
 export type QPressCliConfig = {
+  api?: QPressApiCliConfig
   check?: QPressCheckCliConfig
 }
 
@@ -27,7 +34,12 @@ const configFiles = [
   '.qpressrc.json',
 ]
 
-const topLevelConfigKeys = new Set(['check'])
+const topLevelConfigKeys = new Set(['api', 'check'])
+const stringApiKeys = new Set(['generatedSuffix'])
+const apiConfigKeys = new Set(['entries', ...stringApiKeys])
+const stringApiEntryKeys = new Set(['docsUrl', 'generatedSuffix', 'input', 'output', 'type'])
+const apiEntryKeys = new Set([...stringApiEntryKeys, 'group'])
+const apiEntryGroups = new Set<QPressApiEntryGroup>(['functions', 'methods'])
 const stringCheckKeys = new Set([
   'apiDir',
   'cwd',
@@ -86,7 +98,40 @@ export async function loadQPressCliConfig({
  */
 function validateQPressCliConfig(config: Record<string, unknown>, configPath: string): void {
   validateKnownKeys(config, topLevelConfigKeys, configPath, 'config')
+  validateApiConfig(config, configPath)
+  validateCheckConfig(config, configPath)
+}
 
+/**
+ * Validates qpress API generator config.
+ */
+function validateApiConfig(config: Record<string, unknown>, configPath: string): void {
+  if (config.api === undefined) {
+    return
+  }
+
+  if (!isRecord(config.api)) {
+    throw new Error(`Q-Press config "api" must be an object: ${configPath}`)
+  }
+
+  validateKnownKeys(config.api, apiConfigKeys, configPath, 'api')
+
+  for (const [key, value] of Object.entries(config.api)) {
+    if (stringApiKeys.has(key)) {
+      validateString(value, configPath, `api.${key}`)
+      continue
+    }
+
+    if (key === 'entries') {
+      validateApiEntries(value, configPath)
+    }
+  }
+}
+
+/**
+ * Validates qpress check config.
+ */
+function validateCheckConfig(config: Record<string, unknown>, configPath: string): void {
   if (config.check === undefined) {
     return
   }
@@ -111,6 +156,53 @@ function validateQPressCliConfig(config: Record<string, unknown>, configPath: st
     if (stringArrayCheckKeys.has(key)) {
       validateStringArray(value, configPath, `check.${key}`)
     }
+  }
+}
+
+/**
+ * Validates API generator entries.
+ */
+function validateApiEntries(value: unknown, configPath: string): void {
+  if (!Array.isArray(value)) {
+    throw new Error(`Q-Press config "api.entries" must be an array: ${configPath}`)
+  }
+
+  value.forEach((entry, index) => {
+    const entryPath = `api.entries[${index}]`
+
+    if (!isRecord(entry)) {
+      throw new Error(`Q-Press config "${entryPath}" must be an object: ${configPath}`)
+    }
+
+    validateKnownKeys(entry, apiEntryKeys, configPath, entryPath)
+
+    for (const [key, entryValue] of Object.entries(entry)) {
+      if (stringApiEntryKeys.has(key)) {
+        validateString(entryValue, configPath, `${entryPath}.${key}`)
+        continue
+      }
+
+      if (key === 'group') {
+        validateApiEntryGroup(entryValue, configPath, `${entryPath}.group`)
+      }
+    }
+
+    if (entry.input === undefined) {
+      throw new Error(`Q-Press config "${entryPath}.input" is required: ${configPath}`)
+    }
+
+    if (entry.output === undefined) {
+      throw new Error(`Q-Press config "${entryPath}.output" is required: ${configPath}`)
+    }
+  })
+}
+
+/**
+ * Validates an API generator target group.
+ */
+function validateApiEntryGroup(value: unknown, configPath: string, path: string): void {
+  if (typeof value !== 'string' || !apiEntryGroups.has(value as QPressApiEntryGroup)) {
+    throw new Error(`Q-Press config "${path}" must be "functions" or "methods": ${configPath}`)
   }
 }
 

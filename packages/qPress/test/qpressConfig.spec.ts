@@ -19,6 +19,16 @@ describe('qpress config', () => {
       await writeFile(
         join(root, 'qpress.config.json'),
         JSON.stringify({
+          api: {
+            entries: [
+              {
+                group: 'functions',
+                input: 'src/utils/timestamp.ts',
+                output: 'src/.q-press/api/timestamp.json',
+              },
+            ],
+            generatedSuffix: '.generated',
+          },
           check: {
             allowedRoutes: ['/theme-builder'],
             ignoreFiles: ['__*.md'],
@@ -28,6 +38,12 @@ describe('qpress config', () => {
 
       const config = await loadQPressCliConfig({ cwd: root })
 
+      expect(config.api?.entries?.[0]).toEqual({
+        group: 'functions',
+        input: 'src/utils/timestamp.ts',
+        output: 'src/.q-press/api/timestamp.json',
+      })
+      expect(config.api?.generatedSuffix).toBe('.generated')
       expect(config.check?.allowedRoutes).toEqual(['/theme-builder'])
       expect(config.check?.ignoreFiles).toEqual(['__*.md'])
     } finally {
@@ -117,6 +133,58 @@ describe('qpress config', () => {
 
       await expect(loadQPressCliConfig({ cwd: root })).rejects.toThrow(
         'Unknown Q-Press config key "check.allowRoute"',
+      )
+    } finally {
+      await rm(root, { force: true, recursive: true })
+    }
+  })
+
+  it('rejects invalid API config entries', async () => {
+    const root = await createProject()
+
+    try {
+      await writeFile(
+        join(root, 'qpress.config.json'),
+        JSON.stringify({
+          api: {
+            entries: [
+              {
+                group: 'events',
+                input: 'src/api.ts',
+                output: 'src/.q-press/api/api.json',
+              },
+            ],
+          },
+        }),
+      )
+
+      await expect(loadQPressCliConfig({ cwd: root })).rejects.toThrow(
+        'Q-Press config "api.entries[0].group" must be "functions" or "methods"',
+      )
+    } finally {
+      await rm(root, { force: true, recursive: true })
+    }
+  })
+
+  it('requires input and output for API config entries', async () => {
+    const root = await createProject()
+
+    try {
+      await writeFile(
+        join(root, 'qpress.config.json'),
+        JSON.stringify({
+          api: {
+            entries: [
+              {
+                input: 'src/api.ts',
+              },
+            ],
+          },
+        }),
+      )
+
+      await expect(loadQPressCliConfig({ cwd: root })).rejects.toThrow(
+        'Q-Press config "api.entries[0].output" is required',
       )
     } finally {
       await rm(root, { force: true, recursive: true })

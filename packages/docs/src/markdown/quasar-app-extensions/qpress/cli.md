@@ -9,6 +9,7 @@ related:
 Q-Press exposes one primary CLI command with focused subcommands. The CLI is installed as a project-local npm binary, not a global shell command:
 
 ```bash
+pnpm exec qpress api generate
 pnpm exec qpress check
 pnpm exec qpress ssg
 ```
@@ -23,6 +24,9 @@ Every command supports `--help`:
 
 ```bash
 pnpm exec qpress --help
+pnpm exec qpress api --help
+pnpm exec qpress api generate --help
+pnpm exec qpress api check --help
 pnpm exec qpress check --help
 pnpm exec qpress ssg --help
 ```
@@ -98,6 +102,17 @@ Put check options under the `check` key:
 
 ```json
 {
+  "api": {
+    "generatedSuffix": ".generated",
+    "entries": [
+      {
+        "input": "src/utils/timestamp.ts",
+        "output": "src/.q-press/api/composables/timestamp.json",
+        "group": "functions",
+        "docsUrl": "/api/timestamp"
+      }
+    ]
+  },
   "check": {
     "allowedRoutes": ["/theme-builder"],
     "ignoreFiles": ["__*.md"],
@@ -120,6 +135,65 @@ Skip config loading for debugging or one-off CI checks:
 
 ```bash
 pnpm exec qpress check --no-config
+```
+
+## API JSON Generation
+
+Use `qpress api` when you want TypeScript exports and JSDoc to become the source of truth for Q-Press API JSON.
+
+The first pass is intentionally review-first. `generate` writes comparison files next to your configured API JSON files and does not overwrite committed API files:
+
+```bash
+pnpm exec qpress api generate
+```
+
+For example, an entry with this output path:
+
+```text
+src/.q-press/api/composables/timestamp.json
+```
+
+Generates this comparison file:
+
+```text
+src/.q-press/api/composables/timestamp.generated.json
+```
+
+Review the generated file against the hand-authored file before deciding whether to adopt it. This keeps existing API JSON safe while the generator matures.
+
+Run `check` when CI should report stale or missing API JSON without writing files:
+
+```bash
+pnpm exec qpress api check
+```
+
+The generator currently extracts exported TypeScript functions and exported `const` arrow/function expressions. It reads JSDoc descriptions plus `@param`, `@returns`, `@example`, and `@since` tags, then emits the same JSON shape used by `MarkdownApi`.
+
+Configure entries under `api.entries`:
+
+```json
+{
+  "api": {
+    "entries": [
+      {
+        "input": "src/utils/timestamp.ts",
+        "output": "src/.q-press/api/composables/timestamp.json",
+        "group": "functions",
+        "docsUrl": "/api/timestamp"
+      }
+    ]
+  }
+}
+```
+
+Use `group: "functions"` for composables and utilities, or `group: "methods"` when the generated API should appear under the Methods tab.
+
+You can also run a one-off comparison without config:
+
+```bash
+pnpm exec qpress api generate \
+  --input src/utils/timestamp.ts \
+  --output src/.q-press/api/composables/timestamp.json
 ```
 
 ## Custom Routes

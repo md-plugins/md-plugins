@@ -5,6 +5,7 @@ import {
   formatQPressCheckResult,
   type QPressCheckOptions,
 } from '../check/qpress-check.js'
+import { runQPressApiCli } from './qpress-api-command.js'
 import { loadQPressCliConfig, type QPressCheckCliConfig } from './qpress-config.js'
 import { runQPressSsgCli } from './qpress-ssg-command.js'
 
@@ -29,6 +30,7 @@ Usage:
   qpress <command> [options]
 
 Commands:
+  api     Generate or check Q-Press API JSON from TypeScript exports and JSDoc.
   check   Validate Q-Press Markdown routes, examples, API JSON, and SSG-risky examples.
   ssg     Prerender Q-Press routes into static HTML.
 
@@ -243,6 +245,11 @@ async function run(): Promise<void> {
 
   if (command === 'check') {
     process.exitCode = await runCheck(args)
+    return
+  }
+
+  if (command === 'api') {
+    process.exitCode = await runQPressApiCli(args)
     return
   }
 
