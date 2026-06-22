@@ -8,7 +8,9 @@ import { loadQPressCliConfig, type QPressApiCliConfig } from './qpress-config.js
 
 type ApiCliOptions = {
   config?: string
+  docsUrl?: string
   generatedSuffix?: string
+  group?: QPressApiGenerateEntry['group']
   help?: boolean
   input?: string
   json?: boolean
@@ -16,6 +18,7 @@ type ApiCliOptions = {
   output?: string
   quiet?: boolean
   root?: string
+  type?: string
 }
 
 /**
@@ -39,6 +42,9 @@ Options:
   --no-config               Skip loading qpress config.
   --input <file>            TypeScript source file for a one-off API entry.
   --output <file>           Existing API JSON path for a one-off API entry.
+  --type <name>             API JSON type for a one-off API entry.
+  --group <name>            API group for a one-off API entry: functions or methods.
+  --docs-url <url>          Documentation URL for a one-off API entry.
   --generated-suffix <text> Generated comparison suffix. Defaults to .generated.
   --json                    Print machine-readable JSON.
   --quiet                   Hide success output.
@@ -132,6 +138,18 @@ function parseApiArgs(args: string[]): ApiCliOptions {
         options.output = readValue(args, index, arg)
         index += 1
         break
+      case '--type':
+        options.type = readValue(args, index, arg)
+        index += 1
+        break
+      case '--group':
+        options.group = readApiGroup(readValue(args, index, arg))
+        index += 1
+        break
+      case '--docs-url':
+        options.docsUrl = readValue(args, index, arg)
+        index += 1
+        break
       case '--generated-suffix':
         options.generatedSuffix = readValue(args, index, arg)
         index += 1
@@ -182,9 +200,20 @@ function createCliEntry(options: ApiCliOptions): QPressApiGenerateEntry | undefi
   }
 
   return {
+    docsUrl: options.docsUrl,
+    group: options.group,
     input: options.input,
     output: options.output,
+    type: options.type,
   }
+}
+
+function readApiGroup(value: string): QPressApiGenerateEntry['group'] {
+  if (value !== 'functions' && value !== 'methods') {
+    throw new Error('--group must be "functions" or "methods".')
+  }
+
+  return value
 }
 
 /**

@@ -202,8 +202,13 @@ You can also run a one-off comparison without config:
 ```bash
 pnpm exec qpress api generate \
   --input src/utils/timestamp.ts \
-  --output src/.q-press/api/composables/timestamp.json
+  --output src/.q-press/api/composables/timestamp.json \
+  --type plugin \
+  --group methods \
+  --docs-url /api/timestamp
 ```
+
+For one-off runs, `--type`, `--group`, and `--docs-url` mirror the matching `api.entries` fields. Use them when you are probing a new source file and want the generated comparison artifact to resemble the final API JSON shape.
 
 ## Custom Routes
 

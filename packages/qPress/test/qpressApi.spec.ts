@@ -3,6 +3,7 @@ import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { checkQPressApi, generateQPressApi, getGeneratedOutputPath } from '../src/api/qpress-api.js'
+import { runQPressApiCli } from '../src/bin/qpress-api-command.js'
 
 /**
  * Creates a temporary project root for qpress API generator tests.
@@ -448,6 +449,62 @@ export function add(left: number, right: number): number {
         code: 'ENOENT',
       })
     } finally {
+      await rm(root, { force: true, recursive: true })
+    }
+  })
+
+  it('supports metadata flags for one-off CLI generation', async () => {
+    const root = await createProject({
+      'src/utils/clipboard.ts': `
+/**
+ * Copies text to the clipboard.
+ *
+ * @param text - Text to copy.
+ * @returns Completion promise.
+ */
+export function copyText(text: string): Promise<void> {
+  return Promise.resolve()
+}
+`,
+    })
+    const stdoutWrite = process.stdout.write
+    let output = ''
+
+    try {
+      process.stdout.write = ((chunk: string | Uint8Array) => {
+        output += chunk.toString()
+
+        return true
+      }) as typeof process.stdout.write
+
+      const exitCode = await runQPressApiCli([
+        'generate',
+        '--no-config',
+        '--root',
+        root,
+        '--input',
+        'src/utils/clipboard.ts',
+        '--output',
+        'src/.q-press/api/internal/clipboard.json',
+        '--type',
+        'plugin',
+        '--group',
+        'methods',
+        '--docs-url',
+        '/internal/clipboard',
+        '--json',
+      ])
+      const generated = JSON.parse(
+        await readFile(join(root, 'src/.q-press/api/internal/clipboard.generated.json'), 'utf8'),
+      )
+
+      expect(exitCode).toBe(0)
+      expect(JSON.parse(output).entries[0].exportCount).toBe(1)
+      expect(generated.type).toBe('plugin')
+      expect(generated.meta.docsUrl).toBe('/internal/clipboard')
+      expect(generated.methods.copyText.params.text.desc).toBe('Text to copy.')
+    } finally {
+      process.stdout.write = stdoutWrite
       await rm(root, { force: true, recursive: true })
     }
   })
