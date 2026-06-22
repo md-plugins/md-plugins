@@ -159,6 +159,155 @@ export const today = (): string => '2036-06-08'
     }
   })
 
+  it('captures supported API edge cases without overwriting curated files', async () => {
+    const root = await createProject({
+      'src/.q-press/api/composables/edge.json': '{"type":"component"}\n',
+      'src/types.ts': `
+export interface ExternalClock {
+  now(): Date
+}
+`,
+      'src/utils/edge.ts': `
+import type { ExternalClock } from '../types'
+
+export type WindowResult = {
+  /**
+   * Start details for the window.
+   */
+  start: {
+    date: string
+    time?: string
+  }
+
+  /**
+   * Duration in minutes.
+   */
+  minutes: number
+
+  /**
+   * Formats a label for display.
+   */
+  format(label: string): string
+}
+
+/**
+ * Creates a date window.
+ *
+ * @param input Date input.
+ * @param options Optional format options.
+ * @param clock Optional external clock.
+ * @returns Window result, or null.
+ * @example createWindow('2036-06-08')
+ * @example createWindow('2036-06-08', { zone: 'UTC' })
+ * @since 0.1.0
+ */
+export function createWindow(
+  input: string,
+  options: { zone?: string; step?: number } = {},
+  clock?: ExternalClock,
+): WindowResult | null {
+  return null
+}
+
+/**
+ * Returns a concrete date window.
+ *
+ * @returns Window result.
+ * @deprecated Use createWindow for nullable parsing.
+ */
+export const getWindow = function (): WindowResult {
+  return {
+    start: {
+      date: '2036-06-08',
+    },
+    minutes: 30,
+    format: (label) => label,
+  }
+}
+
+/**
+ * Parses a string input.
+ *
+ * @param input Input value.
+ * @returns Parsed value.
+ */
+export function parseValue(input: string): string
+export function parseValue(input: number): number
+
+/**
+ * Parses an overloaded input.
+ *
+ * @param input Input value.
+ * @returns Parsed value.
+ */
+export function parseValue(input: string | number): string | number {
+  return input
+}
+`,
+    })
+
+    try {
+      const result = await generateQPressApi({
+        cwd: root,
+        entries: [
+          {
+            input: 'src/utils/edge.ts',
+            output: 'src/.q-press/api/composables/edge.json',
+          },
+        ],
+      })
+      const generated = JSON.parse(
+        await readFile(join(root, 'src/.q-press/api/composables/edge.generated.json'), 'utf8'),
+      )
+
+      expect(result.entries[0]?.exportCount).toBe(3)
+      expect(generated.functions.createWindow.addedIn).toBe('0.1.0')
+      expect(generated.functions.createWindow.examples).toEqual([
+        "createWindow('2036-06-08')",
+        "createWindow('2036-06-08', { zone: 'UTC' })",
+      ])
+      expect(generated.functions.createWindow.params.input.required).toBe(true)
+      expect(generated.functions.createWindow.params.options.required).toBe(false)
+      expect(generated.functions.createWindow.params.options.tsType).toContain('zone?: string')
+      expect(generated.functions.createWindow.params.clock.required).toBe(false)
+      expect(generated.functions.createWindow.params.clock.tsType).toBe('ExternalClock')
+      expect(generated.functions.createWindow.returns).toEqual({
+        desc: 'Window result, or null.',
+        tsType: 'WindowResult | null',
+        type: 'WindowResult | null',
+      })
+      expect(generated.functions.getWindow.deprecated).toBe(
+        'Use createWindow for nullable parsing.',
+      )
+      expect(generated.functions.getWindow.returns.definition).toEqual({
+        format: {
+          desc: 'Formats a label for display.',
+          required: true,
+          tsType: '(label: string) => string',
+          type: '(label: string) => string',
+        },
+        minutes: {
+          desc: 'Duration in minutes.',
+          required: true,
+          tsType: 'number',
+          type: 'number',
+        },
+        start: {
+          desc: 'Start details for the window.',
+          required: true,
+          tsType: '{\n    date: string\n    time?: string\n  }',
+          type: '{\n    date: string\n    time?: string\n  }',
+        },
+      })
+      expect(generated.functions.parseValue.tsSignature).toBe(
+        'function parseValue(input: string | number): string | number',
+      )
+      expect(generated.functions.parseValue.params.input.tsType).toBe('string | number')
+    } finally {
+      await rm(root, { force: true, recursive: true })
+    }
+  })
+
   it('checks stale API JSON without writing comparison files', async () => {
     const root = await createProject({
       'src/.q-press/api/helpers/math.json': '{"type":"component"}\n',
