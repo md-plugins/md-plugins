@@ -24,6 +24,7 @@ const props = defineProps({
    * Icon name displayed for the dark mode state.
    *
    * @category content
+   * @example mdiMoonWaningCrescent
    */
   darkIcon: {
     type: String,
@@ -33,6 +34,7 @@ const props = defineProps({
    * Icon name displayed for the light mode state.
    *
    * @category content
+   * @example mdiWhiteBalanceSunny
    */
   lightIcon: {
     type: String,

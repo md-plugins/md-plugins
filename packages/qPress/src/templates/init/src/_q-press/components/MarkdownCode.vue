@@ -16,6 +16,8 @@ const props = defineProps({
    * Code string to render with syntax highlighting.
    *
    * @category content
+   * @example 'const a = 1;'
+   * @example '<div>Hello World</div>'
    */
   code: {
     type: String,
@@ -25,6 +27,8 @@ const props = defineProps({
    * Maximum height for the rendered code block.
    *
    * @category style
+   * @example '200px'
+   * @example '50vh'
    */
   maxHeight: {
     type: String,
@@ -35,6 +39,9 @@ const props = defineProps({
    * Language identifier used by the syntax highlighter.
    *
    * @category content
+   * @example 'js'
+   * @example 'html'
+   * @example 'css'
    */
   lang: {
     type: String,

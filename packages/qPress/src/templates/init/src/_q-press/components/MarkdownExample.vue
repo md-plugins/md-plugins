@@ -122,6 +122,8 @@ const props = defineProps({
    * Title displayed above the example.
    *
    * @category content
+   * @example 'Example 1'
+   * @example 'Sample Code'
    */
   title: {
     type: String,
@@ -131,6 +133,8 @@ const props = defineProps({
    * Vue example file name without the .vue extension.
    *
    * @category content
+   * @example 'Basic'
+   * @example 'AdvancedUsage'
    */
   file: {
     type: String,

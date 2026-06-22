@@ -13,6 +13,8 @@ const props = defineProps({
    * Target URL or route path for the card link.
    *
    * @category navigation
+   * @example /home
+   * @example https://example.com
    */
   to: {
     type: String,
