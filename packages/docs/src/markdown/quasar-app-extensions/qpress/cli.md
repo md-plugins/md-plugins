@@ -75,6 +75,7 @@ The checker scans:
 - Missing `MarkdownExample` source files
 - Missing imported Q-Press API JSON files
 - Malformed API JSON files
+- Stale generated API JSON when `api.entries` is configured
 - Missing frontmatter title or description warnings
 - Common browser-only globals in examples that can surprise SSG builds
 
@@ -165,6 +166,14 @@ Run `check` when CI should report stale or missing API JSON without writing file
 
 ```bash
 pnpm exec qpress api check
+```
+
+`qpress check` also runs these stale generated API checks automatically when `api.entries` is configured. This keeps the normal release validator aware of API drift without requiring a second command in most CI scripts.
+
+If you need to run the docs checks without generated API drift checks, use:
+
+```bash
+pnpm exec qpress check --no-api
 ```
 
 The generator currently extracts exported TypeScript functions and exported `const` arrow/function expressions. It reads JSDoc descriptions plus `@param`, `@returns`, `@example`, and `@since` tags, then emits the same JSON shape used by `MarkdownApi`.

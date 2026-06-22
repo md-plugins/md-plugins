@@ -131,6 +131,87 @@ related: guides/intro
     }
   })
 
+  it('reports stale configured generated API JSON', async () => {
+    const root = await createProject({
+      'src/.q-press/api/composables/example.json': '{"type":"component"}\n',
+      'src/markdown/landing-page.md': `---
+title: Home
+desc: Landing page.
+---
+`,
+      'src/utils/example.ts': `
+/**
+ * Returns a label.
+ *
+ * @returns Label text.
+ */
+export function getLabel(): string {
+  return 'Label'
+}
+`,
+    })
+
+    try {
+      const result = await checkQPressProject({
+        apiEntries: [
+          {
+            input: 'src/utils/example.ts',
+            output: 'src/.q-press/api/composables/example.json',
+          },
+        ],
+        cwd: root,
+      })
+
+      expect(result.errors).toEqual([
+        expect.objectContaining({
+          code: 'api-output-stale',
+          file: 'src/.q-press/api/composables/example.json',
+        }),
+      ])
+      expect(result.errors[0]?.message).toContain('Field changes: 1 added')
+    } finally {
+      await rm(root, { force: true, recursive: true })
+    }
+  })
+
+  it('skips configured generated API JSON when disabled', async () => {
+    const root = await createProject({
+      'src/.q-press/api/composables/example.json': '{"type":"component"}\n',
+      'src/markdown/landing-page.md': `---
+title: Home
+desc: Landing page.
+---
+`,
+      'src/utils/example.ts': `
+/**
+ * Returns a label.
+ *
+ * @returns Label text.
+ */
+export function getLabel(): string {
+  return 'Label'
+}
+`,
+    })
+
+    try {
+      const result = await checkQPressProject({
+        apiEntries: [
+          {
+            input: 'src/utils/example.ts',
+            output: 'src/.q-press/api/composables/example.json',
+          },
+        ],
+        checkGeneratedApi: false,
+        cwd: root,
+      })
+
+      expect(result.errors).toEqual([])
+    } finally {
+      await rm(root, { force: true, recursive: true })
+    }
+  })
+
   it('reports duplicate Markdown routes', async () => {
     const root = await createProject({
       'src/markdown/guides.md': `---

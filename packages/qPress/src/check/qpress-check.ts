@@ -1,5 +1,10 @@
 import { promises as fs } from 'node:fs'
 import { extname, join, posix, relative, resolve, sep } from 'node:path'
+import {
+  checkQPressApi,
+  type QPressApiGenerateEntry,
+  type QPressApiCheckDiagnostic,
+} from '../api/qpress-api.js'
 
 export type QPressCheckSeverity = 'error' | 'warning'
 
@@ -21,7 +26,10 @@ export type QPressCheckRoute = {
 export type QPressCheckOptions = {
   allowedRoutes?: string[]
   apiDir?: string
+  apiEntries?: QPressApiGenerateEntry[]
+  apiGeneratedSuffix?: string
   checkNavigation?: boolean
+  checkGeneratedApi?: boolean
   checkSsgUnsafe?: boolean
   checkUnreachable?: boolean
   cwd?: string
@@ -109,6 +117,15 @@ export async function checkQPressProject(
   await checkMarkdownFiles(markdownFiles, routeSet, examplesRoot, apiRoot, diagnostics)
   await checkApiJson(apiRoot, diagnostics)
 
+  if (options.checkGeneratedApi !== false && options.apiEntries?.length) {
+    await checkGeneratedApiEntries(
+      root,
+      options.apiEntries,
+      options.apiGeneratedSuffix,
+      diagnostics,
+    )
+  }
+
   const navigationRoutes =
     options.checkNavigation === false
       ? new Set<string>()
@@ -164,6 +181,69 @@ export function formatQPressCheckResult(result: QPressCheckResult): string {
   )
 
   return `${lines.join('\n')}\n`
+}
+
+/**
+ * Reports stale generated API JSON when qpress API entries are configured.
+ */
+async function checkGeneratedApiEntries(
+  root: string,
+  entries: QPressApiGenerateEntry[],
+  generatedSuffix: string | undefined,
+  diagnostics: QPressCheckDiagnostic[],
+): Promise<void> {
+  const result = await checkQPressApi({
+    cwd: root,
+    entries,
+    generatedSuffix,
+  })
+
+  for (const diagnostic of result.diagnostics) {
+    diagnostics.push(toProjectApiDiagnostic(root, diagnostic))
+  }
+}
+
+function toProjectApiDiagnostic(
+  root: string,
+  diagnostic: QPressApiCheckDiagnostic,
+): QPressCheckDiagnostic {
+  const outputPath = normalizeRelativePath(relative(root, diagnostic.outputPath))
+  const generatedPath = normalizeRelativePath(relative(root, diagnostic.generatedOutputPath))
+  const sourcePath = normalizeRelativePath(relative(root, diagnostic.inputPath))
+  const fieldSummary =
+    diagnostic.fieldChanges.length === 0
+      ? ''
+      : ` Field changes: ${formatApiFieldChangeSummary(diagnostic.fieldChanges)}.`
+
+  return {
+    code: diagnostic.code,
+    file: outputPath,
+    hint: `Run qpress api generate and compare ${generatedPath}.`,
+    message:
+      diagnostic.code === 'api-output-missing'
+        ? `Configured API JSON is missing for ${sourcePath}.${fieldSummary}`
+        : `Configured API JSON is stale for ${sourcePath}.${fieldSummary}`,
+    severity: 'error',
+  }
+}
+
+function formatApiFieldChangeSummary(
+  fieldChanges: QPressApiCheckDiagnostic['fieldChanges'],
+): string {
+  const summary = fieldChanges.reduce(
+    (acc, change) => {
+      acc[change.type] += 1
+
+      return acc
+    },
+    {
+      added: 0,
+      changed: 0,
+      removed: 0,
+    },
+  )
+
+  return `${summary.added} added, ${summary.changed} changed, ${summary.removed} removed`
 }
 
 /**

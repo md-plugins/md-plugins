@@ -50,6 +50,7 @@ const stringCheckKeys = new Set([
   'srcDir',
 ])
 const booleanCheckKeys = new Set([
+  'checkGeneratedApi',
   'checkNavigation',
   'checkSsgUnsafe',
   'checkUnreachable',

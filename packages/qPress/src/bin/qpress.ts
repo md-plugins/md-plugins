@@ -63,6 +63,7 @@ Options:
   --landing-page <file> Landing page Markdown filename. Defaults to landing-page.md.
   --ignore-file <glob>  Ignore a Markdown file path. Can be repeated.
   --allow-route <route> Treat a custom non-Markdown route as valid. Can be repeated.
+  --no-api              Skip configured qpress api stale checks.
   --no-navigation       Skip siteConfig navigation route checks.
   --check-unreachable   Warn when Markdown routes are not referenced by siteConfig navigation.
   --no-ssg-unsafe       Skip browser-global SSG-safety warnings for example files.
@@ -145,6 +146,9 @@ function parseCheckArgs(args: string[]): CheckCliOptions {
         options.allowedRoutes.push(readValue(args, index, arg))
         index += 1
         break
+      case '--no-api':
+        options.checkGeneratedApi = false
+        break
       case '--no-navigation':
         options.checkNavigation = false
         break
@@ -219,6 +223,8 @@ async function runCheck(args: string[]): Promise<number> {
     loadConfig: cliOptions.noConfig !== true,
   })
   const options = mergeCheckOptions(config.check, cliOptions)
+  options.apiEntries = options.checkGeneratedApi === false ? undefined : config.api?.entries
+  options.apiGeneratedSuffix = config.api?.generatedSuffix
   const result = await checkQPressProject(options)
 
   if (options.json === true) {
