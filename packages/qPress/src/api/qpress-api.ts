@@ -242,6 +242,7 @@ function populateVueComponentApi(api: GeneratedApiJson, inputPath: string, sourc
     sourceFile = ts.createSourceFile(inputPath, scriptSetup, ts.ScriptTarget.Latest, true)
     const props = extractVueProps(sourceFile)
     const events = extractVueEvents(sourceFile)
+    const methods = extractVueMethods(sourceFile)
 
     if (Object.keys(props).length > 0) {
       api.props = props
@@ -249,6 +250,10 @@ function populateVueComponentApi(api: GeneratedApiJson, inputPath: string, sourc
 
     if (Object.keys(events).length > 0) {
       api.events = events
+    }
+
+    if (Object.keys(methods).length > 0) {
+      api.methods = methods
     }
   }
 
@@ -258,7 +263,7 @@ function populateVueComponentApi(api: GeneratedApiJson, inputPath: string, sourc
     api.slots = slots
   }
 
-  return ['props', 'events', 'slots'].reduce((count, group) => {
+  return ['props', 'events', 'slots', 'methods'].reduce((count, group) => {
     const entries = api[group]
 
     return count + (isPlainRecord(entries) ? Object.keys(entries).length : 0)
@@ -485,12 +490,11 @@ function applyJSDocMetadata(
 function extractVueEvents(sourceFile: ts.SourceFile): Record<string, GeneratedApiProperty> {
   const emitsCall = findMacroCall(sourceFile, 'defineEmits')
   const emitsArg = emitsCall?.arguments[0]
+  const events = extractVueDocumentedEvents(sourceFile)
 
   if (emitsArg === undefined) {
-    return {}
+    return events
   }
-
-  const events: Record<string, GeneratedApiProperty> = {}
 
   if (ts.isArrayLiteralExpression(emitsArg)) {
     for (const element of emitsArg.elements) {
@@ -524,6 +528,51 @@ function extractVueEvents(sourceFile: ts.SourceFile): Record<string, GeneratedAp
   applyVueEventPayloads(events, sourceFile)
 
   return events
+}
+
+function extractVueDocumentedEvents(
+  sourceFile: ts.SourceFile,
+): Record<string, GeneratedApiProperty> {
+  const events: Record<string, GeneratedApiProperty> = {}
+
+  for (const statement of sourceFile.statements) {
+    if (!ts.isFunctionDeclaration(statement) || statement.name === undefined) {
+      continue
+    }
+
+    const docs = readJSDoc(statement, sourceFile)
+
+    if (docs.event === undefined) {
+      continue
+    }
+
+    events[docs.event] = {
+      desc: docs.desc,
+      params: createParams(statement, docs, sourceFile) ?? {},
+    }
+  }
+
+  return events
+}
+
+function extractVueMethods(sourceFile: ts.SourceFile): Record<string, GeneratedApiProperty> {
+  const methods: Record<string, GeneratedApiProperty> = {}
+
+  for (const statement of sourceFile.statements) {
+    if (!ts.isFunctionDeclaration(statement) || statement.name === undefined) {
+      continue
+    }
+
+    const docs = readJSDoc(statement, sourceFile)
+
+    if (docs.api !== true) {
+      continue
+    }
+
+    methods[statement.name.text] = createFunctionEntry(statement, sourceFile)
+  }
+
+  return methods
 }
 
 function applyVueEventPayloads(
@@ -954,9 +1003,11 @@ function createObjectBindingParams(
 }
 
 type JSDocDetails = {
+  api: boolean
   category?: string
   deprecated?: string | boolean
   desc: string
+  event?: string
   examples: string[]
   params: Map<string, string>
   returns: string
@@ -969,7 +1020,9 @@ function readJSDoc(node: ts.Node, sourceFile: ts.SourceFile, fallbackNode?: ts.N
   const params = new Map<string, string>()
   const examples: string[] = []
   const categories: string[] = []
+  let api = false
   let deprecated: string | boolean | undefined
+  let event: string | undefined
   let returns = ''
   let since: string | undefined
 
@@ -984,10 +1037,14 @@ function readJSDoc(node: ts.Node, sourceFile: ts.SourceFile, fallbackNode?: ts.N
 
         if (tagName === 'example') {
           examples.push(normalizeComment(tag.comment))
+        } else if (tagName === 'api') {
+          api = true
         } else if (tagName === 'category') {
           categories.push(...normalizeCategories(tag.comment))
         } else if (tagName === 'deprecated') {
           deprecated = normalizeComment(tag.comment) || true
+        } else if (tagName === 'event') {
+          event = normalizeComment(tag.comment)
         } else if (tagName === 'since') {
           since = normalizeComment(tag.comment)
         }
@@ -996,9 +1053,11 @@ function readJSDoc(node: ts.Node, sourceFile: ts.SourceFile, fallbackNode?: ts.N
   }
 
   return {
+    api,
     category: categories.length > 0 ? categories.join('|') : undefined,
     deprecated,
     desc: normalizeComment(docs?.comment),
+    event,
     examples,
     params,
     returns,

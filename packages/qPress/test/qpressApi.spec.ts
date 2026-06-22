@@ -480,6 +480,23 @@ const props = defineProps<{
    */
   active: boolean
 }>()
+
+/**
+ * Browser CustomEvent dispatched after the notice is saved.
+ *
+ * @event qpress:notice-saved
+ * @param detail Stored notice detail.
+ */
+function emitNotice(detail: NoticeConfig): void {
+  window.dispatchEvent(new CustomEvent('qpress:notice-saved', { detail }))
+}
+
+/**
+ * Stores the current notice choice.
+ *
+ * @api
+ */
+function saveNotice(): void {}
 </script>
 `,
     })
@@ -607,6 +624,23 @@ const props = defineProps<{
         required: true,
         tsType: 'boolean',
         type: 'Boolean',
+      })
+      expect(typedPropsGenerated.events['qpress:notice-saved']).toEqual({
+        desc: 'Browser CustomEvent dispatched after the notice is saved.',
+        params: {
+          detail: {
+            desc: 'Stored notice detail.',
+            required: true,
+            tsType: 'NoticeConfig',
+            type: 'NoticeConfig',
+          },
+        },
+      })
+      expect(typedPropsGenerated.methods.saveNotice).toEqual({
+        desc: 'Stores the current notice choice.',
+        returns: null,
+        tsSignature: 'function saveNotice(): void',
+        type: 'Function',
       })
     } finally {
       await rm(root, { force: true, recursive: true })
