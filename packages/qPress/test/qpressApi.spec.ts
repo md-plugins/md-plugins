@@ -577,6 +577,38 @@ function emitNotice(detail: NoticeConfig): void {
 function saveNotice(): void {}
 </script>
 `,
+      'src/components/DefaultedProps.vue': `
+<script setup lang="ts">
+type DefaultedProps = {
+  /**
+   * API data passed directly to the renderer.
+   *
+   * @category content
+   */
+  api?: Record<string, unknown> | null
+
+  /**
+   * API display name.
+   *
+   * @category content
+   */
+  name?: string
+
+  /**
+   * Whether to show the docs link.
+   *
+   * @category navigation
+   */
+  pageLink?: boolean
+}
+
+withDefaults(defineProps<DefaultedProps>(), {
+  api: null,
+  name: 'API Documentation',
+  pageLink: false,
+})
+</script>
+`,
     })
 
     try {
@@ -725,6 +757,47 @@ function saveNotice(): void {}
         returns: null,
         tsSignature: 'function saveNotice(): void',
         type: 'Function',
+      })
+
+      await generateQPressApi({
+        cwd: root,
+        entries: [
+          {
+            input: 'src/components/DefaultedProps.vue',
+            output: 'src/.q-press/api/components/DefaultedProps.json',
+          },
+        ],
+      })
+      const defaultedGenerated = JSON.parse(
+        await readFile(
+          join(root, 'src/.q-press/api/components/DefaultedProps.generated.json'),
+          'utf8',
+        ),
+      )
+
+      expect(defaultedGenerated.props.api).toEqual({
+        category: 'content',
+        default: 'null',
+        desc: 'API data passed directly to the renderer.',
+        required: false,
+        tsType: 'Record<string, unknown> | null',
+        type: 'Record<string, unknown> | null',
+      })
+      expect(defaultedGenerated.props.name).toEqual({
+        category: 'content',
+        default: 'API Documentation',
+        desc: 'API display name.',
+        required: false,
+        tsType: 'string',
+        type: 'String',
+      })
+      expect(defaultedGenerated.props.pageLink).toEqual({
+        category: 'navigation',
+        default: 'false',
+        desc: 'Whether to show the docs link.',
+        required: false,
+        tsType: 'boolean',
+        type: 'Boolean',
       })
     } finally {
       await rm(root, { force: true, recursive: true })

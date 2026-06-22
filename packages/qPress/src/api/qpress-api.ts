@@ -274,7 +274,7 @@ function populateVueComponentApi(api: GeneratedApiJson, inputPath: string, sourc
   if (scriptSetup !== undefined) {
     sourceFile = ts.createSourceFile(inputPath, scriptSetup, ts.ScriptTarget.Latest, true)
     const context = createSourceFileContext(sourceFile, inputPath)
-    const props = extractVueProps(sourceFile)
+    const props = extractVueProps(sourceFile, context)
     const events = extractVueEvents(sourceFile)
     const methods = extractVueMethods(sourceFile, context)
 
@@ -703,13 +703,14 @@ function extractSlotsFromType(
       continue
     }
 
-    const name = getMemberName(member, sourceFile)
+    const memberSourceFile = member.getSourceFile()
+    const name = getMemberName(member, memberSourceFile)
 
     if (name === undefined) {
       continue
     }
 
-    const docs = readJSDoc(member, sourceFile)
+    const docs = readJSDoc(member, memberSourceFile)
     const scope = getSlotPropScope(member.type, {
       ...context,
       sourceFile,
@@ -769,20 +770,21 @@ function getSlotPropScope(
       continue
     }
 
-    const name = getMemberName(member, sourceFile)
+    const memberSourceFile = member.getSourceFile()
+    const name = getMemberName(member, memberSourceFile)
 
     if (name === undefined) {
       continue
     }
 
-    const docs = readJSDoc(member, sourceFile)
+    const docs = readJSDoc(member, memberSourceFile)
 
     scope[name] = applyJSDocMetadata(
       {
         desc: docs.desc,
         required: member.questionToken === undefined,
-        tsType: getMemberType(member, sourceFile),
-        type: normalizeApiType(getMemberType(member, sourceFile)),
+        tsType: getMemberType(member, memberSourceFile),
+        type: normalizeApiType(getMemberType(member, memberSourceFile)),
       },
       docs,
     )
@@ -1158,12 +1160,16 @@ function extractScriptSetup(source: string): string | undefined {
   return match?.[1]
 }
 
-function extractVueProps(sourceFile: ts.SourceFile): Record<string, GeneratedApiProperty> {
+function extractVueProps(
+  sourceFile: ts.SourceFile,
+  context = createSourceFileContext(sourceFile),
+): Record<string, GeneratedApiProperty> {
   const propsCall = findMacroCall(sourceFile, 'defineProps')
   const propsArg = propsCall?.arguments[0]
+  const propsDefaults = getVuePropsDefaults(sourceFile)
 
   if (propsArg === undefined) {
-    return extractTypedVueProps(propsCall, sourceFile)
+    return extractTypedVueProps(propsCall, sourceFile, context, propsDefaults)
   }
 
   if (!ts.isObjectLiteralExpression(propsArg)) {
@@ -1192,41 +1198,113 @@ function extractVueProps(sourceFile: ts.SourceFile): Record<string, GeneratedApi
 function extractTypedVueProps(
   propsCall: ts.CallExpression | undefined,
   sourceFile: ts.SourceFile,
+  context: SourceFileContext,
+  defaults: ts.ObjectLiteralExpression | undefined,
 ): Record<string, GeneratedApiProperty> {
   const propsType = propsCall?.typeArguments?.[0]
+  const members = getTypedVuePropMembers(propsType, context)
 
-  if (propsType === undefined || !ts.isTypeLiteralNode(propsType)) {
+  if (members === undefined) {
     return {}
   }
 
   const props: Record<string, GeneratedApiProperty> = {}
 
-  for (const member of propsType.members) {
+  for (const member of members) {
     if (!ts.isPropertySignature(member)) {
       continue
     }
 
-    const name = getMemberName(member, sourceFile)
+    const memberSourceFile = member.getSourceFile()
+    const name = getMemberName(member, memberSourceFile)
 
     if (name === undefined) {
       continue
     }
 
-    const docs = readJSDoc(member, sourceFile)
-    const type = getVueTypedPropType(member, sourceFile)
+    const docs = readJSDoc(member, memberSourceFile)
+    const type = getVueTypedPropType(member, memberSourceFile)
 
-    props[name] = applyJSDocMetadata(
+    const prop = applyJSDocMetadata(
       {
         desc: docs.desc,
         required: member.questionToken === undefined,
-        tsType: member.type?.getText(sourceFile) ?? 'unknown',
+        tsType: member.type?.getText(memberSourceFile) ?? 'unknown',
         type,
       },
       docs,
     )
+    const defaultValue = getVueTypedPropDefault(defaults, name, sourceFile)
+
+    if (defaultValue !== undefined) {
+      prop.default = defaultValue
+    }
+
+    props[name] = prop
   }
 
   return props
+}
+
+function getTypedVuePropMembers(
+  propsType: ts.TypeNode | undefined,
+  context: SourceFileContext,
+): ts.NodeArray<ts.TypeElement> | undefined {
+  if (propsType === undefined) {
+    return undefined
+  }
+
+  if (ts.isTypeLiteralNode(propsType)) {
+    return propsType.members
+  }
+
+  const declaration = resolveTypeDeclaration(propsType, context)
+
+  if (declaration === undefined) {
+    return undefined
+  }
+
+  if (ts.isInterfaceDeclaration(declaration)) {
+    return declaration.members
+  }
+
+  return ts.isTypeLiteralNode(declaration.type) ? declaration.type.members : undefined
+}
+
+function getVuePropsDefaults(sourceFile: ts.SourceFile): ts.ObjectLiteralExpression | undefined {
+  const withDefaultsCall = findMacroCall(sourceFile, 'withDefaults')
+
+  if (
+    withDefaultsCall === undefined ||
+    !ts.isCallExpression(withDefaultsCall.arguments[0]) ||
+    !ts.isIdentifier(withDefaultsCall.arguments[0].expression) ||
+    withDefaultsCall.arguments[0].expression.text !== 'defineProps' ||
+    !ts.isObjectLiteralExpression(withDefaultsCall.arguments[1])
+  ) {
+    return undefined
+  }
+
+  return withDefaultsCall.arguments[1]
+}
+
+function getVueTypedPropDefault(
+  defaults: ts.ObjectLiteralExpression | undefined,
+  name: string,
+  sourceFile: ts.SourceFile,
+): string | undefined {
+  if (defaults === undefined) {
+    return undefined
+  }
+
+  for (const property of defaults.properties) {
+    if (!ts.isPropertyAssignment(property) || getObjectPropertyName(property, sourceFile) !== name) {
+      continue
+    }
+
+    return getVuePropDefault(property.initializer, sourceFile)
+  }
+
+  return undefined
 }
 
 function getVueTypedPropType(member: ts.PropertySignature, sourceFile: ts.SourceFile): string {

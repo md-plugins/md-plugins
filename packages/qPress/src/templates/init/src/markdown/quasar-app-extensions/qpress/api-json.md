@@ -136,6 +136,8 @@ The generator focuses on TypeScript source plus explicit JSDoc metadata:
 - Exported `const` arrow functions.
 - Exported `const` function expressions.
 - Object-style `<script setup>` `defineProps`.
+- Typed `<script setup>` `defineProps<T>()` from inline type literals, local interfaces, local type aliases, and local imported declarations.
+- `withDefaults(defineProps<T>(), defaults)` default values.
 - Simple array-style and object-style `<script setup>` `defineEmits`.
 - TypeScript `defineComponent({ props, emits, slots, setup })` component declarations.
 - Imported prop and emit spreads when they resolve to local TypeScript source.
