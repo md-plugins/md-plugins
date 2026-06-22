@@ -646,6 +646,123 @@ function saveNotice(): void {}
     }
   })
 
+  it('extracts props from TypeScript Vue component exports', async () => {
+    const root = await createProject({
+      'src/.q-press/api/components/HeaderMenu.json': '{"type":"component"}\n',
+      'src/.q-press/api/components/Prerender.json': '{"type":"component"}\n',
+      'src/components/HeaderMenu.ts': `
+interface MenuElement {
+  name?: string
+  path?: string
+}
+
+export default {
+  props: {
+    /**
+     * Menu entries shown in the header.
+     *
+     * @category content
+     * @example [{ name: 'Docs', path: '/docs' }]
+     */
+    elements: Array,
+
+    /**
+     * Responsive class prefix applied to menu entries.
+     *
+     * @category style
+     * @example 'md'
+     */
+    mqPrefix: String,
+  },
+}
+`,
+      'src/components/Prerender.ts': `
+import { defineComponent, type PropType } from 'vue'
+
+export default defineComponent({
+  props: {
+    /**
+     * Title displayed above prerendered content.
+     *
+     * @category content
+     * @example 'Example Title'
+     */
+    title: {
+      type: String as PropType<string>,
+      required: false,
+      default: undefined,
+    },
+
+    /**
+     * Labels for tabbed prerendered content.
+     *
+     * @category content
+     * @example ['Template', 'Script']
+     */
+    tabs: {
+      type: Array as PropType<string[]>,
+      required: false,
+      default: undefined,
+    },
+  },
+})
+`,
+    })
+
+    try {
+      await generateQPressApi({
+        cwd: root,
+        entries: [
+          {
+            input: 'src/components/HeaderMenu.ts',
+            output: 'src/.q-press/api/components/HeaderMenu.json',
+          },
+          {
+            input: 'src/components/Prerender.ts',
+            output: 'src/.q-press/api/components/Prerender.json',
+          },
+        ],
+      })
+      const headerMenu = JSON.parse(
+        await readFile(join(root, 'src/.q-press/api/components/HeaderMenu.generated.json'), 'utf8'),
+      )
+      const prerender = JSON.parse(
+        await readFile(join(root, 'src/.q-press/api/components/Prerender.generated.json'), 'utf8'),
+      )
+
+      expect(headerMenu.props.elements).toEqual({
+        category: 'content',
+        desc: 'Menu entries shown in the header.',
+        examples: ["[{ name: 'Docs', path: '/docs' }]"],
+        type: 'Array',
+      })
+      expect(headerMenu.props.mqPrefix).toEqual({
+        category: 'style',
+        desc: 'Responsive class prefix applied to menu entries.',
+        examples: ["'md'"],
+        type: 'String',
+      })
+      expect(prerender.props.title).toEqual({
+        category: 'content',
+        desc: 'Title displayed above prerendered content.',
+        examples: ["'Example Title'"],
+        required: false,
+        tsType: 'string',
+        type: 'String',
+      })
+      expect(prerender.props.tabs).toEqual({
+        category: 'content',
+        desc: 'Labels for tabbed prerendered content.',
+        examples: ["['Template', 'Script']"],
+        required: false,
+        tsType: 'string[]',
+        type: 'Array',
+      })
+    } finally {
+      await rm(root, { force: true, recursive: true })
+    }
+  })
+
   it('checks stale API JSON without writing comparison files', async () => {
     const root = await createProject({
       'src/.q-press/api/helpers/math.json': '{"type":"component"}\n',

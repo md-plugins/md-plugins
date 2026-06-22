@@ -43,6 +43,11 @@
       },
       {
         "docsUrl": "/quasar-app-extensions/qpress/components",
+        "input": "src/.q-press/components/MarkdownPrerender.ts",
+        "output": "src/.q-press/api/components/MarkdownPrerender.json"
+      },
+      {
+        "docsUrl": "/quasar-app-extensions/qpress/components",
         "input": "src/.q-press/components/MarkdownLink.vue",
         "output": "src/.q-press/api/components/MarkdownLink.json"
       },
@@ -75,6 +80,11 @@
         "docsUrl": "/quasar-app-extensions/qpress/components",
         "input": "src/.q-press/layouts/MarkdownHeader.vue",
         "output": "src/.q-press/api/components/MarkdownHeader.json"
+      },
+      {
+        "docsUrl": "/quasar-app-extensions/qpress/components",
+        "input": "src/.q-press/layouts/MarkdownHeaderMenu.ts",
+        "output": "src/.q-press/api/components/MarkdownHeaderMenu.json"
       },
       {
         "docsUrl": "/quasar-app-extensions/qpress/components",

@@ -5,11 +5,25 @@ export default defineComponent({
   name: 'MarkdownPrerender',
 
   props: {
+    /**
+     * Title of the prerendered content.
+     *
+     * @category content
+     * @example 'Example Title'
+     * @example 'Sample Content'
+     */
     title: {
       type: String as PropType<string>,
       required: false,
       default: undefined,
     },
+
+    /**
+     * List of tabs to display.
+     *
+     * @category content
+     * @example ['Tab 1', 'Tab 2']
+     */
     tabs: {
       type: Array as PropType<string[]>,
       required: false,

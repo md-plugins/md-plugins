@@ -211,7 +211,7 @@ async function generateApiJsonForEntry(
   const exportCount =
     extname(inputPath) === '.vue'
       ? populateVueComponentApi(api, inputPath, source)
-      : populateTypeScriptApi(api, inputPath, source, entry.group ?? 'functions')
+      : populateTypeScriptEntryApi(api, inputPath, source, entry.group ?? 'functions')
 
   return {
     api,
@@ -232,6 +232,23 @@ function populateTypeScriptApi(
   api[group] = generatedEntries
 
   return Object.keys(generatedEntries).length
+}
+
+function populateTypeScriptEntryApi(
+  api: GeneratedApiJson,
+  inputPath: string,
+  source: string,
+  group: QPressApiEntryGroup,
+): number {
+  if (api.type === 'component') {
+    const componentExportCount = populateTypeScriptComponentApi(api, inputPath, source)
+
+    if (componentExportCount > 0 || isPlainRecord(api.props)) {
+      return componentExportCount
+    }
+  }
+
+  return populateTypeScriptApi(api, inputPath, source, group)
 }
 
 function populateVueComponentApi(api: GeneratedApiJson, inputPath: string, source: string): number {
@@ -268,6 +285,88 @@ function populateVueComponentApi(api: GeneratedApiJson, inputPath: string, sourc
 
     return count + (isPlainRecord(entries) ? Object.keys(entries).length : 0)
   }, 0)
+}
+
+function populateTypeScriptComponentApi(
+  api: GeneratedApiJson,
+  inputPath: string,
+  source: string,
+): number {
+  const sourceFile = ts.createSourceFile(inputPath, source, ts.ScriptTarget.Latest, true)
+  const options = findDefaultVueComponentOptions(sourceFile)
+
+  if (options === undefined) {
+    return 0
+  }
+
+  const props = extractVueOptionsProps(options, sourceFile)
+
+  if (Object.keys(props).length > 0) {
+    api.props = props
+  }
+
+  return Object.keys(props).length
+}
+
+function findDefaultVueComponentOptions(
+  sourceFile: ts.SourceFile,
+): ts.ObjectLiteralExpression | undefined {
+  for (const statement of sourceFile.statements) {
+    if (!ts.isExportAssignment(statement)) {
+      continue
+    }
+
+    const expression = statement.expression
+
+    if (ts.isObjectLiteralExpression(expression)) {
+      return expression
+    }
+
+    if (
+      ts.isCallExpression(expression) &&
+      ts.isIdentifier(expression.expression) &&
+      expression.expression.text === 'defineComponent' &&
+      ts.isObjectLiteralExpression(expression.arguments[0])
+    ) {
+      return expression.arguments[0]
+    }
+  }
+
+  return undefined
+}
+
+function extractVueOptionsProps(
+  options: ts.ObjectLiteralExpression,
+  sourceFile: ts.SourceFile,
+): Record<string, GeneratedApiProperty> {
+  const propsOption = options.properties.find(
+    (property): property is ts.PropertyAssignment =>
+      ts.isPropertyAssignment(property) &&
+      getObjectPropertyName(property, sourceFile) === 'props' &&
+      ts.isObjectLiteralExpression(property.initializer),
+  )
+
+  if (propsOption === undefined || !ts.isObjectLiteralExpression(propsOption.initializer)) {
+    return {}
+  }
+
+  const props: Record<string, GeneratedApiProperty> = {}
+
+  for (const property of propsOption.initializer.properties) {
+    const name = getObjectPropertyName(property, sourceFile)
+
+    if (name === undefined) {
+      continue
+    }
+
+    const prop = createVuePropEntry(property, sourceFile)
+
+    if (prop !== undefined) {
+      props[name] = prop
+    }
+  }
+
+  return props
 }
 
 function extractExportedFunctions(sourceFile: ts.SourceFile): Record<string, GeneratedApiProperty> {
@@ -453,7 +552,13 @@ function createVueObjectPropEntry(
     const name = getObjectPropertyName(property, sourceFile)
 
     if (name === 'type') {
-      prop.type = getVuePropType(property.initializer, sourceFile)
+      const type = getVuePropTypeDetails(property.initializer, sourceFile)
+
+      prop.type = type.type
+
+      if (type.tsType !== undefined) {
+        prop.tsType = type.tsType
+      }
     } else if (name === 'required') {
       prop.required = property.initializer.kind === ts.SyntaxKind.TrueKeyword
     } else if (name === 'default') {
@@ -863,23 +968,58 @@ function findMacroCall(sourceFile: ts.SourceFile, name: string): ts.CallExpressi
 }
 
 function getVuePropType(node: ts.Expression, sourceFile: ts.SourceFile): string {
+  return getVuePropTypeDetails(node, sourceFile).type
+}
+
+function getVuePropTypeDetails(
+  node: ts.Expression,
+  sourceFile: ts.SourceFile,
+): { tsType?: string; type: string } {
+  if (ts.isAsExpression(node)) {
+    const runtimeType = getVuePropTypeDetails(node.expression, sourceFile).type
+    const tsType = getVuePropTypeFromPropType(node.type, sourceFile)
+
+    return tsType === undefined ? { type: runtimeType } : { tsType, type: runtimeType }
+  }
+
   if (ts.isIdentifier(node)) {
-    return node.text
+    return { type: node.text }
   }
 
   if (ts.isArrayLiteralExpression(node)) {
-    return node.elements.map((element) => getVuePropType(element, sourceFile)).join(' | ')
+    return {
+      type: node.elements.map((element) => getVuePropType(element, sourceFile)).join(' | '),
+    }
   }
 
   if (ts.isArrowFunction(node) || ts.isFunctionExpression(node)) {
-    return 'Function'
+    return { type: 'Function' }
   }
 
-  return node.getText(sourceFile)
+  return { type: node.getText(sourceFile) }
+}
+
+function getVuePropTypeFromPropType(
+  node: ts.TypeNode,
+  sourceFile: ts.SourceFile,
+): string | undefined {
+  if (
+    ts.isTypeReferenceNode(node) &&
+    ts.isIdentifier(node.typeName) &&
+    node.typeName.text === 'PropType'
+  ) {
+    return node.typeArguments?.[0]?.getText(sourceFile)
+  }
+
+  return undefined
 }
 
 function getVuePropDefault(node: ts.Expression, sourceFile: ts.SourceFile): string | undefined {
-  if (ts.isVoidExpression(node) || node.getText(sourceFile) === 'void 0') {
+  if (
+    ts.isVoidExpression(node) ||
+    node.getText(sourceFile) === 'void 0' ||
+    (ts.isIdentifier(node) && node.text === 'undefined')
+  ) {
     return undefined
   }
 
