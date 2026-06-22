@@ -139,6 +139,14 @@ export const today = (): string => '2036-06-08'
       expect(generated.functions.parseTimestamp.params.now.required).toBe(false)
       expect(generated.functions.parseTimestamp.returns).toEqual({
         __exemption: ['examples'],
+        definition: {
+          date: {
+            desc: '',
+            required: true,
+            tsType: 'string',
+            type: 'string',
+          },
+        },
         desc: 'Parsed timestamp, or null when invalid.',
         examples: ['null'],
         tsType: 'Timestamp | null',
@@ -175,9 +183,16 @@ export const today = (): string => '2036-06-08'
 export interface ExternalClock {
   now(): Date
 }
+
+export interface ExternalResult {
+  /**
+   * External result label.
+   */
+  label: string
+}
 `,
       'src/utils/edge.ts': `
-import type { ExternalClock } from '../types'
+import type { ExternalClock, ExternalResult } from '../types'
 
 export type WindowResult = {
   /**
@@ -235,6 +250,17 @@ export const getWindow = function (): WindowResult {
 }
 
 /**
+ * Returns an imported result.
+ *
+ * @returns Imported result.
+ */
+export function getExternalResult(): ExternalResult {
+  return {
+    label: 'External',
+  }
+}
+
+/**
  * Parses a string input.
  *
  * @param input Input value.
@@ -269,7 +295,7 @@ export function parseValue(input: string | number): string | number {
         await readFile(join(root, 'src/.q-press/api/composables/edge.generated.json'), 'utf8'),
       )
 
-      expect(result.entries[0]?.exportCount).toBe(3)
+      expect(result.entries[0]?.exportCount).toBe(4)
       expect(generated.functions.createWindow.addedIn).toBe('0.1.0')
       expect(generated.functions.createWindow.examples).toEqual([
         "createWindow('2036-06-08')",
@@ -281,9 +307,42 @@ export function parseValue(input: string | number): string | number {
       expect(generated.functions.createWindow.params.clock.required).toBe(false)
       expect(generated.functions.createWindow.params.clock.tsType).toBe('ExternalClock')
       expect(generated.functions.createWindow.returns).toEqual({
+        definition: {
+          format: {
+            desc: 'Formats a label for display.',
+            required: true,
+            tsType: '(label: string) => string',
+            type: '(label: string) => string',
+          },
+          minutes: {
+            desc: 'Duration in minutes.',
+            required: true,
+            tsType: 'number',
+            type: 'number',
+          },
+          start: {
+            desc: 'Start details for the window.',
+            required: true,
+            tsType: '{\n    date: string\n    time?: string\n  }',
+            type: '{\n    date: string\n    time?: string\n  }',
+          },
+        },
         desc: 'Window result, or null.',
         tsType: 'WindowResult | null',
         type: 'WindowResult | null',
+      })
+      expect(generated.functions.getExternalResult.returns).toEqual({
+        definition: {
+          label: {
+            desc: 'External result label.',
+            required: true,
+            tsType: 'string',
+            type: 'string',
+          },
+        },
+        desc: 'Imported result.',
+        tsType: 'ExternalResult',
+        type: 'ExternalResult',
       })
       expect(generated.functions.getWindow.deprecated).toBe(
         'Use createWindow for nullable parsing.',

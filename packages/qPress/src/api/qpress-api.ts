@@ -236,7 +236,8 @@ function populateTypeScriptApi(
   group: QPressApiEntryGroup,
 ): number {
   const sourceFile = ts.createSourceFile(inputPath, source, ts.ScriptTarget.Latest, true)
-  const generatedEntries = extractExportedFunctions(sourceFile)
+  const context = createSourceFileContext(sourceFile)
+  const generatedEntries = extractExportedFunctions(sourceFile, context)
 
   api[group] = generatedEntries
 
@@ -272,9 +273,10 @@ function populateVueComponentApi(api: GeneratedApiJson, inputPath: string, sourc
 
   if (scriptSetup !== undefined) {
     sourceFile = ts.createSourceFile(inputPath, scriptSetup, ts.ScriptTarget.Latest, true)
+    const context = createSourceFileContext(sourceFile, inputPath)
     const props = extractVueProps(sourceFile)
     const events = extractVueEvents(sourceFile)
-    const methods = extractVueMethods(sourceFile)
+    const methods = extractVueMethods(sourceFile, context)
 
     if (Object.keys(props).length > 0) {
       api.props = props
@@ -308,11 +310,7 @@ function populateTypeScriptComponentApi(
   source: string,
 ): number {
   const sourceFile = ts.createSourceFile(inputPath, source, ts.ScriptTarget.Latest, true)
-  const context: SourceFileContext = {
-    cache: new Map([[inputPath, sourceFile]]),
-    inputPath,
-    sourceFile,
-  }
+  const context = createSourceFileContext(sourceFile, inputPath)
   const options = findDefaultVueComponentOptions(sourceFile)
 
   if (options === undefined) {
@@ -803,7 +801,7 @@ function extractVueOptionsMethods(
     return {}
   }
 
-  return extractExposedMethods(body, context.sourceFile)
+  return extractExposedMethods(body, context)
 }
 
 function findVueOptionsSetup(
@@ -833,9 +831,10 @@ function getVueOptionsSetupBody(
 
 function extractExposedMethods(
   body: ts.Block,
-  sourceFile: ts.SourceFile,
+  context: SourceFileContext,
 ): Record<string, GeneratedApiProperty> {
   const methods: Record<string, GeneratedApiProperty> = {}
+  const sourceFile = context.sourceFile
   const localFunctions = collectLocalFunctions(body)
 
   const visit = (node: ts.Node) => {
@@ -860,6 +859,7 @@ function extractExposedMethods(
                 type: 'Function',
               }
             : createFunctionEntry(local, sourceFile, {
+                context,
                 fallbackJSDocNode: property,
                 name,
               })
@@ -1088,6 +1088,17 @@ function readSourceFile(path: string, context: SourceFileContext): ts.SourceFile
   return sourceFile
 }
 
+function createSourceFileContext(
+  sourceFile: ts.SourceFile,
+  inputPath = sourceFile.fileName,
+): SourceFileContext {
+  return {
+    cache: new Map([[inputPath, sourceFile]]),
+    inputPath,
+    sourceFile,
+  }
+}
+
 function getStaticString(node: ts.Expression): string | undefined {
   if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) {
     return node.text
@@ -1103,12 +1114,17 @@ function toKebabCase(value: string): string {
     .toLowerCase()
 }
 
-function extractExportedFunctions(sourceFile: ts.SourceFile): Record<string, GeneratedApiProperty> {
+function extractExportedFunctions(
+  sourceFile: ts.SourceFile,
+  context = createSourceFileContext(sourceFile),
+): Record<string, GeneratedApiProperty> {
   const entries: Record<string, GeneratedApiProperty> = {}
 
   for (const statement of sourceFile.statements) {
     if (ts.isFunctionDeclaration(statement) && isExported(statement) && statement.name) {
-      entries[statement.name.text] = createFunctionEntry(statement, sourceFile)
+      entries[statement.name.text] = createFunctionEntry(statement, sourceFile, {
+        context,
+      })
       continue
     }
 
@@ -1123,6 +1139,7 @@ function extractExportedFunctions(sourceFile: ts.SourceFile): Record<string, Gen
             declaration.initializer,
             sourceFile,
             {
+              context,
               fallbackJSDocNode: statement,
               name: declaration.name.text,
             },
@@ -1441,7 +1458,10 @@ function extractVueDocumentedEvents(
   return events
 }
 
-function extractVueMethods(sourceFile: ts.SourceFile): Record<string, GeneratedApiProperty> {
+function extractVueMethods(
+  sourceFile: ts.SourceFile,
+  context = createSourceFileContext(sourceFile),
+): Record<string, GeneratedApiProperty> {
   const methods: Record<string, GeneratedApiProperty> = {}
 
   for (const statement of sourceFile.statements) {
@@ -1455,7 +1475,9 @@ function extractVueMethods(sourceFile: ts.SourceFile): Record<string, GeneratedA
       continue
     }
 
-    methods[statement.name.text] = createFunctionEntry(statement, sourceFile)
+    methods[statement.name.text] = createFunctionEntry(statement, sourceFile, {
+      context,
+    })
   }
 
   return methods
@@ -1883,6 +1905,7 @@ function createFunctionEntry(
   node: FunctionLikeNode,
   sourceFile: ts.SourceFile,
   options: {
+    context?: SourceFileContext
     fallbackJSDocNode?: ts.Node
     name?: string
   } = {},
@@ -1890,7 +1913,8 @@ function createFunctionEntry(
   const docs = readJSDoc(node, sourceFile, options.fallbackJSDocNode)
   const returnType = getReturnType(node, sourceFile)
   const returnProperties =
-    getReturnProperties(returnType, sourceFile) ?? getReturnedObjectProperties(node, sourceFile)
+    getReturnProperties(node.type, options.context ?? createSourceFileContext(sourceFile)) ??
+    getReturnedObjectProperties(node, sourceFile, options.context)
   const entry: GeneratedApiProperty = {
     desc: docs.desc,
     params: createParams(node, docs, sourceFile),
@@ -2265,15 +2289,16 @@ function getReturnType(node: FunctionLikeNode, sourceFile: ts.SourceFile): strin
 }
 
 function getReturnProperties(
-  returnType: string,
-  sourceFile: ts.SourceFile,
+  returnType: ts.TypeNode | undefined,
+  context: SourceFileContext,
 ): Record<string, GeneratedApiProperty> | undefined {
-  const declaration = findTypeDeclaration(returnType, sourceFile)
+  const declaration = resolveReturnTypeDeclaration(returnType, context)
 
   if (declaration === undefined) {
     return undefined
   }
 
+  const sourceFile = declaration.getSourceFile()
   const members = ts.isInterfaceDeclaration(declaration)
     ? declaration.members
     : ts.isTypeLiteralNode(declaration.type)
@@ -2313,18 +2338,26 @@ function getReturnProperties(
   return Object.keys(properties).length === 0 ? undefined : properties
 }
 
-function findTypeDeclaration(
-  returnType: string,
-  sourceFile: ts.SourceFile,
+function resolveReturnTypeDeclaration(
+  returnType: ts.TypeNode | undefined,
+  context: SourceFileContext,
 ): ts.InterfaceDeclaration | ts.TypeAliasDeclaration | undefined {
-  for (const statement of sourceFile.statements) {
-    if (ts.isInterfaceDeclaration(statement) && statement.name.text === returnType) {
-      return statement
-    }
+  if (returnType === undefined) {
+    return undefined
+  }
 
-    if (ts.isTypeAliasDeclaration(statement) && statement.name.text === returnType) {
-      return statement
-    }
+  if (ts.isTypeReferenceNode(returnType) && ts.isIdentifier(returnType.typeName)) {
+    return resolveTypeDeclaration(returnType, context)
+  }
+
+  if (ts.isUnionTypeNode(returnType) || ts.isIntersectionTypeNode(returnType)) {
+    const declarations = returnType.types
+      .map((type) => resolveReturnTypeDeclaration(type, context))
+      .filter((declaration): declaration is ts.InterfaceDeclaration | ts.TypeAliasDeclaration =>
+        declaration !== undefined,
+      )
+
+    return declarations.length === 1 ? declarations[0] : undefined
   }
 
   return undefined
@@ -2397,6 +2430,7 @@ function getObjectBindingMember(
 function getReturnedObjectProperties(
   node: FunctionLikeNode,
   sourceFile: ts.SourceFile,
+  context?: SourceFileContext,
 ): Record<string, GeneratedApiProperty> | undefined {
   const returnedObject = getReturnedObjectLiteral(node)
 
@@ -2420,14 +2454,19 @@ function getReturnedObjectProperties(
       properties[name] =
         localFunction === undefined
           ? createReturnedValueProperty('unknown')
-          : createReturnedFunctionProperty(name, localFunction, sourceFile)
+          : createReturnedFunctionProperty(name, localFunction, sourceFile, context)
 
       continue
     }
 
     if (ts.isPropertyAssignment(property)) {
       if (isFunctionLikeInitializer(property.initializer)) {
-        properties[name] = createReturnedFunctionProperty(name, property.initializer, sourceFile)
+        properties[name] = createReturnedFunctionProperty(
+          name,
+          property.initializer,
+          sourceFile,
+          context,
+        )
       } else {
         properties[name] = createReturnedValueProperty(property.initializer.getText(sourceFile))
       }
@@ -2495,9 +2534,10 @@ function createReturnedFunctionProperty(
   name: string,
   node: FunctionLikeNode,
   sourceFile: ts.SourceFile,
+  context?: SourceFileContext,
 ): GeneratedApiProperty {
   return {
-    ...createFunctionEntry(node, sourceFile, { name }),
+    ...createFunctionEntry(node, sourceFile, { context, name }),
     required: true,
   }
 }
