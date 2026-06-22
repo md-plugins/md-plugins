@@ -569,22 +569,26 @@ function extractVueOptionsSlots(
   context: SourceFileContext,
 ): Record<string, GeneratedApiProperty> {
   const sourceFile = context.sourceFile
+  const usedSlots = extractVueOptionsSlotUsages(options, context)
   const slotsOption = options.properties.find(
     (property): property is ts.PropertyAssignment =>
       ts.isPropertyAssignment(property) && getObjectPropertyName(property, sourceFile) === 'slots',
   )
 
   if (slotsOption === undefined) {
-    return {}
+    return usedSlots
   }
 
   const slotsType = getSlotsTypeReference(slotsOption.initializer)
 
   if (slotsType === undefined || slotsType.typeArguments?.[0] === undefined) {
-    return {}
+    return usedSlots
   }
 
-  return extractSlotsFromType(slotsType.typeArguments[0], context)
+  return {
+    ...usedSlots,
+    ...extractSlotsFromType(slotsType.typeArguments[0], context),
+  }
 }
 
 function getSlotsTypeReference(node: ts.Expression): ts.TypeReferenceNode | undefined {
@@ -601,6 +605,84 @@ function getSlotsTypeReference(node: ts.Expression): ts.TypeReferenceNode | unde
   }
 
   return undefined
+}
+
+function extractVueOptionsSlotUsages(
+  options: ts.ObjectLiteralExpression,
+  context: SourceFileContext,
+): Record<string, GeneratedApiProperty> {
+  const setup = findVueOptionsSetup(options, context.sourceFile)
+  const body = getVueOptionsSetupBody(setup)
+
+  if (setup === undefined || body === undefined) {
+    return {}
+  }
+
+  const slotBindings = getSetupSlotBindingNames(setup, context.sourceFile)
+
+  if (slotBindings.size === 0) {
+    return {}
+  }
+
+  const slots: Record<string, GeneratedApiProperty> = {}
+
+  const visit = (node: ts.Node) => {
+    if (
+      ts.isPropertyAccessExpression(node) &&
+      ts.isIdentifier(node.expression) &&
+      slotBindings.has(node.expression.text)
+    ) {
+      slots[node.name.text] ??= {
+        desc: '',
+      }
+    } else if (
+      ts.isElementAccessExpression(node) &&
+      ts.isIdentifier(node.expression) &&
+      slotBindings.has(node.expression.text) &&
+      ts.isStringLiteral(node.argumentExpression)
+    ) {
+      slots[node.argumentExpression.text] ??= {
+        desc: '',
+      }
+    }
+
+    ts.forEachChild(node, visit)
+  }
+
+  visit(body)
+
+  return slots
+}
+
+function getSetupSlotBindingNames(
+  setup: ts.MethodDeclaration | ts.PropertyAssignment,
+  sourceFile: ts.SourceFile,
+): Set<string> {
+  const bindings = new Set<string>()
+  const parameters = ts.isMethodDeclaration(setup)
+    ? setup.parameters
+    : isFunctionLikeInitializer(setup.initializer)
+      ? setup.initializer.parameters
+      : undefined
+  const contextParameter = parameters?.[1]
+
+  if (contextParameter === undefined) {
+    return bindings
+  }
+
+  if (ts.isObjectBindingPattern(contextParameter.name)) {
+    for (const element of contextParameter.name.elements) {
+      const propertyName = element.propertyName?.getText(sourceFile) ?? element.name.getText(sourceFile)
+
+      if (propertyName === 'slots' && ts.isIdentifier(element.name)) {
+        bindings.add(element.name.text)
+      }
+    }
+  } else if (ts.isIdentifier(contextParameter.name)) {
+    bindings.add(`${contextParameter.name.text}.slots`)
+  }
+
+  return bindings
 }
 
 function extractSlotsFromType(
@@ -708,27 +790,38 @@ function extractVueOptionsMethods(
   options: ts.ObjectLiteralExpression,
   context: SourceFileContext,
 ): Record<string, GeneratedApiProperty> {
-  const setup = options.properties.find(
-    (property): property is ts.MethodDeclaration | ts.PropertyAssignment =>
-      (ts.isMethodDeclaration(property) || ts.isPropertyAssignment(property)) &&
-      getObjectPropertyName(property, context.sourceFile) === 'setup',
-  )
-
-  if (setup === undefined) {
-    return {}
-  }
-
-  const body = ts.isMethodDeclaration(setup)
-    ? setup.body
-    : isFunctionLikeInitializer(setup.initializer)
-      ? getFunctionBody(setup.initializer)
-      : undefined
+  const body = getVueOptionsSetupBody(findVueOptionsSetup(options, context.sourceFile))
 
   if (body === undefined) {
     return {}
   }
 
   return extractExposedMethods(body, context.sourceFile)
+}
+
+function findVueOptionsSetup(
+  options: ts.ObjectLiteralExpression,
+  sourceFile: ts.SourceFile,
+): ts.MethodDeclaration | ts.PropertyAssignment | undefined {
+  return options.properties.find(
+    (property): property is ts.MethodDeclaration | ts.PropertyAssignment =>
+      (ts.isMethodDeclaration(property) || ts.isPropertyAssignment(property)) &&
+      getObjectPropertyName(property, sourceFile) === 'setup',
+  )
+}
+
+function getVueOptionsSetupBody(
+  setup: ts.MethodDeclaration | ts.PropertyAssignment | undefined,
+): ts.Block | undefined {
+  if (setup === undefined) {
+    return undefined
+  }
+
+  return ts.isMethodDeclaration(setup)
+    ? setup.body
+    : isFunctionLikeInitializer(setup.initializer)
+      ? getFunctionBody(setup.initializer)
+      : undefined
 }
 
 function extractExposedMethods(

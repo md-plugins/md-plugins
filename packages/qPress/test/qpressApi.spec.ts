@@ -786,7 +786,9 @@ export default defineComponent({
     ...getRawMouseEvents('-day'),
   ],
 
-  setup(_props, { expose }) {
+  setup(_props, { expose, slots }) {
+    slots.default?.()
+
     /**
      * Moves to the previous visible range.
      *
@@ -879,6 +881,9 @@ export interface CalendarDaySlots {
       expect(generated.events).toHaveProperty('change')
       expect(generated.events).toHaveProperty('click-day')
       expect(generated.events).toHaveProperty('contextmenu-day')
+      expect(generated.slots.default).toEqual({
+        desc: '',
+      })
       expect(generated.slots.day).toEqual({
         desc: 'Custom day cell content.',
         scope: {
