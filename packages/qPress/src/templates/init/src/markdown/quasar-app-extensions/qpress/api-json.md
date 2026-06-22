@@ -150,6 +150,220 @@ The generator focuses on TypeScript source plus explicit JSDoc metadata:
 - Local interface and type-literal return definitions when the return type points directly at them.
 - Simple accepted values from validator arrays such as `['day', 'week'].includes(value)`.
 
+## JSDoc Source Patterns
+
+The generator should not guess important documentation. Put the public API description on the source node that owns the API entry, then use tags for the fields that TypeScript alone cannot describe.
+
+### Exported functions
+
+```ts
+type Timestamp = {
+  /**
+   * ISO date value.
+   */
+  date: string
+}
+
+/**
+ * Converts a supported input into a timestamp.
+ *
+ * @param input Date or date-time string.
+ * @param-values input '2036-06-08' | '2036-06'
+ * @param-example input '2036-06-08'
+ * @param now Optional timestamp used for relative flags.
+ * @returns Parsed timestamp, or null when invalid.
+ * @returns-example null
+ * @example parseTimestamp('2036-06-08')
+ * @since 0.1.0
+ */
+export function parseTimestamp(input: string, now?: Timestamp | null): Timestamp | null {
+  return null
+}
+```
+
+This produces a function entry with parameter descriptions, examples, a TypeScript signature, return metadata, and a nested return definition for `Timestamp`.
+
+### Exported const functions
+
+```ts
+/**
+ * Returns today's date in ISO format.
+ *
+ * @returns Current ISO date.
+ * @deprecated Use todayUTC when server/client timezone consistency matters.
+ */
+export const today = (): string => '2036-06-08'
+```
+
+Use this pattern for composables and helpers that are exported as arrow functions or function expressions.
+
+### Runtime Vue props
+
+```ts
+const props = defineProps({
+  /**
+   * Target URL or route location.
+   *
+   * @category navigation
+   * @category content
+   * @example '/docs'
+   * @example 'https://example.com'
+   */
+  to: {
+    type: String,
+    required: true,
+  },
+
+  /**
+   * Visual tone used by the link card.
+   *
+   * @category style
+   * @values 'primary' | 'secondary'
+   * @default 'primary'
+   */
+  tone: {
+    type: String,
+    default: 'primary',
+    validator: (value: string) => ['primary', 'secondary'].includes(value),
+  },
+})
+```
+
+Runtime prop objects are useful when the component already has Vue runtime validation. The generator reads `type`, `required`, `default`, validator arrays, descriptions, categories, and examples.
+
+### Typed Vue props
+
+```ts
+type MarkdownApiProps = {
+  /**
+   * API JSON object to render directly.
+   *
+   * @category content
+   */
+  api?: ApiFile | null
+
+  /**
+   * Display name shown in the API card header.
+   *
+   * @category content
+   */
+  name?: string
+
+  /**
+   * Whether to show the Docs button when `meta.docsUrl` is available.
+   *
+   * @category navigation
+   */
+  pageLink?: boolean
+}
+
+const props = withDefaults(defineProps<MarkdownApiProps>(), {
+  api: null,
+  name: 'API Documentation',
+  pageLink: false,
+})
+```
+
+Typed props can come from inline type literals, local interfaces, local type aliases, or locally imported declarations. Use `withDefaults` when optional typed props have runtime defaults.
+
+### Component events
+
+```ts
+const emit = defineEmits({
+  /**
+   * Emitted when the selected mode changes.
+   *
+   * @param mode Current selected mode.
+   * @param-values mode 'dark' | 'light'
+   * @param-example mode 'dark'
+   */
+  'update:mode': (mode: 'dark' | 'light') => true,
+})
+```
+
+For browser or custom events that are not declared through `defineEmits`, use `@event` on a documented function:
+
+```ts
+/**
+ * Browser CustomEvent dispatched after the privacy choice is saved.
+ *
+ * @event qpress:privacy-consent
+ * @param detail Stored consent detail.
+ * @param-ts-type detail StoredPrivacyConsent
+ */
+function emitPrivacyConsent(detail: StoredPrivacyConsent): void {
+  window.dispatchEvent(new CustomEvent('qpress:privacy-consent', { detail }))
+}
+```
+
+### Slots
+
+For `<script setup>`, use `defineSlots`:
+
+```ts
+defineSlots<{
+  /**
+   * Custom content inside the card link.
+   *
+   * @param scope Slot props provided to custom content.
+   */
+  default(scope: { active: boolean }): unknown
+}>()
+```
+
+For render-function or `defineComponent` components, use `SlotsType`:
+
+```ts
+interface MarkdownPrerenderSlots {
+  /**
+   * Prerendered Markdown or example content.
+   */
+  default?: () => unknown
+}
+
+export default defineComponent({
+  slots: Object as SlotsType<MarkdownPrerenderSlots>,
+  setup(_props, { slots }) {
+    return () => h('div', slots.default?.())
+  },
+})
+```
+
+### Exposed methods
+
+```ts
+export default defineComponent({
+  setup(_props, { expose }) {
+    /**
+     * Moves to the previous visible range.
+     *
+     * @param amount Number of ranges to move.
+     */
+    function prev(amount = 1): void {}
+
+    /**
+     * Scrolls to a specific time.
+     *
+     * @param time Time in HH:mm format.
+     * @param duration Animation duration in milliseconds.
+     * @returns Scroll completion state.
+     */
+    function scrollToTime(time: string, duration = 0): boolean {
+      return true
+    }
+
+    expose({
+      prev,
+      scrollToTime,
+    })
+  },
+})
+```
+
+Only document public methods that should appear in the API page. If a generated exposed method is missing a description, add JSDoc to the local function being exposed.
+
+## Metadata Tags
+
 Use repeated `@example` tags to emit multiple examples. Use `@category` on prop JSDoc to place generated props into MarkdownApi category tabs; repeat the tag or separate names with `|` or `,` when a prop belongs to more than one category. Props without `@category` omit the field and render in MarkdownApi's default group.
 
 Use explicit metadata tags when TypeScript cannot safely infer a field:
@@ -197,15 +411,26 @@ Parameter metadata tags start with the parameter name: `@param-values name ...`,
 
 Return metadata uses `@returns-*` or `@return-*`, such as `@returns-example null`, `@returns-type Timestamp`, `@returns-ts-type Timestamp`, and `@returns-api-exemption examples`.
 
-Use `defineSlots` when slot descriptions should be generated from source:
+## Output Review Examples
 
-```ts
-defineSlots<{
-  /**
-   * Slot for custom content inside the link.
-   */
-  default(): unknown
-}>()
+Generated files are comparison artifacts. Read drift as a prompt to improve source docs or the generator:
+
+```text
+Field changes: 8 generated-only, 3 changed, 2 current-only
+```
+
+- `generated-only` usually means the source has public API that the committed JSON does not describe yet.
+- `current-only` usually means the committed JSON has curated metadata that is not present in source/JSDoc yet, or the generator does not support that source shape yet.
+- `changed` means both files describe the same path but disagree on value, such as a default, required flag, or description.
+
+For early review, render generated JSON directly on a local page:
+
+```md
+<script import>
+import MarkdownApiGeneratedApi from '@/.q-press/api/components/MarkdownApi.generated.json'
+</script>
+
+<MarkdownApi :api="MarkdownApiGeneratedApi" name="MarkdownApi" />
 ```
 
 ## What Still Needs Review

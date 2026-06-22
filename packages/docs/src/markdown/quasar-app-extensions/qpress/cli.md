@@ -182,6 +182,8 @@ It reads JSDoc descriptions plus `@param`, `@returns`, `@example`, `@category`, 
 
 Use explicit metadata tags for fields that should not be guessed from source: `@values`, `@applicable`, `@default`, `@required`, `@type`, `@ts-type`, and `@api-exemption`. Function, event, and slot-scope params can use `@param-values name ...`, `@param-example name ...`, `@param-default name ...`, `@param-required name false`, `@param-type name ...`, `@param-ts-type name ...`, and `@param-api-exemption name examples`. Return metadata can use `@returns-example`, `@returns-type`, `@returns-ts-type`, and `@returns-api-exemption`.
 
+See [API JSON](/quasar-app-extensions/qpress/api-json) for full source examples covering exported functions, typed props, runtime props, emits, custom events, slots, exposed methods, return definitions, metadata tags, and review output.
+
 Configure entries under `api.entries`:
 
 ```json
