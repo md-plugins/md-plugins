@@ -74,6 +74,7 @@ type GeneratedApiProperty = {
 
 type GeneratedApiJson = {
   [group: string]: unknown
+  generated_at: string
   meta?: {
     docsUrl?: string
   }
@@ -91,11 +92,11 @@ type SourceFileContext = {
 const defaultGeneratedSuffix = '.generated'
 
 /**
- * Generates Q-Press API JSON comparison files from TypeScript exports and JSDoc.
+ * Generates Q-Press API JSON review files from TypeScript exports and JSDoc.
  *
  * Existing API JSON files are never overwritten. For an output file such as
  * `src/.q-press/api/Foo.json`, this writes `src/.q-press/api/Foo.generated.json`
- * so authors can compare generated output before adopting it.
+ * so authors can review generated output before publishing it.
  */
 export async function generateQPressApi(
   options: QPressApiGenerateOptions,
@@ -117,8 +118,7 @@ export async function generateQPressApi(
       await fs.writeFile(generatedOutputPath, generatedContent)
 
       return {
-        differsFromOutput:
-          currentOutput === null ? null : normalizeNewline(currentOutput) !== generatedContent,
+        differsFromOutput: currentOutput === null ? null : fieldChanges.length > 0,
         exportCount: generated.exportCount,
         fieldChanges,
         generatedOutputPath,
@@ -148,11 +148,9 @@ export async function checkQPressApi(
       outputPath,
       entry.generatedSuffix ?? options.generatedSuffix ?? defaultGeneratedSuffix,
     )
-    const generatedContent = stringifyApiJson(generated.api)
     const currentOutput = await readOptionalFile(outputPath)
     const fieldChanges = getApiFieldChanges(currentOutput, generated.api)
-    const differsFromOutput =
-      currentOutput === null ? null : normalizeNewline(currentOutput) !== generatedContent
+    const differsFromOutput = currentOutput === null ? null : fieldChanges.length > 0
 
     entries.push({
       differsFromOutput,
@@ -208,6 +206,7 @@ async function generateApiJsonForEntry(
   const inputPath = resolve(cwd, entry.input)
   const source = await fs.readFile(inputPath, 'utf8')
   const api: GeneratedApiJson = {
+    generated_at: new Date().toISOString(),
     type: entry.type ?? 'component',
   }
 
@@ -2757,7 +2756,15 @@ function diffJsonFields(
     for (const key of Array.from(keys).sort()) {
       const childPath = `${path}.${key}`
 
+      if (childPath === '$.generated_at') {
+        continue
+      }
+
       if (!(key in currentValue)) {
+        if (generatedValue[key] === undefined) {
+          continue
+        }
+
         changes.push({
           generated: generatedValue[key],
           path: childPath,
@@ -2805,10 +2812,4 @@ async function readOptionalFile(path: string): Promise<string | null> {
 
     throw error
   }
-}
-
-function normalizeNewline(value: string): string {
-  const normalized = value.replace(/\r\n/g, '\n')
-
-  return normalized.endsWith('\n') ? normalized : `${normalized}\n`
 }

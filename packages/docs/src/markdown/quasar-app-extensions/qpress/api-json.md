@@ -1,22 +1,20 @@
 ---
 title: API JSON
-desc: Generate, compare, and gradually adopt Q-Press API JSON from TypeScript and JSDoc.
+desc: Generate Q-Press API JSON from TypeScript source and JSDoc.
 related:
   - quasar-app-extensions/qpress/cli
   - quasar-app-extensions/qpress/components
 ---
 
-Q-Press can render existing hand-authored API JSON and generated API JSON side by side while you migrate toward source-driven documentation.
+Q-Press can generate the JSON consumed by `MarkdownApi` from TypeScript source and JSDoc. Write the public API once in source, add focused JSDoc where TypeScript cannot describe user-facing behavior, then generate API JSON for your docs pages.
 
-The generator is intentionally conservative. It writes comparison files such as `*.generated.json` and never overwrites your committed API files unless a future explicit adoption command is added.
+The generator writes `*.generated.json` files so you can review output before publishing it. The generated file includes a top-level `generated_at` timestamp, the API `type`, optional `meta.docsUrl`, and API groups such as `props`, `events`, `slots`, `methods`, or `functions`.
 
 ## When To Use This
 
-Use API generation when your public API already has TypeScript signatures and JSDoc comments that should be the source of truth.
+Use API generation when your public API has TypeScript signatures and JSDoc comments that should be the source of truth.
 
-Good first targets are composables, utilities, and small TypeScript modules because their exported functions map cleanly to Q-Press API entries.
-
-For Vue components, keep hand-authored API JSON until the generator supports props, emits, slots, exposed members, and companion metadata well enough for your project.
+Good targets include composables, utilities, Vue components, and render-function components that declare public props, emits, slots, exposed methods, and return types in source.
 
 ## Configure Entries
 
@@ -39,7 +37,7 @@ Add source/output pairs under `api.entries` in `qpress.config.json`, `qpress.con
 
 Use `group: "functions"` for composables and utility functions. Use `group: "methods"` when the generated output should render under the Methods API tab.
 
-## Generate Comparison Files
+## Generate API JSON
 
 Run the generator from the docs project:
 
@@ -47,7 +45,7 @@ Run the generator from the docs project:
 pnpm exec qpress api generate
 ```
 
-For this committed API file:
+For this configured output path:
 
 ```text
 src/.q-press/api/composables/dark.json
@@ -59,11 +57,24 @@ Q-Press writes this review file:
 src/.q-press/api/composables/dark.generated.json
 ```
 
-Review the generated file before adoption. The generated output is intentionally pure generator output so you can compare it with the existing hand-authored file and see which source or JSDoc details are still missing.
+Review the generated file. If the descriptions, examples, categories, params, returns, or slot scopes are thin, update the TypeScript/JSDoc and run the generator again.
+
+Generated JSON starts like this:
+
+```json
+{
+  "generated_at": "2026-06-22T19:00:00.000Z",
+  "type": "component",
+  "meta": {
+    "docsUrl": "/components/my-component"
+  },
+  "props": {}
+}
+```
 
 ## Check For Drift
 
-Use `qpress api check` when you want a CI-friendly report without writing files:
+Use `qpress api check` when CI should confirm committed API JSON still matches source:
 
 ```bash
 pnpm exec qpress api check
@@ -75,13 +86,15 @@ The checker reports missing or stale API JSON and includes a field-level summary
 Field changes: 5 generated-only, 4 changed, 1 current-only
 ```
 
-Those field changes help you decide what the generator still needs to learn. `generated-only` fields exist only in generated output, `current-only` fields exist only in the committed hand-authored file, and `changed` fields exist in both but differ.
+Those field changes help you decide what source docs need attention. `generated-only` fields are present in the latest generated output, `current-only` fields are present in the committed API JSON, and `changed` fields exist in both but differ.
+
+The top-level `generated_at` field is ignored by drift checks so normal timestamp churn does not fail CI.
 
 ## Normal Q-Press Checks
 
 When `api.entries` is configured, `qpress check` can also report stale generated API output.
 
-During early migration, disable API drift failures in the broader docs check:
+If a project is still drafting API docs and should not fail broader docs checks yet, disable API drift failures:
 
 ```json
 {
@@ -97,35 +110,35 @@ You can also skip API drift checks for one command:
 pnpm exec qpress check --no-api
 ```
 
-Once the generated output is trusted, remove `checkGeneratedApi: false` so normal release validation catches API drift.
+Once the API docs are ready for release validation, remove `checkGeneratedApi: false` so normal checks catch source/API drift.
 
-## Adoption Workflow
+## Authoring Workflow
 
 ::: steps
 
-### Add a low-risk target
+### Document the source
 
-Add one low-risk `api.entries` target.
+Add TypeScript types and JSDoc to the public props, events, slots, methods, or exported functions.
 
-### Generate comparison JSON
+### Configure the entry
+
+Add an `api.entries` item with `input`, `output`, and any optional `type`, `group`, or `docsUrl` fields.
+
+### Generate JSON
 
 Run `pnpm exec qpress api generate`.
 
-### Compare the output
+### Review the generated file
 
-Compare the committed API JSON with the generated comparison file.
+Open the `*.generated.json` file or render it with `MarkdownApi`.
 
-### Move metadata to source
+### Fill documentation gaps
 
 Move missing descriptions, examples, categories, accepted values, and event details into TypeScript/JSDoc.
 
-### Check the drift
+### Commit when ready
 
-Run `pnpm exec qpress api check` to confirm the remaining drift is understood.
-
-### Adopt only after review
-
-Commit config, docs, or tests first; adopt generated JSON only after review.
+Commit the generated API JSON when it is ready to be part of the docs site.
 :::
 
 ## What The Generator Currently Extracts
@@ -413,14 +426,14 @@ Return metadata uses `@returns-*` or `@return-*`, such as `@returns-example null
 
 ## Output Review Examples
 
-Generated files are comparison artifacts. Read drift as a prompt to improve source docs or the generator:
+Read drift as a prompt to improve source docs or the generator:
 
 ```text
 Field changes: 8 generated-only, 3 changed, 2 current-only
 ```
 
-- `generated-only` usually means the source has public API that the committed JSON does not describe yet.
-- `current-only` usually means the committed JSON has curated metadata that is not present in source/JSDoc yet, or the generator does not support that source shape yet.
+- `generated-only` means the latest source generated a field that is not in the committed API JSON.
+- `current-only` means the committed API JSON has a field that source/JSDoc did not generate.
 - `changed` means both files describe the same path but disagree on value, such as a default, required flag, or description.
 
 For early review, render generated JSON directly on a local page:
@@ -435,8 +448,8 @@ import MarkdownApiGeneratedApi from '@/.q-press/api/components/MarkdownApi.gener
 
 ## What Still Needs Review
 
-Generated output is not a complete replacement for all existing API JSON yet.
+Generated output depends on how explicitly the source is documented.
 
 Areas that still need careful review include richer event payload descriptions, imported type expansion, overload documentation, re-exported symbols, default-exported function naming, and deeply nested type definitions.
 
-The safe rule is simple: generate for comparison, review the diff, and only adopt what is better than the current API page.
+The safe rule is simple: keep public TypeScript and JSDoc tight, generate, render the result, and fix source documentation until the API page tells users what they need to know.

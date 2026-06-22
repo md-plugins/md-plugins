@@ -142,7 +142,7 @@ pnpm exec qpress check --no-config
 
 Use `qpress api` when you want TypeScript exports and JSDoc to become the source of truth for Q-Press API JSON.
 
-The first pass is intentionally review-first. `generate` writes comparison files next to your configured API JSON files and does not overwrite committed API files:
+`generate` writes review files next to your configured API JSON output paths:
 
 ```bash
 pnpm exec qpress api generate
@@ -154,13 +154,13 @@ For example, an entry with this output path:
 src/.q-press/api/composables/timestamp.json
 ```
 
-Generates this comparison file:
+Generates this review file:
 
 ```text
 src/.q-press/api/composables/timestamp.generated.json
 ```
 
-Review the generated file against the hand-authored file before deciding whether to adopt it. This keeps existing API JSON safe while the generator matures.
+Review the generated file before publishing it. If the generated descriptions, examples, categories, params, returns, or slot scopes are thin, update the TypeScript/JSDoc and run the generator again. Generated JSON includes a top-level `generated_at` timestamp; drift checks ignore that field so timestamp churn does not fail CI.
 
 Run `check` when CI should report stale or missing API JSON without writing files:
 
@@ -182,7 +182,7 @@ It reads JSDoc descriptions plus `@param`, `@returns`, `@example`, `@category`, 
 
 Use explicit metadata tags for fields that should not be guessed from source: `@values`, `@applicable`, `@default`, `@required`, `@type`, `@ts-type`, and `@api-exemption`. Function, event, and slot-scope params can use `@param-values name ...`, `@param-example name ...`, `@param-default name ...`, `@param-required name false`, `@param-type name ...`, `@param-ts-type name ...`, and `@param-api-exemption name examples`. Return metadata can use `@returns-example`, `@returns-type`, `@returns-ts-type`, and `@returns-api-exemption`.
 
-See [API JSON](/quasar-app-extensions/qpress/api-json) for full source examples covering exported functions, typed props, runtime props, emits, custom events, slots, exposed methods, return definitions, metadata tags, and review output.
+See [API JSON](/quasar-app-extensions/qpress/api-json) for full source examples covering exported functions, typed props, runtime props, emits, custom events, slots, exposed methods, return definitions, metadata tags, generated output, and review output.
 
 Configure entries under `api.entries`:
 
@@ -214,7 +214,7 @@ pnpm exec qpress api generate \
   --docs-url /api/timestamp
 ```
 
-For one-off runs, `--type`, `--group`, and `--docs-url` mirror the matching `api.entries` fields. Use them when you are probing a new source file and want the generated comparison artifact to resemble the final API JSON shape. `docsUrl` is passed through to `MarkdownApi` as the Docs button target, so Q-Press docs commonly use a route path.
+For one-off runs, `--type`, `--group`, and `--docs-url` mirror the matching `api.entries` fields. Use them when you are probing a new source file and want the generated review file to resemble the final API JSON shape. `docsUrl` is passed through to `MarkdownApi` as the Docs button target, so Q-Press docs commonly use a route path.
 
 ## Custom Routes
 

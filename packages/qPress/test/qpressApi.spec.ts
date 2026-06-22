@@ -120,6 +120,9 @@ export const today = (): string => '2036-06-08'
           }),
         ]),
       )
+      expect(generated.generated_at).toMatch(
+        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/,
+      )
       expect(generated.meta.docsUrl).toBe('/api/timestamp')
       expect(generated.functions.parseTimestamp.desc).toBe(
         'Converts a supported input into a timestamp.',
@@ -1130,6 +1133,76 @@ export function add(left: number, right: number): number {
       ).rejects.toMatchObject({
         code: 'ENOENT',
       })
+    } finally {
+      await rm(root, { force: true, recursive: true })
+    }
+  })
+
+  it('ignores generated_at when checking API drift', async () => {
+    const root = await createProject({
+      'src/.q-press/api/helpers/math.json': JSON.stringify(
+        {
+          generated_at: '2000-01-01T00:00:00.000Z',
+          type: 'component',
+          methods: {
+            add: {
+              desc: 'Adds two numbers.',
+              params: {
+                left: {
+                  desc: 'Left value.',
+                  required: true,
+                  tsType: 'number',
+                  type: 'number',
+                },
+                right: {
+                  desc: 'Right value.',
+                  required: true,
+                  tsType: 'number',
+                  type: 'number',
+                },
+              },
+              returns: {
+                desc: 'Sum.',
+                tsType: 'number',
+                type: 'number',
+              },
+              tsSignature: 'function add(left: number, right: number): number',
+              type: 'Function',
+            },
+          },
+        },
+        null,
+        2,
+      ),
+      'src/helpers/math.ts': `
+/**
+ * Adds two numbers.
+ *
+ * @param left Left value.
+ * @param right Right value.
+ * @returns Sum.
+ */
+export function add(left: number, right: number): number {
+  return left + right
+}
+`,
+    })
+
+    try {
+      const result = await checkQPressApi({
+        cwd: root,
+        entries: [
+          {
+            group: 'methods',
+            input: 'src/helpers/math.ts',
+            output: 'src/.q-press/api/helpers/math.json',
+          },
+        ],
+      })
+
+      expect(result.diagnostics).toEqual([])
+      expect(result.entries[0]?.differsFromOutput).toBe(false)
+      expect(result.entries[0]?.fieldChanges).toEqual([])
     } finally {
       await rm(root, { force: true, recursive: true })
     }

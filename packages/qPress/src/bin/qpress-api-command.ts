@@ -33,7 +33,7 @@ Usage:
   ${commandName} <generate|check> [options]
 
 Commands:
-  generate   Write generated comparison files next to configured API JSON files.
+  generate   Write generated review files next to configured API JSON files.
   check      Compare generated API JSON with committed API JSON without writing files.
 
 Options:
@@ -50,8 +50,8 @@ Options:
   --quiet                   Hide success output.
   -h, --help                Show this help.
 
-By default, generate never overwrites committed API JSON. It writes files such as
-Component.generated.json so you can compare output before adopting it.
+By default, generate writes files such as Component.generated.json so you can
+review output before publishing it.
 `)
 }
 
@@ -230,7 +230,7 @@ function readValue(args: string[], index: number, flag: string): string {
 }
 
 function formatGenerateResult(entries: Awaited<ReturnType<typeof generateQPressApi>>['entries']) {
-  const lines = ['Q-Press API generated comparison files:\n']
+  const lines = ['Q-Press API generated review files:\n']
 
   for (const entry of entries) {
     const drift =
