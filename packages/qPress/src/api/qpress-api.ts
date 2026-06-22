@@ -807,7 +807,7 @@ function readJSDoc(node: ts.Node, sourceFile: ts.SourceFile, fallbackNode?: ts.N
     getLastJSDoc(node) ?? (fallbackNode === undefined ? undefined : getLastJSDoc(fallbackNode))
   const params = new Map<string, string>()
   const examples: string[] = []
-  let category: string | undefined
+  const categories: string[] = []
   let deprecated: string | boolean | undefined
   let returns = ''
   let since: string | undefined
@@ -824,7 +824,7 @@ function readJSDoc(node: ts.Node, sourceFile: ts.SourceFile, fallbackNode?: ts.N
         if (tagName === 'example') {
           examples.push(normalizeComment(tag.comment))
         } else if (tagName === 'category') {
-          category = normalizeComment(tag.comment)
+          categories.push(...normalizeCategories(tag.comment))
         } else if (tagName === 'deprecated') {
           deprecated = normalizeComment(tag.comment) || true
         } else if (tagName === 'since') {
@@ -835,7 +835,7 @@ function readJSDoc(node: ts.Node, sourceFile: ts.SourceFile, fallbackNode?: ts.N
   }
 
   return {
-    category,
+    category: categories.length > 0 ? categories.join('|') : undefined,
     deprecated,
     desc: normalizeComment(docs?.comment),
     examples,
@@ -843,6 +843,13 @@ function readJSDoc(node: ts.Node, sourceFile: ts.SourceFile, fallbackNode?: ts.N
     returns,
     since,
   }
+}
+
+function normalizeCategories(comment: unknown): string[] {
+  return normalizeComment(comment)
+    .split(/[|,]/)
+    .map((category) => category.trim())
+    .filter(Boolean)
 }
 
 function getLastJSDoc(node: ts.Node): ts.JSDoc | undefined {

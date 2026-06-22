@@ -416,7 +416,9 @@ const props = defineProps({
    * Target URL or route.
    *
    * @example '/docs'
+   * @example 'https://example.com'
    * @category navigation
+   * @category content
    */
   to: {
     type: String,
@@ -470,9 +472,9 @@ const emit = defineEmits({
 
       expect(result.entries[0]?.exportCount).toBe(6)
       expect(generated.props.to).toEqual({
-        category: 'navigation',
+        category: 'navigation|content',
         desc: 'Target URL or route.',
-        examples: ["'/docs'"],
+        examples: ["'/docs'", "'https://example.com'"],
         required: true,
         type: 'String',
       })
@@ -485,6 +487,8 @@ const emit = defineEmits({
         desc: '',
         type: 'String | Number',
       })
+      expect(generated.props.external.category).toBeUndefined()
+      expect(generated.props.external.examples).toBeUndefined()
       expect(generated.events.select).toEqual({
         desc: '',
         params: {

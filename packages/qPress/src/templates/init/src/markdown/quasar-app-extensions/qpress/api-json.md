@@ -130,20 +130,25 @@ Commit config, docs, or tests first; adopt generated JSON only after review.
 
 ## What The Generator Currently Extracts
 
-The first implementation focuses on TypeScript function exports:
+The first implementation focuses on TypeScript function exports and Vue SFC basics:
 
 - Exported function declarations.
 - Exported `const` arrow functions.
 - Exported `const` function expressions.
+- Object-style `<script setup>` `defineProps`.
+- Simple array-style and object-style `<script setup>` `defineEmits`.
+- Template `<slot>` usage.
 - JSDoc descriptions.
-- `@param`, `@returns`, `@example`, `@since`, and `@deprecated`.
+- `@param`, `@returns`, `@example`, `@category`, `@since`, and `@deprecated`.
 - TypeScript signatures.
 - Local interface and type-literal return definitions when the return type points directly at them.
+
+Use repeated `@example` tags to emit multiple examples. Use `@category` on prop JSDoc to place generated props into MarkdownApi category tabs; repeat the tag or separate names with `|` or `,` when a prop belongs to more than one category. Props without `@category` omit the field and render in MarkdownApi's default group.
 
 ## What Still Needs Review
 
 Generated output is not a complete replacement for all hand-authored API JSON yet.
 
-Areas that still need careful review include Vue SFC props and emits, slots, component companion metadata, default values, accepted values, curated categories, imported type expansion, overload documentation, and deeply nested type definitions.
+Areas that still need careful review include component companion metadata, accepted values, curated examples, richer event payload descriptions, imported type expansion, overload documentation, and deeply nested type definitions.
 
 The safe rule is simple: generate for comparison, review the diff, and only adopt what is better than the current API page.
