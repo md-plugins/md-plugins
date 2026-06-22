@@ -270,5 +270,5 @@ function formatFieldChangeSummary(
     },
   )
 
-  return `${summary.added} added, ${summary.changed} changed, ${summary.removed} removed`
+  return `${summary.added} generated-only, ${summary.changed} changed, ${summary.removed} current-only`
 }

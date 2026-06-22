@@ -59,7 +59,7 @@ Q-Press writes this review file:
 src/.q-press/api/composables/dark.generated.json
 ```
 
-Review the generated file before adoption. The generated output should add TypeScript details and reduce drift, but it may not yet include every curated field from your hand-authored API file.
+Review the generated file before adoption. The generated output is intentionally pure generator output so you can compare it with the existing hand-authored file and see which curated fields are still missing from generation.
 
 ## Check For Drift
 
@@ -72,10 +72,10 @@ pnpm exec qpress api check
 The checker reports missing or stale API JSON and includes a field-level summary:
 
 ```text
-Field changes: 5 added, 4 changed, 1 removed
+Field changes: 5 generated-only, 4 changed, 1 current-only
 ```
 
-Those field changes help you decide whether generated output is safe to adopt or whether the hand-authored file still contains important curated metadata.
+Those field changes help you decide what the generator still needs to learn. `generated-only` fields exist only in generated output, `current-only` fields exist only in the committed hand-authored file, and `changed` fields exist in both but differ.
 
 ## Normal Q-Press Checks
 

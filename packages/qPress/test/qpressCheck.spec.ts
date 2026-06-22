@@ -168,7 +168,7 @@ export function getLabel(): string {
           file: 'src/.q-press/api/composables/example.json',
         }),
       ])
-      expect(result.errors[0]?.message).toContain('Field changes: 1 added')
+      expect(result.errors[0]?.message).toContain('Field changes: 1 generated-only')
     } finally {
       await rm(root, { force: true, recursive: true })
     }
