@@ -6,6 +6,7 @@
     "dist",
     "packages/*/dist",
     "packages/docs",
+    "packages/qPress/test",
     "packages/qPress/src/templates"
   ],
   "compilerOptions": {

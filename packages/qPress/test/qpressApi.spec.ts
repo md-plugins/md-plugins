@@ -120,9 +120,7 @@ export const today = (): string => '2036-06-08'
           }),
         ]),
       )
-      expect(generated.generated_at).toMatch(
-        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/,
-      )
+      expect(generated.generated_at).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/)
       expect(generated.meta.docsUrl).toBe('/api/timestamp')
       expect(generated.functions.parseTimestamp.desc).toBe(
         'Converts a supported input into a timestamp.',
@@ -722,10 +720,7 @@ withDefaults(defineProps<DefaultedProps>(), {
         ],
       })
       const typedPropsGenerated = JSON.parse(
-        await readFile(
-          join(root, 'src/.q-press/api/components/TypedProps.generated.json'),
-          'utf8',
-        ),
+        await readFile(join(root, 'src/.q-press/api/components/TypedProps.generated.json'), 'utf8'),
       )
 
       expect(typedPropsGenerated.props.config).toEqual({

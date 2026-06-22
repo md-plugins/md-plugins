@@ -300,7 +300,7 @@ The short version: Q-Press SSG gives direct requests, browser refreshes, crawler
 
 :::details Q. I upgraded an existing Q-Press project and now the browser says `process is not defined`. What changed?
 
-**A.** Q-Press `0.1.0-rc.11` targets Quasar CLI Vite 3, so browser-side code must use `import.meta.env` instead of `process.env`.
+**A.** Q-Press `0.1.0-rc.12` targets Quasar CLI Vite 3, so browser-side code must use `import.meta.env` instead of `process.env`.
 
 If you copied older Q-Press internals into your app, update the common cases below:
 

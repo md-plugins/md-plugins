@@ -671,7 +671,8 @@ function getSetupSlotBindingNames(
 
   if (ts.isObjectBindingPattern(contextParameter.name)) {
     for (const element of contextParameter.name.elements) {
-      const propertyName = element.propertyName?.getText(sourceFile) ?? element.name.getText(sourceFile)
+      const propertyName =
+        element.propertyName?.getText(sourceFile) ?? element.name.getText(sourceFile)
 
       if (propertyName === 'slots' && ts.isIdentifier(element.name)) {
         bindings.add(element.name.text)
@@ -751,7 +752,6 @@ function getSlotPropScope(
     }
   }
 
-  const sourceFile = declaration.getSourceFile()
   const members = ts.isInterfaceDeclaration(declaration)
     ? declaration.members
     : ts.isTypeLiteralNode(declaration.type)
@@ -943,7 +943,7 @@ function resolveIdentifierInitializer(
 
   return importedInitializer === undefined
     ? undefined
-    : resolveInitializer(importedInitializer, importedContext) ?? importedInitializer
+    : (resolveInitializer(importedInitializer, importedContext) ?? importedInitializer)
 }
 
 function resolveTypeDeclaration(
@@ -970,7 +970,10 @@ function resolveTypeDeclaration(
   return findTypeDeclarationInSource(imported.importedName, imported.sourceFile)
 }
 
-function findVariableInitializer(name: string, sourceFile: ts.SourceFile): ts.Expression | undefined {
+function findVariableInitializer(
+  name: string,
+  sourceFile: ts.SourceFile,
+): ts.Expression | undefined {
   for (const statement of sourceFile.statements) {
     if (!ts.isVariableStatement(statement)) {
       continue
@@ -1022,7 +1025,10 @@ function resolveImportedName(
       continue
     }
 
-    const sourcePath = resolveImportPath(statement.moduleSpecifier.text, context.sourceFile.fileName)
+    const sourcePath = resolveImportPath(
+      statement.moduleSpecifier.text,
+      context.sourceFile.fileName,
+    )
 
     if (sourcePath === undefined) {
       continue
@@ -1296,7 +1302,10 @@ function getVueTypedPropDefault(
   }
 
   for (const property of defaults.properties) {
-    if (!ts.isPropertyAssignment(property) || getObjectPropertyName(property, sourceFile) !== name) {
+    if (
+      !ts.isPropertyAssignment(property) ||
+      getObjectPropertyName(property, sourceFile) !== name
+    ) {
       continue
     }
 
@@ -1407,10 +1416,7 @@ function createVueObjectPropEntry(
   return applyJSDocMetadata(prop, docs)
 }
 
-function applyJSDocMetadata(
-  prop: GeneratedApiProperty,
-  docs: JSDocDetails,
-): GeneratedApiProperty {
+function applyJSDocMetadata(prop: GeneratedApiProperty, docs: JSDocDetails): GeneratedApiProperty {
   applyPropertyMetadata(prop, docs.metadata)
 
   if (docs.category !== undefined) {
@@ -1598,7 +1604,7 @@ function mergeGeneratedParams(
   current: Record<string, GeneratedApiProperty> | undefined,
   generated: Record<string, GeneratedApiProperty>,
 ): Record<string, GeneratedApiProperty> {
-  const params = { ...(current ?? {}) }
+  const params = { ...current }
 
   for (const [name, generatedParam] of Object.entries(generated)) {
     params[name] =
@@ -1792,7 +1798,9 @@ function createSlotScope(
   return scope
 }
 
-function getFunctionTypeParameters(type: ts.TypeNode): ts.NodeArray<ts.ParameterDeclaration> | undefined {
+function getFunctionTypeParameters(
+  type: ts.TypeNode,
+): ts.NodeArray<ts.ParameterDeclaration> | undefined {
   if (ts.isFunctionTypeNode(type)) {
     return type.parameters
   }
@@ -1809,7 +1817,7 @@ function normalizeApiType(type: string): string {
     return 'Object'
   }
 
-  if (/^Array\b/.test(type) || /\[\]$/.test(type)) {
+  if (/^Array\b/.test(type) || type.endsWith('[]')) {
     return 'Array'
   }
 
@@ -1901,10 +1909,7 @@ function getVuePropTypeFromPropType(
   return undefined
 }
 
-function getValidatorValues(
-  node: ts.Expression,
-  sourceFile: ts.SourceFile,
-): string[] | undefined {
+function getValidatorValues(node: ts.Expression, sourceFile: ts.SourceFile): string[] | undefined {
   const body =
     ts.isArrowFunction(node) || ts.isFunctionExpression(node)
       ? ts.isBlock(node.body)
@@ -2123,14 +2128,7 @@ type JSDocDetails = {
 
 type GeneratedApiPropertyMetadata = Pick<
   Partial<GeneratedApiProperty>,
-  | '__exemption'
-  | 'applicable'
-  | 'default'
-  | 'examples'
-  | 'required'
-  | 'tsType'
-  | 'type'
-  | 'values'
+  '__exemption' | 'applicable' | 'default' | 'examples' | 'required' | 'tsType' | 'type' | 'values'
 >
 
 function readJSDoc(node: ts.Node, sourceFile: ts.SourceFile, fallbackNode?: ts.Node): JSDocDetails {
@@ -2430,8 +2428,9 @@ function resolveReturnTypeDeclaration(
   if (ts.isUnionTypeNode(returnType) || ts.isIntersectionTypeNode(returnType)) {
     const declarations = returnType.types
       .map((type) => resolveReturnTypeDeclaration(type, context))
-      .filter((declaration): declaration is ts.InterfaceDeclaration | ts.TypeAliasDeclaration =>
-        declaration !== undefined,
+      .filter(
+        (declaration): declaration is ts.InterfaceDeclaration | ts.TypeAliasDeclaration =>
+          declaration !== undefined,
       )
 
     return declarations.length === 1 ? declarations[0] : undefined

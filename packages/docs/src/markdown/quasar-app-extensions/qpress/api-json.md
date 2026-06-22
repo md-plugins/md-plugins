@@ -440,10 +440,10 @@ For early review, render generated JSON directly on a local page:
 
 ```md
 <script import>
-import MarkdownApiGeneratedApi from '@/.q-press/api/components/MarkdownApi.generated.json'
+import MarkdownApiApi from '@/.q-press/api/components/MarkdownApi.json'
 </script>
 
-<MarkdownApi :api="MarkdownApiGeneratedApi" name="MarkdownApi" />
+<MarkdownApi :api="MarkdownApiApi" name="MarkdownApi" />
 ```
 
 ## What Still Needs Review

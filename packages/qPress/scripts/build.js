@@ -21,7 +21,7 @@ const siteConfigPath = path.resolve(__dirname, '../../docs/src/siteConfig')
 const pagesPath = path.resolve(__dirname, '../../docs/src/pages')
 
 const copyGeneratedSources = {
-  filter: (src) => /\.generated\.json$/.test(src) === false,
+  filter: (src) => src.endsWith('.generated.json') === false,
 }
 
 // The "update" folder only gets the '_q-press' folder.
