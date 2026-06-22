@@ -400,6 +400,84 @@ export function useScroll() {
     }
   })
 
+  it('extracts Vue component props, events, and slots', async () => {
+    const root = await createProject({
+      'src/.q-press/api/components/ExampleCard.json': '{"type":"component"}\n',
+      'src/components/ExampleCard.vue': `
+<template>
+  <a v-if="props.external" :href="props.to">
+    <slot />
+  </a>
+</template>
+
+<script setup lang="ts">
+const props = defineProps({
+  /**
+   * Target URL or route.
+   *
+   * @example '/docs'
+   */
+  to: {
+    type: String,
+    required: true,
+  },
+  external: Boolean,
+  tone: {
+    type: [String, Number],
+    default: 'primary',
+  },
+})
+
+const emit = defineEmits(['select'])
+</script>
+`,
+    })
+
+    try {
+      const result = await generateQPressApi({
+        cwd: root,
+        entries: [
+          {
+            input: 'src/components/ExampleCard.vue',
+            output: 'src/.q-press/api/components/ExampleCard.json',
+          },
+        ],
+      })
+      const generated = JSON.parse(
+        await readFile(
+          join(root, 'src/.q-press/api/components/ExampleCard.generated.json'),
+          'utf8',
+        ),
+      )
+
+      expect(result.entries[0]?.exportCount).toBe(5)
+      expect(generated.props.to).toEqual({
+        desc: 'Target URL or route.',
+        examples: ["'/docs'"],
+        required: true,
+        type: 'String',
+      })
+      expect(generated.props.external).toEqual({
+        desc: '',
+        type: 'Boolean',
+      })
+      expect(generated.props.tone).toEqual({
+        default: 'primary',
+        desc: '',
+        type: 'String | Number',
+      })
+      expect(generated.events.select).toEqual({
+        desc: '',
+        params: {},
+      })
+      expect(generated.slots.default).toEqual({
+        desc: '',
+      })
+    } finally {
+      await rm(root, { force: true, recursive: true })
+    }
+  })
+
   it('checks stale API JSON without writing comparison files', async () => {
     const root = await createProject({
       'src/.q-press/api/helpers/math.json': '{"type":"component"}\n',

@@ -9,11 +9,17 @@
 
 <script setup lang="ts">
 const props = defineProps({
+  /**
+   * Target URL or route path for the card link.
+   */
   to: {
     type: String,
     required: true,
   },
 
+  /**
+   * Whether the link should open as an external anchor.
+   */
   external: Boolean,
 })
 </script>

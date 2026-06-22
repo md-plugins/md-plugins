@@ -12,15 +12,24 @@ import MarkdownCopyButton from './MarkdownCopyButton.vue'
 import { highlightCode, parseHighlightedBlock } from './MarkdownCodeHighlighter'
 
 const props = defineProps({
+  /**
+   * Code string to render with syntax highlighting.
+   */
   code: {
     type: String,
     required: true,
   },
+  /**
+   * Maximum height for the rendered code block.
+   */
   maxHeight: {
     type: String,
     default: void 0,
   },
 
+  /**
+   * Language identifier used by the syntax highlighter.
+   */
   lang: {
     type: String,
     default: 'js',

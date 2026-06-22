@@ -20,10 +20,16 @@ import { useDark } from '../composables/dark'
 import { mdiMoonWaningCrescent, mdiWhiteBalanceSunny } from '@quasar/extras/mdi-v7'
 
 const props = defineProps({
+  /**
+   * Icon name displayed for the dark mode state.
+   */
   darkIcon: {
     type: String,
     default: mdiMoonWaningCrescent, // Default dark mode icon
   },
+  /**
+   * Icon name displayed for the light mode state.
+   */
   lightIcon: {
     type: String,
     default: mdiWhiteBalanceSunny, // Default light mode icon

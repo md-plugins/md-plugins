@@ -54,6 +54,8 @@ export type QPressApiCheckResult = {
 
 type GeneratedApiProperty = {
   addedIn?: string
+  category?: string
+  default?: string
   definition?: Record<string, GeneratedApiProperty>
   deprecated?: string | boolean
   desc: string
@@ -63,7 +65,7 @@ type GeneratedApiProperty = {
   returns?: GeneratedApiProperty | null
   tsSignature?: string
   tsType?: string
-  type: string
+  type?: string
 }
 
 type GeneratedApiJson = {
@@ -195,9 +197,6 @@ async function generateApiJsonForEntry(
 ): Promise<{ api: GeneratedApiJson; exportCount: number; inputPath: string }> {
   const inputPath = resolve(cwd, entry.input)
   const source = await fs.readFile(inputPath, 'utf8')
-  const sourceFile = ts.createSourceFile(inputPath, source, ts.ScriptTarget.Latest, true)
-  const group = entry.group ?? 'functions'
-  const generatedEntries = extractExportedFunctions(sourceFile)
   const api: GeneratedApiJson = {
     type: entry.type ?? 'component',
   }
@@ -208,13 +207,60 @@ async function generateApiJsonForEntry(
     }
   }
 
-  api[group] = generatedEntries
+  const exportCount =
+    extname(inputPath) === '.vue'
+      ? populateVueComponentApi(api, inputPath, source)
+      : populateTypeScriptApi(api, inputPath, source, entry.group ?? 'functions')
 
   return {
     api,
-    exportCount: Object.keys(generatedEntries).length,
+    exportCount,
     inputPath,
   }
+}
+
+function populateTypeScriptApi(
+  api: GeneratedApiJson,
+  inputPath: string,
+  source: string,
+  group: QPressApiEntryGroup,
+): number {
+  const sourceFile = ts.createSourceFile(inputPath, source, ts.ScriptTarget.Latest, true)
+  const generatedEntries = extractExportedFunctions(sourceFile)
+
+  api[group] = generatedEntries
+
+  return Object.keys(generatedEntries).length
+}
+
+function populateVueComponentApi(api: GeneratedApiJson, inputPath: string, source: string): number {
+  const scriptSetup = extractScriptSetup(source)
+
+  if (scriptSetup !== undefined) {
+    const sourceFile = ts.createSourceFile(inputPath, scriptSetup, ts.ScriptTarget.Latest, true)
+    const props = extractVueProps(sourceFile)
+    const events = extractVueEvents(sourceFile)
+
+    if (Object.keys(props).length > 0) {
+      api.props = props
+    }
+
+    if (Object.keys(events).length > 0) {
+      api.events = events
+    }
+  }
+
+  const slots = extractVueSlots(source)
+
+  if (Object.keys(slots).length > 0) {
+    api.slots = slots
+  }
+
+  return ['props', 'events', 'slots'].reduce((count, group) => {
+    const entries = api[group]
+
+    return count + (isPlainRecord(entries) ? Object.keys(entries).length : 0)
+  }, 0)
 }
 
 function extractExportedFunctions(sourceFile: ts.SourceFile): Record<string, GeneratedApiProperty> {
@@ -247,6 +293,203 @@ function extractExportedFunctions(sourceFile: ts.SourceFile): Record<string, Gen
   }
 
   return entries
+}
+
+function extractScriptSetup(source: string): string | undefined {
+  const match = /<script\s+setup(?:\s[^>]*)?>([\s\S]*?)<\/script>/i.exec(source)
+
+  return match?.[1]
+}
+
+function extractVueProps(sourceFile: ts.SourceFile): Record<string, GeneratedApiProperty> {
+  const propsCall = findMacroCall(sourceFile, 'defineProps')
+  const propsArg = propsCall?.arguments[0]
+
+  if (propsArg === undefined || !ts.isObjectLiteralExpression(propsArg)) {
+    return {}
+  }
+
+  const props: Record<string, GeneratedApiProperty> = {}
+
+  for (const property of propsArg.properties) {
+    const name = getObjectPropertyName(property, sourceFile)
+
+    if (name === undefined) {
+      continue
+    }
+
+    const prop = createVuePropEntry(property, sourceFile)
+
+    if (prop !== undefined) {
+      props[name] = prop
+    }
+  }
+
+  return props
+}
+
+function createVuePropEntry(
+  property: ts.ObjectLiteralElementLike,
+  sourceFile: ts.SourceFile,
+): GeneratedApiProperty | undefined {
+  if (ts.isPropertyAssignment(property)) {
+    if (ts.isIdentifier(property.initializer)) {
+      return {
+        desc: readJSDoc(property, sourceFile).desc,
+        type: property.initializer.text,
+      }
+    }
+
+    if (!ts.isObjectLiteralExpression(property.initializer)) {
+      return {
+        desc: readJSDoc(property, sourceFile).desc,
+        type: getVuePropType(property.initializer, sourceFile),
+      }
+    }
+
+    return createVueObjectPropEntry(property.initializer, sourceFile, readJSDoc(property, sourceFile))
+  }
+
+  if (ts.isShorthandPropertyAssignment(property)) {
+    return {
+      desc: readJSDoc(property, sourceFile).desc,
+      type: property.name.text,
+    }
+  }
+
+  return undefined
+}
+
+function createVueObjectPropEntry(
+  object: ts.ObjectLiteralExpression,
+  sourceFile: ts.SourceFile,
+  docs: JSDocDetails,
+): GeneratedApiProperty {
+  const prop: GeneratedApiProperty = {
+    desc: docs.desc,
+    type: 'Any',
+  }
+
+  for (const property of object.properties) {
+    if (!ts.isPropertyAssignment(property)) {
+      continue
+    }
+
+    const name = getObjectPropertyName(property, sourceFile)
+
+    if (name === 'type') {
+      prop.type = getVuePropType(property.initializer, sourceFile)
+    } else if (name === 'required') {
+      prop.required = property.initializer.kind === ts.SyntaxKind.TrueKeyword
+    } else if (name === 'default') {
+      const defaultValue = getVuePropDefault(property.initializer, sourceFile)
+
+      if (defaultValue !== undefined) {
+        prop.default = defaultValue
+      }
+    }
+  }
+
+  if (docs.examples.length > 0) {
+    prop.examples = docs.examples
+  }
+
+  return prop
+}
+
+function extractVueEvents(sourceFile: ts.SourceFile): Record<string, GeneratedApiProperty> {
+  const emitsCall = findMacroCall(sourceFile, 'defineEmits')
+  const emitsArg = emitsCall?.arguments[0]
+
+  if (emitsArg === undefined || !ts.isArrayLiteralExpression(emitsArg)) {
+    return {}
+  }
+
+  const events: Record<string, GeneratedApiProperty> = {}
+
+  for (const element of emitsArg.elements) {
+    if (ts.isStringLiteral(element)) {
+      events[element.text] = {
+        desc: '',
+        params: {},
+      }
+    }
+  }
+
+  return events
+}
+
+function extractVueSlots(source: string): Record<string, GeneratedApiProperty> {
+  const slots: Record<string, GeneratedApiProperty> = {}
+  const template = /<template(?:\s[^>]*)?>([\s\S]*?)<\/template>/i.exec(source)?.[1]
+
+  if (template === undefined) {
+    return slots
+  }
+
+  const slotRE = /<slot(?:\s[^>]*)?>/gi
+  let match: RegExpExecArray | null
+
+  while ((match = slotRE.exec(template)) !== null) {
+    const slotTag = match[0]
+    const name = /\sname=["']([^"']+)["']/.exec(slotTag)?.[1] ?? 'default'
+
+    slots[name] = {
+      desc: '',
+    }
+  }
+
+  return slots
+}
+
+function findMacroCall(sourceFile: ts.SourceFile, name: string): ts.CallExpression | undefined {
+  let match: ts.CallExpression | undefined
+
+  const visit = (node: ts.Node) => {
+    if (
+      match === undefined &&
+      ts.isCallExpression(node) &&
+      ts.isIdentifier(node.expression) &&
+      node.expression.text === name
+    ) {
+      match = node
+      return
+    }
+
+    ts.forEachChild(node, visit)
+  }
+
+  visit(sourceFile)
+
+  return match
+}
+
+function getVuePropType(node: ts.Expression, sourceFile: ts.SourceFile): string {
+  if (ts.isIdentifier(node)) {
+    return node.text
+  }
+
+  if (ts.isArrayLiteralExpression(node)) {
+    return node.elements.map((element) => getVuePropType(element, sourceFile)).join(' | ')
+  }
+
+  if (ts.isArrowFunction(node) || ts.isFunctionExpression(node)) {
+    return 'Function'
+  }
+
+  return node.getText(sourceFile)
+}
+
+function getVuePropDefault(node: ts.Expression, sourceFile: ts.SourceFile): string | undefined {
+  if (ts.isVoidExpression(node) || node.getText(sourceFile) === 'void 0') {
+    return undefined
+  }
+
+  if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) {
+    return node.text
+  }
+
+  return node.getText(sourceFile)
 }
 
 function createFunctionEntry(
