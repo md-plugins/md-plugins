@@ -204,7 +204,7 @@ async function generateApiJsonForEntry(
 
   if (entry.docsUrl !== undefined) {
     api.meta = {
-      docsUrl: entry.docsUrl,
+      docsUrl: validateDocsUrl(entry.docsUrl),
     }
   }
 
@@ -215,6 +215,20 @@ async function generateApiJsonForEntry(
     exportCount: Object.keys(generatedEntries).length,
     inputPath,
   }
+}
+
+function validateDocsUrl(docsUrl: string): string {
+  try {
+    const url = new URL(docsUrl)
+
+    if (url.protocol === 'http:' || url.protocol === 'https:') {
+      return docsUrl
+    }
+  } catch {
+    // Fall through to the shared error below.
+  }
+
+  throw new Error(`Q-Press API docsUrl must be an absolute HTTP(S) URL: ${docsUrl}`)
 }
 
 function extractExportedFunctions(sourceFile: ts.SourceFile): Record<string, GeneratedApiProperty> {

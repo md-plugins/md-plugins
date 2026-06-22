@@ -86,7 +86,7 @@ export const today = (): string => '2036-06-08'
         cwd: root,
         entries: [
           {
-            docsUrl: '/api/timestamp',
+            docsUrl: 'https://docs.example.com/api/timestamp',
             input: 'src/utils/timestamp.ts',
             output: 'src/.q-press/api/composables/timestamp.json',
           },
@@ -116,7 +116,7 @@ export const today = (): string => '2036-06-08'
           }),
         ]),
       )
-      expect(generated.meta.docsUrl).toBe('/api/timestamp')
+      expect(generated.meta.docsUrl).toBe('https://docs.example.com/api/timestamp')
       expect(generated.functions.parseTimestamp.desc).toBe(
         'Converts a supported input into a timestamp.',
       )
@@ -491,7 +491,7 @@ export function copyText(text: string): Promise<void> {
         '--group',
         'methods',
         '--docs-url',
-        '/internal/clipboard',
+        'https://docs.example.com/internal/clipboard',
         '--json',
       ])
       const generated = JSON.parse(
@@ -501,10 +501,37 @@ export function copyText(text: string): Promise<void> {
       expect(exitCode).toBe(0)
       expect(JSON.parse(output).entries[0].exportCount).toBe(1)
       expect(generated.type).toBe('plugin')
-      expect(generated.meta.docsUrl).toBe('/internal/clipboard')
+      expect(generated.meta.docsUrl).toBe('https://docs.example.com/internal/clipboard')
       expect(generated.methods.copyText.params.text.desc).toBe('Text to copy.')
     } finally {
       process.stdout.write = stdoutWrite
+      await rm(root, { force: true, recursive: true })
+    }
+  })
+
+  it('rejects route-only docsUrl values', async () => {
+    const root = await createProject({
+      'src/utils/example.ts': `
+export function getExample(): string {
+  return 'Example'
+}
+`,
+    })
+
+    try {
+      await expect(
+        generateQPressApi({
+          cwd: root,
+          entries: [
+            {
+              docsUrl: '/api/example',
+              input: 'src/utils/example.ts',
+              output: 'src/.q-press/api/example.json',
+            },
+          ],
+        }),
+      ).rejects.toThrow('docsUrl must be an absolute HTTP(S) URL')
+    } finally {
       await rm(root, { force: true, recursive: true })
     }
   })

@@ -30,7 +30,7 @@ Add source/output pairs under `api.entries` in `qpress.config.json`, `qpress.con
         "input": "src/.q-press/composables/dark.ts",
         "output": "src/.q-press/api/composables/dark.json",
         "group": "functions",
-        "docsUrl": "/quasar-app-extensions/qpress/overview"
+        "docsUrl": "https://md-plugins.netlify.app/quasar-app-extensions/qpress/overview"
       }
     ]
   }

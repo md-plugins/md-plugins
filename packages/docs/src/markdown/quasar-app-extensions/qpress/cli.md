@@ -110,7 +110,7 @@ Put check options under the `check` key:
         "input": "src/utils/timestamp.ts",
         "output": "src/.q-press/api/composables/timestamp.json",
         "group": "functions",
-        "docsUrl": "/api/timestamp"
+        "docsUrl": "https://docs.example.com/api/timestamp"
       }
     ]
   },
@@ -188,7 +188,7 @@ Configure entries under `api.entries`:
         "input": "src/utils/timestamp.ts",
         "output": "src/.q-press/api/composables/timestamp.json",
         "group": "functions",
-        "docsUrl": "/api/timestamp"
+        "docsUrl": "https://docs.example.com/api/timestamp"
       }
     ]
   }
@@ -205,7 +205,7 @@ pnpm exec qpress api generate \
   --output src/.q-press/api/composables/timestamp.json \
   --type plugin \
   --group methods \
-  --docs-url /api/timestamp
+  --docs-url https://docs.example.com/api/timestamp
 ```
 
 For one-off runs, `--type`, `--group`, and `--docs-url` mirror the matching `api.entries` fields. Use them when you are probing a new source file and want the generated comparison artifact to resemble the final API JSON shape.
