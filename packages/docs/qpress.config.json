@@ -2,12 +2,12 @@
   "api": {
     "entries": [
       {
-        "docsUrl": "https://md-plugins.netlify.app/quasar-app-extensions/qpress/overview",
+        "docsUrl": "/quasar-app-extensions/qpress/overview",
         "input": "src/.q-press/composables/dark.ts",
         "output": "src/.q-press/api/composables/dark.json"
       },
       {
-        "docsUrl": "https://md-plugins.netlify.app/quasar-app-extensions/qpress/overview",
+        "docsUrl": "/quasar-app-extensions/qpress/overview",
         "input": "src/.q-press/composables/scroll.ts",
         "output": "src/.q-press/api/composables/scroll.json",
         "type": "plugin"

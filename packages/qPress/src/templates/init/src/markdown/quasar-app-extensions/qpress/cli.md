@@ -110,7 +110,7 @@ Put check options under the `check` key:
         "input": "src/utils/timestamp.ts",
         "output": "src/.q-press/api/composables/timestamp.json",
         "group": "functions",
-        "docsUrl": "https://docs.example.com/api/timestamp"
+        "docsUrl": "/api/timestamp"
       }
     ]
   },
@@ -188,7 +188,7 @@ Configure entries under `api.entries`:
         "input": "src/utils/timestamp.ts",
         "output": "src/.q-press/api/composables/timestamp.json",
         "group": "functions",
-        "docsUrl": "https://docs.example.com/api/timestamp"
+        "docsUrl": "/api/timestamp"
       }
     ]
   }
@@ -205,10 +205,10 @@ pnpm exec qpress api generate \
   --output src/.q-press/api/composables/timestamp.json \
   --type plugin \
   --group methods \
-  --docs-url https://docs.example.com/api/timestamp
+  --docs-url /api/timestamp
 ```
 
-For one-off runs, `--type`, `--group`, and `--docs-url` mirror the matching `api.entries` fields. Use them when you are probing a new source file and want the generated comparison artifact to resemble the final API JSON shape.
+For one-off runs, `--type`, `--group`, and `--docs-url` mirror the matching `api.entries` fields. Use them when you are probing a new source file and want the generated comparison artifact to resemble the final API JSON shape. `docsUrl` is passed through to `MarkdownApi` as the Docs button target, so Q-Press docs commonly use a route path.
 
 ## Custom Routes
 
