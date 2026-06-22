@@ -53,8 +53,10 @@ const props = defineProps({
 defineSlots<{
   /**
    * Slot for custom content in the tree node header.
+   *
+   * @param prop Properties of the tree node.
    */
-  'default-header'(): unknown
+  'default-header'(prop: { node: unknown }): unknown
 }>()
 
 let id = 0

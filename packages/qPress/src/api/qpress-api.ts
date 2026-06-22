@@ -63,6 +63,7 @@ type GeneratedApiProperty = {
   params?: Record<string, GeneratedApiProperty>
   required?: boolean
   returns?: GeneratedApiProperty | null
+  scope?: Record<string, GeneratedApiProperty>
   tsSignature?: string
   tsType?: string
   type?: string
@@ -656,12 +657,84 @@ function extractVueDefinedSlots(sourceFile: ts.SourceFile): Record<string, Gener
       continue
     }
 
+    const docs = readJSDoc(member, sourceFile)
+    const scope = createSlotScope(member, docs, sourceFile)
+
     slots[name] = {
-      desc: readJSDoc(member, sourceFile).desc,
+      desc: docs.desc,
+      ...(scope === undefined ? {} : { scope }),
     }
   }
 
   return slots
+}
+
+function createSlotScope(
+  member: ts.MethodSignature | ts.PropertySignature,
+  docs: JSDocDetails,
+  sourceFile: ts.SourceFile,
+): Record<string, GeneratedApiProperty> | undefined {
+  const parameters =
+    ts.isMethodSignature(member) && member.parameters.length > 0
+      ? member.parameters
+      : ts.isPropertySignature(member) && member.type !== undefined
+        ? getFunctionTypeParameters(member.type)
+        : undefined
+
+  if (parameters === undefined || parameters.length === 0) {
+    return undefined
+  }
+
+  const scope: Record<string, GeneratedApiProperty> = {}
+
+  for (const parameter of parameters) {
+    const name = getParameterName(parameter, sourceFile)
+
+    scope[name] = {
+      desc: docs.params.get(name) ?? '',
+      required: parameter.questionToken === undefined && parameter.initializer === undefined,
+      tsType: parameter.type?.getText(sourceFile) ?? 'unknown',
+      type: normalizeApiType(parameter.type?.getText(sourceFile) ?? 'unknown'),
+    }
+  }
+
+  return scope
+}
+
+function getFunctionTypeParameters(type: ts.TypeNode): ts.NodeArray<ts.ParameterDeclaration> | undefined {
+  if (ts.isFunctionTypeNode(type)) {
+    return type.parameters
+  }
+
+  if (ts.isParenthesizedTypeNode(type) || ts.isTypeOperatorNode(type)) {
+    return undefined
+  }
+
+  return undefined
+}
+
+function normalizeApiType(type: string): string {
+  if (/^\{[\s\S]*\}$/.test(type)) {
+    return 'Object'
+  }
+
+  if (/^Array\b/.test(type) || /\[\]$/.test(type)) {
+    return 'Array'
+  }
+
+  if (type === 'string') {
+    return 'String'
+  }
+
+  if (type === 'number') {
+    return 'Number'
+  }
+
+  if (type === 'boolean') {
+    return 'Boolean'
+  }
+
+  return type
 }
 
 function findMacroCall(sourceFile: ts.SourceFile, name: string): ts.CallExpression | undefined {

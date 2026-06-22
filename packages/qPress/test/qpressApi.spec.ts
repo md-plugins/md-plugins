@@ -441,8 +441,10 @@ function select() {
 defineSlots<{
   /**
    * Custom content inside the card link.
+   *
+   * @param scope Slot props provided to custom content.
    */
-  default(): unknown
+  default(scope: { active: boolean }): unknown
 }>()
 </script>
 `,
@@ -516,6 +518,14 @@ const emit = defineEmits({
       })
       expect(generated.slots.default).toEqual({
         desc: 'Custom content inside the card link.',
+        scope: {
+          scope: {
+            desc: 'Slot props provided to custom content.',
+            required: true,
+            tsType: '{ active: boolean }',
+            type: 'Object',
+          },
+        },
       })
 
       await generateQPressApi({
