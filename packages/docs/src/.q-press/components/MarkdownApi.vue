@@ -160,9 +160,29 @@ type ApiFile = Record<string, any> & {
 }
 
 type MarkdownApiProps = {
+  /**
+   * API JSON object to render directly.
+   *
+   * @category content
+   */
   api?: ApiFile | null
+  /**
+   * API file name to fetch from the generated Quasar API endpoint.
+   *
+   * @category content
+   */
   file?: string
+  /**
+   * Display name shown in the API card header.
+   *
+   * @category content
+   */
   name?: string
+  /**
+   * Whether to show the Docs button when `meta.docsUrl` is available.
+   *
+   * @category navigation
+   */
   pageLink?: boolean
 }
 
