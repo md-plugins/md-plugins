@@ -736,7 +736,7 @@ export default defineComponent({
         examples: ["[{ name: 'Docs', path: '/docs' }]"],
         type: 'Array',
       })
-      expect(headerMenu.props.mqPrefix).toEqual({
+      expect(headerMenu.props['mq-prefix']).toEqual({
         category: 'style',
         desc: 'Responsive class prefix applied to menu entries.',
         examples: ["'md'"],
@@ -757,6 +757,162 @@ export default defineComponent({
         required: false,
         tsType: 'string[]',
         type: 'Array',
+      })
+    } finally {
+      await rm(root, { force: true, recursive: true })
+    }
+  })
+
+  it('extracts TypeScript Vue component APIs from imported spreads and typed slots', async () => {
+    const root = await createProject({
+      'src/.q-press/api/components/CalendarDay.json': '{"type":"component"}\n',
+      'src/components/CalendarDay.ts': `
+import { defineComponent, type SlotsType } from 'vue'
+import { useCommonEmits, useCommonProps } from '../composables/useCommon'
+import { getRawMouseEvents } from '../composables/useMouse'
+import type { CalendarDaySlots } from '../slots'
+
+export default defineComponent({
+  slots: Object as SlotsType<CalendarDaySlots>,
+
+  props: {
+    ...useCommonProps,
+    useNavigation: Boolean,
+  },
+
+  emits: [
+    'update:model-value',
+    ...useCommonEmits,
+    ...getRawMouseEvents('-day'),
+  ],
+
+  setup(_props, { expose }) {
+    /**
+     * Moves to the previous visible range.
+     *
+     * @param amount Number of ranges to move.
+     */
+    function prev(amount?: number): void {}
+
+    expose({
+      prev,
+      moveToToday,
+    })
+  },
+})
+`,
+      'src/composables/useCommon.ts': `
+import { type PropType } from 'vue'
+
+export const useCommonProps = {
+  modelValue: {
+    type: String,
+    default: '',
+  },
+  dateType: {
+    type: String as PropType<'round' | 'square'>,
+    default: 'round',
+    validator: (value: string) => ['round', 'square'].includes(value),
+  },
+} as const
+
+export const useCommonEmits = ['change', 'moved']
+`,
+      'src/composables/useMouse.ts': `
+export function getRawMouseEvents(suffix: string): string[] {
+  return [
+    'click' + suffix,
+    'contextmenu' + suffix,
+    'mousedown' + suffix,
+    'mousemove' + suffix,
+    'mouseup' + suffix,
+    'mouseenter' + suffix,
+    'mouseleave' + suffix,
+    'touchstart' + suffix,
+    'touchmove' + suffix,
+    'touchend' + suffix,
+  ]
+}
+`,
+      'src/slots.ts': `
+type SlotProps<T> = { scope: T }
+
+export interface DaySlotScope {
+  timestamp: string
+  activeDate?: boolean
+}
+
+export interface CalendarDaySlots {
+  /**
+   * Custom day cell content.
+   */
+  day?: SlotProps<DaySlotScope>
+}
+`,
+    })
+
+    try {
+      await generateQPressApi({
+        cwd: root,
+        entries: [
+          {
+            input: 'src/components/CalendarDay.ts',
+            output: 'src/.q-press/api/components/CalendarDay.json',
+          },
+        ],
+      })
+      const generated = JSON.parse(
+        await readFile(
+          join(root, 'src/.q-press/api/components/CalendarDay.generated.json'),
+          'utf8',
+        ),
+      )
+
+      expect(Object.keys(generated.props)).toEqual(['model-value', 'date-type', 'use-navigation'])
+      expect(generated.props['date-type']).toEqual({
+        desc: '',
+        default: 'round',
+        tsType: "'round' | 'square'",
+        type: 'String',
+        values: ["'round'", "'square'"],
+      })
+      expect(generated.events).toHaveProperty('change')
+      expect(generated.events).toHaveProperty('click-day')
+      expect(generated.events).toHaveProperty('contextmenu-day')
+      expect(generated.slots.day).toEqual({
+        desc: 'Custom day cell content.',
+        scope: {
+          timestamp: {
+            desc: '',
+            required: true,
+            tsType: 'string',
+            type: 'String',
+          },
+          activeDate: {
+            desc: '',
+            required: false,
+            tsType: 'boolean',
+            type: 'Boolean',
+          },
+        },
+      })
+      expect(generated.methods.prev).toEqual({
+        desc: 'Moves to the previous visible range.',
+        params: {
+          amount: {
+            desc: 'Number of ranges to move.',
+            required: false,
+            tsType: 'number',
+            type: 'number',
+          },
+        },
+        returns: null,
+        tsSignature: 'function prev(amount?: number): void',
+        type: 'Function',
+      })
+      expect(generated.methods.moveToToday).toEqual({
+        desc: '',
+        type: 'Function',
       })
     } finally {
       await rm(root, { force: true, recursive: true })

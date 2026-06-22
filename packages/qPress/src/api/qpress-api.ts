@@ -1,4 +1,4 @@
-import { promises as fs } from 'node:fs'
+import { existsSync, promises as fs, readFileSync } from 'node:fs'
 import { dirname, extname, resolve } from 'node:path'
 import ts from 'typescript'
 
@@ -67,6 +67,7 @@ type GeneratedApiProperty = {
   tsSignature?: string
   tsType?: string
   type?: string
+  values?: string[]
 }
 
 type GeneratedApiJson = {
@@ -78,6 +79,12 @@ type GeneratedApiJson = {
 }
 
 type FunctionLikeNode = ts.FunctionDeclaration | ts.ArrowFunction | ts.FunctionExpression
+
+type SourceFileContext = {
+  cache: Map<string, ts.SourceFile>
+  inputPath: string
+  sourceFile: ts.SourceFile
+}
 
 const defaultGeneratedSuffix = '.generated'
 
@@ -243,7 +250,13 @@ function populateTypeScriptEntryApi(
   if (api.type === 'component') {
     const componentExportCount = populateTypeScriptComponentApi(api, inputPath, source)
 
-    if (componentExportCount > 0 || isPlainRecord(api.props)) {
+    if (
+      componentExportCount > 0 ||
+      isPlainRecord(api.props) ||
+      isPlainRecord(api.events) ||
+      isPlainRecord(api.slots) ||
+      isPlainRecord(api.methods)
+    ) {
       return componentExportCount
     }
   }
@@ -293,19 +306,43 @@ function populateTypeScriptComponentApi(
   source: string,
 ): number {
   const sourceFile = ts.createSourceFile(inputPath, source, ts.ScriptTarget.Latest, true)
+  const context: SourceFileContext = {
+    cache: new Map([[inputPath, sourceFile]]),
+    inputPath,
+    sourceFile,
+  }
   const options = findDefaultVueComponentOptions(sourceFile)
 
   if (options === undefined) {
     return 0
   }
 
-  const props = extractVueOptionsProps(options, sourceFile)
+  const props = extractVueOptionsProps(options, context)
+  const events = extractVueOptionsEvents(options, context)
+  const slots = extractVueOptionsSlots(options, context)
+  const methods = extractVueOptionsMethods(options, context)
 
   if (Object.keys(props).length > 0) {
     api.props = props
   }
 
-  return Object.keys(props).length
+  if (Object.keys(events).length > 0) {
+    api.events = events
+  }
+
+  if (Object.keys(slots).length > 0) {
+    api.slots = slots
+  }
+
+  if (Object.keys(methods).length > 0) {
+    api.methods = methods
+  }
+
+  return ['props', 'events', 'slots', 'methods'].reduce((count, group) => {
+    const entries = api[group]
+
+    return count + (isPlainRecord(entries) ? Object.keys(entries).length : 0)
+  }, 0)
 }
 
 function findDefaultVueComponentOptions(
@@ -337,12 +374,12 @@ function findDefaultVueComponentOptions(
 
 function extractVueOptionsProps(
   options: ts.ObjectLiteralExpression,
-  sourceFile: ts.SourceFile,
+  context: SourceFileContext,
 ): Record<string, GeneratedApiProperty> {
   const propsOption = options.properties.find(
     (property): property is ts.PropertyAssignment =>
       ts.isPropertyAssignment(property) &&
-      getObjectPropertyName(property, sourceFile) === 'props' &&
+      getObjectPropertyName(property, context.sourceFile) === 'props' &&
       ts.isObjectLiteralExpression(property.initializer),
   )
 
@@ -353,6 +390,52 @@ function extractVueOptionsProps(
   const props: Record<string, GeneratedApiProperty> = {}
 
   for (const property of propsOption.initializer.properties) {
+    if (ts.isSpreadAssignment(property)) {
+      Object.assign(props, extractVuePropSpread(property.expression, context))
+      continue
+    }
+
+    const name = getObjectPropertyName(property, context.sourceFile)
+
+    if (name === undefined) {
+      continue
+    }
+
+    const prop = createVuePropEntry(property, context.sourceFile)
+
+    if (prop !== undefined) {
+      props[toKebabCase(name)] = prop
+    }
+  }
+
+  return props
+}
+
+function extractVuePropSpread(
+  expression: ts.Expression,
+  context: SourceFileContext,
+): Record<string, GeneratedApiProperty> {
+  const object = resolveObjectLiteral(expression, context)
+
+  if (object === undefined) {
+    return {}
+  }
+
+  const sourceFile = object.getSourceFile()
+  const props: Record<string, GeneratedApiProperty> = {}
+
+  for (const property of object.properties) {
+    if (ts.isSpreadAssignment(property)) {
+      Object.assign(
+        props,
+        extractVuePropSpread(property.expression, {
+          ...context,
+          sourceFile,
+        }),
+      )
+      continue
+    }
+
     const name = getObjectPropertyName(property, sourceFile)
 
     if (name === undefined) {
@@ -362,11 +445,562 @@ function extractVueOptionsProps(
     const prop = createVuePropEntry(property, sourceFile)
 
     if (prop !== undefined) {
-      props[name] = prop
+      props[toKebabCase(name)] = prop
     }
   }
 
   return props
+}
+
+function extractVueOptionsEvents(
+  options: ts.ObjectLiteralExpression,
+  context: SourceFileContext,
+): Record<string, GeneratedApiProperty> {
+  const sourceFile = context.sourceFile
+  const emitsOption = options.properties.find(
+    (property): property is ts.PropertyAssignment =>
+      ts.isPropertyAssignment(property) && getObjectPropertyName(property, sourceFile) === 'emits',
+  )
+
+  if (emitsOption === undefined) {
+    return {}
+  }
+
+  return extractVueEmitsFromExpression(emitsOption.initializer, context)
+}
+
+function extractVueEmitsFromExpression(
+  expression: ts.Expression,
+  context: SourceFileContext,
+): Record<string, GeneratedApiProperty> {
+  if (ts.isArrayLiteralExpression(expression)) {
+    return extractVueEmitsArray(expression, context)
+  }
+
+  if (ts.isObjectLiteralExpression(expression)) {
+    const events: Record<string, GeneratedApiProperty> = {}
+
+    for (const property of expression.properties) {
+      const name = getObjectPropertyName(property, expression.getSourceFile())
+
+      if (name !== undefined) {
+        events[name] = {
+          desc: readJSDoc(property, expression.getSourceFile()).desc,
+          params: {},
+        }
+      }
+    }
+
+    return events
+  }
+
+  const resolved = resolveInitializer(expression, context)
+
+  return resolved === undefined ? {} : extractVueEmitsFromExpression(resolved, context)
+}
+
+function extractVueEmitsArray(
+  array: ts.ArrayLiteralExpression,
+  context: SourceFileContext,
+): Record<string, GeneratedApiProperty> {
+  const events: Record<string, GeneratedApiProperty> = {}
+
+  for (const element of array.elements) {
+    if (ts.isStringLiteral(element) || ts.isNoSubstitutionTemplateLiteral(element)) {
+      events[element.text] = {
+        desc: '',
+        params: {},
+      }
+      continue
+    }
+
+    if (ts.isSpreadElement(element)) {
+      Object.assign(events, extractVueEmitsSpread(element.expression, context))
+    }
+  }
+
+  return events
+}
+
+function extractVueEmitsSpread(
+  expression: ts.Expression,
+  context: SourceFileContext,
+): Record<string, GeneratedApiProperty> {
+  if (
+    ts.isCallExpression(expression) &&
+    ts.isIdentifier(expression.expression) &&
+    expression.expression.text === 'getRawMouseEvents' &&
+    expression.arguments.length > 0
+  ) {
+    const suffix = getStaticString(expression.arguments[0])
+
+    return suffix === undefined ? {} : createRawMouseEventEntries(suffix)
+  }
+
+  const resolved = resolveInitializer(expression, context)
+
+  return resolved === undefined ? {} : extractVueEmitsFromExpression(resolved, context)
+}
+
+function createRawMouseEventEntries(suffix: string): Record<string, GeneratedApiProperty> {
+  return [
+    'click',
+    'contextmenu',
+    'mousedown',
+    'mousemove',
+    'mouseup',
+    'mouseenter',
+    'mouseleave',
+    'touchstart',
+    'touchmove',
+    'touchend',
+  ].reduce<Record<string, GeneratedApiProperty>>((events, name) => {
+    events[`${name}${suffix}`] = {
+      desc: '',
+      params: {},
+    }
+
+    return events
+  }, {})
+}
+
+function extractVueOptionsSlots(
+  options: ts.ObjectLiteralExpression,
+  context: SourceFileContext,
+): Record<string, GeneratedApiProperty> {
+  const sourceFile = context.sourceFile
+  const slotsOption = options.properties.find(
+    (property): property is ts.PropertyAssignment =>
+      ts.isPropertyAssignment(property) && getObjectPropertyName(property, sourceFile) === 'slots',
+  )
+
+  if (slotsOption === undefined) {
+    return {}
+  }
+
+  const slotsType = getSlotsTypeReference(slotsOption.initializer)
+
+  if (slotsType === undefined || slotsType.typeArguments?.[0] === undefined) {
+    return {}
+  }
+
+  return extractSlotsFromType(slotsType.typeArguments[0], context)
+}
+
+function getSlotsTypeReference(node: ts.Expression): ts.TypeReferenceNode | undefined {
+  if (!ts.isAsExpression(node)) {
+    return undefined
+  }
+
+  if (
+    ts.isTypeReferenceNode(node.type) &&
+    ts.isIdentifier(node.type.typeName) &&
+    node.type.typeName.text === 'SlotsType'
+  ) {
+    return node.type
+  }
+
+  return undefined
+}
+
+function extractSlotsFromType(
+  type: ts.TypeNode,
+  context: SourceFileContext,
+): Record<string, GeneratedApiProperty> {
+  const declaration = resolveTypeDeclaration(type, context)
+
+  if (declaration === undefined || !ts.isInterfaceDeclaration(declaration)) {
+    return {}
+  }
+
+  const sourceFile = declaration.getSourceFile()
+  const slots: Record<string, GeneratedApiProperty> = {}
+
+  for (const member of declaration.members) {
+    if (!ts.isPropertySignature(member)) {
+      continue
+    }
+
+    const name = getMemberName(member, sourceFile)
+
+    if (name === undefined) {
+      continue
+    }
+
+    const docs = readJSDoc(member, sourceFile)
+    const scope = getSlotPropScope(member.type, {
+      ...context,
+      sourceFile,
+    })
+
+    slots[name] = {
+      desc: docs.desc,
+      ...(scope === undefined ? {} : { scope }),
+    }
+  }
+
+  return slots
+}
+
+function getSlotPropScope(
+  type: ts.TypeNode | undefined,
+  context: SourceFileContext,
+): Record<string, GeneratedApiProperty> | undefined {
+  if (
+    type === undefined ||
+    !ts.isTypeReferenceNode(type) ||
+    !ts.isIdentifier(type.typeName) ||
+    type.typeName.text !== 'SlotProps' ||
+    type.typeArguments?.[0] === undefined
+  ) {
+    return undefined
+  }
+
+  const scopeType = type.typeArguments[0]
+  const declaration = resolveTypeDeclaration(scopeType, context)
+
+  if (declaration === undefined) {
+    return {
+      scope: {
+        desc: '',
+        tsType: scopeType.getText(context.sourceFile),
+        type: normalizeApiType(scopeType.getText(context.sourceFile)),
+      },
+    }
+  }
+
+  const sourceFile = declaration.getSourceFile()
+  const members = ts.isInterfaceDeclaration(declaration)
+    ? declaration.members
+    : ts.isTypeLiteralNode(declaration.type)
+      ? declaration.type.members
+      : undefined
+
+  if (members === undefined) {
+    return undefined
+  }
+
+  const scope: Record<string, GeneratedApiProperty> = {}
+
+  for (const member of members) {
+    if (!ts.isPropertySignature(member) && !ts.isMethodSignature(member)) {
+      continue
+    }
+
+    const name = getMemberName(member, sourceFile)
+
+    if (name === undefined) {
+      continue
+    }
+
+    scope[name] = {
+      desc: readJSDoc(member, sourceFile).desc,
+      required: member.questionToken === undefined,
+      tsType: getMemberType(member, sourceFile),
+      type: normalizeApiType(getMemberType(member, sourceFile)),
+    }
+  }
+
+  return Object.keys(scope).length === 0 ? undefined : scope
+}
+
+function extractVueOptionsMethods(
+  options: ts.ObjectLiteralExpression,
+  context: SourceFileContext,
+): Record<string, GeneratedApiProperty> {
+  const setup = options.properties.find(
+    (property): property is ts.MethodDeclaration | ts.PropertyAssignment =>
+      (ts.isMethodDeclaration(property) || ts.isPropertyAssignment(property)) &&
+      getObjectPropertyName(property, context.sourceFile) === 'setup',
+  )
+
+  if (setup === undefined) {
+    return {}
+  }
+
+  const body = ts.isMethodDeclaration(setup)
+    ? setup.body
+    : isFunctionLikeInitializer(setup.initializer)
+      ? getFunctionBody(setup.initializer)
+      : undefined
+
+  if (body === undefined) {
+    return {}
+  }
+
+  return extractExposedMethods(body, context.sourceFile)
+}
+
+function extractExposedMethods(
+  body: ts.Block,
+  sourceFile: ts.SourceFile,
+): Record<string, GeneratedApiProperty> {
+  const methods: Record<string, GeneratedApiProperty> = {}
+  const localFunctions = collectLocalFunctions(body)
+
+  const visit = (node: ts.Node) => {
+    if (
+      ts.isCallExpression(node) &&
+      ts.isIdentifier(node.expression) &&
+      node.expression.text === 'expose' &&
+      ts.isObjectLiteralExpression(node.arguments[0])
+    ) {
+      for (const property of node.arguments[0].properties) {
+        const name = getObjectPropertyName(property, sourceFile)
+
+        if (name === undefined) {
+          continue
+        }
+
+        const local = localFunctions.get(name)
+        methods[name] =
+          local === undefined
+            ? {
+                desc: readJSDoc(property, sourceFile).desc,
+                type: 'Function',
+              }
+            : createFunctionEntry(local, sourceFile, {
+                fallbackJSDocNode: property,
+                name,
+              })
+      }
+    }
+
+    ts.forEachChild(node, visit)
+  }
+
+  visit(body)
+
+  return methods
+}
+
+function collectLocalFunctions(body: ts.Block): Map<string, FunctionLikeNode> {
+  const functions = new Map<string, FunctionLikeNode>()
+
+  const visit = (node: ts.Node) => {
+    if (ts.isFunctionDeclaration(node) && node.name !== undefined) {
+      functions.set(node.name.text, node)
+    } else if (ts.isVariableDeclaration(node) && ts.isIdentifier(node.name)) {
+      if (node.initializer !== undefined && isFunctionLikeInitializer(node.initializer)) {
+        functions.set(node.name.text, node.initializer)
+      }
+    }
+
+    ts.forEachChild(node, visit)
+  }
+
+  visit(body)
+
+  return functions
+}
+
+function resolveObjectLiteral(
+  expression: ts.Expression,
+  context: SourceFileContext,
+): ts.ObjectLiteralExpression | undefined {
+  const resolved = resolveInitializer(expression, context)
+
+  return resolved !== undefined && ts.isObjectLiteralExpression(resolved) ? resolved : undefined
+}
+
+function resolveInitializer(
+  expression: ts.Expression,
+  context: SourceFileContext,
+): ts.Expression | undefined {
+  if (ts.isIdentifier(expression)) {
+    return resolveIdentifierInitializer(expression.text, context)
+  }
+
+  if (ts.isAsExpression(expression)) {
+    return resolveInitializer(expression.expression, context) ?? expression.expression
+  }
+
+  return expression
+}
+
+function resolveIdentifierInitializer(
+  name: string,
+  context: SourceFileContext,
+): ts.Expression | undefined {
+  const local = findVariableInitializer(name, context.sourceFile)
+
+  if (local !== undefined) {
+    return resolveInitializer(local, context) ?? local
+  }
+
+  const imported = resolveImportedName(name, context)
+
+  if (imported === undefined) {
+    return undefined
+  }
+
+  const importedContext = {
+    ...context,
+    sourceFile: imported.sourceFile,
+  }
+  const importedInitializer = findVariableInitializer(imported.importedName, imported.sourceFile)
+
+  return importedInitializer === undefined
+    ? undefined
+    : resolveInitializer(importedInitializer, importedContext) ?? importedInitializer
+}
+
+function resolveTypeDeclaration(
+  type: ts.TypeNode,
+  context: SourceFileContext,
+): ts.InterfaceDeclaration | ts.TypeAliasDeclaration | undefined {
+  if (!ts.isTypeReferenceNode(type) || !ts.isIdentifier(type.typeName)) {
+    return undefined
+  }
+
+  const name = type.typeName.text
+  const local = findTypeDeclarationInSource(name, context.sourceFile)
+
+  if (local !== undefined) {
+    return local
+  }
+
+  const imported = resolveImportedName(name, context)
+
+  if (imported === undefined) {
+    return undefined
+  }
+
+  return findTypeDeclarationInSource(imported.importedName, imported.sourceFile)
+}
+
+function findVariableInitializer(name: string, sourceFile: ts.SourceFile): ts.Expression | undefined {
+  for (const statement of sourceFile.statements) {
+    if (!ts.isVariableStatement(statement)) {
+      continue
+    }
+
+    for (const declaration of statement.declarationList.declarations) {
+      if (
+        ts.isIdentifier(declaration.name) &&
+        declaration.name.text === name &&
+        declaration.initializer !== undefined
+      ) {
+        return declaration.initializer
+      }
+    }
+  }
+
+  return undefined
+}
+
+function findTypeDeclarationInSource(
+  name: string,
+  sourceFile: ts.SourceFile,
+): ts.InterfaceDeclaration | ts.TypeAliasDeclaration | undefined {
+  for (const statement of sourceFile.statements) {
+    if (ts.isInterfaceDeclaration(statement) && statement.name.text === name) {
+      return statement
+    }
+
+    if (ts.isTypeAliasDeclaration(statement) && statement.name.text === name) {
+      return statement
+    }
+  }
+
+  return undefined
+}
+
+function resolveImportedName(
+  name: string,
+  context: SourceFileContext,
+): { importedName: string; sourceFile: ts.SourceFile } | undefined {
+  for (const statement of context.sourceFile.statements) {
+    if (!ts.isImportDeclaration(statement) || !ts.isStringLiteral(statement.moduleSpecifier)) {
+      continue
+    }
+
+    const importClause = statement.importClause
+
+    if (importClause === undefined) {
+      continue
+    }
+
+    const sourcePath = resolveImportPath(statement.moduleSpecifier.text, context.sourceFile.fileName)
+
+    if (sourcePath === undefined) {
+      continue
+    }
+
+    if (importClause.name?.text === name) {
+      return {
+        importedName: 'default',
+        sourceFile: readSourceFile(sourcePath, context),
+      }
+    }
+
+    const namedBindings = importClause.namedBindings
+
+    if (namedBindings === undefined || !ts.isNamedImports(namedBindings)) {
+      continue
+    }
+
+    for (const element of namedBindings.elements) {
+      if (element.name.text !== name) {
+        continue
+      }
+
+      return {
+        importedName: element.propertyName?.text ?? element.name.text,
+        sourceFile: readSourceFile(sourcePath, context),
+      }
+    }
+  }
+
+  return undefined
+}
+
+function resolveImportPath(moduleSpecifier: string, fromFile: string): string | undefined {
+  if (!moduleSpecifier.startsWith('.')) {
+    return undefined
+  }
+
+  const base = resolve(dirname(fromFile), moduleSpecifier)
+  const candidates = [
+    base,
+    `${base}.ts`,
+    `${base}.tsx`,
+    `${base}.vue`,
+    resolve(base, 'index.ts'),
+    resolve(base, 'index.tsx'),
+  ]
+
+  return candidates.find((candidate) => existsSync(candidate))
+}
+
+function readSourceFile(path: string, context: SourceFileContext): ts.SourceFile {
+  const cached = context.cache.get(path)
+
+  if (cached !== undefined) {
+    return cached
+  }
+
+  const source = readFileSync(path, 'utf8')
+  const sourceFile = ts.createSourceFile(path, source, ts.ScriptTarget.Latest, true)
+
+  context.cache.set(path, sourceFile)
+
+  return sourceFile
+}
+
+function getStaticString(node: ts.Expression): string | undefined {
+  if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) {
+    return node.text
+  }
+
+  return undefined
+}
+
+function toKebabCase(value: string): string {
+  return value
+    .replace(/([a-z0-9])([A-Z])/g, '$1-$2')
+    .replace(/_/g, '-')
+    .toLowerCase()
 }
 
 function extractExportedFunctions(sourceFile: ts.SourceFile): Record<string, GeneratedApiProperty> {
@@ -566,6 +1200,12 @@ function createVueObjectPropEntry(
 
       if (defaultValue !== undefined) {
         prop.default = defaultValue
+      }
+    } else if (name === 'validator') {
+      const values = getValidatorValues(property.initializer, sourceFile)
+
+      if (values !== undefined) {
+        prop.values = values
       }
     }
   }
@@ -1011,7 +1651,72 @@ function getVuePropTypeFromPropType(
     return node.typeArguments?.[0]?.getText(sourceFile)
   }
 
+  if (ts.isFunctionTypeNode(node) && node.type !== undefined) {
+    return node.type.getText(sourceFile)
+  }
+
   return undefined
+}
+
+function getValidatorValues(
+  node: ts.Expression,
+  sourceFile: ts.SourceFile,
+): string[] | undefined {
+  const body =
+    ts.isArrowFunction(node) || ts.isFunctionExpression(node)
+      ? ts.isBlock(node.body)
+        ? findReturnedExpression(node.body)
+        : node.body
+      : undefined
+
+  if (body === undefined) {
+    return undefined
+  }
+
+  const values = findIncludesArray(body)
+
+  return values === undefined
+    ? undefined
+    : values.elements.map((value) => value.getText(sourceFile))
+}
+
+function findReturnedExpression(body: ts.Block): ts.Expression | undefined {
+  for (const statement of body.statements) {
+    if (ts.isReturnStatement(statement)) {
+      return statement.expression
+    }
+  }
+
+  return undefined
+}
+
+function findIncludesArray(node: ts.Node): ts.ArrayLiteralExpression | undefined {
+  if (
+    ts.isCallExpression(node) &&
+    ts.isPropertyAccessExpression(node.expression) &&
+    node.expression.name.text === 'includes' &&
+    ts.isArrayLiteralExpression(node.expression.expression)
+  ) {
+    return node.expression.expression
+  }
+
+  let match: ts.ArrayLiteralExpression | undefined
+
+  const visit = (child: ts.Node) => {
+    if (match !== undefined) {
+      return
+    }
+
+    match = findIncludesArray(child)
+
+    if (match === undefined) {
+      ts.forEachChild(child, visit)
+    }
+  }
+
+  ts.forEachChild(node, visit)
+
+  return match
 }
 
 function getVuePropDefault(node: ts.Expression, sourceFile: ts.SourceFile): string | undefined {
