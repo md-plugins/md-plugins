@@ -298,10 +298,25 @@ function getFilteredApi(
 
   tabs.forEach((tab: string) => {
     if (tab === 'injection') {
-      const name = parsedApi[tab]?.[defaultInnerTabName]
+      const injection = parsedApi[tab]?.[defaultInnerTabName]
       acc[tab] = {}
-      acc[tab][defaultInnerTabName] =
-        typeof name === 'string' && passesFilter(filter, name, '') === true ? name : {}
+
+      if (typeof injection === 'string') {
+        acc[tab][defaultInnerTabName] =
+          passesFilter(filter, injection, '') === true ? injection : {}
+        return
+      }
+
+      const result: ApiDefinition = {}
+
+      for (const name in injection ?? {}) {
+        const entry = injection[name]
+        if (entry !== undefined && passesFilter(filter, name, entry.desc) === true) {
+          result[name] = entry
+        }
+      }
+
+      acc[tab][defaultInnerTabName] = result
       return
     }
 
@@ -369,9 +384,24 @@ function getApiCount(parsedApi: ParsedApi, tabs: string[], innerTabs: InnerTabsM
     const tabCategories = innerTabs[tab] ?? [defaultInnerTabName]
     const firstCategory = tabCategories[0] ?? defaultInnerTabName
 
-    if (['value', 'arg', 'injection'].includes(tab)) {
+    if (['value', 'arg'].includes(tab)) {
       acc[tab] = {
         overall: Object.keys(tabApi[firstCategory] ?? {}).length === 0 ? 0 : 1,
+        category: {},
+      }
+      return
+    }
+
+    if (tab === 'injection') {
+      const injection = tabApi[firstCategory] ?? {}
+
+      acc[tab] = {
+        overall:
+          typeof injection === 'string'
+            ? 1
+            : Object.keys(injection).length === 0
+              ? 0
+              : Object.keys(injection).length,
         category: {},
       }
       return
@@ -624,6 +654,19 @@ if (qPressEnv.QUASAR_CLIENT === true) {
   .markdown-token {
     margin: 4px;
     display: inline-block;
+  }
+
+  &__typescript {
+    display: block;
+    margin: 4px 0;
+    max-width: 100%;
+    overflow-x: auto;
+    padding: 8px 10px;
+    white-space: pre;
+
+    code {
+      font: inherit;
+    }
   }
 
   &__added-in,
