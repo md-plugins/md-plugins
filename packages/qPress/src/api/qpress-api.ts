@@ -797,10 +797,7 @@ function extractVueEmitsArray(
   return events
 }
 
-function createEventFromDocs(
-  docs: JSDocDetails,
-  context: SourceFileContext,
-): GeneratedApiProperty {
+function createEventFromDocs(docs: JSDocDetails, context: SourceFileContext): GeneratedApiProperty {
   return applyJSDocMetadata(
     {
       desc: docs.desc,
@@ -1207,7 +1204,9 @@ function extractExposedMethods(
   return methods
 }
 
-function getExposedInlineFunction(property: ts.ObjectLiteralElementLike): FunctionLikeNode | undefined {
+function getExposedInlineFunction(
+  property: ts.ObjectLiteralElementLike,
+): FunctionLikeNode | undefined {
   if (ts.isPropertyAssignment(property) && isFunctionLikeInitializer(property.initializer)) {
     return property.initializer
   }
@@ -2241,9 +2240,7 @@ function getFunctionTypeParameters(
 
 function normalizeApiType(type: string): string {
   if (/\s+\|\s+/.test(type)) {
-    return Array.from(new Set(splitApiType(type).map((part) => normalizeApiType(part)))).join(
-      ' | ',
-    )
+    return Array.from(new Set(splitApiType(type).map((part) => normalizeApiType(part)))).join(' | ')
   }
 
   if (/^\{[\s\S]*\}$/.test(type)) {

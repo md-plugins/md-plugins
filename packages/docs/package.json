@@ -1,6 +1,6 @@
 {
   "name": "mdplugins_docs",
-  "version": "0.1.0-rc.12",
+  "version": "0.1.0-rc.13",
   "private": true,
   "description": "Documentation site for MD-Plugins, Q-Press, and the Vite/Markdown plugin ecosystem.",
   "author": "Jeff <galbraith64@gmail.com>",
@@ -24,10 +24,10 @@
     "prepared": "quasar prepare"
   },
   "dependencies": {
-    "@hono/node-server": "2.0.5",
+    "@hono/node-server": "2.0.6",
     "@md-plugins/search-ui": "workspace:*",
     "@quasar/extras": "2.0.1",
-    "hono": "4.12.26",
+    "hono": "4.12.27",
     "pinia": "^3.0.4",
     "quasar": "^2.20.1",
     "serialize-javascript": "7.0.6",
@@ -50,7 +50,7 @@
     "sass-embedded": "^1.100.0",
     "shiki": "^4.2.0",
     "typescript": "~6.0.3",
-    "vite": "^8.0.16",
+    "vite": "^8.1.0",
     "vite-plugin-checker": "^0.14.4",
     "vue-tsc": "^3.3.5"
   },

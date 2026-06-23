@@ -140,4 +140,31 @@ Some content here.
     expect(result).toContain('<h1>Header</h1>')
     expect(result).toContain('<p>Some content here.</p>')
   })
+
+  it('should ignore script import blocks inside fenced code examples', () => {
+    const src = `
+\`\`\`md
+<script import>
+import ExampleOnly from './ExampleOnly.vue';
+</script>
+\`\`\`
+
+<script import>
+import RealComponent from './RealComponent.vue';
+</script>
+
+Some content here.
+`
+
+    const env: MarkdownItEnv = {}
+    const result = markdownIt.render(src, env)
+
+    expect(env.pageScripts).toBeInstanceOf(Set)
+    expect(env.pageScripts).toContain("import RealComponent from './RealComponent.vue';")
+    expect(env.pageScripts).not.toContain("import ExampleOnly from './ExampleOnly.vue';")
+
+    expect(result).toContain("import ExampleOnly from './ExampleOnly.vue';")
+    expect(result).not.toContain("import RealComponent from './RealComponent.vue';")
+    expect(result).toContain('<p>Some content here.</p>')
+  })
 })

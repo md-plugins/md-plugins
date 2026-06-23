@@ -159,13 +159,15 @@ export default defineIndexScript((api) => {
   })
 
   api.extendViteConf((viteConf, _invoke, aeApi) => {
-    addQuasarSourceAlias(viteConf, aeApi.appDir)
+    const qPressViteConf = viteConf as ViteConfigWithAlias
+
+    addQuasarSourceAlias(qPressViteConf, aeApi.appDir)
 
     const markdownPath = api.resolve.src('markdown')
 
     if (existsSync(markdownPath)) {
       addVitePlugin(
-        viteConf,
+        qPressViteConf,
         viteSsgPlugin({
           markdown: {
             root: markdownPath,
@@ -173,7 +175,7 @@ export default defineIndexScript((api) => {
         }),
       )
       addVitePlugin(
-        viteConf,
+        qPressViteConf,
         viteSearchPlugin({
           markdown: {
             root: markdownPath,
