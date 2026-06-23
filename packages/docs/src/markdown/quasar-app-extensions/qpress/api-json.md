@@ -227,13 +227,13 @@ src/.q-press/api/composables/dark.generated.json
 
 Review the generated file. If the descriptions, examples, categories, params, returns, or slot scopes are thin, update the TypeScript/JSDoc and run the generator again.
 
-When a package build should publish generated API JSON directly to the configured `output` paths, use `--write-output`:
+When the review file is accepted, write the configured API JSON path directly with `--write-output`:
 
 ```bash
 pnpm exec qpress api generate --write-output
 ```
 
-Use this mode in release or component build scripts after the generated output has been reviewed and the source JSDoc is the accepted API source of truth.
+Use this mode before committing accepted API JSON and in release or component build scripts after the source JSDoc is the accepted API source of truth. The command writes the configured `output` files, such as `dark.json`; it does not delete review files such as `dark.generated.json`. Delete review files before committing unless your project intentionally keeps them for comparison.
 
 Generated JSON starts like this:
 
@@ -312,13 +312,21 @@ Open the `*.generated.json` file or render it with `MarkdownApi`.
 
 Move missing descriptions, examples, categories, accepted values, and event details into TypeScript/JSDoc.
 
+### Write final API JSON
+
+Run `pnpm exec qpress api generate --write-output` to replace the configured `output` files without the review suffix.
+
+### Remove review files
+
+Delete `*.generated.json` review files before committing, unless your project intentionally tracks comparison output.
+
 ### Commit when ready
 
 Commit the generated API JSON when it is ready to be part of the docs site.
 
 ### Wire the release build
 
-Use `pnpm exec qpress api generate --write-output` in the build that publishes your package or docs assets.
+Use `pnpm exec qpress api generate --write-output` in the build that publishes your package or docs assets so release artifacts are regenerated from source.
 :::
 
 ## What The Generator Currently Extracts
