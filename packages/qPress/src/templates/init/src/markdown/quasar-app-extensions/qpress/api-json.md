@@ -543,6 +543,7 @@ defineSlots<{
   /**
    * Custom content inside the card link.
    *
+   * @applicable card, link
    * @param scope Slot props provided to custom content.
    */
   default(scope: { active: boolean }): unknown
@@ -621,7 +622,7 @@ export default defineComponent({
 })
 ```
 
-Use bare `@api-source` when the wrapper forwards all public groups from a child component. Use explicit `@api-slots` or `@api-events` when the wrapper only forwards those groups. Forwarded entries get source-derived `applicable` values such as `day` or `month`; duplicate slot and event names merge their scope fields, and fields that only exist for some child components are marked optional.
+Use bare `@api-source` when the wrapper forwards all public groups from a child component. Use explicit `@api-props`, `@api-events`, `@api-slots`, or `@api-methods` when the wrapper only forwards selected groups. Forwarded entries get source-derived `applicable` values such as `day` or `month`; duplicate slot and event names merge their scope fields, and fields that only exist for some child components are marked optional.
 
 ## Metadata Tags
 
@@ -645,14 +646,35 @@ view: {
 }
 ```
 
-Supported property-level metadata tags:
+Supported entry-level metadata tags:
 
-- `@values value | value` for accepted values.
-- `@applicable name, name` for project-specific applicability labels.
-- `@default value` when the runtime default needs a documented form.
-- `@required true` or `@required false` to override requiredness.
-- `@type Type` and `@ts-type Type` when the displayed type needs to be explicit.
-- `@api-exemption field, field` for Quasar-style `__exemption` values.
+| Tag                                  | Use it for                                                                                       |
+| ------------------------------------ | ------------------------------------------------------------------------------------------------ |
+| `@example value`                     | One rendered example. Repeat for multiple examples.                                              |
+| `@category name`                     | Prop category tabs. Repeat or separate names with `\|` or `,` for multiple categories.           |
+| `@since version`                     | Emits `addedIn`. Works on functions, methods, component props, events, and slots.                |
+| `@deprecated message`                | Emits `deprecated`; omit the message when a boolean deprecated flag is enough.                   |
+| `@values value \| value`             | Accepted values.                                                                                 |
+| `@applicable name, name`             | Project-specific applicability labels, such as calendar view modes or forwarded wrapper sources. |
+| `@default value`                     | Documented default when the runtime value needs a clearer display form.                          |
+| `@required true` / `@required false` | Requiredness override.                                                                           |
+| `@type Type`                         | Displayed API type override.                                                                     |
+| `@ts-type Type`                      | TypeScript type override. `@tsType` is also accepted.                                            |
+| `@api-exemption field, field`        | Quasar-style `__exemption` values. `@exemption` is also accepted.                                |
+
+Supported structural tags:
+
+| Tag                             | Use it for                                                                                                   |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `@api`                          | Include a local function declaration as a component method when it is not exposed through `expose({ ... })`. |
+| `@event name`                   | Create an event entry from a documented function, useful for browser `CustomEvent` APIs.                     |
+| `@api-follow getRawMouseEvents` | Expand a supported helper spread into multiple event entries.                                                |
+| `@api-scope TypeName`           | Attach a scope definition to `@api-follow` events. `@api-event-scope` is also accepted.                      |
+| `@api-source ComponentName`     | Forward props, events, slots, and methods from a child component.                                            |
+| `@api-props ComponentName`      | Forward only props from a child component.                                                                   |
+| `@api-events ComponentName`     | Forward only events from a child component.                                                                  |
+| `@api-slots ComponentName`      | Forward only slots from a child component.                                                                   |
+| `@api-methods ComponentName`    | Forward only methods from a child component.                                                                 |
 
 Use parameter and return variants for functions, events, and slot scopes:
 
@@ -668,9 +690,9 @@ Use parameter and return variants for functions, events, and slot scopes:
 function emitMode(mode: 'dark' | 'light'): void {}
 ```
 
-Parameter metadata tags start with the parameter name: `@param-values name ...`, `@param-example name ...`, `@param-default name ...`, `@param-required name false`, `@param-type name Type`, `@param-ts-type name Type`, and `@param-api-exemption name examples`.
+Parameter metadata tags start with the parameter name. Supported parameter metadata tags are `@param-values name ...`, `@param-applicable name ...`, `@param-example name ...`, `@param-default name ...`, `@param-required name false`, `@param-type name Type`, `@param-ts-type name Type`, and `@param-api-exemption name examples`. The aliases `@param-tsType` and `@param-exemption` are also accepted.
 
-Return metadata uses `@returns-*` or `@return-*`, such as `@returns-example null`, `@returns-type Timestamp`, `@returns-ts-type Timestamp`, and `@returns-api-exemption examples`.
+Return metadata uses `@returns-*` or `@return-*`. Supported return metadata tags are `@returns-values`, `@returns-applicable`, `@returns-example`, `@returns-default`, `@returns-required`, `@returns-type`, `@returns-ts-type`, and `@returns-api-exemption`. The `@return-*` form and the aliases `@returns-tsType` and `@returns-exemption` are also accepted.
 
 ## Output Review Examples
 

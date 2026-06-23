@@ -546,6 +546,7 @@ const props = defineProps({
    * @values 'primary' | 'secondary'
    * @applicable card, link
    * @api-exemption examples
+   * @since 0.2.0
    */
   tone: {
     type: [String, Number],
@@ -564,6 +565,7 @@ defineSlots<{
   /**
    * Custom content inside the card link.
    *
+   * @applicable card, link
    * @param scope Slot props provided to custom content.
    */
   default(scope: { active: boolean }): unknown
@@ -690,6 +692,7 @@ withDefaults(defineProps<DefaultedProps>(), {
       })
       expect(generated.props.tone).toEqual({
         __exemption: ['examples'],
+        addedIn: '0.2.0',
         applicable: ['card', 'link'],
         default: 'primary',
         desc: 'Visual tone for the card.',
@@ -717,6 +720,7 @@ withDefaults(defineProps<DefaultedProps>(), {
         },
       })
       expect(generated.slots.default).toEqual({
+        applicable: ['card', 'link'],
         desc: 'Custom content inside the card link.',
         scope: {
           scope: {
@@ -1093,6 +1097,8 @@ export interface DaySlotScope {
 export interface CalendarDaySlots {
   /**
    * Custom day cell content.
+   *
+   * @applicable day, interval
    */
   day?: SlotProps<DaySlotScope>
 }
@@ -1207,6 +1213,7 @@ export interface CalendarDaySlots {
         desc: '',
       })
       expect(generated.slots.day).toEqual({
+        applicable: ['day', 'interval'],
         desc: 'Custom day cell content.',
         scope: {
           timestamp: {

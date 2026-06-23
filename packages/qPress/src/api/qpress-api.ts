@@ -1075,10 +1075,13 @@ function extractSlotsFromType(
       sourceFile,
     })
 
-    slots[name] = {
-      desc: docs.desc,
-      ...(scope === undefined ? {} : { scope }),
-    }
+    slots[name] = applyJSDocMetadata(
+      {
+        desc: docs.desc,
+        ...(scope === undefined ? {} : { scope }),
+      },
+      docs,
+    )
   }
 
   return slots
@@ -1853,6 +1856,10 @@ function applyJSDocMetadata(prop: GeneratedApiProperty, docs: JSDocDetails): Gen
     prop.examples = [...(prop.examples ?? []), ...docs.examples]
   }
 
+  if (docs.since !== undefined) {
+    prop.addedIn = docs.since
+  }
+
   return prop
 }
 
@@ -2181,10 +2188,13 @@ function extractVueDefinedSlots(sourceFile: ts.SourceFile): Record<string, Gener
     const docs = readJSDoc(member, sourceFile)
     const scope = createSlotScope(member, docs, sourceFile)
 
-    slots[name] = {
-      desc: docs.desc,
-      ...(scope === undefined ? {} : { scope }),
-    }
+    slots[name] = applyJSDocMetadata(
+      {
+        desc: docs.desc,
+        ...(scope === undefined ? {} : { scope }),
+      },
+      docs,
+    )
   }
 
   return slots
