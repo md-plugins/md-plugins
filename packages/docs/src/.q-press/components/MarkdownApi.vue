@@ -682,6 +682,10 @@ if (qPressEnv.QUASAR_CLIENT === true) {
   .markdown-token {
     margin: 4px;
     display: inline-block;
+    max-width: calc(100% - 8px);
+    overflow-x: auto;
+    vertical-align: middle;
+    white-space: nowrap;
   }
 
   &__typescript {

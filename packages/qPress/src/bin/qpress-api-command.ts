@@ -19,6 +19,7 @@ type ApiCliOptions = {
   quiet?: boolean
   root?: string
   type?: string
+  writeOutput?: boolean
 }
 
 /**
@@ -33,7 +34,7 @@ Usage:
   ${commandName} <generate|check> [options]
 
 Commands:
-  generate   Write generated review files next to configured API JSON files.
+  generate   Write generated API JSON files.
   check      Compare generated API JSON with committed API JSON without writing files.
 
 Options:
@@ -46,12 +47,14 @@ Options:
   --group <name>            API group for a one-off API entry: functions or methods.
   --docs-url <url>          Documentation URL for a one-off API entry.
   --generated-suffix <text> Generated comparison suffix. Defaults to .generated.
+  --write-output            Write configured output files directly instead of review files.
   --json                    Print machine-readable JSON.
   --quiet                   Hide success output.
   -h, --help                Show this help.
 
 By default, generate writes files such as Component.generated.json so you can
-review output before publishing it.
+review output before publishing it. Use --write-output for release builds that
+should write configured API JSON paths directly.
 `)
 }
 
@@ -91,7 +94,7 @@ export async function runQPressApiCli(args: string[]): Promise<number> {
     if (cliOptions.json === true) {
       process.stdout.write(`${JSON.stringify(result, null, 2)}\n`)
     } else if (cliOptions.quiet !== true) {
-      process.stdout.write(formatGenerateResult(result.entries))
+      process.stdout.write(formatGenerateResult(result.entries, options.writeOutput === true))
     }
 
     return 0
@@ -154,6 +157,9 @@ function parseApiArgs(args: string[]): ApiCliOptions {
         options.generatedSuffix = readValue(args, index, arg)
         index += 1
         break
+      case '--write-output':
+        options.writeOutput = true
+        break
       case '--json':
         options.json = true
         break
@@ -187,6 +193,7 @@ function resolveApiOptions(
     cwd,
     entries,
     generatedSuffix,
+    writeOutput: cliOptions.writeOutput,
   }
 }
 
@@ -229,8 +236,13 @@ function readValue(args: string[], index: number, flag: string): string {
   return value
 }
 
-function formatGenerateResult(entries: Awaited<ReturnType<typeof generateQPressApi>>['entries']) {
-  const lines = ['Q-Press API generated review files:\n']
+function formatGenerateResult(
+  entries: Awaited<ReturnType<typeof generateQPressApi>>['entries'],
+  writeOutput: boolean,
+) {
+  const lines = [
+    writeOutput ? 'Q-Press API output files written:\n' : 'Q-Press API generated review files:\n',
+  ]
 
   for (const entry of entries) {
     const drift =

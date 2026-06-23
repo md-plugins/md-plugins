@@ -37,12 +37,180 @@ Add source/output pairs under `api.entries` in `qpress.config.json`, `qpress.con
 
 Use `group: "functions"` for composables and utility functions. Use `group: "methods"` when the generated output should render under the Methods API tab.
 
+## Workspace Wiring Patterns
+
+Q-Press runs inside a Quasar docs app, but the TypeScript source and generated API JSON do not have to live inside that docs app. In a workspace, create a docs project first, install Q-Press there, then point `api.entries` at the package or app code you want to document.
+
+```bash
+pnpm create quasar@latest docs
+cd docs
+quasar ext add @md-plugins/q-press
+```
+
+Use `docs` for a simple repository, or `packages/docs` in a monorepo. Keep the generated `src/.q-press` folder owned by the docs app. Put reusable API JSON either in the package that publishes it or in the docs app when it is only a documentation asset.
+
+### App extension with UI
+
+Use this when the repository publishes both an app extension package and a UI package. Generate API JSON into the UI package so consumers and docs import the same published artifact.
+
+```text
+my-extension/
+  packages/
+    app-extension/
+    ui/
+      src/components/MyCalendar.ts
+      dist/api/
+    docs/
+      src/markdown/components/my-calendar.md
+  qpress.config.json
+```
+
+```json
+{
+  "api": {
+    "entries": [
+      {
+        "input": "packages/ui/src/components/MyCalendar.ts",
+        "output": "packages/ui/dist/api/MyCalendar.json",
+        "docsUrl": "/components/my-calendar"
+      }
+    ]
+  }
+}
+```
+
+In the docs page, import the API JSON from the UI package entry that users will install:
+
+```md
+<script import>
+import MyCalendarApi from '@scope/quasar-ui-my-calendar/dist/api/MyCalendar.json'
+</script>
+
+<MarkdownApi :api="MyCalendarApi" name="MyCalendar" />
+```
+
+Wire direct API output into the UI package build:
+
+```json
+{
+  "scripts": {
+    "build:api": "qpress api generate --root ../.. --write-output",
+    "check:api": "qpress api check --root ../..",
+    "build": "pnpm build:api && vite build"
+  }
+}
+```
+
+The exact component build command depends on the UI package, but `build:api` should run before package artifacts such as web-types or docs previews read `dist/api`.
+
+### Pure app extension
+
+Use this when the app extension has no UI package. Generate API JSON into the docs app because the API page documents extension commands, prompts, boot helpers, composables, or configuration rather than publishable Vue components.
+
+```text
+my-extension/
+  packages/
+    app-extension/
+      src/index.ts
+      src/install.ts
+    docs/
+      src/.q-press/api/app-extension/
+      src/markdown/app-extension/api.md
+  qpress.config.json
+```
+
+```json
+{
+  "api": {
+    "entries": [
+      {
+        "input": "packages/app-extension/src/install.ts",
+        "output": "packages/docs/src/.q-press/api/app-extension/install.json",
+        "type": "plugin",
+        "group": "functions",
+        "docsUrl": "/app-extension/api"
+      }
+    ]
+  }
+}
+```
+
+Render the generated docs-local API JSON:
+
+```md
+<script import>
+import InstallApi from '@/.q-press/api/app-extension/install.json'
+</script>
+
+<MarkdownApi :api="InstallApi" name="App Extension Install API" />
+```
+
+In this shape, the docs build owns API generation:
+
+```json
+{
+  "scripts": {
+    "api:generate": "qpress api generate --root ../.. --write-output",
+    "api:check": "qpress api check --root ../..",
+    "build": "pnpm api:generate && quasar build"
+  }
+}
+```
+
+### Home-grown Quasar docs site
+
+Use this when the project is not an app extension. The source may be a local component, app-only composable, or internal package. Generate API JSON into the docs app unless another package needs to publish it.
+
+```text
+my-app/
+  src/components/DateRangePicker.vue
+  docs/
+    src/.q-press/api/components/
+    src/markdown/components/date-range-picker.md
+  qpress.config.json
+```
+
+```json
+{
+  "api": {
+    "entries": [
+      {
+        "input": "src/components/DateRangePicker.vue",
+        "output": "docs/src/.q-press/api/components/DateRangePicker.json",
+        "docsUrl": "/components/date-range-picker"
+      }
+    ]
+  }
+}
+```
+
+The docs package scripts should point Q-Press at the workspace root because the config and source are outside the docs folder:
+
+```json
+{
+  "scripts": {
+    "api:generate": "qpress api generate --root .. --write-output",
+    "api:check": "qpress api check --root ..",
+    "check:qpress": "qpress check --root .. --src-dir docs/src",
+    "build": "pnpm api:generate && quasar build"
+  }
+}
+```
+
+If the project uses `packages/docs`, use `--root ../..` instead. The important rule is that `--root` points at the folder containing `qpress.config.json`, and `input` and `output` paths are resolved from that root.
+
 ## Generate API JSON
 
-Run the generator from the docs project:
+Run the generator from the folder that contains `qpress.config.json`:
 
 ```bash
 pnpm exec qpress api generate
+```
+
+If the command runs from a nested docs package, point it at the workspace config:
+
+```bash
+pnpm exec qpress api generate --root ../..
 ```
 
 For this configured output path:
@@ -58,6 +226,14 @@ src/.q-press/api/composables/dark.generated.json
 ```
 
 Review the generated file. If the descriptions, examples, categories, params, returns, or slot scopes are thin, update the TypeScript/JSDoc and run the generator again.
+
+When a package build should publish generated API JSON directly to the configured `output` paths, use `--write-output`:
+
+```bash
+pnpm exec qpress api generate --write-output
+```
+
+Use this mode in release or component build scripts after the generated output has been reviewed and the source JSDoc is the accepted API source of truth.
 
 Generated JSON starts like this:
 
@@ -139,6 +315,10 @@ Move missing descriptions, examples, categories, accepted values, and event deta
 ### Commit when ready
 
 Commit the generated API JSON when it is ready to be part of the docs site.
+
+### Wire the release build
+
+Use `pnpm exec qpress api generate --write-output` in the build that publishes your package or docs assets.
 :::
 
 ## What The Generator Currently Extracts
@@ -154,8 +334,10 @@ The generator focuses on TypeScript source plus explicit JSDoc metadata:
 - Simple array-style and object-style `<script setup>` `defineEmits`.
 - TypeScript `defineComponent({ props, emits, slots, setup })` component declarations.
 - Imported prop and emit spreads when they resolve to local TypeScript source.
+- Documented emit string arrays and documented helper spreads such as `@api-follow getRawMouseEvents`.
 - `SlotsType<T>` slot declarations and render-function slot usage.
 - Public methods exposed through `setup(..., { expose })`.
+- Wrapper API forwarding with `@api-source`, `@api-slots`, and `@api-events`.
 - Template `<slot>` usage, with descriptions from `defineSlots` JSDoc when provided.
 - JSDoc descriptions.
 - `@param`, `@returns`, `@example`, `@category`, `@since`, `@deprecated`, and explicit API metadata tags.
@@ -294,6 +476,41 @@ const emit = defineEmits({
 })
 ```
 
+For `defineComponent` emit arrays, document string entries directly. This also works when the array is imported from another local TypeScript file:
+
+```ts
+export const useCalendarEmits = [
+  /**
+   * Emitted when the visible date range changes.
+   *
+   * @param scope Changed visible range.
+   * @param-type scope Object
+   * @param-ts-type scope CalendarChangeEvent
+   */
+  'change',
+]
+```
+
+If a helper expands to a known family of event names, document the spread and tell the generator which helper to follow:
+
+```ts
+export default defineComponent({
+  emits: [
+    /**
+     * Interact with a day cell.
+     *
+     * @api-follow getRawMouseEvents
+     * @api-scope DaySlotScope
+     * @param scope Day cell scope.
+     * @param event Native mouse or touch event.
+     */
+    ...getRawMouseEvents('-day'),
+  ],
+})
+```
+
+`@api-follow getRawMouseEvents` expands the suffix into the mouse and touch event names, copies the group description to each event, adds the documented `event` param, and expands `@api-scope` into the `scope.definition`.
+
 For browser or custom events that are not declared through `defineEmits`, use `@event` on a documented function:
 
 ```ts
@@ -374,6 +591,29 @@ export default defineComponent({
 ```
 
 Only document public methods that should appear in the API page. If a generated exposed method is missing a description, add JSDoc to the local function being exposed.
+
+### Wrapper components
+
+Wrapper components often forward slots or events to a selected child component. Runtime forwarding is difficult to infer safely, so document the forwarding contract on the wrapper export:
+
+```ts
+import QCalendarDay from './QCalendarDay'
+import QCalendarMonth from './QCalendarMonth'
+
+/**
+ * Wrapper component that renders the active calendar view.
+ *
+ * @api-source QCalendarDay
+ * @api-source QCalendarMonth
+ * @api-slots QCalendarDay, QCalendarMonth
+ * @api-events QCalendarDay, QCalendarMonth
+ */
+export default defineComponent({
+  name: 'QCalendar',
+})
+```
+
+Use bare `@api-source` when the wrapper forwards all public groups from a child component. Use explicit `@api-slots` or `@api-events` when the wrapper only forwards those groups. Forwarded entries get source-derived `applicable` values such as `day` or `month`; duplicate slot and event names merge their scope fields, and fields that only exist for some child components are marked optional.
 
 ## Metadata Tags
 

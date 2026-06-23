@@ -177,6 +177,53 @@ export const today = (): string => '2036-06-08'
     }
   })
 
+  it('can write configured output files directly for release builds', async () => {
+    const root = await createProject({
+      'src/.q-press/api/composables/timestamp.json': '{"type":"component"}\n',
+      'src/utils/timestamp.ts': `
+/**
+ * Returns today's date.
+ *
+ * @returns Date string.
+ */
+export function today(): string {
+  return '2036-06-08'
+}
+`,
+    })
+
+    try {
+      const result = await generateQPressApi({
+        cwd: root,
+        entries: [
+          {
+            docsUrl: '/api/timestamp',
+            input: 'src/utils/timestamp.ts',
+            output: 'src/.q-press/api/composables/timestamp.json',
+          },
+        ],
+        writeOutput: true,
+      })
+
+      const output = JSON.parse(
+        await readFile(join(root, 'src/.q-press/api/composables/timestamp.json'), 'utf8'),
+      )
+
+      await expect(
+        readFile(join(root, 'src/.q-press/api/composables/timestamp.generated.json'), 'utf8'),
+      ).rejects.toThrow()
+
+      expect(result.entries[0]?.generatedOutputPath).toBe(
+        join(root, 'src/.q-press/api/composables/timestamp.json'),
+      )
+      expect(output.type).toBe('component')
+      expect(output.meta.docsUrl).toBe('/api/timestamp')
+      expect(output.functions.today.desc).toBe("Returns today's date.")
+    } finally {
+      await rm(root, { force: true, recursive: true })
+    }
+  })
+
   it('captures supported API edge cases without overwriting curated files', async () => {
     const root = await createProject({
       'src/.q-press/api/composables/edge.json': '{"type":"component"}\n',
@@ -926,7 +973,7 @@ export default defineComponent({
 import { defineComponent, type SlotsType } from 'vue'
 import { useCommonEmits, useCommonProps } from '../composables/useCommon'
 import { getRawMouseEvents } from '../composables/useMouse'
-import type { CalendarDaySlots } from '../slots'
+import type { CalendarDaySlots, DaySlotScope } from '../slots'
 
 export default defineComponent({
   slots: Object as SlotsType<CalendarDaySlots>,
@@ -937,8 +984,23 @@ export default defineComponent({
   },
 
   emits: [
+    /**
+     * Emitted when the model value changes.
+     *
+     * @param value New model value.
+     * @param-type value String
+     * @param-tsType value string
+     */
     'update:model-value',
     ...useCommonEmits,
+    /**
+     * Interact with a day cell.
+     *
+     * @api-follow getRawMouseEvents
+     * @api-scope DaySlotScope
+     * @param scope Day cell scope.
+     * @param event Native mouse or touch event.
+     */
     ...getRawMouseEvents('-day'),
   ],
 
@@ -954,7 +1016,11 @@ export default defineComponent({
 
     expose({
       prev,
+      /**
+       * Moves to today's visible range.
+       */
       moveToToday,
+      mediaRef,
     })
   },
 })
@@ -974,7 +1040,31 @@ export const useCommonProps = {
   },
 } as const
 
-export const useCommonEmits = ['change', 'moved']
+export const useCommonEmits = [
+  /**
+   * Emitted when the visible range changes.
+   *
+   * @param scope Visible range payload.
+   * @param-type scope Object
+   * @param-tsType scope CommonChangeEvent
+   */
+  'change',
+  /**
+   * Emitted when the view moves.
+   *
+   * @param timestamp Timestamp moved to.
+   * @param-type timestamp Timestamp
+   * @param-tsType timestamp string
+   */
+  'moved',
+]
+
+export interface CommonChangeEvent {
+  /** Start date. */
+  start: string
+  /** End date. */
+  end: string
+}
 `,
       'src/composables/useMouse.ts': `
 export function getRawMouseEvents(suffix: string): string[] {
@@ -1034,8 +1124,84 @@ export interface CalendarDaySlots {
         type: 'String',
         values: ["'round'", "'square'"],
       })
-      expect(generated.events).toHaveProperty('change')
-      expect(generated.events).toHaveProperty('click-day')
+      expect(generated.events['update:model-value']).toEqual({
+        desc: 'Emitted when the model value changes.',
+        params: {
+          value: {
+            desc: 'New model value.',
+            required: true,
+            tsType: 'string',
+            type: 'String',
+          },
+        },
+      })
+      expect(generated.events.change).toEqual({
+        desc: 'Emitted when the visible range changes.',
+        params: {
+          scope: {
+            desc: 'Visible range payload.',
+            definition: {
+              start: {
+                desc: 'Start date.',
+                required: true,
+                tsType: 'string',
+                type: 'String',
+              },
+              end: {
+                desc: 'End date.',
+                required: true,
+                tsType: 'string',
+                type: 'String',
+              },
+            },
+            required: true,
+            tsType: 'CommonChangeEvent',
+            type: 'Object',
+          },
+        },
+      })
+      expect(generated.events.moved).toEqual({
+        desc: 'Emitted when the view moves.',
+        params: {
+          timestamp: {
+            desc: 'Timestamp moved to.',
+            required: true,
+            tsType: 'string',
+            type: 'Timestamp',
+          },
+        },
+      })
+      expect(generated.events['click-day']).toEqual({
+        desc: 'Interact with a day cell.',
+        params: {
+          scope: {
+            desc: 'Day cell scope.',
+            definition: {
+              timestamp: {
+                desc: '',
+                required: true,
+                tsType: 'string',
+                type: 'String',
+              },
+              activeDate: {
+                desc: '',
+                required: false,
+                tsType: 'boolean',
+                type: 'Boolean',
+              },
+            },
+            required: true,
+            tsType: 'DaySlotScope',
+            type: 'Object',
+          },
+          event: {
+            desc: 'Native mouse or touch event.',
+            required: true,
+            tsType: 'MouseEvent | TouchEvent',
+            type: 'MouseEvent | TouchEvent',
+          },
+        },
+      })
       expect(generated.events).toHaveProperty('contextmenu-day')
       expect(generated.slots.default).toEqual({
         desc: '',
@@ -1072,9 +1238,229 @@ export interface CalendarDaySlots {
         type: 'Function',
       })
       expect(generated.methods.moveToToday).toEqual({
-        desc: '',
+        desc: "Moves to today's visible range.",
         type: 'Function',
       })
+      expect(generated.methods).not.toHaveProperty('mediaRef')
+    } finally {
+      await rm(root, { force: true, recursive: true })
+    }
+  })
+
+  it('forwards wrapper API groups from documented source components', async () => {
+    const root = await createProject({
+      'src/.q-press/api/components/BroadWrapper.json': '{"type":"component"}\n',
+      'src/.q-press/api/components/CalendarWrapper.json': '{"type":"component"}\n',
+      'src/components/BroadWrapper.ts': `
+import { defineComponent } from 'vue'
+import ChildOne from './ChildOne'
+
+/**
+ * Wrapper that forwards all public child API groups.
+ *
+ * @api-source ChildOne
+ */
+export default defineComponent({
+  props: {
+    /**
+     * Wrapper label.
+     */
+    label: String,
+  },
+})
+
+void ChildOne
+`,
+      'src/components/CalendarWrapper.ts': `
+import { defineComponent } from 'vue'
+import ChildOne from './ChildOne'
+import ChildTwo from './ChildTwo'
+
+/**
+ * Wrapper that forwards only the documented child slots and events.
+ *
+ * @api-source ChildOne
+ * @api-source ChildTwo
+ * @api-slots ChildOne, ChildTwo
+ * @api-events ChildOne, ChildTwo
+ */
+export default defineComponent({
+  props: {
+    /**
+     * Wrapper label.
+     */
+    label: String,
+  },
+})
+
+void ChildOne
+void ChildTwo
+`,
+      'src/components/ChildOne.ts': `
+import { defineComponent, type SlotsType } from 'vue'
+
+type SlotProps<T> = { scope: T }
+
+interface ItemScope {
+  /**
+   * Item ID.
+   */
+  id: string
+}
+
+interface SelectPayload {
+  /**
+   * Selected item ID.
+   */
+  id: string
+}
+
+interface ChildOneSlots {
+  /**
+   * Custom item content.
+   */
+  item: SlotProps<ItemScope>
+}
+
+export default defineComponent({
+  slots: Object as SlotsType<ChildOneSlots>,
+
+  props: {
+    /**
+     * Child value.
+     */
+    childValue: String,
+  },
+
+  emits: [
+    /**
+     * Selects a child item.
+     *
+     * @param payload Selected item payload.
+     * @param-type payload Object
+     * @param-tsType payload SelectPayload
+     */
+    'select',
+  ],
+})
+`,
+      'src/components/ChildTwo.ts': `
+import { defineComponent, type SlotsType } from 'vue'
+
+type SlotProps<T> = { scope: T }
+
+interface SummaryScope {
+  /**
+   * Total visible items.
+   */
+  total: number
+}
+
+interface ChildTwoSlots {
+  /**
+   * Custom summary content.
+   */
+  summary: SlotProps<SummaryScope>
+}
+
+export default defineComponent({
+  slots: Object as SlotsType<ChildTwoSlots>,
+
+  emits: [
+    /**
+     * Selects a summary item.
+     */
+    'select',
+    /**
+     * Cancels the current child action.
+     */
+    'cancel',
+  ],
+})
+`,
+    })
+
+    try {
+      await generateQPressApi({
+        cwd: root,
+        entries: [
+          {
+            input: 'src/components/CalendarWrapper.ts',
+            output: 'src/.q-press/api/components/CalendarWrapper.json',
+          },
+          {
+            input: 'src/components/BroadWrapper.ts',
+            output: 'src/.q-press/api/components/BroadWrapper.json',
+          },
+        ],
+      })
+      const wrapper = JSON.parse(
+        await readFile(
+          join(root, 'src/.q-press/api/components/CalendarWrapper.generated.json'),
+          'utf8',
+        ),
+      )
+      const broadWrapper = JSON.parse(
+        await readFile(
+          join(root, 'src/.q-press/api/components/BroadWrapper.generated.json'),
+          'utf8',
+        ),
+      )
+
+      expect(Object.keys(wrapper.props)).toEqual(['label'])
+      expect(wrapper.events.select).toEqual({
+        applicable: ['child-one', 'child-two'],
+        desc: 'Selects a child item.',
+        params: {
+          payload: {
+            desc: 'Selected item payload.',
+            definition: {
+              id: {
+                desc: 'Selected item ID.',
+                required: true,
+                tsType: 'string',
+                type: 'String',
+              },
+            },
+            required: false,
+            tsType: 'SelectPayload',
+            type: 'Object',
+          },
+        },
+      })
+      expect(wrapper.events.cancel).toEqual({
+        applicable: ['child-two'],
+        desc: 'Cancels the current child action.',
+        params: {},
+      })
+      expect(wrapper.slots.item).toEqual({
+        applicable: ['child-one'],
+        desc: 'Custom item content.',
+        scope: {
+          id: {
+            desc: 'Item ID.',
+            required: true,
+            tsType: 'string',
+            type: 'String',
+          },
+        },
+      })
+      expect(wrapper.slots.summary).toEqual({
+        applicable: ['child-two'],
+        desc: 'Custom summary content.',
+        scope: {
+          total: {
+            desc: 'Total visible items.',
+            required: true,
+            tsType: 'number',
+            type: 'Number',
+          },
+        },
+      })
+
+      expect(Object.keys(broadWrapper.props)).toEqual(['child-value', 'label'])
+      expect(broadWrapper.events).toHaveProperty('select')
+      expect(broadWrapper.slots).toHaveProperty('item')
     } finally {
       await rm(root, { force: true, recursive: true })
     }
@@ -1255,6 +1641,57 @@ export function copyText(text: string): Promise<void> {
       expect(generated.methods.copyText.params.text.desc).toBe('Text to copy.')
     } finally {
       process.stdout.write = stdoutWrite
+      await rm(root, { force: true, recursive: true })
+    }
+  })
+
+  it('supports direct output for one-off CLI generation', async () => {
+    const root = await createProject({
+      'src/utils/clipboard.ts': `
+/**
+ * Copies text to the clipboard.
+ *
+ * @param text - Text to copy.
+ * @returns Completion promise.
+ */
+export function copyText(text: string): Promise<void> {
+  return Promise.resolve()
+}
+`,
+    })
+
+    try {
+      const exitCode = await runQPressApiCli([
+        'generate',
+        '--no-config',
+        '--root',
+        root,
+        '--input',
+        'src/utils/clipboard.ts',
+        '--output',
+        'src/.q-press/api/internal/clipboard.json',
+        '--type',
+        'plugin',
+        '--group',
+        'methods',
+        '--docs-url',
+        '/internal/clipboard',
+        '--write-output',
+        '--quiet',
+      ])
+      const output = JSON.parse(
+        await readFile(join(root, 'src/.q-press/api/internal/clipboard.json'), 'utf8'),
+      )
+
+      await expect(
+        readFile(join(root, 'src/.q-press/api/internal/clipboard.generated.json'), 'utf8'),
+      ).rejects.toThrow()
+
+      expect(exitCode).toBe(0)
+      expect(output.type).toBe('plugin')
+      expect(output.meta.docsUrl).toBe('/internal/clipboard')
+      expect(output.methods.copyText.params.text.desc).toBe('Text to copy.')
+    } finally {
       await rm(root, { force: true, recursive: true })
     }
   })

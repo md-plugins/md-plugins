@@ -17,6 +17,7 @@ export type QPressApiGenerateOptions = {
   cwd?: string
   entries: QPressApiGenerateEntry[]
   generatedSuffix?: string
+  writeOutput?: boolean
 }
 
 export type QPressApiFieldChange = {
@@ -81,7 +82,13 @@ type GeneratedApiJson = {
   type: string
 }
 
-type FunctionLikeNode = ts.FunctionDeclaration | ts.ArrowFunction | ts.FunctionExpression
+type GeneratedApiGroupName = 'props' | 'events' | 'slots' | 'methods'
+
+type FunctionLikeNode =
+  | ts.FunctionDeclaration
+  | ts.MethodDeclaration
+  | ts.ArrowFunction
+  | ts.FunctionExpression
 
 type SourceFileContext = {
   cache: Map<string, ts.SourceFile>
@@ -92,24 +99,29 @@ type SourceFileContext = {
 const defaultGeneratedSuffix = '.generated'
 
 /**
- * Generates Q-Press API JSON review files from TypeScript exports and JSDoc.
+ * Generates Q-Press API JSON from TypeScript exports and JSDoc.
  *
- * Existing API JSON files are never overwritten. For an output file such as
- * `src/.q-press/api/Foo.json`, this writes `src/.q-press/api/Foo.generated.json`
- * so authors can review generated output before publishing it.
+ * Existing API JSON files are not overwritten by default. For an output file
+ * such as `src/.q-press/api/Foo.json`, this writes
+ * `src/.q-press/api/Foo.generated.json` so authors can review generated output
+ * before publishing it. Set `writeOutput` when a release build should write
+ * configured output files directly.
  */
 export async function generateQPressApi(
   options: QPressApiGenerateOptions,
 ): Promise<QPressApiGenerateResult> {
   const cwd = options.cwd ?? process.cwd()
+  const writeOutput = options.writeOutput === true
   const entries = await Promise.all(
     options.entries.map(async (entry) => {
       const generated = await generateApiJsonForEntry(entry, cwd)
       const outputPath = resolve(cwd, entry.output)
-      const generatedOutputPath = getGeneratedOutputPath(
-        outputPath,
-        entry.generatedSuffix ?? options.generatedSuffix ?? defaultGeneratedSuffix,
-      )
+      const generatedOutputPath = writeOutput
+        ? outputPath
+        : getGeneratedOutputPath(
+            outputPath,
+            entry.generatedSuffix ?? options.generatedSuffix ?? defaultGeneratedSuffix,
+          )
       const generatedContent = stringifyApiJson(generated.api)
       const currentOutput = await readOptionalFile(outputPath)
       const fieldChanges = getApiFieldChanges(currentOutput, generated.api)
@@ -310,12 +322,13 @@ function populateTypeScriptComponentApi(
 ): number {
   const sourceFile = ts.createSourceFile(inputPath, source, ts.ScriptTarget.Latest, true)
   const context = createSourceFileContext(sourceFile, inputPath)
-  const options = findDefaultVueComponentOptions(sourceFile)
+  const component = findDefaultVueComponent(sourceFile)
 
-  if (options === undefined) {
+  if (component === undefined) {
     return 0
   }
 
+  const options = component.options
   const props = extractVueOptionsProps(options, context)
   const events = extractVueOptionsEvents(options, context)
   const slots = extractVueOptionsSlots(options, context)
@@ -337,6 +350,8 @@ function populateTypeScriptComponentApi(
     api.methods = methods
   }
 
+  applyForwardedVueComponentApi(api, component.node, context)
+
   return ['props', 'events', 'slots', 'methods'].reduce((count, group) => {
     const entries = api[group]
 
@@ -344,9 +359,9 @@ function populateTypeScriptComponentApi(
   }, 0)
 }
 
-function findDefaultVueComponentOptions(
+function findDefaultVueComponent(
   sourceFile: ts.SourceFile,
-): ts.ObjectLiteralExpression | undefined {
+): { node: ts.ExportAssignment; options: ts.ObjectLiteralExpression } | undefined {
   for (const statement of sourceFile.statements) {
     if (!ts.isExportAssignment(statement)) {
       continue
@@ -355,7 +370,10 @@ function findDefaultVueComponentOptions(
     const expression = statement.expression
 
     if (ts.isObjectLiteralExpression(expression)) {
-      return expression
+      return {
+        node: statement,
+        options: expression,
+      }
     }
 
     if (
@@ -364,11 +382,260 @@ function findDefaultVueComponentOptions(
       expression.expression.text === 'defineComponent' &&
       ts.isObjectLiteralExpression(expression.arguments[0])
     ) {
-      return expression.arguments[0]
+      return {
+        node: statement,
+        options: expression.arguments[0],
+      }
     }
   }
 
   return undefined
+}
+
+function applyForwardedVueComponentApi(
+  api: GeneratedApiJson,
+  componentNode: ts.Node,
+  context: SourceFileContext,
+): void {
+  const docs = readJSDoc(componentNode, context.sourceFile)
+  const hasExplicitGroupTags =
+    docs.apiEventsSources.length > 0 ||
+    docs.apiMethodsSources.length > 0 ||
+    docs.apiPropsSources.length > 0 ||
+    docs.apiSlotsSources.length > 0
+
+  const sourcesByGroup: Record<GeneratedApiGroupName, string[]> = {
+    props: docs.apiPropsSources.length > 0 ? docs.apiPropsSources : [],
+    events: docs.apiEventsSources.length > 0 ? docs.apiEventsSources : [],
+    slots: docs.apiSlotsSources.length > 0 ? docs.apiSlotsSources : [],
+    methods: docs.apiMethodsSources.length > 0 ? docs.apiMethodsSources : [],
+  }
+
+  if (hasExplicitGroupTags === false) {
+    sourcesByGroup.props = docs.apiSources
+    sourcesByGroup.events = docs.apiSources
+    sourcesByGroup.slots = docs.apiSources
+    sourcesByGroup.methods = docs.apiSources
+  }
+
+  for (const group of ['props', 'events', 'slots', 'methods'] as const) {
+    const entries = extractForwardedVueComponentGroup(sourcesByGroup[group], group, context)
+
+    if (Object.keys(entries).length > 0) {
+      mergeApiGroup(api, group, entries)
+    }
+  }
+}
+
+function extractForwardedVueComponentGroup(
+  sources: string[],
+  group: GeneratedApiGroupName,
+  context: SourceFileContext,
+): Record<string, GeneratedApiProperty> {
+  const entries: Record<string, GeneratedApiProperty> = {}
+
+  for (const source of sources) {
+    const component = resolveForwardedVueComponent(source, context)
+
+    if (component === undefined) {
+      continue
+    }
+
+    const componentContext = {
+      ...context,
+      inputPath: component.sourceFile.fileName,
+      sourceFile: component.sourceFile,
+    }
+    const groupEntries = extractVueOptionsApiGroup(component.options, group, componentContext)
+    const applicable = getForwardedSourceApplicable(source)
+
+    for (const [name, entry] of Object.entries(groupEntries)) {
+      const forwardedEntry = addForwardedApplicable(entry, applicable)
+
+      entries[name] =
+        entries[name] === undefined
+          ? forwardedEntry
+          : mergeForwardedApiProperty(entries[name], forwardedEntry)
+    }
+  }
+
+  return entries
+}
+
+function getForwardedSourceApplicable(source: string): string {
+  return toKebabCase(source.replace(/^QCalendar/, '') || source)
+}
+
+function addForwardedApplicable(
+  entry: GeneratedApiProperty,
+  applicable: string,
+): GeneratedApiProperty {
+  return {
+    ...entry,
+    applicable: mergeStringLists(entry.applicable, [applicable]),
+  }
+}
+
+function mergeForwardedApiProperty(
+  current: GeneratedApiProperty,
+  incoming: GeneratedApiProperty,
+): GeneratedApiProperty {
+  return {
+    ...current,
+    applicable: mergeStringLists(current.applicable, incoming.applicable),
+    desc: current.desc || incoming.desc,
+    ...(current.definition === undefined && incoming.definition === undefined
+      ? {}
+      : { definition: mergeForwardedPropertyRecords(current.definition, incoming.definition) }),
+    ...(current.params === undefined && incoming.params === undefined
+      ? {}
+      : { params: mergeForwardedPropertyRecords(current.params, incoming.params) }),
+    ...(current.scope === undefined && incoming.scope === undefined
+      ? {}
+      : { scope: mergeForwardedPropertyRecords(current.scope, incoming.scope) }),
+    ...(current.tsType === undefined && incoming.tsType === undefined
+      ? {}
+      : { tsType: mergeApiTypes(current.tsType, incoming.tsType) }),
+    ...(current.type === undefined && incoming.type === undefined
+      ? {}
+      : { type: mergeApiTypes(current.type, incoming.type, { normalize: true }) }),
+  }
+}
+
+function mergeForwardedPropertyRecords(
+  current: Record<string, GeneratedApiProperty> | undefined,
+  incoming: Record<string, GeneratedApiProperty> | undefined,
+): Record<string, GeneratedApiProperty> {
+  const merged: Record<string, GeneratedApiProperty> = {}
+  const keys = new Set([...Object.keys(current ?? {}), ...Object.keys(incoming ?? {})])
+
+  for (const key of keys) {
+    const currentProperty = current?.[key]
+    const incomingProperty = incoming?.[key]
+
+    if (currentProperty === undefined && incomingProperty !== undefined) {
+      merged[key] = markForwardedPropertyOptional(incomingProperty)
+    } else if (currentProperty !== undefined && incomingProperty === undefined) {
+      merged[key] = markForwardedPropertyOptional(currentProperty)
+    } else if (currentProperty !== undefined && incomingProperty !== undefined) {
+      merged[key] = {
+        ...mergeForwardedApiProperty(currentProperty, incomingProperty),
+        required: currentProperty.required === true && incomingProperty.required === true,
+      }
+    }
+  }
+
+  return merged
+}
+
+function markForwardedPropertyOptional(prop: GeneratedApiProperty): GeneratedApiProperty {
+  return {
+    ...prop,
+    required: prop.required === undefined ? undefined : false,
+  }
+}
+
+function mergeStringLists(
+  current: string[] | undefined,
+  incoming: string[] | undefined,
+): string[] | undefined {
+  const merged = [...(current ?? []), ...(incoming ?? [])].filter(Boolean)
+
+  if (merged.length === 0) {
+    return undefined
+  }
+
+  const seen = new Set<string>()
+
+  return merged.filter((value) => {
+    const normalized = value.toLowerCase()
+
+    if (seen.has(normalized)) {
+      return false
+    }
+
+    seen.add(normalized)
+
+    return true
+  })
+}
+
+function mergeApiTypes(
+  current: string | undefined,
+  incoming: string | undefined,
+  options: { normalize?: boolean } = {},
+): string | undefined {
+  const types = [...splitApiType(current), ...splitApiType(incoming)].map((type) =>
+    options.normalize === true ? normalizeApiType(type) : type,
+  )
+
+  return types.length === 0 ? undefined : Array.from(new Set(types)).join(' | ')
+}
+
+function splitApiType(type: string | undefined): string[] {
+  return type === undefined
+    ? []
+    : type
+        .split(/\s+\|\s+/)
+        .map((value) => value.trim())
+        .filter(Boolean)
+}
+
+function resolveForwardedVueComponent(
+  source: string,
+  context: SourceFileContext,
+): { options: ts.ObjectLiteralExpression; sourceFile: ts.SourceFile } | undefined {
+  const imported = resolveImportedName(source, context)
+
+  if (imported === undefined) {
+    return undefined
+  }
+
+  const component = findDefaultVueComponent(imported.sourceFile)
+
+  if (component === undefined) {
+    return undefined
+  }
+
+  return {
+    options: component.options,
+    sourceFile: imported.sourceFile,
+  }
+}
+
+function extractVueOptionsApiGroup(
+  options: ts.ObjectLiteralExpression,
+  group: GeneratedApiGroupName,
+  context: SourceFileContext,
+): Record<string, GeneratedApiProperty> {
+  if (group === 'props') {
+    return extractVueOptionsProps(options, context)
+  }
+
+  if (group === 'events') {
+    return extractVueOptionsEvents(options, context)
+  }
+
+  if (group === 'slots') {
+    return extractVueOptionsSlots(options, context)
+  }
+
+  return extractVueOptionsMethods(options, context)
+}
+
+function mergeApiGroup(
+  api: GeneratedApiJson,
+  group: GeneratedApiGroupName,
+  entries: Record<string, GeneratedApiProperty>,
+): void {
+  const current = isPlainRecord(api[group])
+    ? (api[group] as Record<string, GeneratedApiProperty>)
+    : {}
+
+  api[group] = {
+    ...entries,
+    ...current,
+  }
 }
 
 function extractVueOptionsProps(
@@ -506,25 +773,49 @@ function extractVueEmitsArray(
 
   for (const element of array.elements) {
     if (ts.isStringLiteral(element) || ts.isNoSubstitutionTemplateLiteral(element)) {
-      events[element.text] = {
-        desc: '',
-        params: {},
+      const elementContext = {
+        ...context,
+        sourceFile: element.getSourceFile(),
       }
+      const docs = readJSDoc(element, elementContext.sourceFile)
+
+      events[element.text] = createEventFromDocs(docs, elementContext)
       continue
     }
 
     if (ts.isSpreadElement(element)) {
-      Object.assign(events, extractVueEmitsSpread(element.expression, context))
+      Object.assign(
+        events,
+        extractVueEmitsSpread(element, {
+          ...context,
+          sourceFile: element.getSourceFile(),
+        }),
+      )
     }
   }
 
   return events
 }
 
+function createEventFromDocs(
+  docs: JSDocDetails,
+  context: SourceFileContext,
+): GeneratedApiProperty {
+  return applyJSDocMetadata(
+    {
+      desc: docs.desc,
+      params: createParamsFromDocs(docs, context) ?? {},
+    },
+    docs,
+  )
+}
+
 function extractVueEmitsSpread(
-  expression: ts.Expression,
+  spread: ts.SpreadElement,
   context: SourceFileContext,
 ): Record<string, GeneratedApiProperty> {
+  const expression = spread.expression
+
   if (
     ts.isCallExpression(expression) &&
     ts.isIdentifier(expression.expression) &&
@@ -533,7 +824,9 @@ function extractVueEmitsSpread(
   ) {
     const suffix = getStaticString(expression.arguments[0])
 
-    return suffix === undefined ? {} : createRawMouseEventEntries(suffix)
+    return suffix === undefined
+      ? {}
+      : createRawMouseEventEntries(suffix, readJSDoc(spread, context.sourceFile), context)
   }
 
   const resolved = resolveInitializer(expression, context)
@@ -541,7 +834,17 @@ function extractVueEmitsSpread(
   return resolved === undefined ? {} : extractVueEmitsFromExpression(resolved, context)
 }
 
-function createRawMouseEventEntries(suffix: string): Record<string, GeneratedApiProperty> {
+function createRawMouseEventEntries(
+  suffix: string,
+  docs?: JSDocDetails,
+  context?: SourceFileContext,
+): Record<string, GeneratedApiProperty> {
+  const shouldApplyDocs = docs?.apiFollow === 'getRawMouseEvents'
+  const eventParams =
+    shouldApplyDocs === true && docs !== undefined && context !== undefined
+      ? createFollowedMouseEventParams(docs, context)
+      : undefined
+
   return [
     'click',
     'contextmenu',
@@ -555,12 +858,71 @@ function createRawMouseEventEntries(suffix: string): Record<string, GeneratedApi
     'touchend',
   ].reduce<Record<string, GeneratedApiProperty>>((events, name) => {
     events[`${name}${suffix}`] = {
-      desc: '',
-      params: {},
+      desc: shouldApplyDocs === true ? (docs?.desc ?? '') : '',
+      params: eventParams ?? {},
     }
 
     return events
   }, {})
+}
+
+function createFollowedMouseEventParams(
+  docs: JSDocDetails,
+  context: SourceFileContext,
+): Record<string, GeneratedApiProperty> | undefined {
+  const params: Record<string, GeneratedApiProperty> = {}
+
+  if (docs.apiScope !== undefined) {
+    params.scope = {
+      desc: docs.params.get('scope') ?? '',
+      definition: resolveTypeProperties(docs.apiScope, context),
+      required: true,
+      tsType: docs.apiScope,
+      type: 'Object',
+    }
+  }
+
+  params.event = {
+    desc: docs.params.get('event') ?? 'Native mouse or touch event.',
+    required: true,
+    tsType: 'MouseEvent | TouchEvent',
+    type: 'MouseEvent | TouchEvent',
+  }
+
+  return Object.keys(params).length === 0 ? undefined : params
+}
+
+function createParamsFromDocs(
+  docs: JSDocDetails,
+  context: SourceFileContext,
+): Record<string, GeneratedApiProperty> | undefined {
+  const names = new Set([...docs.params.keys(), ...docs.paramMetadata.keys()])
+
+  if (names.size === 0) {
+    return undefined
+  }
+
+  const params: Record<string, GeneratedApiProperty> = {}
+
+  for (const name of names) {
+    const metadata = docs.paramMetadata.get(name)
+    const tsType = metadata?.tsType ?? metadata?.type ?? 'unknown'
+    const definition =
+      metadata?.tsType === undefined ? undefined : resolveTypeProperties(metadata.tsType, context)
+
+    params[name] = applyPropertyMetadata(
+      {
+        desc: docs.params.get(name) ?? '',
+        ...(definition === undefined ? {} : { definition }),
+        required: metadata?.required ?? true,
+        tsType,
+        type: metadata?.type ?? normalizeApiType(tsType),
+      },
+      metadata,
+    )
+  }
+
+  return params
 }
 
 function extractVueOptionsSlots(
@@ -752,44 +1114,7 @@ function getSlotPropScope(
     }
   }
 
-  const members = ts.isInterfaceDeclaration(declaration)
-    ? declaration.members
-    : ts.isTypeLiteralNode(declaration.type)
-      ? declaration.type.members
-      : undefined
-
-  if (members === undefined) {
-    return undefined
-  }
-
-  const scope: Record<string, GeneratedApiProperty> = {}
-
-  for (const member of members) {
-    if (!ts.isPropertySignature(member) && !ts.isMethodSignature(member)) {
-      continue
-    }
-
-    const memberSourceFile = member.getSourceFile()
-    const name = getMemberName(member, memberSourceFile)
-
-    if (name === undefined) {
-      continue
-    }
-
-    const docs = readJSDoc(member, memberSourceFile)
-
-    scope[name] = applyJSDocMetadata(
-      {
-        desc: docs.desc,
-        required: member.questionToken === undefined,
-        tsType: getMemberType(member, memberSourceFile),
-        type: normalizeApiType(getMemberType(member, memberSourceFile)),
-      },
-      docs,
-    )
-  }
-
-  return Object.keys(scope).length === 0 ? undefined : scope
+  return getTypeDeclarationProperties(declaration, context)
 }
 
 function extractVueOptionsMethods(
@@ -852,18 +1177,25 @@ function extractExposedMethods(
           continue
         }
 
-        const local = localFunctions.get(name)
-        methods[name] =
-          local === undefined
-            ? {
-                desc: readJSDoc(property, sourceFile).desc,
-                type: 'Function',
-              }
-            : createFunctionEntry(local, sourceFile, {
-                context,
-                fallbackJSDocNode: property,
-                name,
-              })
+        const local = localFunctions.get(name) ?? getExposedInlineFunction(property)
+
+        if (local !== undefined) {
+          methods[name] = createFunctionEntry(local, sourceFile, {
+            context,
+            fallbackJSDocNode: property,
+            name,
+          })
+          continue
+        }
+
+        const docs = readJSDoc(property, sourceFile)
+
+        if (docs.desc !== '') {
+          methods[name] = {
+            desc: docs.desc,
+            type: 'Function',
+          }
+        }
       }
     }
 
@@ -873,6 +1205,14 @@ function extractExposedMethods(
   visit(body)
 
   return methods
+}
+
+function getExposedInlineFunction(property: ts.ObjectLiteralElementLike): FunctionLikeNode | undefined {
+  if (ts.isPropertyAssignment(property) && isFunctionLikeInitializer(property.initializer)) {
+    return property.initializer
+  }
+
+  return ts.isMethodDeclaration(property) ? property : undefined
 }
 
 function collectLocalFunctions(body: ts.Block): Map<string, FunctionLikeNode> {
@@ -954,7 +1294,13 @@ function resolveTypeDeclaration(
     return undefined
   }
 
-  const name = type.typeName.text
+  return resolveTypeDeclarationByName(type.typeName.text, context)
+}
+
+function resolveTypeDeclarationByName(
+  name: string,
+  context: SourceFileContext,
+): ts.InterfaceDeclaration | ts.TypeAliasDeclaration | undefined {
   const local = findTypeDeclarationInSource(name, context.sourceFile)
 
   if (local !== undefined) {
@@ -968,6 +1314,87 @@ function resolveTypeDeclaration(
   }
 
   return findTypeDeclarationInSource(imported.importedName, imported.sourceFile)
+}
+
+function resolveTypeProperties(
+  name: string,
+  context: SourceFileContext,
+): Record<string, GeneratedApiProperty> | undefined {
+  const declaration = resolveTypeDeclarationByName(name, context)
+
+  return declaration === undefined ? undefined : getTypeDeclarationProperties(declaration, context)
+}
+
+function getTypeDeclarationProperties(
+  declaration: ts.InterfaceDeclaration | ts.TypeAliasDeclaration,
+  context: SourceFileContext,
+): Record<string, GeneratedApiProperty> | undefined {
+  const declarationContext = {
+    ...context,
+    sourceFile: declaration.getSourceFile(),
+  }
+  const properties: Record<string, GeneratedApiProperty> = {}
+
+  if (ts.isInterfaceDeclaration(declaration)) {
+    for (const heritage of declaration.heritageClauses ?? []) {
+      if (heritage.token !== ts.SyntaxKind.ExtendsKeyword) {
+        continue
+      }
+
+      for (const type of heritage.types) {
+        if (!ts.isIdentifier(type.expression)) {
+          continue
+        }
+
+        const inherited = resolveTypeDeclarationByName(type.expression.text, declarationContext)
+        const inheritedProperties =
+          inherited === undefined
+            ? undefined
+            : getTypeDeclarationProperties(inherited, declarationContext)
+
+        if (inheritedProperties !== undefined) {
+          Object.assign(properties, inheritedProperties)
+        }
+      }
+    }
+  }
+
+  const members = ts.isInterfaceDeclaration(declaration)
+    ? declaration.members
+    : ts.isTypeLiteralNode(declaration.type)
+      ? declaration.type.members
+      : undefined
+
+  if (members === undefined) {
+    return Object.keys(properties).length === 0 ? undefined : properties
+  }
+
+  for (const member of members) {
+    if (!ts.isPropertySignature(member) && !ts.isMethodSignature(member)) {
+      continue
+    }
+
+    const memberSourceFile = member.getSourceFile()
+    const name = getMemberName(member, memberSourceFile)
+
+    if (name === undefined) {
+      continue
+    }
+
+    const docs = readJSDoc(member, memberSourceFile)
+
+    properties[name] = applyJSDocMetadata(
+      {
+        desc: docs.desc,
+        required: member.questionToken === undefined,
+        tsType: getMemberType(member, memberSourceFile),
+        type: normalizeApiType(getMemberType(member, memberSourceFile)),
+      },
+      docs,
+    )
+  }
+
+  return Object.keys(properties).length === 0 ? undefined : properties
 }
 
 function findVariableInitializer(
@@ -1813,6 +2240,12 @@ function getFunctionTypeParameters(
 }
 
 function normalizeApiType(type: string): string {
+  if (/\s+\|\s+/.test(type)) {
+    return Array.from(new Set(splitApiType(type).map((part) => normalizeApiType(part)))).join(
+      ' | ',
+    )
+  }
+
   if (/^\{[\s\S]*\}$/.test(type)) {
     return 'Object'
   }
@@ -2113,6 +2546,13 @@ function createObjectBindingParams(
 
 type JSDocDetails = {
   api: boolean
+  apiEventsSources: string[]
+  apiFollow?: string
+  apiMethodsSources: string[]
+  apiPropsSources: string[]
+  apiScope?: string
+  apiSlotsSources: string[]
+  apiSources: string[]
   category?: string
   deprecated?: string | boolean
   desc: string
@@ -2139,7 +2579,15 @@ function readJSDoc(node: ts.Node, sourceFile: ts.SourceFile, fallbackNode?: ts.N
   const examples: string[] = []
   const categories: string[] = []
   let api = false
+  const apiEventsSources: string[] = []
+  let apiFollow: string | undefined
+  const apiMethodsSources: string[] = []
+  const apiPropsSources: string[] = []
+  let apiScope: string | undefined
+  const apiSlotsSources: string[] = []
+  const apiSources: string[] = []
   let deprecated: string | boolean | undefined
+  let desc = normalizeComment(docs?.comment)
   let event: string | undefined
   const metadata: GeneratedApiPropertyMetadata = {}
   let returns = ''
@@ -2159,6 +2607,20 @@ function readJSDoc(node: ts.Node, sourceFile: ts.SourceFile, fallbackNode?: ts.N
           examples.push(normalizeComment(tag.comment))
         } else if (tagName === 'api') {
           api = true
+        } else if (tagName === 'api-events') {
+          apiEventsSources.push(...normalizeListTag(tag.comment))
+        } else if (tagName === 'api-follow') {
+          apiFollow = normalizeComment(tag.comment)
+        } else if (tagName === 'api-methods') {
+          apiMethodsSources.push(...normalizeListTag(tag.comment))
+        } else if (tagName === 'api-props') {
+          apiPropsSources.push(...normalizeListTag(tag.comment))
+        } else if (tagName === 'api-scope' || tagName === 'api-event-scope') {
+          apiScope = normalizeComment(tag.comment)
+        } else if (tagName === 'api-slots') {
+          apiSlotsSources.push(...normalizeListTag(tag.comment))
+        } else if (tagName === 'api-source') {
+          apiSources.push(...normalizeListTag(tag.comment))
         } else if (tagName === 'category') {
           categories.push(...normalizeCategories(tag.comment))
         } else if (tagName === 'deprecated') {
@@ -2196,11 +2658,84 @@ function readJSDoc(node: ts.Node, sourceFile: ts.SourceFile, fallbackNode?: ts.N
     }
   }
 
+  if (docs === undefined) {
+    const leadingDocs = readLeadingJSDocComment(node, sourceFile)
+
+    if (leadingDocs !== undefined) {
+      desc = leadingDocs.desc
+
+      for (const tag of leadingDocs.tags) {
+        if (tag.tagName === 'param' && tag.name !== undefined) {
+          params.set(tag.name, normalizeTagComment(tag.comment))
+        } else if (tag.tagName === 'returns' || tag.tagName === 'return') {
+          returns = normalizeComment(tag.comment)
+        } else if (tag.tagName === 'example') {
+          examples.push(normalizeComment(tag.comment))
+        } else if (tag.tagName === 'api') {
+          api = true
+        } else if (tag.tagName === 'api-events') {
+          apiEventsSources.push(...normalizeListTag(tag.comment))
+        } else if (tag.tagName === 'api-follow') {
+          apiFollow = normalizeComment(tag.comment)
+        } else if (tag.tagName === 'api-methods') {
+          apiMethodsSources.push(...normalizeListTag(tag.comment))
+        } else if (tag.tagName === 'api-props') {
+          apiPropsSources.push(...normalizeListTag(tag.comment))
+        } else if (tag.tagName === 'api-scope' || tag.tagName === 'api-event-scope') {
+          apiScope = normalizeComment(tag.comment)
+        } else if (tag.tagName === 'api-slots') {
+          apiSlotsSources.push(...normalizeListTag(tag.comment))
+        } else if (tag.tagName === 'api-source') {
+          apiSources.push(...normalizeListTag(tag.comment))
+        } else if (tag.tagName === 'category') {
+          categories.push(...normalizeCategories(tag.comment))
+        } else if (tag.tagName === 'deprecated') {
+          deprecated = normalizeComment(tag.comment) || true
+        } else if (tag.tagName === 'event') {
+          event = normalizeComment(tag.comment)
+        } else if (tag.tagName === 'values') {
+          metadata.values = normalizeListTag(tag.comment)
+        } else if (tag.tagName === 'applicable') {
+          metadata.applicable = normalizeListTag(tag.comment)
+        } else if (tag.tagName === 'api-exemption' || tag.tagName === 'exemption') {
+          metadata.__exemption = normalizeListTag(tag.comment)
+        } else if (tag.tagName === 'default') {
+          metadata.default = normalizeComment(tag.comment)
+        } else if (tag.tagName === 'required') {
+          metadata.required = normalizeBooleanTag(tag.comment)
+        } else if (tag.tagName === 'type') {
+          metadata.type = normalizeComment(tag.comment)
+        } else if (tag.tagName === 'tsType' || tag.tagName === 'ts-type') {
+          metadata.tsType = normalizeComment(tag.comment)
+        } else if (tag.tagName.startsWith('param-')) {
+          applyNamedMetadataTag(paramMetadata, tag.tagName.slice('param-'.length), tag.comment)
+        } else if (tag.tagName.startsWith('returns-') || tag.tagName.startsWith('return-')) {
+          applyMetadataTag(
+            returnsMetadata,
+            tag.tagName.startsWith('returns-')
+              ? tag.tagName.slice('returns-'.length)
+              : tag.tagName.slice('return-'.length),
+            tag.comment,
+          )
+        } else if (tag.tagName === 'since') {
+          since = normalizeComment(tag.comment)
+        }
+      }
+    }
+  }
+
   return {
     api,
+    apiEventsSources,
+    apiFollow,
+    apiMethodsSources,
+    apiPropsSources,
+    apiScope,
+    apiSlotsSources,
+    apiSources,
     category: categories.length > 0 ? categories.join('|') : undefined,
     deprecated,
-    desc: normalizeComment(docs?.comment),
+    desc,
     event,
     examples,
     metadata,
@@ -2299,6 +2834,76 @@ function getLastJSDoc(node: ts.Node): ts.JSDoc | undefined {
   const docs = (node as { jsDoc?: ts.JSDoc[] }).jsDoc
 
   return docs?.at(-1)
+}
+
+type ParsedLeadingJSDoc = {
+  desc: string
+  tags: {
+    comment: string
+    name?: string
+    tagName: string
+  }[]
+}
+
+function readLeadingJSDocComment(
+  node: ts.Node,
+  sourceFile: ts.SourceFile,
+): ParsedLeadingJSDoc | undefined {
+  const text = sourceFile.getFullText()
+  const ranges = ts.getLeadingCommentRanges(text, node.getFullStart()) ?? []
+  const jsDocRange = ranges
+    .filter(
+      (range) =>
+        range.kind === ts.SyntaxKind.MultiLineCommentTrivia &&
+        text.slice(range.pos, range.pos + 3) === '/**',
+    )
+    .at(-1)
+
+  if (jsDocRange === undefined) {
+    return undefined
+  }
+
+  return parseLeadingJSDocText(text.slice(jsDocRange.pos, jsDocRange.end))
+}
+
+function parseLeadingJSDocText(comment: string): ParsedLeadingJSDoc {
+  const lines = comment
+    .replace(/^\/\*\*/, '')
+    .replace(/\*\/$/, '')
+    .split('\n')
+    .map((line) => line.replace(/^\s*\* ?/, '').trimEnd())
+
+  const desc: string[] = []
+  const tags: ParsedLeadingJSDoc['tags'] = []
+  let currentTag: ParsedLeadingJSDoc['tags'][number] | undefined
+
+  for (const line of lines) {
+    const tagMatch = line.match(/^@(\S+)(?:\s+(.*))?$/)
+
+    if (tagMatch !== null) {
+      const tagName = tagMatch[1]!
+      const rawComment = tagMatch[2] ?? ''
+      const paramMatch = tagName === 'param' ? rawComment.match(/^(\S+)(?:\s+(.*))?$/) : null
+
+      currentTag =
+        paramMatch === null
+          ? { comment: rawComment, tagName }
+          : { comment: paramMatch[2] ?? '', name: paramMatch[1]!, tagName }
+      tags.push(currentTag)
+      continue
+    }
+
+    if (currentTag !== undefined) {
+      currentTag.comment = cleanupComment(`${currentTag.comment}\n${line}`)
+    } else {
+      desc.push(line)
+    }
+  }
+
+  return {
+    desc: cleanupComment(desc.join('\n')),
+    tags,
+  }
 }
 
 function normalizeComment(comment: unknown): string {

@@ -162,6 +162,14 @@ src/.q-press/api/composables/timestamp.generated.json
 
 Review the generated file before publishing it. If the generated descriptions, examples, categories, params, returns, or slot scopes are thin, update the TypeScript/JSDoc and run the generator again. Generated JSON includes a top-level `generated_at` timestamp; drift checks ignore that field so timestamp churn does not fail CI.
 
+For release and package builds that should write the configured API JSON files directly, add `--write-output`:
+
+```bash
+pnpm exec qpress api generate --write-output
+```
+
+Use review files while authoring, then use direct output mode once the source JSDoc is the accepted API contract.
+
 Run `check` when CI should report stale or missing API JSON without writing files:
 
 ```bash
@@ -181,6 +189,8 @@ The generator extracts exported TypeScript functions, exported `const` arrow/fun
 It reads JSDoc descriptions plus `@param`, `@returns`, `@example`, `@category`, `@since`, and `@deprecated` tags, then emits the same JSON shape used by `MarkdownApi`. Repeat `@example` for multiple examples. For prop categories, repeat `@category` or separate names with `|` or `,`; props without a category render in MarkdownApi's default group.
 
 Use explicit metadata tags for fields that should not be guessed from source: `@values`, `@applicable`, `@default`, `@required`, `@type`, `@ts-type`, and `@api-exemption`. Function, event, and slot-scope params can use `@param-values name ...`, `@param-example name ...`, `@param-default name ...`, `@param-required name false`, `@param-type name ...`, `@param-ts-type name ...`, and `@param-api-exemption name examples`. Return metadata can use `@returns-example`, `@returns-type`, `@returns-ts-type`, and `@returns-api-exemption`.
+
+For component-heavy libraries, the generator also supports documented emit arrays, `@api-follow getRawMouseEvents` on helper spreads, and wrapper forwarding tags such as `@api-source`, `@api-slots`, and `@api-events`.
 
 See [API JSON](/quasar-app-extensions/qpress/api-json) for full source examples covering exported functions, typed props, runtime props, emits, custom events, slots, exposed methods, return definitions, metadata tags, generated output, and review output.
 
