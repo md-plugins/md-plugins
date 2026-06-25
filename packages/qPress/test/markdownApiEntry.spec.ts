@@ -201,6 +201,31 @@ describe('MarkdownApiEntry', () => {
     expect(expandedText).toContain('empty string ("")')
   })
 
+  it('renders JSDoc quoted empty string default values explicitly', () => {
+    const render = createEntryRender('props', {
+      src: {
+        default: "''",
+        desc: 'Optional source content.',
+        type: 'String',
+      },
+      label: {
+        default: '""',
+        desc: 'Optional label.',
+        type: 'String',
+      },
+    })
+
+    const collapsed = render()
+
+    expect(collectText(collapsed)).toContain('src')
+
+    expandDetails(collapsed)
+
+    const expandedText = collectText(render())
+
+    expect(expandedText.match(/empty string \(""\)/g)).toHaveLength(2)
+  })
+
   it('renders generated function API JSON with TypeScript details', () => {
     const render = createEntryRender('functions', {
       parseTimestamp: {

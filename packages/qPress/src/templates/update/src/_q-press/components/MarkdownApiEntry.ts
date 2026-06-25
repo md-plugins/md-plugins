@@ -299,7 +299,7 @@ function parseForInlineCode(code: string) {
 }
 
 function formatTokenValue(value: unknown): string {
-  return value === '' ? 'empty string ("")' : String(value)
+  return value === '' || value === "''" || value === '""' ? 'empty string ("")' : String(value)
 }
 
 /**

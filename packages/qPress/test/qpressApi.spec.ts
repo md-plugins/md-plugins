@@ -710,7 +710,7 @@ withDefaults(defineProps<DefaultedProps>(), {
           },
         },
       })
-      expect(generated.events['update:modelValue']).toEqual({
+      expect(generated.events['update:model-value']).toEqual({
         desc: '',
         params: {
           modelValue: {
@@ -719,6 +719,7 @@ withDefaults(defineProps<DefaultedProps>(), {
           },
         },
       })
+      expect(generated.events).not.toHaveProperty('update:modelValue')
       expect(generated.slots.default).toEqual({
         applicable: ['card', 'link'],
         desc: 'Custom content inside the card link.',
@@ -1101,6 +1102,21 @@ export interface CalendarDaySlots {
    * @applicable day, interval
    */
   day?: SlotProps<DaySlotScope>
+  /**
+   * Custom icon content.
+   *
+   * @param name The selected icon name.
+   * @param-type name String
+   * @param-ts-type name string
+   * @param-example name bolt
+   */
+  icon: (name: string) => unknown
+  /**
+   * Custom header content.
+   *
+   * @param scope Header slot scope.
+   */
+  header(scope: { label: string }): unknown
 }
 `,
     })
@@ -1227,6 +1243,27 @@ export interface CalendarDaySlots {
             required: false,
             tsType: 'boolean',
             type: 'Boolean',
+          },
+        },
+      })
+      expect(generated.slots.icon).toEqual({
+        desc: 'Custom icon content.',
+        scope: {
+          name: {
+            desc: 'The selected icon name.',
+            examples: ['bolt'],
+            tsType: 'string',
+            type: 'String',
+          },
+        },
+      })
+      expect(generated.slots.header).toEqual({
+        desc: 'Custom header content.',
+        scope: {
+          scope: {
+            desc: 'Header slot scope.',
+            tsType: '{ label: string }',
+            type: 'Object',
           },
         },
       })

@@ -672,9 +672,9 @@ async function checkSsgUnsafeExamples(
     exampleFiles.map(async (absolutePath) => {
       const content = await fs.readFile(absolutePath, 'utf8')
       const relativeFile = normalizeRelativePath(relative(examplesRoot, absolutePath))
-      const lines = content.split(/\r?\n/)
+      const lines = getSsgCheckLines(content, absolutePath)
 
-      lines.forEach((line, index) => {
+      lines.forEach(({ line, lineNumber }) => {
         if (!browserGlobalRegex.test(line) || guardedBrowserGlobalRegex.test(line)) {
           return
         }
@@ -683,13 +683,47 @@ async function checkSsgUnsafeExamples(
           code: 'ssg-browser-global',
           file: relativeFile,
           hint: 'Guard browser-only code with typeof checks, onMounted, or another client-only boundary.',
-          line: index + 1,
+          line: lineNumber,
           message: 'Example appears to reference a browser-only global that can fail during SSG.',
           severity: 'warning',
         })
       })
     }),
   )
+}
+
+function getSsgCheckLines(
+  content: string,
+  file: string,
+): Array<{ line: string; lineNumber: number }> {
+  if (extname(file) !== '.vue') {
+    return maskSourceStrings(maskSourceComments(content))
+      .split(/\r?\n/)
+      .map((line, index) => ({
+        line,
+        lineNumber: index + 1,
+      }))
+  }
+
+  const lines: Array<{ line: string; lineNumber: number }> = []
+  const scriptRegex = /<script\b[^>]*>([\s\S]*?)<\/script>/gi
+
+  for (const match of content.matchAll(scriptRegex)) {
+    const scriptContent = match[1] ?? ''
+    const scriptStartIndex = (match.index ?? 0) + match[0].indexOf(scriptContent)
+    const scriptStartLine = lineNumberForIndex(content, scriptStartIndex)
+
+    maskSourceStrings(maskSourceComments(scriptContent))
+      .split(/\r?\n/)
+      .forEach((line, index) => {
+        lines.push({
+          line,
+          lineNumber: scriptStartLine + index,
+        })
+      })
+  }
+
+  return lines
 }
 
 /**
@@ -1016,6 +1050,13 @@ function maskSourceComments(content: string): string {
     .replace(/(^|[^:])\/\/.*$/gm, (match, prefix: string) => {
       return `${prefix}${' '.repeat(match.length - prefix.length)}`
     })
+}
+
+/**
+ * Replaces single and double quoted string literal content with whitespace while preserving line numbers.
+ */
+function maskSourceStrings(content: string): string {
+  return content.replace(/(['"])(?:\\.|(?!\1)[^\\\r\n])*\1/g, maskNonNewlineCharacters)
 }
 
 /**

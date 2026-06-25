@@ -750,7 +750,7 @@ function extractVueEmitsFromExpression(
       const name = getObjectPropertyName(property, expression.getSourceFile())
 
       if (name !== undefined) {
-        events[name] = {
+        events[normalizeVueEventName(name)] = {
           desc: readJSDoc(property, expression.getSourceFile()).desc,
           params: {},
         }
@@ -779,7 +779,7 @@ function extractVueEmitsArray(
       }
       const docs = readJSDoc(element, elementContext.sourceFile)
 
-      events[element.text] = createEventFromDocs(docs, elementContext)
+      events[normalizeVueEventName(element.text)] = createEventFromDocs(docs, elementContext)
       continue
     }
 
@@ -795,6 +795,13 @@ function extractVueEmitsArray(
   }
 
   return events
+}
+
+function normalizeVueEventName(name: string): string {
+  return name
+    .replace(/([a-z0-9])([A-Z])/g, '$1-$2')
+    .replace(/_/g, '-')
+    .toLowerCase()
 }
 
 function createEventFromDocs(docs: JSDocDetails, context: SourceFileContext): GeneratedApiProperty {
@@ -1058,7 +1065,7 @@ function extractSlotsFromType(
   const slots: Record<string, GeneratedApiProperty> = {}
 
   for (const member of declaration.members) {
-    if (!ts.isPropertySignature(member)) {
+    if (!ts.isPropertySignature(member) && !ts.isMethodSignature(member)) {
       continue
     }
 
@@ -1070,10 +1077,12 @@ function extractSlotsFromType(
     }
 
     const docs = readJSDoc(member, memberSourceFile)
-    const scope = getSlotPropScope(member.type, {
-      ...context,
-      sourceFile,
-    })
+    const scope = ts.isPropertySignature(member)
+      ? (getSlotPropScope(member.type, {
+          ...context,
+          sourceFile,
+        }) ?? createSlotScope(member, docs, memberSourceFile))
+      : createSlotScope(member, docs, memberSourceFile)
 
     slots[name] = applyJSDocMetadata(
       {
@@ -1918,7 +1927,7 @@ function extractVueEvents(sourceFile: ts.SourceFile): Record<string, GeneratedAp
   if (ts.isArrayLiteralExpression(emitsArg)) {
     for (const element of emitsArg.elements) {
       if (ts.isStringLiteral(element)) {
-        events[element.text] = {
+        events[normalizeVueEventName(element.text)] = {
           desc: '',
           params: {},
         }
@@ -1937,7 +1946,7 @@ function extractVueEvents(sourceFile: ts.SourceFile): Record<string, GeneratedAp
         ? createParams(property.initializer, docs, sourceFile)
         : undefined
 
-      events[name] = {
+      events[normalizeVueEventName(name)] = {
         desc: docs.desc,
         params: params ?? {},
       }
@@ -1965,7 +1974,7 @@ function extractVueDocumentedEvents(
       continue
     }
 
-    events[docs.event] = {
+    events[normalizeVueEventName(docs.event)] = {
       desc: docs.desc,
       params: createParams(statement, docs, sourceFile) ?? {},
     }
@@ -2017,7 +2026,7 @@ function applyVueEventPayloads(
       ts.isStringLiteral(node.arguments[0])
     ) {
       const eventName = node.arguments[0].text
-      const event = events[eventName]
+      const event = events[eventName] ?? events[normalizeVueEventName(eventName)]
 
       if (event !== undefined) {
         event.params = mergeGeneratedParams(

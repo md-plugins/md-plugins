@@ -397,6 +397,37 @@ console.log(window.location.href)
     }
   })
 
+  it('does not treat Vue template component names as browser globals', async () => {
+    const root = await createProject({
+      'src/examples/QWindow/Basic.vue': `<template>
+  <div class="q-pa-md q-window-demo-stage">
+    <q-window title="Project Notes">Window content</q-window>
+  </div>
+</template>
+
+<script setup lang="ts">
+const title = 'QWindow'
+const copy = 'Only side edges do not resize the window.'
+</script>
+`,
+      'src/markdown/landing-page.md': `---
+title: Home
+desc: Landing page.
+---
+`,
+    })
+
+    try {
+      const result = await checkQPressProject({ cwd: root })
+
+      expect(result.warnings.map((diagnostic) => diagnostic.code)).not.toContain(
+        'ssg-browser-global',
+      )
+    } finally {
+      await rm(root, { force: true, recursive: true })
+    }
+  })
+
   it('formats errors and warnings for terminal output', async () => {
     const root = await createProject({
       'src/markdown/landing-page.md': '[Missing](/missing)',

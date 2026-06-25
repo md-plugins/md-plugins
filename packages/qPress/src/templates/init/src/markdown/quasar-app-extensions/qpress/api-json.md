@@ -89,6 +89,56 @@ import MyCalendarApi from '@scope/quasar-ui-my-calendar/dist/api/MyCalendar.json
 <MarkdownApi :api="MyCalendarApi" name="MyCalendar" />
 ```
 
+During local docs development, keep those package-shaped imports but alias them back to workspace source. This lets examples hot-update from `packages/ui/src`, lets `MarkdownApi` hot-update after regenerated API JSON changes, and keeps source styles in Vite's normal module graph:
+
+```ts
+// packages/docs/quasar.config.ts
+import { defineConfig } from '#q-app'
+
+const uiPackage = '@scope/quasar-ui-my-calendar'
+
+export default defineConfig((ctx) => {
+  const uiDir = ctx.appPaths.appDir + '/../ui'
+
+  return {
+    build: {
+      typescript: {
+        extendTsConfig(tsConfig) {
+          tsConfig.compilerOptions ??= {}
+          tsConfig.compilerOptions.paths ??= {}
+          tsConfig.compilerOptions.paths[uiPackage] = ['./../../ui/src/index.ts']
+          tsConfig.compilerOptions.paths[`${uiPackage}/dist/api/*`] = ['./../../ui/dist/api/*']
+        },
+      },
+
+      extendViteConf(viteConf) {
+        const alias = viteConf.resolve?.alias
+        viteConf.resolve = viteConf.resolve || {}
+        viteConf.resolve.alias = [
+          ...(Array.isArray(alias)
+            ? alias
+            : Object.entries(alias ?? {}).map(([find, replacement]) => ({ find, replacement }))),
+          {
+            find: new RegExp(`^${uiPackage}$`),
+            replacement: uiDir + '/src/index.ts',
+          },
+          {
+            find: new RegExp(`^${uiPackage}/dist/api/(.+)\\.json$`),
+            replacement: uiDir + '/dist/api/$1.json',
+          },
+          {
+            find: new RegExp(`^${uiPackage}/(?:dist/)?index(?:\\.rtl)?(?:\\.min)?\\.css$`),
+            replacement: uiDir + '/src/index.scss',
+          },
+        ]
+      },
+    },
+  }
+})
+```
+
+Changing JSDoc in `packages/ui/src` still requires regenerating API JSON. Once `qpress api generate --write-output` updates `packages/ui/dist/api/*.json`, the docs dev server can receive the JSON update through the local alias. Restart the dev server after changing `quasar.config.ts`.
+
 Wire direct API output into the UI package build:
 
 ```json
