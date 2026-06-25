@@ -131,7 +131,7 @@ type MenuChildren = NonNullable<MenuItem['children']>
 | Property                                           | Use it for                                               |
 | -------------------------------------------------- | -------------------------------------------------------- |
 | `name`                                             | Visible label for the link or group.                     |
-| `path`                                             | Internal route path or external URL.                     |
+| `path`                                             | Internal route path, external URL, or `''` for a visual-only sidebar group. |
 | `icon`, `iconColor`, `rightIcon`, `rightIconColor` | Header, sidebar, footer, or card-style link decoration.  |
 | `badge`                                            | Small status label beside a menu item.                   |
 | `children`                                         | Nested menu groups.                                      |
@@ -147,6 +147,24 @@ Sidebar menu items need a bit more care because they represent drawer sections i
 When a header menu already has the structure you want, process it into a sidebar-safe tree:
 
 ```ts
+function getSidebarPath(item: MenuItem): string {
+  if (item.path === '') {
+    return ''
+  }
+
+  const path = item.path?.replace(/^\/+/, '').split('/').filter(Boolean).pop()
+  return path ?? slugify(item.name)
+}
+
+function processMenuItem(item: MenuItem): MenuItem {
+  return {
+    name: item.name,
+    path: getSidebarPath(item),
+    expanded: item.expanded ?? false,
+    children: item.children ? item.children.map(processMenuItem) : undefined,
+  }
+}
+
 const processedMdPluginsMenu = {
   name: mdPluginsMenu.name,
   path: slugify(mdPluginsMenu.name),
@@ -165,7 +183,7 @@ export const sidebar = [
     expanded: false,
     children: gettingStartedMenu.children.map((item) => ({
       name: item.name,
-      path: slugify(item.name),
+      path: getSidebarPath(item),
     })),
   },
   processedMdPluginsMenu, // <-- this is the menu we just created
@@ -174,6 +192,33 @@ export const sidebar = [
   processedOtherMenu,
 ]
 ```
+
+Use `path: ''` when a sidebar item is only a visual grouping node and should not contribute a URL segment. This keeps grouped children under their real route instead of creating a route such as `/examples/agenda/recipes/planner`.
+
+```ts
+const examplesMenu = {
+  name: 'Examples',
+  path: '/examples',
+  children: [
+    {
+      name: 'Agenda',
+      path: '/examples/agenda',
+      children: [
+        {
+          name: 'Recipes',
+          path: '',
+          children: [
+            { name: 'Planner', path: '/examples/agenda/planner' },
+            { name: 'Server Data', path: '/examples/agenda/server-data' },
+          ],
+        },
+      ],
+    },
+  ],
+} satisfies MenuItem
+```
+
+Reserve `path: ''` for sidebar-only grouping nodes. Real pages and header links should keep an explicit route path.
 
 ## More Links
 
