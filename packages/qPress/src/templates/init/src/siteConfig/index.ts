@@ -127,10 +127,19 @@ export interface SiteConfig {
 /**
  * Normalizes a menu item into the path shape consumed by Q-Press navigation.
  */
+function getSidebarPath(item: MenuItem): string {
+  if (item.path === '') {
+    return ''
+  }
+
+  const path = item.path?.replace(/^\/+/, '').split('/').filter(Boolean).pop()
+  return path ?? slugify(item.name)
+}
+
 function processMenuItem(item: MenuItem): MenuItem {
   return {
     name: item.name,
-    path: slugify(item.name),
+    path: getSidebarPath(item),
     expanded: item.expanded ?? false,
     children: item.children ? item.children.map(processMenuItem) : undefined,
   }
@@ -461,7 +470,7 @@ export const sidebar = [
     children: gettingStartedMenu.children
       ? gettingStartedMenu.children.map((item) => ({
           name: item.name,
-          path: slugify(item.name),
+          path: getSidebarPath(item),
         }))
       : [],
   },
