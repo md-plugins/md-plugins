@@ -1,6 +1,7 @@
 ---
 title: Q-Press Site Config
 desc: Site Config for the Q-Press App Extension for Quasar.
+examples: QPressSiteConfig
 ---
 
 The Site Config lives in your `src/siteConfig/index.ts`. Here you can make changes to control the look and feel of your site.
@@ -9,28 +10,32 @@ The Site Config lives in your `src/siteConfig/index.ts`. Here you can make chang
 
 Think of `src/siteConfig/index.ts` as the public contract for your docs shell. It controls identity, menus, footer links, GitHub edit links, CodePen setup, and which layout features are enabled.
 
-| Section                                            | What it controls                                                                                   |
-| -------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| `title`, `description`, `theme`, `version`, `lang` | Browser metadata, visible product identity, and generated docs context.                            |
-| `logoConfig`                                       | Header and sidebar logo behavior for light and dark mode.                                          |
-| `versionConfig`                                    | Whether the title and version are shown in the header and drawer.                                  |
-| `config`                                           | Major layout switches such as headers, footer, sidebar, table of contents, and the `More` menu.    |
-| `links`                                            | Header links, responsive overflow links, footer links, social links, and optional ecosystem links. |
-| `sidebar`                                          | Drawer/sidebar navigation tree.                                                                    |
-| `githubEditRootSrc` and `githubSourceRootSrc`      | Source locations used by edit, source, and example links.                                          |
-| `codepen`                                          | External CSS, scripts, setup code, and package globals used when examples open in CodePen.         |
-| `license`, `privacy`, `copyright`                  | Footer legal links and ownership text.                                                             |
-| `announcement`                                     | Optional dismissible top-of-page docs announcement.                                                |
-| `privacyConsent`                                   | Optional privacy notice or consent prompt for static-hosted docs.                                  |
-| `campaigns`                                        | Optional restrained popup/dialog campaigns with route, date, trigger, and frequency controls.      |
+| Section                                       | What it controls                                                                                   |
+| --------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `title`, `description`, `version`, `lang`     | Browser metadata, visible product identity, and generated docs context.                            |
+| `logoConfig`                                  | Header and sidebar logo behavior for light and dark mode.                                          |
+| `versionConfig`                               | Whether the title and version are shown in the header and drawer.                                  |
+| `config`                                      | Major layout switches such as headers, footer, sidebar, table of contents, and the `More` menu.    |
+| `links`                                       | Header links, responsive overflow links, footer links, social links, and optional ecosystem links. |
+| `sidebar`                                     | Drawer/sidebar navigation tree.                                                                    |
+| `githubEditRootSrc` and `githubSourceRootSrc` | Source locations used by edit, source, and example links.                                          |
+| `codepen`                                     | External CSS, scripts, setup code, and package globals used when examples open in CodePen.         |
+| `license`, `privacy`, `copyright`             | Footer legal links and ownership text.                                                             |
+| `announcement`                                | Optional dismissible top-of-page docs announcement.                                                |
+| `privacyConsent`                              | Optional privacy notice or consent prompt for static-hosted docs.                                  |
+| `campaigns`                                   | Optional restrained popup/dialog campaigns with route, date, trigger, and frequency controls.      |
 
 ## Recommended Editing Flow
 
-1. Update `title`, `description`, `theme`, logos, and version display first.
+1. Update `title`, `description`, logos, and version display first.
 2. Add header menu groups in the `links` section.
 3. Mirror the same content into `sidebar` when you want drawer navigation.
 4. Add footer, sponsor, social, and ecosystem links after the main docs routes are in place.
 5. Run the dev server and resize the page to verify `mq` breakpoints and `moreLinks` behavior.
+
+Theme selection lives in `src/css/quasar.variables.scss` or `src/css/quasar.variables.sass`, not
+`siteConfig`. Import one Q-Press theme there, then add project-specific overrides below the import.
+See [Themes](/quasar-app-extensions/qpress/themes) for the bundled themes and customization tokens.
 
 ## Route Paths
 
@@ -128,17 +133,17 @@ type MenuChildren = NonNullable<MenuItem['children']>
 //   ^?
 ```
 
-| Property                                           | Use it for                                               |
-| -------------------------------------------------- | -------------------------------------------------------- |
-| `name`                                             | Visible label for the link or group.                     |
+| Property                                           | Use it for                                                                  |
+| -------------------------------------------------- | --------------------------------------------------------------------------- |
+| `name`                                             | Visible label for the link or group.                                        |
 | `path`                                             | Internal route path, external URL, or `''` for a visual-only sidebar group. |
-| `icon`, `iconColor`, `rightIcon`, `rightIconColor` | Header, sidebar, footer, or card-style link decoration.  |
-| `badge`                                            | Small status label beside a menu item.                   |
-| `children`                                         | Nested menu groups.                                      |
-| `external`                                         | Opens links with external-link behavior.                 |
-| `expanded`                                         | Initial expansion state for sidebar groups.              |
-| `mq`                                               | Responsive breakpoint used to show or hide header items. |
-| `image`, `maxWidth`                                | Image-style footer or sponsor links.                     |
+| `icon`, `iconColor`, `rightIcon`, `rightIconColor` | Header, sidebar, footer, or card-style link decoration.                     |
+| `badge`                                            | Small status label beside a menu item.                                      |
+| `children`                                         | Nested menu groups.                                                         |
+| `external`                                         | Opens links with external-link behavior.                                    |
+| `expanded`                                         | Initial expansion state for sidebar groups.                                 |
+| `mq`                                               | Responsive breakpoint used to show or hide header items.                    |
+| `image`, `maxWidth`                                | Image-style footer or sponsor links.                                        |
 
 ## Sidebar Menu Items
 
@@ -251,22 +256,60 @@ const links = {
 | Sidebar   | `sidebar`                                                                   | Full documentation outline and nested sections.                    |
 | Footer    | `links.footerLinks`, `links.socialLinks`, `license`, `privacy`, `copyright` | Sponsor links, external references, legal links, and social links. |
 
+## Generated Layout Pieces
+
+Q-Press templates already render the optional announcement, privacy consent, and campaign components from the generated `MarkdownLayout`. Configure them in `src/siteConfig/index.ts`; do not add these components to individual Markdown pages.
+
+```vue
+<MarkdownAnnouncement :config="qpressShellConfig.announcement" />
+<MarkdownPrivacyConsent :config="qpressShellConfig.privacyConsent" />
+<MarkdownCampaigns :campaigns="qpressShellConfig.campaigns" />
+```
+
+Keep these features disabled until the copy, route targeting, storage ids, and legal requirements are ready. The examples below are drop-in Site Config fragments.
+
+| Piece            | Configure with   | What you can change                                                                                                      |
+| ---------------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| Announcement     | `announcement`   | Notice copy, tone, start/end dates, dismiss behavior, storage id, and optional action link.                              |
+| Privacy consent  | `privacyConsent` | Notice vs consent mode, title, message, policy link, labels, expiration, required categories, and optional categories.   |
+| Campaign dialogs | `campaigns`      | Dialog copy, tone, route targeting, device targeting, trigger type, frequency, date window, close behavior, and actions. |
+
+Skinning belongs in theme and app styles, not in `siteConfig`. The generated components use Q-Press theme tokens by default and expose stable wrapper classes when a project needs a focused override:
+
+```scss
+.qpress-announcement {
+  border-bottom-color: var(--qpress-border-strong);
+}
+
+.qpress-consent,
+.qpress-campaign {
+  background: var(--qpress-surface-raised-strong);
+  border-color: var(--qpress-border-strong);
+}
+```
+
+Prefer Q-Press CSS variables such as `--qpress-text-primary`, `--qpress-text-body`, `--qpress-surface-panel`, `--qpress-surface-raised-strong`, `--qpress-border-subtle`, and `--qpress-border-strong` so light and dark mode stay aligned with the selected theme.
+
+<MarkdownExample title="Generated Layout Toggles" file="GeneratedLayoutToggles" no-edit no-github/>
+
 ## Announcements
 
 Use `announcement` for calm site-wide notices such as releases, maintenance windows, upgrade warnings, or sponsor messages. Announcements are intentionally separate from privacy consent and marketing popups.
 
 ```ts [twoslash]
-const announcement = {
-  enabled: true,
-  id: 'qpress-2026-06-release',
-  message: 'Q-Press 0.1.0 includes improved SSG and themed docs components.',
-  tone: 'info',
-  startAt: '2026-06-01T00:00:00Z',
-  endAt: '2026-06-30T23:59:59Z',
-  dismissible: true,
-  action: {
-    label: 'Read release notes',
-    link: '/other/releases',
+const config = {
+  announcement: {
+    enabled: true,
+    id: 'qpress-2026-06-release',
+    message: 'Q-Press 0.1.0 includes improved SSG and themed docs components.',
+    tone: 'info',
+    startAt: '2026-06-01T00:00:00Z',
+    endAt: '2026-06-30T23:59:59Z',
+    dismissible: true,
+    action: {
+      label: 'Read release notes',
+      link: '/other/releases',
+    },
   },
 }
 ```
@@ -278,20 +321,22 @@ const announcement = {
 Use `privacyConsent` only for privacy notices or consent prompts. This is separate from announcements because privacy consent can require accept, reject, customize, category-level preferences, policy links, expiration, and optional script or embed gating.
 
 ```ts [twoslash]
-const privacyConsent = {
-  enabled: true,
-  id: 'privacy-consent-v1',
-  mode: 'consent',
-  title: 'Privacy preferences',
-  message:
-    'Choose whether this documentation site can enable optional analytics or third-party embeds.',
-  policyLink: '/privacy-policy',
-  expirationDays: 180,
-  categories: [
-    { id: 'necessary', label: 'Necessary', required: true },
-    { id: 'analytics', label: 'Analytics' },
-    { id: 'embeds', label: 'Third-party embeds' },
-  ],
+const config = {
+  privacyConsent: {
+    enabled: true,
+    id: 'privacy-consent-v1',
+    mode: 'consent',
+    title: 'Privacy preferences',
+    message:
+      'Choose whether this documentation site can enable optional analytics or third-party embeds.',
+    policyLink: '/privacy-policy',
+    expirationDays: 180,
+    categories: [
+      { id: 'necessary', label: 'Necessary', required: true },
+      { id: 'analytics', label: 'Analytics' },
+      { id: 'embeds', label: 'Third-party embeds' },
+    ],
+  },
 }
 ```
 
@@ -316,30 +361,32 @@ Q-Press keeps this feature static-host friendly, but it cannot provide legal adv
 Use `campaigns` for intentionally restrained opt-in prompts such as sponsor messages, release campaigns, route-specific upgrade notices, or limited-time calls to action. Campaigns are separate from announcements and privacy consent so normal docs notices stay calm and consent behavior stays focused on privacy requirements.
 
 ```ts [twoslash]
-const campaigns = [
-  {
-    enabled: true,
-    id: 'sponsor-qpress-v1',
-    title: 'Support Q-Press maintenance',
-    message: 'If Q-Press is useful in your workflow, consider sponsoring ongoing maintenance.',
-    tone: 'sponsor',
-    startAt: '2026-06-01T00:00:00Z',
-    endAt: '2026-06-30T23:59:59Z',
-    includeRoutes: ['/quasar-app-extensions/qpress/*'],
-    excludeRoutes: ['/privacy-policy'],
-    trigger: { type: 'scroll-depth', scrollDepth: 65 },
-    frequency: { strategy: 'days', days: 30, maxViews: 3 },
-    device: 'desktop',
-    mobileFallback: 'none',
-    closeOnEsc: true,
-    closeOnBackdrop: true,
-    action: {
-      label: 'Sponsor Jeff',
-      link: 'https://github.com/sponsors/hawkeye64',
-      external: true,
+const config = {
+  campaigns: [
+    {
+      enabled: true,
+      id: 'sponsor-qpress-v1',
+      title: 'Support Q-Press maintenance',
+      message: 'If Q-Press is useful in your workflow, consider sponsoring ongoing maintenance.',
+      tone: 'sponsor',
+      startAt: '2026-06-01T00:00:00Z',
+      endAt: '2026-06-30T23:59:59Z',
+      includeRoutes: ['/quasar-app-extensions/qpress/*'],
+      excludeRoutes: ['/privacy-policy'],
+      trigger: { type: 'scroll-depth', scrollDepth: 65 },
+      frequency: { strategy: 'days', days: 30, maxViews: 3 },
+      device: 'desktop',
+      mobileFallback: 'none',
+      closeOnEsc: true,
+      closeOnBackdrop: true,
+      action: {
+        label: 'Sponsor Jeff',
+        link: 'https://github.com/sponsors/hawkeye64',
+        external: true,
+      },
     },
-  },
-]
+  ],
+}
 ```
 
 Campaign triggers currently support `load`, `delay`, `scroll-depth`, and desktop `exit-intent`. Route patterns support exact paths and simple trailing-wildcard prefixes such as `/guides/*`. Frequency defaults to `once`; use `session`, `days`, or `always` only when the message genuinely needs that behavior. Keep campaigns disabled by default and avoid mobile exit-intent patterns.
