@@ -24,9 +24,9 @@ const dependencySections: DependencySection[] = [
 ]
 
 const qPressDevDependencies = {
-  '@md-plugins/search-ui': '^0.1.0-rc.8',
-  '@md-plugins/vite-search-plugin': '^0.1.0-rc.8',
-  '@md-plugins/vite-ssg-plugin': '^0.1.0-rc.8',
+  '@md-plugins/search-ui': '^0.1.0-rc.17',
+  '@md-plugins/vite-search-plugin': '^0.1.0-rc.17',
+  '@md-plugins/vite-ssg-plugin': '^0.1.0-rc.17',
   '@vue/server-renderer': '^3.5.0',
   mermaid: '^11.15.0',
   shiki: '^4.1.0',
@@ -120,7 +120,7 @@ function getDependencyPatch(
 
 export default defineInstallScript(async (api) => {
   api.compatibleWith('quasar', '^2.0.0')
-  api.compatibleWith('@quasar/app-vite', '>=3.0.0-rc.2')
+  api.compatibleWith('@quasar/app-vite', '>=3.0.0-rc.3')
 
   // project must have pinia installed
   if ((await api.getStorePackageName()) !== 'pinia') {
