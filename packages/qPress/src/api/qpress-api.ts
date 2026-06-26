@@ -2603,7 +2603,7 @@ function readJSDoc(node: ts.Node, sourceFile: ts.SourceFile, fallbackNode?: ts.N
   const apiSlotsSources: string[] = []
   const apiSources: string[] = []
   let deprecated: string | boolean | undefined
-  let desc = normalizeComment(docs?.comment)
+  let desc = normalizeDescriptionComment(docs?.comment)
   let event: string | undefined
   const metadata: GeneratedApiPropertyMetadata = {}
   let returns = ''
@@ -2615,7 +2615,7 @@ function readJSDoc(node: ts.Node, sourceFile: ts.SourceFile, fallbackNode?: ts.N
       if (ts.isJSDocParameterTag(tag)) {
         params.set(tag.name.getText(sourceFile), normalizeTagComment(tag.comment))
       } else if (ts.isJSDocReturnTag(tag)) {
-        returns = normalizeComment(tag.comment)
+        returns = normalizeDescriptionComment(tag.comment)
       } else {
         const tagName = tag.tagName.getText(sourceFile)
 
@@ -2640,7 +2640,7 @@ function readJSDoc(node: ts.Node, sourceFile: ts.SourceFile, fallbackNode?: ts.N
         } else if (tagName === 'category') {
           categories.push(...normalizeCategories(tag.comment))
         } else if (tagName === 'deprecated') {
-          deprecated = normalizeComment(tag.comment) || true
+          deprecated = normalizeDescriptionComment(tag.comment) || true
         } else if (tagName === 'event') {
           event = normalizeComment(tag.comment)
         } else if (tagName === 'values') {
@@ -2678,13 +2678,13 @@ function readJSDoc(node: ts.Node, sourceFile: ts.SourceFile, fallbackNode?: ts.N
     const leadingDocs = readLeadingJSDocComment(node, sourceFile)
 
     if (leadingDocs !== undefined) {
-      desc = leadingDocs.desc
+      desc = normalizeDescriptionComment(leadingDocs.desc)
 
       for (const tag of leadingDocs.tags) {
         if (tag.tagName === 'param' && tag.name !== undefined) {
           params.set(tag.name, normalizeTagComment(tag.comment))
         } else if (tag.tagName === 'returns' || tag.tagName === 'return') {
-          returns = normalizeComment(tag.comment)
+          returns = normalizeDescriptionComment(tag.comment)
         } else if (tag.tagName === 'example') {
           examples.push(normalizeComment(tag.comment))
         } else if (tag.tagName === 'api') {
@@ -2706,7 +2706,7 @@ function readJSDoc(node: ts.Node, sourceFile: ts.SourceFile, fallbackNode?: ts.N
         } else if (tag.tagName === 'category') {
           categories.push(...normalizeCategories(tag.comment))
         } else if (tag.tagName === 'deprecated') {
-          deprecated = normalizeComment(tag.comment) || true
+          deprecated = normalizeDescriptionComment(tag.comment) || true
         } else if (tag.tagName === 'event') {
           event = normalizeComment(tag.comment)
         } else if (tag.tagName === 'values') {
@@ -2952,8 +2952,12 @@ function normalizeComment(comment: unknown): string {
   return cleanupComment(String(comment))
 }
 
+function normalizeDescriptionComment(comment: unknown): string {
+  return collapseSoftCommentLineBreaks(normalizeComment(comment))
+}
+
 function normalizeTagComment(comment: unknown): string {
-  return normalizeComment(comment).replace(/^-\s*/, '')
+  return normalizeDescriptionComment(comment).replace(/^-\s*/, '')
 }
 
 function cleanupComment(comment: string): string {
@@ -2964,6 +2968,80 @@ function cleanupComment(comment: string): string {
     .filter((line, index, lines) => line !== '' || (index > 0 && index < lines.length - 1))
     .join('\n')
     .trim()
+}
+
+function collapseSoftCommentLineBreaks(comment: string): string {
+  const lines = comment.split('\n')
+  const result: string[] = []
+  let prose = ''
+  let inFence = false
+
+  const flushProse = () => {
+    if (prose !== '') {
+      result.push(prose)
+      prose = ''
+    }
+  }
+
+  for (const line of lines) {
+    if (isFencedCodeBoundary(line) === true) {
+      flushProse()
+      result.push(line)
+      inFence = !inFence
+      continue
+    }
+
+    if (inFence === true) {
+      result.push(line)
+      continue
+    }
+
+    if (line === '') {
+      flushProse()
+
+      if (result.at(-1) !== '') {
+        result.push('')
+      }
+
+      continue
+    }
+
+    if (isStructuredCommentLine(line) === true) {
+      flushProse()
+      result.push(line)
+      continue
+    }
+
+    if (prose === '' && isListCommentLine(result.at(-1)) === true) {
+      result[result.length - 1] = `${result[result.length - 1]} ${line}`
+      continue
+    }
+
+    prose = prose === '' ? line : `${prose} ${line}`
+  }
+
+  flushProse()
+
+  return result.join('\n').trim()
+}
+
+function isFencedCodeBoundary(line: string): boolean {
+  return /^(```|~~~)/.test(line)
+}
+
+function isStructuredCommentLine(line: string): boolean {
+  return (
+    isListCommentLine(line) ||
+    /^>\s?/.test(line) ||
+    /^#{1,6}\s+/.test(line) ||
+    /^\|.*\|$/.test(line) ||
+    /^:?-{3,}:?\s*(\|:?-{3,}:?\s*)+$/.test(line) ||
+    /^-{3,}$/.test(line)
+  )
+}
+
+function isListCommentLine(line: string | undefined): boolean {
+  return line !== undefined && /^([-*+]|\d+[.)])\s+/.test(line)
 }
 
 function getReturnType(node: FunctionLikeNode, sourceFile: ts.SourceFile): string {

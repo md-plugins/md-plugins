@@ -427,6 +427,7 @@ type Timestamp = {
  * @returns Parsed timestamp, or null when invalid.
  * @returns-example null
  * @example parseTimestamp('2036-06-08')
+ * @category parsing
  * @since 0.1.0
  */
 export function parseTimestamp(input: string, now?: Timestamp | null): Timestamp | null {
@@ -435,6 +436,8 @@ export function parseTimestamp(input: string, now?: Timestamp | null): Timestamp
 ```
 
 This produces a function entry with parameter descriptions, examples, a TypeScript signature, return metadata, and a nested return definition for `Timestamp`.
+
+Function-heavy libraries should use `@category` the same way components use prop categories. Q-Press shows category tabs for any API group with more than one category, so helpers can be grouped into areas such as `parsing`, `formatting`, `ranges`, or `duration`.
 
 ### Exported const functions
 
@@ -676,7 +679,7 @@ Use bare `@api-source` when the wrapper forwards all public groups from a child 
 
 ## Metadata Tags
 
-Use repeated `@example` tags to emit multiple examples. Use `@category` on prop JSDoc to place generated props into MarkdownApi category tabs; repeat the tag or separate names with `|` or `,` when a prop belongs to more than one category. Props without `@category` omit the field and render in MarkdownApi's default group.
+Use repeated `@example` tags to emit multiple examples. Use `@category` on entry JSDoc to place generated props, functions, methods, events, or slots into MarkdownApi category tabs; repeat the tag or separate names with `|` or `,` when an entry belongs to more than one category. Entries without `@category` omit the field and render in MarkdownApi's default group. The category rail appears for an API group only when at least one entry in that group declares `@category`.
 
 Use explicit metadata tags when TypeScript cannot safely infer a field:
 
@@ -698,19 +701,19 @@ view: {
 
 Supported entry-level metadata tags:
 
-| Tag                                  | Use it for                                                                                       |
-| ------------------------------------ | ------------------------------------------------------------------------------------------------ |
-| `@example value`                     | One rendered example. Repeat for multiple examples.                                              |
-| `@category name`                     | Prop category tabs. Repeat or separate names with `\|` or `,` for multiple categories.           |
-| `@since version`                     | Emits `addedIn`. Works on functions, methods, component props, events, and slots.                |
-| `@deprecated message`                | Emits `deprecated`; omit the message when a boolean deprecated flag is enough.                   |
-| `@values value \| value`             | Accepted values.                                                                                 |
-| `@applicable name, name`             | Project-specific applicability labels, such as calendar view modes or forwarded wrapper sources. |
-| `@default value`                     | Documented default when the runtime value needs a clearer display form.                          |
-| `@required true` / `@required false` | Requiredness override.                                                                           |
-| `@type Type`                         | Displayed API type override.                                                                     |
-| `@ts-type Type`                      | TypeScript type override. `@tsType` is also accepted.                                            |
-| `@api-exemption field, field`        | Quasar-style `__exemption` values. `@exemption` is also accepted.                                |
+| Tag                                  | Use it for                                                                                                                             |
+| ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `@example value`                     | One rendered example. Repeat for multiple examples.                                                                                    |
+| `@category name`                     | API category tabs for props, functions, methods, events, and slots. Repeat or separate names with `\|` or `,` for multiple categories. |
+| `@since version`                     | Emits `addedIn`. Works on functions, methods, component props, events, and slots.                                                      |
+| `@deprecated message`                | Emits `deprecated`; omit the message when a boolean deprecated flag is enough.                                                         |
+| `@values value \| value`             | Accepted values.                                                                                                                       |
+| `@applicable name, name`             | Project-specific applicability labels, such as calendar view modes or forwarded wrapper sources.                                       |
+| `@default value`                     | Documented default when the runtime value needs a clearer display form.                                                                |
+| `@required true` / `@required false` | Requiredness override.                                                                                                                 |
+| `@type Type`                         | Displayed API type override.                                                                                                           |
+| `@ts-type Type`                      | TypeScript type override. `@tsType` is also accepted.                                                                                  |
+| `@api-exemption field, field`        | Quasar-style `__exemption` values. `@exemption` is also accepted.                                                                      |
 
 Supported structural tags:
 

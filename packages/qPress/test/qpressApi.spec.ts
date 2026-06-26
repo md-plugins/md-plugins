@@ -24,6 +24,86 @@ async function createProject(files: Record<string, string>): Promise<string> {
 }
 
 describe('qpress api', () => {
+  it('collapses soft JSDoc wraps while preserving intentional Markdown structure', async () => {
+    const root = await createProject({
+      'src/.q-press/api/composables/calendar.json': '{"type":"component"}\n',
+      'src/utils/calendar.ts': `
+/**
+ * Calendar month number, where the first month is \`1\`. Core parser helpers
+ * use Gregorian month numbers.
+ *
+ * Use adapters when:
+ *
+ * - rendering non-Gregorian calendars
+ * across UIs
+ * - comparing calendar days
+ *
+ * \`\`\`ts
+ * parseCalendarTimestamp(adapter, '1447-09-01')
+ * \`\`\`
+ *
+ * @param input Calendar date string wrapped across
+ * multiple JSDoc lines.
+ * @returns Parsed calendar timestamp, or null when
+ * the input is invalid.
+ * @example const parsed = parseCalendarTimestamp(adapter, '1447-09-01')
+ * if (parsed !== null) {
+ *   console.log(parsed.date)
+ * }
+ */
+export function parseCalendarTimestamp(input: string): string | null {
+  return input
+}
+`,
+    })
+
+    try {
+      await generateQPressApi({
+        cwd: root,
+        entries: [
+          {
+            input: 'src/utils/calendar.ts',
+            output: 'src/.q-press/api/composables/calendar.json',
+          },
+        ],
+      })
+      const generated = JSON.parse(
+        await readFile(join(root, 'src/.q-press/api/composables/calendar.generated.json'), 'utf8'),
+      )
+
+      expect(generated.functions.parseCalendarTimestamp.desc).toBe(
+        [
+          'Calendar month number, where the first month is `1`. Core parser helpers use Gregorian month numbers.',
+          '',
+          'Use adapters when:',
+          '',
+          '- rendering non-Gregorian calendars across UIs',
+          '- comparing calendar days',
+          '',
+          '```ts',
+          "parseCalendarTimestamp(adapter, '1447-09-01')",
+          '```',
+        ].join('\n'),
+      )
+      expect(generated.functions.parseCalendarTimestamp.params.input.desc).toBe(
+        'Calendar date string wrapped across multiple JSDoc lines.',
+      )
+      expect(generated.functions.parseCalendarTimestamp.returns.desc).toBe(
+        'Parsed calendar timestamp, or null when the input is invalid.',
+      )
+      expect(generated.functions.parseCalendarTimestamp.examples).toEqual([
+        [
+          "const parsed = parseCalendarTimestamp(adapter, '1447-09-01')",
+          'if (parsed !== null) {',
+          'console.log(parsed.date)',
+          '}',
+        ].join('\n'),
+      ])
+    } finally {
+      await rm(root, { force: true, recursive: true })
+    }
+  })
+
   it('writes generated comparison files without overwriting existing API JSON', async () => {
     const root = await createProject({
       'src/.q-press/api/composables/timestamp.json': '{"type":"component"}\n',
@@ -55,6 +135,7 @@ type ParserReturn = {
  * @returns-example null
  * @returns-api-exemption examples
  * @example parseTimestamp('2036-06-08')
+ * @category parsing
  * @since 0.1.0
  */
 export function parseTimestamp(input: string, now?: Timestamp | null): Timestamp | null {
@@ -125,6 +206,7 @@ export const today = (): string => '2036-06-08'
       expect(generated.functions.parseTimestamp.desc).toBe(
         'Converts a supported input into a timestamp.',
       )
+      expect(generated.functions.parseTimestamp.category).toBe('parsing')
       expect(generated.functions.parseTimestamp.addedIn).toBe('0.1.0')
       expect(generated.functions.parseTimestamp.params.input).toEqual({
         desc: 'Date or date-time string.',
