@@ -24,9 +24,9 @@ const dependencySections: DependencySection[] = [
 ]
 
 const qPressDevDependencies = {
-  '@md-plugins/search-ui': '^0.1.0-rc.17',
-  '@md-plugins/vite-search-plugin': '^0.1.0-rc.17',
-  '@md-plugins/vite-ssg-plugin': '^0.1.0-rc.17',
+  '@md-plugins/search-ui': '^0.1.0-rc.18',
+  '@md-plugins/vite-search-plugin': '^0.1.0-rc.18',
+  '@md-plugins/vite-ssg-plugin': '^0.1.0-rc.18',
   '@vue/server-renderer': '^3.5.0',
   mermaid: '^11.15.0',
   shiki: '^4.1.0',

@@ -4,7 +4,7 @@ Markdown documentation tooling for Quasar and Vite applications.
 
 See the [documentation](https://md-plugins.netlify.app/quasar-app-extensions/qpress/overview) for more information.
 
-> Current release candidate: `0.1.0-rc.17`.
+> Current release candidate: `0.1.0-rc.18`.
 >
 > Q-Press currently targets Quasar Vite projects using `@quasar/app-vite` `>=3.0.0-rc.3`. TypeScript processing is required.
 

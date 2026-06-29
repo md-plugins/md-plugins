@@ -1,6 +1,6 @@
 {
   "name": "mdplugins_docs",
-  "version": "0.1.0-rc.17",
+  "version": "0.1.0-rc.18",
   "private": true,
   "description": "Documentation site for MD-Plugins, Q-Press, and the Vite/Markdown plugin ecosystem.",
   "author": "Jeff <galbraith64@gmail.com>",
@@ -31,7 +31,7 @@
     "pinia": "^3.0.4",
     "quasar": "^2.20.1",
     "serialize-javascript": "7.0.6",
-    "vue": "^3.5.38",
+    "vue": "^3.5.39",
     "vue-router": "^5.1.0"
   },
   "devDependencies": {
@@ -43,12 +43,12 @@
     "@md-plugins/vite-ssg-plugin": "workspace:*",
     "@quasar/app-vite": "3.0.0-rc.3",
     "@types/markdown-it-container": "^4.0.0",
-    "@types/node": "^26.0.0",
-    "autoprefixer": "^10.5.1",
+    "@types/node": "^26.0.1",
+    "autoprefixer": "^10.5.2",
     "markdown-it-container": "^4.0.0",
-    "mermaid": "^11.15.0",
+    "mermaid": "^11.16.0",
     "sass-embedded": "^1.100.0",
-    "shiki": "^4.2.0",
+    "shiki": "^4.3.0",
     "typescript": "~6.0.3",
     "vite": "^8.1.0",
     "vite-plugin-checker": "^0.14.4",
