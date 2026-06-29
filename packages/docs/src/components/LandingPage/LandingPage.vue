@@ -253,7 +253,7 @@ const familyHighlights = [
   {
     value: '13',
     label: 'Markdown-it Plugins',
-    body: 'Authoring helpers for quotes, code, containers, imports, Mermaid, tables, shared helpers, and more.',
+    body: 'Authoring helpers for quotes, code, containers, imports, steps, Mermaid, tables, and more.',
   },
   {
     value: '4',
@@ -360,6 +360,11 @@ const mdPlugins = [
     name: 'Mermaid Plugin',
     desc: 'Render diagrams directly from authored Markdown when documentation needs visual structure.',
     path: '/md-plugins/mermaid/overview',
+  },
+  {
+    name: 'Steps Plugin',
+    desc: 'Create numbered instructional flows for setup guides, migrations, and release checklists.',
+    path: '/md-plugins/steps/overview',
   },
   {
     name: 'Table Plugin',
@@ -825,7 +830,7 @@ const supportItems = [
 .resource-section {
   display: grid;
   gap: 16px;
-  align-items: start;
+  align-items: stretch;
   grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
 }
 
@@ -834,6 +839,11 @@ const supportItems = [
 .plugin-group {
   position: relative;
   padding: 20px;
+}
+
+.resource-card {
+  display: flex;
+  flex-direction: column;
 }
 
 .feature-card::before,
@@ -917,7 +927,8 @@ const supportItems = [
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  margin-top: 16px;
+  margin-top: auto;
+  padding-top: 16px;
 }
 
 .resource-link {
