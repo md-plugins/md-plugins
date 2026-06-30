@@ -1,6 +1,6 @@
 {
   "name": "@md-plugins/md-plugin-headers",
-  "version": "0.1.0-rc.18",
+  "version": "0.1.0-rc.19",
   "description": "A markdown-it plugin for handling headers (H1-H6).",
   "keywords": [
     "markdown-it",
@@ -36,7 +36,7 @@
     "access": "public"
   },
   "scripts": {
-    "build": "unbuild",
+    "build": "obuild && node ../../scripts/ensure-obuild-types.mjs",
     "clean": "rm -rf dist/ node_modules/",
     "test": "vitest",
     "prepack": "pnpm build"

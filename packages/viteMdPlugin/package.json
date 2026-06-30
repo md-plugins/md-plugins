@@ -1,6 +1,6 @@
 {
   "name": "@md-plugins/vite-md-plugin",
-  "version": "0.1.0-rc.18",
+  "version": "0.1.0-rc.19",
   "description": "A very opinionated Vite plugin for @md-plugins.",
   "keywords": [
     "markdown-it",
@@ -38,7 +38,7 @@
     "access": "public"
   },
   "scripts": {
-    "build": "unbuild",
+    "build": "obuild && node ../../scripts/ensure-obuild-types.mjs",
     "clean": "rm -rf dist/ node_modules/",
     "prepack": "pnpm build"
   },
@@ -62,7 +62,7 @@
   },
   "devDependencies": {
     "@types/markdown-it": "^14.1.2",
-    "vite": "^8.1.0"
+    "vite": "^8.1.1"
   },
   "peerDependencies": {
     "markdown-it": "^14.2.0"

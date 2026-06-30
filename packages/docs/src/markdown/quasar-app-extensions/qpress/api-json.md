@@ -16,6 +16,42 @@ Use API generation when your public API has TypeScript signatures and JSDoc comm
 
 Good targets include composables, utilities, Vue components, and render-function components that declare public props, emits, slots, exposed methods, and return types in source.
 
+Documented exported constants are also supported. This is useful for object-shaped public APIs such
+as adapters, configuration presets, or shared option maps where the object itself is the value users
+import.
+
+```ts
+/**
+ * Deterministic calendar adapter.
+ *
+ * @category calendar
+ */
+export const deterministicCalendar: CalendarSystem = Object.freeze({
+  /**
+   * Stable adapter id.
+   */
+  id: 'deterministic',
+
+  /**
+   * Visible weekday order, using JavaScript weekday numbering.
+   */
+  defaultWeekdays: Object.freeze([0, 1, 2, 3, 4, 5, 6]),
+
+  /**
+   * Returns the number of months in the year.
+   *
+   * @returns Number of months.
+   */
+  monthsInYear(): number {
+    return 12
+  },
+})
+```
+
+For object constants, Q-Press expands nested fields into a `definition` block, keeps literal values
+such as strings and arrays as `default`, and merges explicit object-member JSDoc with the annotated
+TypeScript type when one is available.
+
 ## Configure Entries
 
 Add source/output pairs under `api.entries` in `qpress.config.json`, `qpress.config.mjs`, or another supported Q-Press config file:

@@ -1,13 +1,27 @@
-import { defineBuildConfig } from 'unbuild'
+import { defineBuildConfig } from 'obuild/config'
 
 export default defineBuildConfig({
-  clean: true,
-  declaration: true,
-  failOnWarn: false,
-  entries: ['src/index'],
-  rollup: {
-    emitCJS: false,
-    inlineDependencies: false,
+  entries: [
+    {
+      type: 'bundle',
+      input: './src/index.ts',
+      outDir: './dist',
+      minify: false,
+      dts: true,
+      license: false,
+    },
+  ],
+  hooks: {
+    rolldownConfig(config) {
+      const external = Array.isArray(config.external) ? config.external : []
+
+      config.external = [
+        ...external,
+        'vite',
+        /^vite\//,
+        'postcss',
+        /^postcss\//,
+      ] as typeof config.external
+    },
   },
-  externals: ['node_modules', 'dist'],
 })

@@ -1,6 +1,6 @@
 {
   "name": "@md-plugins/md-plugin-steps",
-  "version": "0.1.0-rc.18",
+  "version": "0.1.0-rc.19",
   "description": "A markdown-it plugin for rendering wizard-like numbered step blocks.",
   "keywords": [
     "markdown-it",
@@ -37,7 +37,7 @@
     "access": "public"
   },
   "scripts": {
-    "build": "unbuild",
+    "build": "obuild && node ../../scripts/ensure-obuild-types.mjs",
     "clean": "rm -rf dist/ node_modules/",
     "test": "vitest",
     "prepack": "pnpm build"

@@ -1,6 +1,6 @@
 {
   "name": "@md-plugins/vite-examples-plugin",
-  "version": "0.1.0-rc.18",
+  "version": "0.1.0-rc.19",
   "description": "A Vite plugin for @md-plugins for handling imported examples in markdown files.",
   "keywords": [
     "markdown-it",
@@ -38,7 +38,7 @@
     "access": "public"
   },
   "scripts": {
-    "build": "unbuild",
+    "build": "obuild && node ../../scripts/ensure-obuild-types.mjs",
     "clean": "rm -rf dist/ node_modules/",
     "prepack": "pnpm build"
   },
@@ -46,6 +46,6 @@
     "tinyglobby": "^0.2.17"
   },
   "devDependencies": {
-    "vite": "^8.1.0"
+    "vite": "^8.1.1"
   }
 }

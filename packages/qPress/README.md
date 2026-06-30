@@ -4,7 +4,7 @@ Markdown documentation tooling for Quasar and Vite applications.
 
 See the [documentation](https://md-plugins.netlify.app/quasar-app-extensions/qpress/overview) for more information.
 
-> Current release candidate: `0.1.0-rc.18`.
+> Current release candidate: `0.1.0-rc.19`.
 >
 > Q-Press currently targets Quasar Vite projects using `@quasar/app-vite` `>=3.0.0-rc.3`. TypeScript processing is required.
 
@@ -56,6 +56,8 @@ See the [documentation](https://md-plugins.netlify.app/quasar-app-extensions/qpr
 Q-Press exposes one primary CLI command with focused subcommands:
 
 ```bash
+qpress api generate
+qpress api check
 qpress check
 qpress ssg
 ```
@@ -64,6 +66,8 @@ Use `qpress check` before release or CI builds to validate Markdown routes, inte
 `related` frontmatter routes, siteConfig navigation routes, `MarkdownExample` files,
 Q-Press API JSON, and common SSG-unsafe example patterns. Unreachable Markdown page warnings are available with
 `qpress check --check-unreachable` for stricter release checks.
+
+Use `qpress api generate` and `qpress api check` when TypeScript source and JSDoc are the source of truth for rendered `MarkdownApi` pages. Q-Press can document exported functions and documented exported constants, including object-shaped constants with nested properties and literal default values.
 
 Check options can be kept in a project-local config file such as `qpress.config.json`
 or `qpress.config.mjs`:
