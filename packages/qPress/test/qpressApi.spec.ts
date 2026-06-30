@@ -124,6 +124,27 @@ type ParserReturn = {
   valid: boolean
 }
 
+type CalendarSystem = {
+  id: string
+  label: string
+  defaultWeekdays: readonly number[]
+  monthsInYear(): number
+}
+
+/**
+ * Deterministic calendar adapter.
+ *
+ * @category calendar
+ */
+export const deterministicCalendar: CalendarSystem = {
+  id: 'deterministic',
+  label: 'Deterministic',
+  defaultWeekdays: Object.freeze([0, 1, 2, 3, 4, 5, 6]),
+  monthsInYear() {
+    return 12
+  },
+}
+
 /**
  * Converts a supported input into a timestamp.
  *
@@ -188,7 +209,7 @@ export const today = (): string => '2036-06-08'
 
       expect(existing).toBe('{"type":"component"}\n')
       expect(result.entries[0]?.differsFromOutput).toBe(true)
-      expect(result.entries[0]?.exportCount).toBe(3)
+      expect(result.entries[0]?.exportCount).toBe(4)
       expect(result.entries[0]?.fieldChanges).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
@@ -203,6 +224,48 @@ export const today = (): string => '2036-06-08'
       )
       expect(generated.generated_at).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/)
       expect(generated.meta.docsUrl).toBe('/api/timestamp')
+      expect(generated.functions.deterministicCalendar).toEqual({
+        category: 'calendar',
+        definition: {
+          defaultWeekdays: {
+            default: '[0, 1, 2, 3, 4, 5, 6]',
+            desc: '',
+            required: true,
+            tsType: 'readonly number[]',
+            type: 'Array',
+          },
+          id: {
+            default: 'deterministic',
+            desc: '',
+            required: true,
+            tsType: 'string',
+            type: 'String',
+          },
+          label: {
+            default: 'Deterministic',
+            desc: '',
+            required: true,
+            tsType: 'string',
+            type: 'String',
+          },
+          monthsInYear: {
+            desc: '',
+            required: true,
+            returns: {
+              desc: '',
+              tsType: 'number',
+              type: 'Number',
+            },
+            tsSignature: 'function monthsInYear(): number',
+            tsType: '() => number',
+            type: 'Function',
+          },
+        },
+        desc: 'Deterministic calendar adapter.',
+        tsSignature: 'const deterministicCalendar: CalendarSystem',
+        tsType: 'CalendarSystem',
+        type: 'Constant',
+      })
       expect(generated.functions.parseTimestamp.desc).toBe(
         'Converts a supported input into a timestamp.',
       )

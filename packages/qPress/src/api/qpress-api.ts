@@ -1,4 +1,4 @@
-import { existsSync, promises as fs, readFileSync } from 'node:fs'
+import { existsSync, promises as fs, readFileSync, readdirSync } from 'node:fs'
 import { dirname, extname, resolve } from 'node:path'
 import ts from 'typescript'
 
@@ -1312,7 +1312,7 @@ function resolveTypeDeclarationByName(
   name: string,
   context: SourceFileContext,
 ): ts.InterfaceDeclaration | ts.TypeAliasDeclaration | undefined {
-  const local = findTypeDeclarationInSource(name, context.sourceFile)
+  const local = findTypeDeclarationInSource(name, context.sourceFile, context)
 
   if (local !== undefined) {
     return local
@@ -1324,7 +1324,10 @@ function resolveTypeDeclarationByName(
     return undefined
   }
 
-  return findTypeDeclarationInSource(imported.importedName, imported.sourceFile)
+  return findTypeDeclarationInSource(imported.importedName, imported.sourceFile, {
+    ...context,
+    sourceFile: imported.sourceFile,
+  })
 }
 
 function resolveTypeProperties(
@@ -1434,6 +1437,7 @@ function findVariableInitializer(
 function findTypeDeclarationInSource(
   name: string,
   sourceFile: ts.SourceFile,
+  context: SourceFileContext,
 ): ts.InterfaceDeclaration | ts.TypeAliasDeclaration | undefined {
   for (const statement of sourceFile.statements) {
     if (ts.isInterfaceDeclaration(statement) && statement.name.text === name) {
@@ -1442,6 +1446,43 @@ function findTypeDeclarationInSource(
 
     if (ts.isTypeAliasDeclaration(statement) && statement.name.text === name) {
       return statement
+    }
+
+    if (ts.isExportDeclaration(statement)) {
+      const moduleSpecifier = statement.moduleSpecifier
+      const exportClause = statement.exportClause
+
+      if (
+        moduleSpecifier === undefined ||
+        !ts.isStringLiteral(moduleSpecifier) ||
+        exportClause === undefined ||
+        !ts.isNamedExports(exportClause)
+      ) {
+        continue
+      }
+
+      const exported = exportClause.elements.find((element) => element.name.text === name)
+
+      if (exported === undefined) {
+        continue
+      }
+
+      const sourcePath = resolveImportPath(moduleSpecifier.text, sourceFile.fileName)
+
+      if (sourcePath === undefined) {
+        continue
+      }
+
+      const reexportedSourceFile = readSourceFile(sourcePath, context)
+      const exportedName = exported.propertyName?.text ?? exported.name.text
+      const declaration = findTypeDeclarationInSource(exportedName, reexportedSourceFile, {
+        ...context,
+        sourceFile: reexportedSourceFile,
+      })
+
+      if (declaration !== undefined) {
+        return declaration
+      }
     }
   }
 
@@ -1502,20 +1543,100 @@ function resolveImportedName(
 
 function resolveImportPath(moduleSpecifier: string, fromFile: string): string | undefined {
   if (!moduleSpecifier.startsWith('.')) {
-    return undefined
+    return resolveWorkspacePackageImportPath(moduleSpecifier, fromFile)
   }
 
   const base = resolve(dirname(fromFile), moduleSpecifier)
+  const sourceBase = base.replace(/\.(?:cjs|js|jsx|mjs)$/, '')
   const candidates = [
     base,
     `${base}.ts`,
     `${base}.tsx`,
     `${base}.vue`,
+    `${sourceBase}.ts`,
+    `${sourceBase}.tsx`,
+    `${sourceBase}.vue`,
     resolve(base, 'index.ts'),
     resolve(base, 'index.tsx'),
+    resolve(sourceBase, 'index.ts'),
+    resolve(sourceBase, 'index.tsx'),
   ]
 
   return candidates.find((candidate) => existsSync(candidate))
+}
+
+function resolveWorkspacePackageImportPath(
+  moduleSpecifier: string,
+  fromFile: string,
+): string | undefined {
+  let directory = dirname(fromFile)
+
+  while (true) {
+    const packagePath = findWorkspacePackagePath(directory, moduleSpecifier)
+
+    if (packagePath !== undefined) {
+      return packagePath
+    }
+
+    const parent = dirname(directory)
+
+    if (parent === directory) {
+      return undefined
+    }
+
+    directory = parent
+  }
+}
+
+function findWorkspacePackagePath(root: string, packageName: string): string | undefined {
+  const packagesRoot = resolve(root, 'packages')
+
+  if (!existsSync(packagesRoot)) {
+    return undefined
+  }
+
+  let entries: Array<{ isDirectory(): boolean; name: string }>
+
+  try {
+    entries = readdirSync(packagesRoot, { withFileTypes: true }) as Array<{
+      isDirectory(): boolean
+      name: string
+    }>
+  } catch {
+    return undefined
+  }
+
+  for (const entry of entries) {
+    if (!entry.isDirectory()) {
+      continue
+    }
+
+    const packageDirectory = resolve(packagesRoot, entry.name)
+    const packageJsonPath = resolve(packageDirectory, 'package.json')
+
+    if (!existsSync(packageJsonPath)) {
+      continue
+    }
+
+    try {
+      const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf8')) as { name?: string }
+
+      if (packageJson.name !== packageName) {
+        continue
+      }
+
+      return [
+        resolve(packageDirectory, 'src/index.ts'),
+        resolve(packageDirectory, 'src/index.tsx'),
+        resolve(packageDirectory, 'index.ts'),
+        resolve(packageDirectory, 'index.tsx'),
+      ].find((candidate) => existsSync(candidate))
+    } catch {
+      continue
+    }
+  }
+
+  return undefined
 }
 
 function readSourceFile(path: string, context: SourceFileContext): ts.SourceFile {
@@ -1575,11 +1696,11 @@ function extractExportedFunctions(
 
     if (ts.isVariableStatement(statement) && isExported(statement)) {
       for (const declaration of statement.declarationList.declarations) {
-        if (
-          ts.isIdentifier(declaration.name) &&
-          declaration.initializer !== undefined &&
-          isFunctionLikeInitializer(declaration.initializer)
-        ) {
+        if (!ts.isIdentifier(declaration.name) || declaration.initializer === undefined) {
+          continue
+        }
+
+        if (isFunctionLikeInitializer(declaration.initializer)) {
           entries[declaration.name.text] = createFunctionEntry(
             declaration.initializer,
             sourceFile,
@@ -1589,12 +1710,326 @@ function extractExportedFunctions(
               name: declaration.name.text,
             },
           )
+          continue
+        }
+
+        const constantEntry = createConstantEntry(declaration, statement, sourceFile, context)
+
+        if (constantEntry !== undefined) {
+          entries[declaration.name.text] = constantEntry
         }
       }
     }
   }
 
   return entries
+}
+
+function createConstantEntry(
+  declaration: ts.VariableDeclaration,
+  statement: ts.VariableStatement,
+  sourceFile: ts.SourceFile,
+  context: SourceFileContext,
+): GeneratedApiProperty | undefined {
+  const docs = readJSDoc(declaration, sourceFile, statement)
+
+  if (docs.desc === '' && docs.api === false) {
+    return undefined
+  }
+
+  const type = getVariableType(declaration, sourceFile)
+  const entry: GeneratedApiProperty = {
+    desc: docs.desc,
+    tsSignature: getVariableSignature(declaration, sourceFile),
+    tsType: type,
+    type: 'Constant',
+  }
+
+  if (docs.examples.length > 0) {
+    entry.examples = docs.examples
+  }
+
+  if (docs.category !== undefined) {
+    entry.category = docs.category
+  }
+
+  if (docs.since !== undefined) {
+    entry.addedIn = docs.since
+  }
+
+  if (docs.deprecated !== undefined) {
+    entry.deprecated = docs.deprecated
+  }
+
+  const definition = getConstantDefinition(declaration, sourceFile, context)
+
+  if (definition !== undefined) {
+    entry.definition = definition
+  }
+
+  applyPropertyMetadata(entry, docs.metadata)
+
+  if (entry.tsType === undefined) {
+    entry.tsType = type
+  }
+
+  return entry
+}
+
+function getConstantDefinition(
+  declaration: ts.VariableDeclaration,
+  sourceFile: ts.SourceFile,
+  context: SourceFileContext,
+): Record<string, GeneratedApiProperty> | undefined {
+  const object = getObjectLiteralInitializer(declaration.initializer, sourceFile)
+
+  if (object === undefined) {
+    return undefined
+  }
+
+  const typedDefinition = getReturnProperties(declaration.type, context)
+  const definition: Record<string, GeneratedApiProperty> =
+    typedDefinition === undefined
+      ? {}
+      : Object.fromEntries(
+          Object.entries(typedDefinition).map(([name, property]) => [name, { ...property }]),
+        )
+
+  for (const property of object.properties) {
+    const name = getObjectPropertyName(property, sourceFile)
+
+    if (name === undefined) {
+      continue
+    }
+
+    const entry = createObjectDefinitionEntry(name, property, sourceFile, context)
+
+    if (entry !== undefined) {
+      definition[name] =
+        definition[name] === undefined
+          ? entry
+          : mergeConstantDefinitionEntry(name, definition[name], entry)
+    }
+  }
+
+  return Object.keys(definition).length === 0 ? undefined : definition
+}
+
+function mergeConstantDefinitionEntry(
+  name: string,
+  typedEntry: GeneratedApiProperty,
+  objectEntry: GeneratedApiProperty,
+): GeneratedApiProperty {
+  const merged: GeneratedApiProperty = {
+    ...objectEntry,
+    ...typedEntry,
+    default: objectEntry.default ?? typedEntry.default,
+    desc: objectEntry.desc === '' ? typedEntry.desc : objectEntry.desc,
+    required: objectEntry.required ?? typedEntry.required,
+  }
+
+  if (typedEntry.tsType !== undefined && objectEntry.type !== 'Function') {
+    merged.type = normalizeApiType(typedEntry.tsType)
+  }
+
+  if (objectEntry.type === 'Function' && typedEntry.tsType !== undefined) {
+    const signature = /^\((.*)\)\s*=>\s*(.+)$/.exec(typedEntry.tsType)
+
+    merged.type = 'Function'
+
+    if (signature !== null) {
+      const params = signature[1]?.trim() ?? ''
+      const returnType = signature[2]?.trim() ?? 'unknown'
+
+      merged.tsSignature = `function ${name}(${params}): ${returnType}`
+      merged.returns = {
+        ...(objectEntry.returns ?? { desc: '' }),
+        tsType: returnType,
+        type: normalizeApiType(returnType),
+      }
+    }
+  }
+
+  return merged
+}
+
+function createObjectDefinitionEntry(
+  name: string,
+  property: ts.ObjectLiteralElementLike,
+  sourceFile: ts.SourceFile,
+  context: SourceFileContext,
+): GeneratedApiProperty | undefined {
+  const docs = readJSDoc(property, sourceFile)
+
+  if (ts.isMethodDeclaration(property)) {
+    return {
+      ...createFunctionEntry(property, sourceFile, { context, name }),
+      required: true,
+    }
+  }
+
+  if (ts.isPropertyAssignment(property)) {
+    if (isFunctionLikeInitializer(property.initializer)) {
+      return {
+        ...createFunctionEntry(property.initializer, sourceFile, { context, name }),
+        required: true,
+      }
+    }
+
+    return applyJSDocMetadata(
+      {
+        ...getExpressionType(property.initializer, sourceFile),
+        default: getExpressionDefault(property.initializer, sourceFile),
+        desc: docs.desc,
+        required: true,
+      },
+      docs,
+    )
+  }
+
+  if (ts.isShorthandPropertyAssignment(property)) {
+    return applyJSDocMetadata(
+      {
+        desc: docs.desc,
+        required: true,
+        tsType: 'unknown',
+        type: 'unknown',
+      },
+      docs,
+    )
+  }
+
+  return undefined
+}
+
+function getObjectLiteralInitializer(
+  initializer: ts.Expression | undefined,
+  sourceFile: ts.SourceFile,
+): ts.ObjectLiteralExpression | undefined {
+  if (initializer === undefined) {
+    return undefined
+  }
+
+  if (ts.isObjectLiteralExpression(initializer)) {
+    return initializer
+  }
+
+  if (isObjectFreezeCall(initializer, sourceFile)) {
+    const [value] = initializer.arguments
+
+    return value !== undefined && ts.isObjectLiteralExpression(value) ? value : undefined
+  }
+
+  return undefined
+}
+
+function getExpressionType(
+  expression: ts.Expression,
+  sourceFile: ts.SourceFile,
+): Pick<GeneratedApiProperty, 'tsType' | 'type'> {
+  if (ts.isStringLiteral(expression) || ts.isNoSubstitutionTemplateLiteral(expression)) {
+    return {
+      tsType: 'string',
+      type: 'String',
+    }
+  }
+
+  if (ts.isNumericLiteral(expression)) {
+    return {
+      tsType: 'number',
+      type: 'Number',
+    }
+  }
+
+  if (
+    expression.kind === ts.SyntaxKind.TrueKeyword ||
+    expression.kind === ts.SyntaxKind.FalseKeyword
+  ) {
+    return {
+      tsType: 'boolean',
+      type: 'Boolean',
+    }
+  }
+
+  if (ts.isArrayLiteralExpression(expression)) {
+    return {
+      tsType: 'Array',
+      type: 'Array',
+    }
+  }
+
+  if (isObjectFreezeCall(expression, sourceFile)) {
+    const [value] = expression.arguments
+
+    if (value !== undefined && ts.isArrayLiteralExpression(value)) {
+      return {
+        tsType: 'ReadonlyArray',
+        type: 'Array',
+      }
+    }
+
+    if (value !== undefined && ts.isObjectLiteralExpression(value)) {
+      return {
+        tsType: 'ReadonlyObject',
+        type: 'Object',
+      }
+    }
+  }
+
+  if (ts.isObjectLiteralExpression(expression)) {
+    return {
+      tsType: 'Object',
+      type: 'Object',
+    }
+  }
+
+  return {
+    tsType: expression.getText(sourceFile),
+    type: normalizeApiType(expression.getText(sourceFile)),
+  }
+}
+
+function getExpressionDefault(
+  expression: ts.Expression,
+  sourceFile: ts.SourceFile,
+): string | undefined {
+  if (ts.isStringLiteral(expression) || ts.isNoSubstitutionTemplateLiteral(expression)) {
+    return expression.text
+  }
+
+  if (
+    ts.isNumericLiteral(expression) ||
+    expression.kind === ts.SyntaxKind.TrueKeyword ||
+    expression.kind === ts.SyntaxKind.FalseKeyword
+  ) {
+    return expression.getText(sourceFile)
+  }
+
+  if (ts.isArrayLiteralExpression(expression)) {
+    return expression.getText(sourceFile)
+  }
+
+  if (isObjectFreezeCall(expression, sourceFile)) {
+    const [value] = expression.arguments
+
+    if (value !== undefined && ts.isArrayLiteralExpression(value)) {
+      return value.getText(sourceFile)
+    }
+  }
+
+  return undefined
+}
+
+function isObjectFreezeCall(
+  expression: ts.Expression,
+  sourceFile: ts.SourceFile,
+): expression is ts.CallExpression {
+  return (
+    ts.isCallExpression(expression) &&
+    ts.isPropertyAccessExpression(expression.expression) &&
+    expression.expression.expression.getText(sourceFile) === 'Object' &&
+    expression.expression.name.text === 'freeze'
+  )
 }
 
 function extractScriptSetup(source: string): string | undefined {
@@ -3060,6 +3495,56 @@ function getReturnType(node: FunctionLikeNode, sourceFile: ts.SourceFile): strin
   }
 
   return 'unknown'
+}
+
+function getVariableType(declaration: ts.VariableDeclaration, sourceFile: ts.SourceFile): string {
+  if (declaration.type !== undefined) {
+    return declaration.type.getText(sourceFile)
+  }
+
+  if (declaration.initializer === undefined) {
+    return 'unknown'
+  }
+
+  if (ts.isStringLiteral(declaration.initializer)) {
+    return 'string'
+  }
+
+  if (ts.isNumericLiteral(declaration.initializer)) {
+    return 'number'
+  }
+
+  if (
+    declaration.initializer.kind === ts.SyntaxKind.TrueKeyword ||
+    declaration.initializer.kind === ts.SyntaxKind.FalseKeyword
+  ) {
+    return 'boolean'
+  }
+
+  if (ts.isObjectLiteralExpression(declaration.initializer)) {
+    return 'Object'
+  }
+
+  if (ts.isArrayLiteralExpression(declaration.initializer)) {
+    return 'Array'
+  }
+
+  if (ts.isIdentifier(declaration.initializer)) {
+    return `typeof ${declaration.initializer.text}`
+  }
+
+  return 'unknown'
+}
+
+function getVariableSignature(
+  declaration: ts.VariableDeclaration,
+  sourceFile: ts.SourceFile,
+): string | undefined {
+  if (!ts.isIdentifier(declaration.name)) {
+    return undefined
+  }
+
+  return `const ${declaration.name.text}: ${getVariableType(declaration, sourceFile)}`
 }
 
 function getReturnProperties(
