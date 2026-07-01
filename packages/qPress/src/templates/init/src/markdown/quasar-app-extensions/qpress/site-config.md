@@ -404,6 +404,123 @@ Campaign triggers currently support `load`, `delay`, `scroll-depth`, and desktop
 
 Use `device: 'desktop'`, `device: 'mobile'`, or `device: 'all'` to target a campaign to the right viewport class. `mobileFallback: 'load'` is only for cases where an `exit-intent` campaign is allowed on mobile but needs a touch-safe trigger instead.
 
+### Campaign Recipes
+
+Use these patterns as starting points. Keep only one or two campaigns enabled at a time, give each campaign a stable `id`, and prefer route/date/frequency limits so prompts stay useful instead of noisy.
+
+#### Route-Specific Upgrade Notice
+
+Use this when a breaking change affects a specific docs area:
+
+```ts
+{
+  enabled: true,
+  id: 'qpress-upgrade-guide-v2',
+  title: 'Q-Press upgrade notes',
+  message: 'This section changed in the latest release. Review the upgrade guide before updating generated files.',
+  tone: 'warning',
+  includeRoutes: ['/quasar-app-extensions/qpress/*'],
+  excludeRoutes: ['/quasar-app-extensions/qpress/upgrade-guide'],
+  trigger: { type: 'load' },
+  frequency: { strategy: 'once' },
+  action: {
+    label: 'Open upgrade guide',
+    link: '/quasar-app-extensions/qpress/upgrade-guide',
+  },
+}
+```
+
+#### Limited Release Promotion
+
+Use start/end dates for release windows:
+
+```ts
+{
+  enabled: true,
+  id: 'docs-release-2026-07',
+  title: 'New docs release',
+  message: 'The July docs update includes SSG, API generation, and Q-Press validation improvements.',
+  tone: 'info',
+  startAt: '2026-07-01T00:00:00Z',
+  endAt: '2026-07-15T23:59:59Z',
+  includeRoutes: ['/*'],
+  trigger: { type: 'delay', delayMs: 2000 },
+  frequency: { strategy: 'session' },
+  action: {
+    label: 'Read release notes',
+    link: '/releases',
+  },
+}
+```
+
+#### Sponsor Prompt
+
+Use scroll depth and a longer cooldown for sponsor prompts:
+
+```ts
+{
+  enabled: true,
+  id: 'sponsor-docs-maintenance-v1',
+  title: 'Support ongoing maintenance',
+  message: 'If these docs help your workflow, consider sponsoring future maintenance.',
+  tone: 'sponsor',
+  includeRoutes: ['/quasar-app-extensions/qpress/*'],
+  trigger: { type: 'scroll-depth', scrollDepth: 70 },
+  frequency: { strategy: 'days', days: 30, maxViews: 3 },
+  device: 'desktop',
+  mobileFallback: 'none',
+  action: {
+    label: 'Sponsor Jeff',
+    link: 'https://github.com/sponsors/hawkeye64',
+    external: true,
+  },
+}
+```
+
+#### Scroll-Depth Learning Prompt
+
+Use this when a reader has already engaged with a long guide:
+
+```ts
+{
+  enabled: true,
+  id: 'api-generation-next-step-v1',
+  title: 'Try the API generator next',
+  message: 'You are deep into the guide. The API JSON workflow can turn your TypeScript source into docs-ready API pages.',
+  tone: 'info',
+  includeRoutes: ['/quasar-app-extensions/qpress/api-json'],
+  trigger: { type: 'scroll-depth', scrollDepth: 80 },
+  frequency: { strategy: 'once' },
+  action: {
+    label: 'Open CLI docs',
+    link: '/quasar-app-extensions/qpress/cli',
+  },
+}
+```
+
+#### Desktop Exit Intent With Mobile Fallback
+
+Exit intent is desktop-only by nature. If mobile visitors should see the same message, make the fallback explicit:
+
+```ts
+{
+  enabled: true,
+  id: 'newsletter-exit-intent-v1',
+  title: 'Before you go',
+  message: 'Bookmark the release notes to keep track of Q-Press changes.',
+  tone: 'info',
+  includeRoutes: ['/quasar-app-extensions/qpress/*'],
+  trigger: { type: 'exit-intent' },
+  device: 'all',
+  mobileFallback: 'load',
+  frequency: { strategy: 'days', days: 14, maxViews: 2 },
+  action: {
+    label: 'View release notes',
+    link: '/releases',
+  },
+}
+```
+
 ## CodePen Links
 
 `codepen` is used by `MarkdownExample` when a live example opens in CodePen. Add global packages when an example needs browser globals and use `cssExternal`, `jsExternal`, or `head` when examples need shared assets.
