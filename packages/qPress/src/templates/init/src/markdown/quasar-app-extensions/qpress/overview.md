@@ -76,6 +76,14 @@ src/markdown/vite-plugins/vite-md-plugin/vite-md-plugin.md
 
 The landing page is the special case. A `landing-page.md` route is mounted at `/` and usually uses `meta: { fullscreen: true }` so it can own the full hero layout.
 
+## Route Manifest
+
+Q-Press builds a route manifest from `src/markdown/listing.ts` during dev and build. The listing uses Vite's `import.meta.glob()` so Markdown files stay lazy-loaded, HMR-aware, and visible to the bundler.
+
+Each manifest entry contains the source file, generated route path, route name, Markdown component loader, and Q-Press route metadata. `installQPressRoutes()` registers those entries with Vue Router by calling `router.addRoute()` under the generated Q-Press layout route.
+
+The manifest is the Markdown route inventory used by the generated router setup. Keep custom Vue routes, such as tools, theme builders, or pages with their own layout, in `src/router/routes.ts` as normal route records.
+
 ## Installation
 
 To install the Q-Press App Extension, use the following command on your existing Quasar project:
@@ -176,59 +184,57 @@ export default defineConfig(async (ctx) => {
 })
 ```
 
-### Modify `src/routes/routes.ts`
+### Modify `src/router/routes.ts`
 
 ```ts [maxheight=400px]
-import type { RouteRecordRaw } from 'vue-router'
-import mdPageList from '@/markdown/listing'
+import { createQPressLayoutRoute, createQPressNotFoundRoute } from '@/.q-press/router/routes'
 
 const routes = [
-  {
-    path: '/',
-    component: () => import('@/.q-press/layouts/MarkdownLayout.vue'),
-    children: [
-      // Include the Landing Page route first
-      ...Object.entries(mdPageList)
-        .filter(([key]) => key.includes('landing-page.md'))
-        .map(([, component]) => ({
-          path: '',
-          name: 'Landing Page',
-          component,
-          meta: { fullscreen: true, dark: true },
-        })),
-
-      // Now include all other routes, excluding the landing-page
-      ...Object.keys(mdPageList)
-        .filter((key) => !key.includes('landing-page.md')) // Exclude duplicates
-        .map((key) => {
-          const acc = {
-            path: '',
-            component: mdPageList[key],
-          }
-
-          if (acc.path === '') {
-            // Remove '.md' from the end of the filename
-            const parts = key.substring(1, key.length - 3).split('/')
-            const len = parts.length
-            const path = parts[len - 2] === parts[len - 1] ? parts.slice(0, len - 1) : parts
-
-            acc.path = path.join('/')
-          }
-
-          return acc
-        }),
-    ],
-  },
-
-  // Always leave this as last one,
-  // but you can also remove it
-  {
-    path: '/:catchAll(.*)*',
-    component: () => import('@/pages/ErrorNotFound.vue'),
-  },
-] as RouteRecordRaw[]
+  // Keep custom Vue routes here. For example:
+  // {
+  //   path: '/theme-builder',
+  //   component: () => import('@/layouts/ThemeBuilder.vue'),
+  // },
+  createQPressLayoutRoute(),
+  createQPressNotFoundRoute(),
+]
 
 export default routes
+```
+
+### Modify `src/router/index.ts`
+
+Q-Press Markdown pages are registered from the generated route manifest. The manifest is built from `src/markdown/listing.ts`, which uses `import.meta.glob()` so Vite can update the route inventory in dev and build.
+
+```ts [maxheight=400px]
+import { defineRouter } from '#q-app'
+import {
+  createMemoryHistory,
+  createRouter,
+  createWebHashHistory,
+  createWebHistory,
+} from 'vue-router'
+import { installQPressRoutes } from '@/.q-press/router/routes'
+import { qpressRouteManifest } from '@/markdown/listing'
+import routes from './routes'
+
+export default defineRouter(() => {
+  const createHistory = import.meta.env.QUASAR_SERVER
+    ? createMemoryHistory
+    : import.meta.env.QUASAR_VUE_ROUTER_MODE === 'history'
+      ? createWebHistory
+      : createWebHashHistory
+
+  const router = createRouter({
+    scrollBehavior: () => ({ left: 0, top: 0 }),
+    routes,
+    history: createHistory(import.meta.env.QUASAR_VUE_ROUTER_BASE),
+  })
+
+  installQPressRoutes(router, qpressRouteManifest)
+
+  return router
+})
 ```
 
 ### Set Up for Dark Mode
@@ -329,7 +335,9 @@ Choose `Overwrite All` if you want the generated `src/.q-press` files to match t
 
 :::details Q. I have errors in my `routes.ts` file, what should I do?
 
-**A.** You can remove the following line: `import type { RouteRecordRaw } from 'vue-router'` and also remove the `type` keyword from the `routes` variable (`: RouteRecordRaw[]`).
+**A.** Update to the manifest-backed route setup shown above. `src/router/routes.ts` should keep custom Vue routes plus `createQPressLayoutRoute()` and `createQPressNotFoundRoute()`. `src/router/index.ts` should call `installQPressRoutes(router, qpressRouteManifest)` after creating the router.
+
+Custom routes, such as a docs-only Theme Builder page, stay in `routes.ts`. Q-Press only adds Markdown routes from the manifest.
 :::
 
 :::details Q. I see linting issues regarding `any`, what should I do?

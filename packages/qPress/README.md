@@ -22,6 +22,7 @@ See the [documentation](https://md-plugins.netlify.app/quasar-app-extensions/qpr
 ## Features
 
 - **Markdown routes** generated from `src/markdown`.
+- **Manifest-backed route registration** through Vue Router `addRoute()`.
 - **Q-Press layouts** with sidebar, ToC, page headers, edit links, and landing-page support.
 - **Markdown components** for APIs, examples, tabs, steps, callouts, and code blocks.
 - **Live examples and CodePen helpers** powered by the examples plugin.
@@ -29,6 +30,8 @@ See the [documentation](https://md-plugins.netlify.app/quasar-app-extensions/qpr
 - **Search UI** powered by the framework-agnostic `@md-plugins/search-ui` Web Component.
 - **SSG build helpers** for static-host-friendly route output.
 - **Q-Press CLI** for API generation, route checks, SSG, and release validation.
+
+Q-Press builds a Markdown route manifest from `src/markdown/listing.ts` during dev and build. The generated `installQPressRoutes()` helper registers those Markdown routes under the Q-Press layout route with Vue Router's dynamic route API. App-owned pages such as theme builders or custom tools should remain explicit Vue Router records in `src/router/routes.ts`.
 
 ## Installation
 
@@ -157,60 +160,34 @@ When changing generated Q-Press components, edit `packages/docs/src/.q-press` fi
   `MarkdownSearch.vue` wrapper uses `@md-plugins/search-ui` to provide the header search control
   and route selected results through Vue Router.
 
-4. Modify your `src/routes/routes.ts`
+4. Modify your `src/router/routes.ts`
 
 - ```ts
-  import type { RouteRecordRaw } from 'vue-router'
-  import mdPageList from '@/markdown/listing'
+  import { createQPressLayoutRoute, createQPressNotFoundRoute } from '@/.q-press/router/routes'
+
   const routes = [
-    {
-      path: '/',
-      component: () => import('@/.q-press/layouts/MarkdownLayout.vue'),
-      children: [
-        // Include the Landing Page route first
-        ...Object.entries(mdPageList)
-          .filter(([key]) => key.includes('landing-page.md'))
-          .map(([, component]) => ({
-            path: '',
-            name: 'Landing Page',
-            component,
-            meta: { fullscreen: true, dark: true },
-          })),
-
-        // Now include all other routes, excluding the landing-page
-        ...Object.keys(mdPageList)
-          .filter((key) => !key.includes('landing-page.md')) // Exclude duplicates
-          .map((key) => {
-            const acc = {
-              path: '',
-              component: mdPageList[key],
-            }
-
-            if (acc.path === '') {
-              // Remove '.md' from the end of the filename
-              const parts = key.substring(1, key.length - 3).split('/')
-              const len = parts.length
-              const path = parts[len - 2] === parts[len - 1] ? parts.slice(0, len - 1) : parts
-
-              acc.path = path.join('/')
-            }
-
-            return acc
-          }),
-      ],
-    },
-    // Always leave this as last one,
-    // but you can also remove it
-    {
-      path: '/:catchAll(.*)*',
-      component: () => import('@/pages/ErrorNotFound.vue'),
-    },
-  ] as RouteRecordRaw[]
+    // Keep app-owned custom routes here.
+    createQPressLayoutRoute(),
+    createQPressNotFoundRoute(),
+  ]
 
   export default routes
   ```
 
-5. Set up for Dark mode support, update your App.vue
+5. Modify your `src/router/index.ts`
+
+- ```ts
+  import { installQPressRoutes } from '@/.q-press/router/routes'
+  import { qpressRouteManifest } from '@/markdown/listing'
+
+  // after createRouter(...)
+  installQPressRoutes(router, qpressRouteManifest)
+  ```
+
+  Q-Press Markdown pages are registered from the generated route manifest. Keep custom Vue routes
+  such as a docs-only Theme Builder in `src/router/routes.ts`.
+
+6. Set up for Dark mode support, update your App.vue
 
 - ```ts
   <template>

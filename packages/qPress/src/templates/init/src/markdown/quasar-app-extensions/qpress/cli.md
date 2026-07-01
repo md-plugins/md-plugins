@@ -228,7 +228,23 @@ For one-off runs, `--type`, `--group`, and `--docs-url` mirror the matching `api
 
 ## Custom Routes
 
-If your docs include custom Vue routes that are valid but not generated from Markdown, allow them explicitly:
+If your docs include custom Vue routes that are valid but not generated from Markdown, keep them in `src/router/routes.ts` as normal Vue Router records. Q-Press registers Markdown pages from its route manifest, but app-owned tools should remain explicit so they can use their own layout, stores, aliases, or route guards.
+
+For example, QCalendar keeps its Theme Builder as a custom route:
+
+```ts
+const routes = [
+  {
+    path: '/theme-builder',
+    alias: '/getting-started/theme-builder',
+    component: () => import('@/layouts/ThemeBuilder.vue'),
+  },
+  createQPressLayoutRoute(),
+  createQPressNotFoundRoute(),
+]
+```
+
+Because custom routes are not generated from Markdown, allow them when running route validation:
 
 ```bash
 pnpm exec qpress check --allow-route /theme-builder
