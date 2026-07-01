@@ -63,12 +63,12 @@
     "vite": "^8.1.1"
   },
   "devDependencies": {
-    "@quasar/app-vite": "3.0.0-rc.3",
+    "@quasar/app-vite": "3.0.0-rc.4",
     "@types/markdown-it": "^14.1.2",
     "@types/semver": "^7.7.1"
   },
   "peerDependencies": {
-    "@quasar/app-vite": ">=3.0.0-rc.3",
+    "@quasar/app-vite": ">=3.0.0-rc.4",
     "markdown-it": "^14.2.0"
   },
   "engines": {
