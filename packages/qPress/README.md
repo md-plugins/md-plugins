@@ -222,7 +222,9 @@ All you need to do now is change the configuration and landing page to make it y
 ## FAQ
 
 Q. I have errors in my `routes.ts` file, what should I do?
-A. You can remove the following line: `import type { RouteRecordRaw } from 'vue-router'` and also remove the `type` keyword from the `routes` variable (`: RouteRecordRaw[]`).
+A. Update to the manifest-backed route setup shown above. `src/router/routes.ts` should keep custom Vue routes plus `createQPressLayoutRoute()` and `createQPressNotFoundRoute()`. `src/router/index.ts` should call `installQPressRoutes(router, qpressRouteManifest)` after creating the router.
+
+Custom routes, such as a docs-only Theme Builder page, stay in `routes.ts`. Q-Press only adds Markdown routes from the manifest.
 
 Q. Every time I save a Markdown file, the formatter changes syntax that Q-Press needs. How can I prevent this?
 A. Current Q-Press projects use `oxfmt` for repository formatting. Use `pnpm format` and `pnpm format:check` as the source of truth for Markdown formatting.
