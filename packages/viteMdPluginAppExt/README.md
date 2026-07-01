@@ -1,6 +1,17 @@
-# viteMdPluginAppExt
+# @md-plugins/quasar-app-extension-vite-md-plugin
 
-The `viteMdPluginAppExt` is a Quasar App Extension that integrates the `viteMdPlugin` into your Quasar project. This extension allows you to use Markdown files as Vue components, enabling a seamless integration of Markdown content into your Quasar application.
+[![npm version](https://img.shields.io/npm/v/@md-plugins/quasar-app-extension-vite-md-plugin?label=%40md-plugins%2Fquasar-app-extension-vite-md-plugin)](https://www.npmjs.com/package/@md-plugins/quasar-app-extension-vite-md-plugin)
+[![npm downloads](https://img.shields.io/npm/dt/@md-plugins/quasar-app-extension-vite-md-plugin)](https://www.npmjs.com/package/@md-plugins/quasar-app-extension-vite-md-plugin)
+[![npm monthly downloads](https://img.shields.io/npm/dm/@md-plugins/quasar-app-extension-vite-md-plugin)](https://www.npmjs.com/package/@md-plugins/quasar-app-extension-vite-md-plugin)
+[![license](https://img.shields.io/npm/l/@md-plugins/quasar-app-extension-vite-md-plugin)](https://www.npmjs.com/package/@md-plugins/quasar-app-extension-vite-md-plugin)
+
+<span class="badge-github-sponsors"><a href="https://github.com/sponsors/hawkeye64" title="Sponsor this project on GitHub"><img src="https://img.shields.io/badge/github-sponsors-ea4aaa.svg?logo=githubsponsors&logoColor=white" alt="GitHub Sponsors button" /></a></span>
+<span class="badge-paypal"><a href="https://paypal.me/hawkeye64" title="Donate to this project using Paypal"><img src="https://img.shields.io/badge/paypal-donate-yellow.svg" alt="PayPal donate button" /></a></span>
+
+[![Discord](https://img.shields.io/badge/discord-join%20server-738ADB?style=for-the-badge&logo=discord&logoColor=738ADB)](https://chat.quasar.dev)
+[![X](https://img.shields.io/badge/follow-@jgalbraith64-1DA1F2?style=for-the-badge&logo=x&logoColor=1DA1F2)](https://twitter.com/jgalbraith64)
+
+This Quasar App Extension wires `@md-plugins/vite-md-plugin` into a Quasar Vite app so Markdown files can be compiled as Vue pages. It is the lightweight Markdown route option when you want the Markdown transform without the full Q-Press documentation shell.
 
 ## Table of Contents
 
@@ -13,9 +24,9 @@ The `viteMdPluginAppExt` is a Quasar App Extension that integrates the `viteMdPl
 
 ## Overview
 
-The `viteMdPluginAppExt` extension provides a convenient way to use Markdown files in your Quasar project. It leverages the `viteMdPlugin` to transform Markdown content into Vue components, allowing you to write and manage content in Markdown while benefiting from the power of Vue and Quasar.
+The extension adds the Markdown-to-Vue transform, configures Quasar to compile `.md` files, and gives content-heavy Quasar apps a smaller path than adopting Q-Press. Use it for custom docs, content pages, release notes, or internal knowledge-base routes where your app owns the layout and navigation.
 
-This App-Extension (app-ext) is for convenience only. For more granular control, you can use the `viteMdPlugin` directly in your Vite configuration. For more information, refer to the [viteMdPlugin documentation](https://github.com/md-plugins/md-plugins/tree/dev/packages/viteMdPlugin).
+This App Extension is for convenience only. For more granular control, use `viteMdPlugin` directly in your Vite configuration. For the full generated docs-site experience, use Q-Press instead. For more information, refer to the [viteMdPlugin documentation](https://github.com/md-plugins/md-plugins/tree/dev/packages/viteMdPlugin).
 
 > Current release candidate: `0.1.0-rc.19`.
 >
@@ -23,7 +34,7 @@ This App-Extension (app-ext) is for convenience only. For more granular control,
 
 ## Installation
 
-To install the `viteMdPluginAppExt` extension, use the following command:
+To install the extension, use the following command:
 
 ```bash
 quasar ext add @md-plugins/vite-md-plugin
@@ -31,11 +42,12 @@ quasar ext add @md-plugins/vite-md-plugin
 
 ## What It Does
 
-The `viteMdPluginAppExt` extension does the following:
+The extension does the following:
 
-- Integrates the `viteMdPlugin` into your Quasar project.
-- Allows you to use Markdown files as Vue components.
-- Provides a convenient way to manage and render Markdown content in your Quasar application.
+- Integrates `viteMdPlugin` into your Quasar project.
+- Allows you to use Markdown files as Vue page components.
+- Configures Quasar to compile `.md` files beside Vue SFCs.
+- Leaves layout, routing, navigation, search, and SSG decisions in your app.
 - Provides `quasar.config` changes so you don't have to manage the small things. Here is what it changes:
 
 ```javascript
@@ -80,7 +92,7 @@ const { sidebar } = siteConfig
 
 ## Configuration
 
-The `viteMdPluginAppExt` extension can be customized through various options. Here are some of the key configuration options:
+The extension can be customized through the underlying Vite and Quasar configuration. Here are some of the key configuration options:
 
 - **`vueRouterMode`**: Set to `'history'` for proper hash link handling.
 - **`viteVuePluginOptions.include`**: Include Markdown files for Vite to transpile.

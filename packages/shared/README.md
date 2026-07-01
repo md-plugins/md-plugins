@@ -1,13 +1,24 @@
 # @md-plugins/shared
 
-The `@md-plugins/shared` package provides common utilities, types, and helpers used across various Markdown-It plugins in the `@md-plugins` ecosystem. It serves as a foundational package to ensure consistency and reduce code duplication across the plugins.
+[![npm version](https://img.shields.io/npm/v/@md-plugins/shared?label=%40md-plugins%2Fshared)](https://www.npmjs.com/package/@md-plugins/shared)
+[![npm downloads](https://img.shields.io/npm/dt/@md-plugins/shared)](https://www.npmjs.com/package/@md-plugins/shared)
+[![npm monthly downloads](https://img.shields.io/npm/dm/@md-plugins/shared)](https://www.npmjs.com/package/@md-plugins/shared)
+[![license](https://img.shields.io/npm/l/@md-plugins/shared)](https://www.npmjs.com/package/@md-plugins/shared)
 
-QPress applications and regular `@md-plugins/vite-md-plugin` users do not need to install this package directly. Use it only when building a custom Markdown-It plugin or contributing to the MD-Plugins packages.
+<span class="badge-github-sponsors"><a href="https://github.com/sponsors/hawkeye64" title="Sponsor this project on GitHub"><img src="https://img.shields.io/badge/github-sponsors-ea4aaa.svg?logo=githubsponsors&logoColor=white" alt="GitHub Sponsors button" /></a></span>
+<span class="badge-paypal"><a href="https://paypal.me/hawkeye64" title="Donate to this project using Paypal"><img src="https://img.shields.io/badge/paypal-donate-yellow.svg" alt="PayPal donate button" /></a></span>
+
+[![Discord](https://img.shields.io/badge/discord-join%20server-738ADB?style=for-the-badge&logo=discord&logoColor=738ADB)](https://chat.quasar.dev)
+[![X](https://img.shields.io/badge/follow-@jgalbraith64-1DA1F2?style=for-the-badge&logo=x&logoColor=1DA1F2)](https://twitter.com/jgalbraith64)
+
+The `@md-plugins/shared` package provides common utilities, types, and helpers used across the Markdown-it plugins in the md-plugins ecosystem. It keeps Q-Press and direct plugin usage on the same environment shape for frontmatter, table of contents, extracted titles, and page-level imports.
+
+Q-Press applications and regular `@md-plugins/vite-md-plugin` users do not need to install this package directly. Use it only when building a custom Markdown-it plugin or contributing to the md-plugins packages.
 
 ## Features
 
 - Shared TypeScript types for plugin environments.
-- Common utility functions for Markdown-It processing.
+- Common utility functions for Markdown-it processing.
 - Centralized definitions for easier maintenance and reusability.
 - Lightweight and dependency-free.
 

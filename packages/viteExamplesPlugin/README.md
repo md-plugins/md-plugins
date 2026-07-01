@@ -1,13 +1,25 @@
 # @md-plugins/vite-examples-plugin
 
-A Vite plugin that facilitates handling Vue example files in both development and production modes. The plugin allows you to load and transform example components and their raw source code for usage in your application.
+[![npm version](https://img.shields.io/npm/v/@md-plugins/vite-examples-plugin?label=%40md-plugins%2Fvite-examples-plugin)](https://www.npmjs.com/package/@md-plugins/vite-examples-plugin)
+[![npm downloads](https://img.shields.io/npm/dt/@md-plugins/vite-examples-plugin)](https://www.npmjs.com/package/@md-plugins/vite-examples-plugin)
+[![npm monthly downloads](https://img.shields.io/npm/dm/@md-plugins/vite-examples-plugin)](https://www.npmjs.com/package/@md-plugins/vite-examples-plugin)
+[![license](https://img.shields.io/npm/l/@md-plugins/vite-examples-plugin)](https://www.npmjs.com/package/@md-plugins/vite-examples-plugin)
+
+<span class="badge-github-sponsors"><a href="https://github.com/sponsors/hawkeye64" title="Sponsor this project on GitHub"><img src="https://img.shields.io/badge/github-sponsors-ea4aaa.svg?logo=githubsponsors&logoColor=white" alt="GitHub Sponsors button" /></a></span>
+<span class="badge-paypal"><a href="https://paypal.me/hawkeye64" title="Donate to this project using Paypal"><img src="https://img.shields.io/badge/paypal-donate-yellow.svg" alt="PayPal donate button" /></a></span>
+
+[![Discord](https://img.shields.io/badge/discord-join%20server-738ADB?style=for-the-badge&logo=discord&logoColor=738ADB)](https://chat.quasar.dev)
+[![X](https://img.shields.io/badge/follow-@jgalbraith64-1DA1F2?style=for-the-badge&logo=x&logoColor=1DA1F2)](https://twitter.com/jgalbraith64)
+
+A Vite plugin for documentation examples. It loads Vue example components and their raw source so docs pages can render a live demo, show the source code, and export the same example to CodePen-style sandboxes.
 
 ## Features
 
-- Supports loading Vue example files dynamically during development.
-- Generates import and export statements for Vue example files in production.
-- Easily handles raw and compiled component imports.
-- Enables seamless integration of example files into your project.
+- Loads Vue example files dynamically during development.
+- Generates stable example imports for production builds.
+- Provides both compiled components and raw source strings.
+- Supports Q-Press `MarkdownExample` usage and direct Vue/Vite documentation sites.
+- Includes manual chunk helpers for keeping example bundles organized.
 
 ## Installation
 

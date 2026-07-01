@@ -1,5 +1,16 @@
 # @md-plugins/md-plugin-title
 
+[![npm version](https://img.shields.io/npm/v/@md-plugins/md-plugin-title?label=%40md-plugins%2Fmd-plugin-title)](https://www.npmjs.com/package/@md-plugins/md-plugin-title)
+[![npm downloads](https://img.shields.io/npm/dt/@md-plugins/md-plugin-title)](https://www.npmjs.com/package/@md-plugins/md-plugin-title)
+[![npm monthly downloads](https://img.shields.io/npm/dm/@md-plugins/md-plugin-title)](https://www.npmjs.com/package/@md-plugins/md-plugin-title)
+[![license](https://img.shields.io/npm/l/@md-plugins/md-plugin-title)](https://www.npmjs.com/package/@md-plugins/md-plugin-title)
+
+<span class="badge-github-sponsors"><a href="https://github.com/sponsors/hawkeye64" title="Sponsor this project on GitHub"><img src="https://img.shields.io/badge/github-sponsors-ea4aaa.svg?logo=githubsponsors&logoColor=white" alt="GitHub Sponsors button" /></a></span>
+<span class="badge-paypal"><a href="https://paypal.me/hawkeye64" title="Donate to this project using Paypal"><img src="https://img.shields.io/badge/paypal-donate-yellow.svg" alt="PayPal donate button" /></a></span>
+
+[![Discord](https://img.shields.io/badge/discord-join%20server-738ADB?style=for-the-badge&logo=discord&logoColor=738ADB)](https://chat.quasar.dev)
+[![X](https://img.shields.io/badge/follow-@jgalbraith64-1DA1F2?style=for-the-badge&logo=x&logoColor=1DA1F2)](https://twitter.com/jgalbraith64)
+
 A **Markdown-It** plugin that extracts the first `<h1>` title from Markdown content and stores it in the Markdown-It environment (`env`). This is particularly useful for generating page titles dynamically or for metadata extraction in documentation and content management systems.
 
 ## Features
@@ -72,7 +83,7 @@ The `md-plugin-title` plugin does not currently accept configuration options. It
 
 ## Note
 
-This plugin is not needed is using the `@md-plugins/md-plugin-frontmatter` plugin.
+This plugin is not needed when `@md-plugins/md-plugin-frontmatter` already provides the page title metadata your app needs.
 
 ## Testing
 

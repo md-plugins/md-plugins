@@ -1,5 +1,16 @@
 # @md-plugins/md-plugin-headers
 
+[![npm version](https://img.shields.io/npm/v/@md-plugins/md-plugin-headers?label=%40md-plugins%2Fmd-plugin-headers)](https://www.npmjs.com/package/@md-plugins/md-plugin-headers)
+[![npm downloads](https://img.shields.io/npm/dt/@md-plugins/md-plugin-headers)](https://www.npmjs.com/package/@md-plugins/md-plugin-headers)
+[![npm monthly downloads](https://img.shields.io/npm/dm/@md-plugins/md-plugin-headers)](https://www.npmjs.com/package/@md-plugins/md-plugin-headers)
+[![license](https://img.shields.io/npm/l/@md-plugins/md-plugin-headers)](https://www.npmjs.com/package/@md-plugins/md-plugin-headers)
+
+<span class="badge-github-sponsors"><a href="https://github.com/sponsors/hawkeye64" title="Sponsor this project on GitHub"><img src="https://img.shields.io/badge/github-sponsors-ea4aaa.svg?logo=githubsponsors&logoColor=white" alt="GitHub Sponsors button" /></a></span>
+<span class="badge-paypal"><a href="https://paypal.me/hawkeye64" title="Donate to this project using Paypal"><img src="https://img.shields.io/badge/paypal-donate-yellow.svg" alt="PayPal donate button" /></a></span>
+
+[![Discord](https://img.shields.io/badge/discord-join%20server-738ADB?style=for-the-badge&logo=discord&logoColor=738ADB)](https://chat.quasar.dev)
+[![X](https://img.shields.io/badge/follow-@jgalbraith64-1DA1F2?style=for-the-badge&logo=x&logoColor=1DA1F2)](https://twitter.com/jgalbraith64)
+
 A **Markdown-It** plugin that extracts and processes headers from Markdown content. This plugin is ideal for generating Table of Contents (ToC) or managing headers for documentation and static sites.
 
 **NOTE:** When using with `vue-router` be sure to use `history` mode and not `hash` mode otherwise your hash links will not work as expected.

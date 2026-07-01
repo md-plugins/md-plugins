@@ -5,7 +5,7 @@
   <img src="https://raw.githubusercontent.com/md-plugins/md-plugins/refs/heads/main/media/markdown-1024x1024.png" alt="md-plugins - Markdown-it, Vite, and Quasar documentation tooling" width="300" style="border-radius: 50%;">
 </a>
 <br>
-A collection of Markdown-it plugins, Vite plugins, and Quasar app extensions for Vue/Vite content workflows, static docs output, and Q-Press documentation sites.
+Documentation tooling for Vue, Vite, and Quasar projects: Q-Press sites, Markdown-powered routes, live examples, static search, SSG output, and the Markdown-it plugins that make the pipeline work.
 </p>
 
 <p><strong>Markdown-it! Plugins</strong></p>
@@ -50,16 +50,15 @@ A collection of Markdown-it plugins, Vite plugins, and Quasar app extensions for
 [![npm](https://img.shields.io/npm/dt/@md-plugins/quasar-app-extension-q-press)](https://www.npmjs.com/package/@md-plugins/quasar-app-extension-q-press)
 ![@md-plugins/quasar-app-extension-q-press](https://img.shields.io/npm/dm/@md-plugins/quasar-app-extension-q-press)
 
+<span class="badge-github-sponsors"><a href="https://github.com/sponsors/hawkeye64" title="Sponsor this project on GitHub"><img src="https://img.shields.io/badge/github-sponsors-ea4aaa.svg?logo=githubsponsors&logoColor=white" alt="GitHub Sponsors button" /></a></span>
 <span class="badge-paypal"><a href="https://paypal.me/hawkeye64" title="Donate to this project using Paypal"><img src="https://img.shields.io/badge/paypal-donate-yellow.svg" alt="PayPal donate button" /></a></span>
 
 [![Discord](https://img.shields.io/badge/discord-join%20server-738ADB?style=for-the-badge&logo=discord&logoColor=738ADB)](https://chat.quasar.dev)
 [![X](https://img.shields.io/badge/follow-@jgalbraith64-1DA1F2?style=for-the-badge&logo=x&logoColor=1DA1F2)](https://twitter.com/jgalbraith64)
 
-A collection of **Markdown-It plugins** and utilities designed for enhanced Markdown processing. This monorepo contains various plugins for handling specific Markdown features.
+**md-plugins** is the toolkit behind Q-Press documentation sites. It combines Markdown-it plugins, Vite plugins, a static search UI, SSG helpers, and Quasar app extensions so Vue/Vite projects can turn Markdown into routed documentation with live examples, generated API pages, searchable content, and static-host-friendly output.
 
-A collection of **Vite plugins** for transforming Markdown into Vue Single File Components (SFCs), handling raw example source, generating static documentation output, and producing search indexes.
-
-A collection of **App Extensions** for Quasar Framework, providing enhanced Markdown support for Quasar applications, including **Q-Press**. The **Q-Press** App Extension is a powerful tool for Quasar developers that simplifies the integration of Markdown content into Quasar applications. It leverages the capabilities of Vite and various Markdown plugins to transform Markdown files into Vue components, enabling a seamless and efficient workflow for content management. Q-Press also uses the SSG and search Vite plugins to generate route manifests, static HTML output, and static-host-friendly search indexes for documentation sites.
+Use the packages directly when you only need a focused Markdown, Vite, search, or SSG capability. Use **Q-Press** when you want the opinionated Quasar documentation experience: generated layouts, route manifests, Markdown components, example viewers, API JSON checks, search indexing, and static builds wired together.
 
 Inspired by [Quasar Framework](https://quasar.dev) documentation and [mdit-vue](https://github.com/mdit-vue/mdit-vue), this project aims to provide a comprehensive set of tools for working with Markdown content.
 
@@ -73,6 +72,7 @@ This monorepo provides:
 - A Vite SSG plugin for route manifests, static HTML shells, and optional prerendered output.
 - A Vite search plugin for static JSON, Meilisearch-ready, Algolia-ready, and custom search index output.
 - A framework-agnostic `<md-search>` Web Component for searchable docs UI.
+- Q-Press app-extension tooling for Quasar docs sites, including generated docs structure, Markdown layouts, API generation/checking, SSG, and route validation.
 - Shared utilities for common processing tasks.
 
 ## Table of Contents
@@ -113,7 +113,7 @@ bun add @md-plugins/quasar-app-extension-q-press
 This is a pnpm workspace mono-repo. You cannot use npm for building.
 
 - [/md-plugin-\*](packages) - standalone Markdown-it plugin packages
-- [/vite-md-plugin](packages/viteMdPlugin) - Vite Markdown-to-Vue SFC plugin
+- [/vite-md-plugin](packages/viteMdPlugin) - Vite Markdown-to-Vue page plugin used by Q-Press and direct Vue/Vite apps
 - [/vite-examples-plugin](packages/viteExamplesPlugin) - Vite examples/source loader plugin
 - [/vite-ssg-plugin](packages/viteSsgPlugin) - Vite SSG route manifest and prerender plugin
 - [/vite-search-plugin](packages/viteSearchPlugin) - Vite Markdown search index plugin with adapter output
@@ -139,12 +139,12 @@ This is a pnpm workspace mono-repo. You cannot use npm for building.
 | `@md-plugins/md-plugin-frontmatter`               | Extracts and processes frontmatter content from Markdown files.                                                      | [README](packages/md-plugin-frontmatter/README.md) |
 | `@md-plugins/md-plugin-containers`                | Adds custom containers for callouts, warnings, and more.                                                             | [README](packages/md-plugin-containers/README.md)  |
 | `@md-plugins/shared`                              | Shared utilities and types for the plugins.                                                                          | [README](packages/shared/README.md)                |
-| `@md-plugins/vite-md-plugin`                      | Vite plugin for transforming Markdown into Vue SFCs.                                                                 | [README](packages/viteMdPlugin/README.md)          |
+| `@md-plugins/vite-md-plugin`                      | Vite plugin for transforming Markdown into Vue page components for Q-Press or direct Vue/Vite use.                   | [README](packages/viteMdPlugin/README.md)          |
 | `@md-plugins/vite-examples-plugin`                | Vite plugin for loading and transforming example components and their raw source code for usage in your application. | [README](packages/viteExamplesPlugin/README.md)    |
 | `@md-plugins/vite-ssg-plugin`                     | Vite plugin for generating route manifests, static HTML shells, and optional prerendered SSG output.                 | [README](packages/viteSsgPlugin/README.md)         |
 | `@md-plugins/vite-search-plugin`                  | Vite plugin for generating static JSON, Meilisearch-ready, Algolia-ready, or custom search index output.             | [README](packages/viteSearchPlugin/README.md)      |
 | `@md-plugins/search-ui`                           | Framework-agnostic search UI Web Component for static JSON and custom search providers.                              | [README](packages/searchUi/README.md)              |
-| `@md-plugins/quasar-app-extension-vite-md-plugin` | Quasar app extension for enhanced Markdown support in Quasar Applications.                                           | [README](packages/viteMdPluginAppExt/README.md)    |
+| `@md-plugins/quasar-app-extension-vite-md-plugin` | Lightweight Quasar app extension for compiling Markdown pages without the full Q-Press shell.                        | [README](packages/viteMdPluginAppExt/README.md)    |
 | `@md-plugins/quasar-app-extension-q-press`        | Markdown documentation tooling for Quasar and Vite applications.                                                     | [README](packages/qPress/README.md)                |
 
 ## Installation

@@ -1,6 +1,17 @@
 # @md-plugins/vite-ssg-plugin
 
-Static-site-generation infrastructure for Q-Press and md-plugins documentation sites.
+[![npm version](https://img.shields.io/npm/v/@md-plugins/vite-ssg-plugin?label=%40md-plugins%2Fvite-ssg-plugin)](https://www.npmjs.com/package/@md-plugins/vite-ssg-plugin)
+[![npm downloads](https://img.shields.io/npm/dt/@md-plugins/vite-ssg-plugin)](https://www.npmjs.com/package/@md-plugins/vite-ssg-plugin)
+[![npm monthly downloads](https://img.shields.io/npm/dm/@md-plugins/vite-ssg-plugin)](https://www.npmjs.com/package/@md-plugins/vite-ssg-plugin)
+[![license](https://img.shields.io/npm/l/@md-plugins/vite-ssg-plugin)](https://www.npmjs.com/package/@md-plugins/vite-ssg-plugin)
+
+<span class="badge-github-sponsors"><a href="https://github.com/sponsors/hawkeye64" title="Sponsor this project on GitHub"><img src="https://img.shields.io/badge/github-sponsors-ea4aaa.svg?logo=githubsponsors&logoColor=white" alt="GitHub Sponsors button" /></a></span>
+<span class="badge-paypal"><a href="https://paypal.me/hawkeye64" title="Donate to this project using Paypal"><img src="https://img.shields.io/badge/paypal-donate-yellow.svg" alt="PayPal donate button" /></a></span>
+
+[![Discord](https://img.shields.io/badge/discord-join%20server-738ADB?style=for-the-badge&logo=discord&logoColor=738ADB)](https://chat.quasar.dev)
+[![X](https://img.shields.io/badge/follow-@jgalbraith64-1DA1F2?style=for-the-badge&logo=x&logoColor=1DA1F2)](https://twitter.com/jgalbraith64)
+
+Static-site-generation infrastructure for Q-Press and md-plugins documentation sites. It discovers known routes, emits route manifests, writes static route HTML, and can prerender Vue/Quasar output after the normal build.
 
 This package currently focuses on route inventory and static route output:
 
@@ -18,7 +29,7 @@ This package currently focuses on route inventory and static route output:
   post-build prerendering when those behaviors are enabled.
 
 By default, generated route HTML uses the built `index.html` app shell. That makes the output
-usable on Netlify or other static hosts today. Q-Press projects can use `qpress-ssg` for
+usable on Netlify or other static hosts today. Q-Press projects can use `qpress ssg` for
 first-class Vue/Quasar build-time prerendering without enabling Quasar SSR mode.
 
 ## Why SSG?
@@ -177,7 +188,7 @@ pnpm preview:ssg
 ```
 
 Projects that already have a Quasar SSR bundle can opt into that renderer with
-`qpress-ssg --renderer quasar-ssr`, but it is not required for the default Q-Press SSG flow.
+`qpress ssg --renderer quasar-ssr`, but it is not required for the default Q-Press SSG flow.
 
 For lower-level Vue or Quasar apps, `createVueSsgRouteRenderer` adapts a per-route SSR app factory
 into the generic `renderRoute` hook. This uses Vue's server renderer at build time only; the
@@ -193,7 +204,7 @@ await prerenderVueSsgRoutes({
 })
 ```
 
-Q-Press generates `src/.q-press/ssg/create-app` and `src/.q-press/ssg/prerender`, and the `qpress-ssg` binary uses that app factory for the common docs-site flow. Non-Q-Press projects can still provide their own app factory. Vue SSR dependencies are optional until this adapter is used. Projects that already build a Quasar SSR bundle can opt into that path with `qpress-ssg --renderer quasar-ssr`.
+Q-Press generates `src/.q-press/ssg/create-app` and `src/.q-press/ssg/prerender`, and `qpress ssg` uses that app factory for the common docs-site flow. Non-Q-Press projects can still provide their own app factory. Vue SSR dependencies are optional until this adapter is used. Projects that already build a Quasar SSR bundle can opt into that path with `qpress ssg --renderer quasar-ssr`.
 
 ## Local SSR / SSG Proving
 
@@ -202,7 +213,7 @@ feeds it into `prerenderVueSsgRoutes()` while the workflow is still being proven
 
 That scratch harness should not be committed as finalized docs-site code. Commit the reusable
 plugin behavior, the documented options, the generated Q-Press app-factory template, and reusable
-runner behavior such as `qpress-ssg`; leave one-off local test wiring out unless it belongs in the
+runner behavior such as `qpress ssg`; leave one-off local test wiring out unless it belongs in the
 shared tooling.
 
 ## Virtual Module

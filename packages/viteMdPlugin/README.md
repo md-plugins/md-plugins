@@ -1,15 +1,27 @@
-# @md-plugins/viteMdPlugin
+# @md-plugins/vite-md-plugin
+
+[![npm version](https://img.shields.io/npm/v/@md-plugins/vite-md-plugin?label=%40md-plugins%2Fvite-md-plugin)](https://www.npmjs.com/package/@md-plugins/vite-md-plugin)
+[![npm downloads](https://img.shields.io/npm/dt/@md-plugins/vite-md-plugin)](https://www.npmjs.com/package/@md-plugins/vite-md-plugin)
+[![npm monthly downloads](https://img.shields.io/npm/dm/@md-plugins/vite-md-plugin)](https://www.npmjs.com/package/@md-plugins/vite-md-plugin)
+[![license](https://img.shields.io/npm/l/@md-plugins/vite-md-plugin)](https://www.npmjs.com/package/@md-plugins/vite-md-plugin)
+
+<span class="badge-github-sponsors"><a href="https://github.com/sponsors/hawkeye64" title="Sponsor this project on GitHub"><img src="https://img.shields.io/badge/github-sponsors-ea4aaa.svg?logo=githubsponsors&logoColor=white" alt="GitHub Sponsors button" /></a></span>
+<span class="badge-paypal"><a href="https://paypal.me/hawkeye64" title="Donate to this project using Paypal"><img src="https://img.shields.io/badge/paypal-donate-yellow.svg" alt="PayPal donate button" /></a></span>
+
+[![Discord](https://img.shields.io/badge/discord-join%20server-738ADB?style=for-the-badge&logo=discord&logoColor=738ADB)](https://chat.quasar.dev)
+[![X](https://img.shields.io/badge/follow-@jgalbraith64-1DA1F2?style=for-the-badge&logo=x&logoColor=1DA1F2)](https://twitter.com/jgalbraith64)
 
 See the [documentation](https://md-plugins.netlify.app/vite-plugins/vite-md-plugin/overview) for more details.
 
-An **opinionated Vite plugin** that transforms Markdown files into Vue Single File Components (SFCs). This plugin integrates Markdown processing directly into your Vite-based Vue project, enabling seamless Markdown-to-Vue workflows.
+An opinionated Vite plugin that transforms Markdown files into Vue Single File Components. It is the Markdown route engine used by Q-Press, and it can also be used directly in Vue/Vite and Quasar apps that own their own layout, navigation, search, and SSG flow.
 
 ## Features
 
-- **Markdown to Vue SFC Transformation**: Converts Markdown files into Vue Single File Components, enabling dynamic content rendering.
-- **Navigation Menu Integration**: Supports generating a navigation structure based on your Markdown files.
-- **Configurable Path Prefix**: Allows setting a base path for routing or file resolution.
-- **Opinionated and Minimal**: Focuses on simplicity, leveraging the power of Vue and Markdown for content-driven applications.
+- **Markdown to Vue SFC Transformation**: Converts Markdown files into Vue Single File Components.
+- **Q-Press-compatible Markdown features**: Supports imports, code blocks, containers, tables, links, frontmatter, titles, and more.
+- **Navigation Menu Integration**: Accepts a menu structure for sidebar and route-aware Markdown output.
+- **Configurable Markdown Root**: Points the plugin at the Markdown folder your project owns.
+- **Direct-use friendly**: Useful without Q-Press when an app wants custom layouts around Markdown pages.
 
 ## md-plugins Used
 
