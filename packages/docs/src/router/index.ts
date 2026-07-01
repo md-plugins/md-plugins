@@ -5,6 +5,8 @@ import {
   createWebHashHistory,
   createWebHistory,
 } from 'vue-router'
+import { installQPressRoutes } from '@/.q-press/router/routes'
+import { qpressRouteManifest } from '@/markdown/listing'
 import routes from './routes'
 
 type RouterFactory = Parameters<typeof defineRouter>[0]
@@ -35,6 +37,8 @@ const createAppRouter: RouterFactory = function (/* { store, ssrContext } */) {
     // quasar.conf.js -> build -> publicPath
     history: createHistory(import.meta.env.QUASAR_VUE_ROUTER_BASE),
   })
+
+  installQPressRoutes(router, qpressRouteManifest)
 
   // Quasar's RouteCallback can resolve Router from a different peer instance.
   // Normalize to the wrapper's expected return type to avoid duplicate-type drift.

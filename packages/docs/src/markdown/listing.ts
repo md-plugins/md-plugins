@@ -1,3 +1,9 @@
-// used by routes.js;
-// placing it here to generate shorter string lengths as keys
-export default import.meta.glob('./**/*.md')
+import { createQPressRouteManifest } from '@/.q-press/router/manifest'
+
+// Kept in this module so Vite produces short local keys and can update the
+// Markdown route manifest during dev and build.
+const mdPageList = import.meta.glob('./**/*.md')
+
+export const qpressRouteManifest = createQPressRouteManifest(mdPageList)
+
+export default mdPageList
