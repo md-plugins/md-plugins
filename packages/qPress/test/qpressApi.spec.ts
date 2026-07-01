@@ -104,6 +104,55 @@ export function parseCalendarTimestamp(input: string): string | null {
     }
   })
 
+  it('resolves relative docsUrl values from a public URL', async () => {
+    const root = await createProject({
+      'src/utils/timestamp.ts': `
+/**
+ * Returns today's date.
+ *
+ * @returns Date string.
+ */
+export function today(): string {
+  return '2036-06-08'
+}
+`,
+    })
+
+    try {
+      await generateQPressApi({
+        cwd: root,
+        publicUrl: 'https://example.com/docs',
+        entries: [
+          {
+            docsUrl: '/api/timestamp',
+            input: 'src/utils/timestamp.ts',
+            output: 'src/.q-press/api/composables/timestamp.json',
+          },
+          {
+            docsUrl: 'https://external.example/api/timestamp',
+            input: 'src/utils/timestamp.ts',
+            output: 'src/.q-press/api/composables/timestamp-external.json',
+          },
+        ],
+      })
+
+      const generated = JSON.parse(
+        await readFile(join(root, 'src/.q-press/api/composables/timestamp.generated.json'), 'utf8'),
+      )
+      const externalGenerated = JSON.parse(
+        await readFile(
+          join(root, 'src/.q-press/api/composables/timestamp-external.generated.json'),
+          'utf8',
+        ),
+      )
+
+      expect(generated.meta.docsUrl).toBe('https://example.com/docs/api/timestamp')
+      expect(externalGenerated.meta.docsUrl).toBe('https://external.example/api/timestamp')
+    } finally {
+      await rm(root, { force: true, recursive: true })
+    }
+  })
+
   it('writes generated comparison files without overwriting existing API JSON', async () => {
     const root = await createProject({
       'src/.q-press/api/composables/timestamp.json': '{"type":"component"}\n',

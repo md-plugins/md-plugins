@@ -4,7 +4,11 @@ import {
   type QPressApiGenerateEntry,
   type QPressApiGenerateOptions,
 } from '../api/qpress-api.js'
-import { loadQPressCliConfig, type QPressApiCliConfig } from './qpress-config.js'
+import {
+  loadQPressCliConfig,
+  type QPressApiCliConfig,
+  type QPressSiteCliConfig,
+} from './qpress-config.js'
 
 type ApiCliOptions = {
   config?: string
@@ -16,6 +20,7 @@ type ApiCliOptions = {
   json?: boolean
   noConfig?: boolean
   output?: string
+  publicUrl?: string
   quiet?: boolean
   root?: string
   type?: string
@@ -43,6 +48,7 @@ Options:
   --no-config               Skip loading qpress config.
   --input <file>            TypeScript source file for a one-off API entry.
   --output <file>           Existing API JSON path for a one-off API entry.
+  --public-url <url>        Public docs site root URL for relative docsUrl values.
   --type <name>             API JSON type for a one-off API entry.
   --group <name>            API group for a one-off API entry: functions or methods.
   --docs-url <url>          Documentation URL for a one-off API entry.
@@ -86,7 +92,7 @@ export async function runQPressApiCli(args: string[]): Promise<number> {
     cwd,
     loadConfig: cliOptions.noConfig !== true,
   })
-  const options = resolveApiOptions(config.api, cliOptions, cwd)
+  const options = resolveApiOptions(config.api, config.site, cliOptions, cwd)
 
   if (command === 'generate') {
     const result = await generateQPressApi(options)
@@ -141,6 +147,10 @@ function parseApiArgs(args: string[]): ApiCliOptions {
         options.output = readValue(args, index, arg)
         index += 1
         break
+      case '--public-url':
+        options.publicUrl = readValue(args, index, arg)
+        index += 1
+        break
       case '--type':
         options.type = readValue(args, index, arg)
         index += 1
@@ -176,12 +186,14 @@ function parseApiArgs(args: string[]): ApiCliOptions {
 
 function resolveApiOptions(
   configOptions: QPressApiCliConfig | undefined,
+  siteOptions: QPressSiteCliConfig | undefined,
   cliOptions: ApiCliOptions,
   cwd: string,
 ): QPressApiGenerateOptions {
   const cliEntry = createCliEntry(cliOptions)
   const entries = [...(configOptions?.entries ?? []), ...(cliEntry === undefined ? [] : [cliEntry])]
   const generatedSuffix = cliOptions.generatedSuffix ?? configOptions?.generatedSuffix
+  const publicUrl = cliOptions.publicUrl ?? siteOptions?.publicUrl
 
   if (entries.length === 0) {
     throw new Error(
@@ -193,6 +205,7 @@ function resolveApiOptions(
     cwd,
     entries,
     generatedSuffix,
+    publicUrl,
     writeOutput: cliOptions.writeOutput,
   }
 }

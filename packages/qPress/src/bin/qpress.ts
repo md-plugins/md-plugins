@@ -225,6 +225,7 @@ async function runCheck(args: string[]): Promise<number> {
   const options = mergeCheckOptions(config.check, cliOptions)
   options.apiEntries = options.checkGeneratedApi === false ? undefined : config.api?.entries
   options.apiGeneratedSuffix = config.api?.generatedSuffix
+  options.apiPublicUrl = config.site?.publicUrl
   const result = await checkQPressProject(options)
 
   if (options.json === true) {

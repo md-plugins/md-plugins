@@ -17,6 +17,7 @@ export type QPressApiGenerateOptions = {
   cwd?: string
   entries: QPressApiGenerateEntry[]
   generatedSuffix?: string
+  publicUrl?: string
   writeOutput?: boolean
 }
 
@@ -114,7 +115,7 @@ export async function generateQPressApi(
   const writeOutput = options.writeOutput === true
   const entries = await Promise.all(
     options.entries.map(async (entry) => {
-      const generated = await generateApiJsonForEntry(entry, cwd)
+      const generated = await generateApiJsonForEntry(entry, cwd, options.publicUrl)
       const outputPath = resolve(cwd, entry.output)
       const generatedOutputPath = writeOutput
         ? outputPath
@@ -154,7 +155,7 @@ export async function checkQPressApi(
   const entries: QPressApiGeneratedEntry[] = []
 
   for (const entry of options.entries) {
-    const generated = await generateApiJsonForEntry(entry, cwd)
+    const generated = await generateApiJsonForEntry(entry, cwd, options.publicUrl)
     const outputPath = resolve(cwd, entry.output)
     const generatedOutputPath = getGeneratedOutputPath(
       outputPath,
@@ -214,6 +215,7 @@ export function getGeneratedOutputPath(
 async function generateApiJsonForEntry(
   entry: QPressApiGenerateEntry,
   cwd: string,
+  publicUrl?: string,
 ): Promise<{ api: GeneratedApiJson; exportCount: number; inputPath: string }> {
   const inputPath = resolve(cwd, entry.input)
   const source = await fs.readFile(inputPath, 'utf8')
@@ -224,7 +226,7 @@ async function generateApiJsonForEntry(
 
   if (entry.docsUrl !== undefined) {
     api.meta = {
-      docsUrl: entry.docsUrl,
+      docsUrl: resolveDocsUrl(entry.docsUrl, publicUrl),
     }
   }
 
@@ -238,6 +240,22 @@ async function generateApiJsonForEntry(
     exportCount,
     inputPath,
   }
+}
+
+function resolveDocsUrl(docsUrl: string, publicUrl: string | undefined): string {
+  if (publicUrl === undefined || isAbsoluteUrl(docsUrl)) {
+    return docsUrl
+  }
+
+  return `${withoutTrailingSlash(publicUrl)}/${docsUrl.replace(/^\/+/, '')}`
+}
+
+function isAbsoluteUrl(value: string): boolean {
+  return /^[a-z][a-z\d+.-]*:/i.test(value)
+}
+
+function withoutTrailingSlash(value: string): string {
+  return value.replace(/\/+$/, '')
 }
 
 function populateTypeScriptApi(

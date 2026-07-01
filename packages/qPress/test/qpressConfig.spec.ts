@@ -33,6 +33,9 @@ describe('qpress config', () => {
             allowedRoutes: ['/theme-builder'],
             ignoreFiles: ['__*.md'],
           },
+          site: {
+            publicUrl: 'https://example.com/docs',
+          },
         }),
       )
 
@@ -46,6 +49,7 @@ describe('qpress config', () => {
       expect(config.api?.generatedSuffix).toBe('.generated')
       expect(config.check?.allowedRoutes).toEqual(['/theme-builder'])
       expect(config.check?.ignoreFiles).toEqual(['__*.md'])
+      expect(config.site?.publicUrl).toBe('https://example.com/docs')
     } finally {
       await rm(root, { force: true, recursive: true })
     }

@@ -28,6 +28,7 @@ export type QPressCheckOptions = {
   apiDir?: string
   apiEntries?: QPressApiGenerateEntry[]
   apiGeneratedSuffix?: string
+  apiPublicUrl?: string
   checkNavigation?: boolean
   checkGeneratedApi?: boolean
   checkSsgUnsafe?: boolean
@@ -122,6 +123,7 @@ export async function checkQPressProject(
       root,
       options.apiEntries,
       options.apiGeneratedSuffix,
+      options.apiPublicUrl,
       diagnostics,
     )
   }
@@ -190,12 +192,14 @@ async function checkGeneratedApiEntries(
   root: string,
   entries: QPressApiGenerateEntry[],
   generatedSuffix: string | undefined,
+  publicUrl: string | undefined,
   diagnostics: QPressCheckDiagnostic[],
 ): Promise<void> {
   const result = await checkQPressApi({
     cwd: root,
     entries,
     generatedSuffix,
+    publicUrl,
   })
 
   for (const diagnostic of result.diagnostics) {

@@ -15,9 +15,14 @@ export type QPressCheckCliConfig = QPressCheckOptions & {
   quiet?: boolean
 }
 
+export type QPressSiteCliConfig = {
+  publicUrl?: string
+}
+
 export type QPressCliConfig = {
   api?: QPressApiCliConfig
   check?: QPressCheckCliConfig
+  site?: QPressSiteCliConfig
 }
 
 export type LoadQPressCliConfigOptions = {
@@ -34,11 +39,13 @@ const configFiles = [
   '.qpressrc.json',
 ]
 
-const topLevelConfigKeys = new Set(['api', 'check'])
+const topLevelConfigKeys = new Set(['api', 'check', 'site'])
 const stringApiKeys = new Set(['generatedSuffix'])
 const apiConfigKeys = new Set(['entries', ...stringApiKeys])
 const stringApiEntryKeys = new Set(['docsUrl', 'generatedSuffix', 'input', 'output', 'type'])
 const apiEntryKeys = new Set([...stringApiEntryKeys, 'group'])
+const stringSiteKeys = new Set(['publicUrl'])
+const siteConfigKeys = new Set(stringSiteKeys)
 const apiEntryGroups = new Set<QPressApiEntryGroup>(['functions', 'methods'])
 const stringCheckKeys = new Set([
   'apiDir',
@@ -101,6 +108,7 @@ function validateQPressCliConfig(config: Record<string, unknown>, configPath: st
   validateKnownKeys(config, topLevelConfigKeys, configPath, 'config')
   validateApiConfig(config, configPath)
   validateCheckConfig(config, configPath)
+  validateSiteConfig(config, configPath)
 }
 
 /**
@@ -156,6 +164,27 @@ function validateCheckConfig(config: Record<string, unknown>, configPath: string
 
     if (stringArrayCheckKeys.has(key)) {
       validateStringArray(value, configPath, `check.${key}`)
+    }
+  }
+}
+
+/**
+ * Validates publication-facing site config used by Q-Press CLI tools.
+ */
+function validateSiteConfig(config: Record<string, unknown>, configPath: string): void {
+  if (config.site === undefined) {
+    return
+  }
+
+  if (!isRecord(config.site)) {
+    throw new Error(`Q-Press config "site" must be an object: ${configPath}`)
+  }
+
+  validateKnownKeys(config.site, siteConfigKeys, configPath, 'site')
+
+  for (const [key, value] of Object.entries(config.site)) {
+    if (stringSiteKeys.has(key)) {
+      validateString(value, configPath, `site.${key}`)
     }
   }
 }

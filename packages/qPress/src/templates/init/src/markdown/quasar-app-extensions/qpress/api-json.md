@@ -58,6 +58,9 @@ Add source/output pairs under `api.entries` in `qpress.config.json`, `qpress.con
 
 ```json
 {
+  "site": {
+    "publicUrl": "https://docs.example.com/"
+  },
   "api": {
     "entries": [
       {
@@ -72,6 +75,8 @@ Add source/output pairs under `api.entries` in `qpress.config.json`, `qpress.con
 ```
 
 Use `group: "functions"` for composables and utility functions. Use `group: "methods"` when the generated output should render under the Methods API tab.
+
+Set `site.publicUrl` to the published root URL for the docs site. When `docsUrl` starts with `/`, Q-Press combines it with `site.publicUrl` before writing API JSON so external consumers such as `quasar describe ...` can open the public docs page after a package is published. Development builds may still emit the published URL because the generated API JSON is a publication artifact.
 
 ## Workspace Wiring Patterns
 
@@ -103,6 +108,9 @@ my-extension/
 
 ```json
 {
+  "site": {
+    "publicUrl": "https://docs.example.com/"
+  },
   "api": {
     "entries": [
       {
@@ -207,6 +215,9 @@ my-extension/
 
 ```json
 {
+  "site": {
+    "publicUrl": "https://docs.example.com/"
+  },
   "api": {
     "entries": [
       {
@@ -384,7 +395,7 @@ Add TypeScript types and JSDoc to the public props, events, slots, methods, or e
 
 ### Configure the entry
 
-Add an `api.entries` item with `input`, `output`, and any optional `type`, `group`, or `docsUrl` fields.
+Add an `api.entries` item with `input`, `output`, and any optional `type`, `group`, or `docsUrl` fields. Add `site.publicUrl` when `docsUrl` is route-like and the published API JSON needs full public documentation links.
 
 ### Generate JSON
 

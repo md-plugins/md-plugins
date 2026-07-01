@@ -13,6 +13,7 @@ Think of `src/siteConfig/index.ts` as the public contract for your docs shell. I
 | Section                                       | What it controls                                                                                   |
 | --------------------------------------------- | -------------------------------------------------------------------------------------------------- |
 | `title`, `description`, `version`, `lang`     | Browser metadata, visible product identity, and generated docs context.                            |
+| `publicUrl`                                   | Published docs root URL used for external/public documentation links.                              |
 | `logoConfig`                                  | Header and sidebar logo behavior for light and dark mode.                                          |
 | `versionConfig`                               | Whether the title and version are shown in the header and drawer.                                  |
 | `config`                                      | Major layout switches such as headers, footer, sidebar, table of contents, and the `More` menu.    |
@@ -36,6 +37,16 @@ Think of `src/siteConfig/index.ts` as the public contract for your docs shell. I
 Theme selection lives in `src/css/quasar.variables.scss` or `src/css/quasar.variables.sass`, not
 `siteConfig`. Import one Q-Press theme there, then add project-specific overrides below the import.
 See [Themes](/quasar-app-extensions/qpress/themes) for the bundled themes and customization tokens.
+
+## Public URL
+
+Set `publicUrl` to the published root URL for the documentation site:
+
+```ts
+publicUrl: 'https://docs.example.com/'
+```
+
+Use the same value in `qpress.config.*` under `site.publicUrl` when generated API JSON should contain full documentation URLs. This is important for external consumers such as `quasar describe ...`, which read API JSON outside the running docs app after a package has been published.
 
 ## Route Paths
 

@@ -103,6 +103,9 @@ Put check options under the `check` key:
 
 ```json
 {
+  "site": {
+    "publicUrl": "https://docs.example.com/"
+  },
   "api": {
     "generatedSuffix": ".generated",
     "entries": [
@@ -221,10 +224,11 @@ pnpm exec qpress api generate \
   --output src/.q-press/api/composables/timestamp.json \
   --type plugin \
   --group methods \
-  --docs-url /api/timestamp
+  --docs-url /api/timestamp \
+  --public-url https://docs.example.com/
 ```
 
-For one-off runs, `--type`, `--group`, and `--docs-url` mirror the matching `api.entries` fields. Use them when you are probing a new source file and want the generated review file to resemble the final API JSON shape. `docsUrl` is passed through to `MarkdownApi` as the Docs button target, so Q-Press docs commonly use a route path.
+For one-off runs, `--type`, `--group`, and `--docs-url` mirror the matching `api.entries` fields. Use them when you are probing a new source file and want the generated review file to resemble the final API JSON shape. `site.publicUrl` or `--public-url` turns route-like `docsUrl` values into full public documentation URLs for API JSON consumers such as `quasar describe ...`. Local docs still route same-origin Docs buttons internally when they render full URLs.
 
 ## Custom Routes
 

@@ -1,4 +1,7 @@
 {
+  "site": {
+    "publicUrl": "https://md-plugins.netlify.app/"
+  },
   "api": {
     "entries": [
       {

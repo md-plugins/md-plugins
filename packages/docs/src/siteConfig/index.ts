@@ -106,6 +106,7 @@ export interface SiteConfig {
   lang: string
   title: string
   description: string
+  publicUrl: string
   version: string
   copyright: CopyrightConfig
   githubEditRootSrc: string // src folder for github edit links (appended with 'markdown' and 'examples')
@@ -484,6 +485,7 @@ const config = {
   title: productName,
   description:
     'MD-Plugins provides Markdown-it plugins, Vite plugins, and Quasar app extensions for Vue/Vite content workflows, Q-Press docs sites, and SSG/search-ready documentation.',
+  publicUrl: 'https://md-plugins.netlify.app/',
   version: version,
   copyright: {
     line1: `Copyright © 2024-${new Date().getFullYear()} MD-PLUGINS`,
