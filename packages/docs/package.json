@@ -41,7 +41,7 @@
     "@md-plugins/vite-md-plugin": "workspace:*",
     "@md-plugins/vite-search-plugin": "workspace:*",
     "@md-plugins/vite-ssg-plugin": "workspace:*",
-    "@quasar/app-vite": "3.0.0-rc.4",
+    "@quasar/app-vite": "3.0.0-rc.5",
     "@types/markdown-it-container": "^4.0.0",
     "@types/node": "^26.0.1",
     "autoprefixer": "^10.5.2",
