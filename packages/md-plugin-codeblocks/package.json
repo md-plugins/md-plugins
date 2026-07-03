@@ -49,7 +49,7 @@
   "devDependencies": {
     "@md-plugins/shared": "workspace:*",
     "@types/markdown-it": "^14.1.2",
-    "markdown-it": "^14.2.0"
+    "markdown-it": "^14.3.0"
   },
   "peerDependencies": {
     "markdown-it": "^14.2.0"

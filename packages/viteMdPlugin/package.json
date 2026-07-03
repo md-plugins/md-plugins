@@ -57,12 +57,12 @@
     "@md-plugins/md-plugin-table": "workspace:*",
     "@md-plugins/md-plugin-title": "workspace:*",
     "@md-plugins/shared": "workspace:*",
-    "markdown-it": "^14.2.0",
+    "markdown-it": "^14.3.0",
     "markdown-it-ins": "^4.0.0"
   },
   "devDependencies": {
     "@types/markdown-it": "^14.1.2",
-    "vite": "^8.1.1"
+    "vite": "^8.1.3"
   },
   "peerDependencies": {
     "markdown-it": "^14.2.0"
