@@ -1,6 +1,6 @@
 {
   "name": "@md-plugins/vite-search-plugin",
-  "version": "0.1.0-rc.19",
+  "version": "1.0.0",
   "description": "A Vite plugin that generates search index data for Markdown and Q-Press documentation sites.",
   "keywords": [
     "algolia",

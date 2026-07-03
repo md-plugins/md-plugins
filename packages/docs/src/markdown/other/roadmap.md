@@ -80,7 +80,7 @@ The current structure includes dedicated pages for Quick Start, Installation, Na
 Ongoing work is mostly maintenance:
 
 - keep generated-template docs aligned with the live MD-Plugins docs
-- remove stale migration language as release-candidate work becomes stable
+- remove stale migration language as 1.x work settles
 - keep the task list and public roadmap in sync
 
 ### Static Output And Generated Routes

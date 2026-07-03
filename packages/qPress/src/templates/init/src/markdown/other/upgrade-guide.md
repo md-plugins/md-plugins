@@ -1,6 +1,6 @@
 ---
 title: Upgrade Guide
-desc: Upgrade MD-Plugins and Q-Press to the 0.1.0 release candidate.
+desc: Upgrade MD-Plugins and Q-Press to the 1.0 stable line.
 keys: Other
 related:
   - quasar-app-extensions/qpress/overview
@@ -11,7 +11,7 @@ related:
   - vite-plugins/vite-md-plugin/overview
 ---
 
-The `0.1.0` release-candidate line moves the Quasar app extensions, including Q-Press, to the Quasar CLI Vite 3 RC toolchain. It is the right version to use when your Quasar application is being upgraded to `@quasar/app-vite` `>=3.0.0-rc.6`.
+The `1.0.0` stable line is the recommended MD-Plugins and Q-Press baseline for Quasar CLI Vite projects. The Quasar app extensions, including Q-Press, target Quasar applications using `@quasar/app-vite` `>=3.0.0-rc.6`.
 
 ::: warning
 Q-Press and the Quasar app extension packages now target Quasar Vite projects using `@quasar/app-vite` `>=3.0.0-rc.6`. They are not intended for Webpack projects or JavaScript-only Quasar projects.
@@ -51,7 +51,7 @@ Then invoke the app extension:
 quasar ext invoke @md-plugins/q-press
 ```
 
-When prompted, choose `Overwrite All` if you want the generated Q-Press files to match the release-candidate templates.
+When prompted, choose `Overwrite All` if you want the generated Q-Press files to match the stable templates.
 
 ## Add Search To Existing Q-Press Sites
 
@@ -256,7 +256,7 @@ Q-Press also uses `QCLI_*` values for Quasar CLI provided build-time values, suc
 
 ## Example Action Updates
 
-The release-candidate templates include updated example actions for GitHub source links and CodePen playgrounds. If your project keeps customized Q-Press files, compare your copies of these files with the current template:
+The stable templates include updated example actions for GitHub source links and CodePen playgrounds. If your project keeps customized Q-Press files, compare your copies of these files with the current template:
 
 - `src/.q-press/components/MarkdownExample.vue`
 - `src/.q-press/components/MarkdownCodepen.vue`

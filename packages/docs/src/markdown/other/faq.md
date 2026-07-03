@@ -64,7 +64,7 @@ pnpm up @md-plugins/quasar-app-extension-q-press
 quasar ext invoke @md-plugins/q-press
 ```
 
-Choose `Overwrite All` if you want the generated `src/.q-press` files to match the current release-candidate templates.
+Choose `Overwrite All` if you want the generated `src/.q-press` files to match the current stable templates.
 :::
 
 :::details Q. Does Q-Press support Webpack projects?
