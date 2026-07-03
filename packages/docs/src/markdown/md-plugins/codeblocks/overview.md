@@ -96,7 +96,21 @@ const selectedIcon = 'event' as const
 ```
 ````
 
-### Code Block with Restricted Height
+### Code Block Height
+
+Use `maxheight` when long code should scroll inside the page. Use `minheight` when short code needs extra vertical room for overlays, such as Twoslash hover popups.
+
+```ts [twoslash minheight=12rem]
+const selectedIcon = 'event' as const
+const selectedLabel = selectedIcon.toUpperCase()
+```
+
+````markup
+```ts [twoslash minheight=12rem]
+const selectedIcon = 'event' as const
+const selectedLabel = selectedIcon.toUpperCase()
+```
+````
 
 ```js [maxheight=300px]
 export function containersPlugin(

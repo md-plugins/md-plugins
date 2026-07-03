@@ -95,6 +95,7 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
    *       * add=1,2-4,6 - add lines
    *       * rem=1,2-4,6 - remove lines
    *       * maxheight=200px - set max height
+   *       * minheight=200px - set min height
    * - `title`: An optional title for the code block.
    */
   const definitionLineRE = new RegExp(
@@ -261,7 +262,7 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
    * Highlights one code fence and appends the configured copy button component.
    */
   function getHighlightedContent(rawContent: string, attrs: { [key: string]: any }): string {
-    const { lang, maxheight, twoslash } = attrs
+    const { lang, maxheight, minheight, twoslash } = attrs
 
     let content = rawContent.trim()
     const lineList = parseCodeLine(content, attrs)
@@ -282,6 +283,7 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
             codeClass,
             lineList,
             maxheight,
+            minheight,
             preClass: preClass ?? 'markdown-code',
             twoslash: twoslash === true || twoslash === 'true',
           }),
@@ -291,7 +293,7 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
   }
 
   /**
-   * Parses square-bracket fence attributes such as `numbered`, `add=1`, or `maxheight=20rem`.
+   * Parses square-bracket fence attributes such as `numbered`, `add=1`, `maxheight=20rem`, or `minheight=12rem`.
    */
   function parseAttrs(rawAttrs: string | null): { [key: string]: any } {
     if (rawAttrs === null) return {}

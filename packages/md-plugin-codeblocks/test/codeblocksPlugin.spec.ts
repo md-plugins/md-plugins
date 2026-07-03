@@ -122,6 +122,22 @@ const enabled = true
     expect(renderedHTML).not.toContain('title="twoslash')
   })
 
+  it('applies minimum and maximum height styles from fence attrs', () => {
+    const md = new MarkdownIt()
+    md.use(codeblocksPlugin)
+
+    const markdownInput = `
+\`\`\`ts [minheight=12rem maxheight=30rem]
+const selected = true
+\`\`\`
+      `.trim()
+
+    const renderedHTML = md.render(markdownInput)
+
+    expect(renderedHTML).toContain('min-height:12rem')
+    expect(renderedHTML).toContain('max-height:30rem')
+  })
+
   it('renders tabbed code blocks with multiple tabs and attributes', () => {
     const md = new MarkdownIt()
     md.use(codeblocksPlugin, {
@@ -166,6 +182,30 @@ const x = {
     expect(renderedHTML).toContain('true')
     expect(renderedHTML).toContain('<span class="c-line line-add"></span>')
     expect(renderedHTML).toContain('<span class="c-line line-rem"></span>')
+  })
+
+  it('applies minheight to tabbed code block panels', () => {
+    const md = new MarkdownIt()
+    md.use(codeblocksPlugin, {
+      containerComponent: 'MarkdownPrerender',
+      tabPanelTagName: 'q-tab-panel',
+      tabPanelTagClass: 'q-pa-none',
+      preClass: 'markdown-code',
+    })
+
+    const markdownInput = `
+\`\`\`tabs
+<<| js [minheight=9rem] One |>>
+console.log('one')
+<<| ts Two |>>
+const two = 2
+\`\`\`
+      `.trim()
+
+    const renderedHTML = md.render(markdownInput)
+
+    expect(renderedHTML).toContain('<q-tab-panel class="q-pa-none" name="One">')
+    expect(renderedHTML).toContain('min-height:9rem')
   })
 
   it('falls back gracefully for unsupported languages', () => {

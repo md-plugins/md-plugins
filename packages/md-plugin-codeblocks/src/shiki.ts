@@ -26,6 +26,7 @@ export interface CodeblockTransformerOptions {
   codeClass?: string
   lineList: CodeLineProps[]
   maxheight?: string
+  minheight?: string
   preClass: string
   twoslash?: boolean
 }
@@ -95,11 +96,12 @@ export function buildCodeBlockTransformers({
   codeClass,
   lineList,
   maxheight,
+  minheight,
   preClass,
   twoslash,
 }: CodeblockTransformerOptions): ShikiTransformer[] {
   return [
-    preClassTransformer(preClass, maxheight),
+    preClassTransformer(preClass, maxheight, minheight),
     codeClassTransformer(codeClass),
     ...(twoslash === true ? [twoslashTransformer] : []),
     transformerNotationHighlight(),
@@ -123,19 +125,28 @@ const twoslashTransformer = transformerTwoslash({
 })
 
 /**
- * Adds the configured class and optional max-height style to the rendered `<pre>`.
+ * Adds the configured class and optional height styles to the rendered `<pre>`.
  */
-function preClassTransformer(preClass: string, maxheight?: string): ShikiTransformer {
+function preClassTransformer(
+  preClass: string,
+  maxheight?: string,
+  minheight?: string,
+): ShikiTransformer {
   return {
     name: 'md-plugins:pre-class',
     pre(node) {
       addClassToHast(node, preClass)
 
-      if (maxheight !== undefined) {
+      const heightStyles = [
+        maxheight !== undefined ? `max-height:${maxheight}` : '',
+        minheight !== undefined ? `min-height:${minheight}` : '',
+      ].filter(Boolean)
+
+      if (heightStyles.length > 0) {
         const style = typeof node.properties?.style === 'string' ? node.properties.style : ''
         node.properties = {
           ...node.properties,
-          style: `${style}${style.length > 0 ? ';' : ''}max-height:${maxheight}`,
+          style: `${style}${style.length > 0 ? ';' : ''}${heightStyles.join(';')}`,
         }
       }
     },

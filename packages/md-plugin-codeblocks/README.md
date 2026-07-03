@@ -124,6 +124,17 @@ const count = 1
 ```
 ````
 
+### Code Block Height
+
+Use `maxheight` when a long snippet should scroll inside the page. Use `minheight` when a short snippet needs more vertical room for overlays such as Twoslash hover popups.
+
+````markup
+```ts [twoslash minheight=12rem]
+const selectedIcon = 'event' as const
+//    ^?
+```
+````
+
 ### Line Highlighting and Annotations
 
 ````markup
