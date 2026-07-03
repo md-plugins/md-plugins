@@ -269,6 +269,9 @@ my-app/
 
 ```json
 {
+  "site": {
+    "publicUrl": "https://docs.example.com/"
+  },
   "api": {
     "entries": [
       {
@@ -280,6 +283,8 @@ my-app/
   }
 }
 ```
+
+`docsUrl` can stay route-like in config, but set `site.publicUrl` so Q-Press writes the full published URL to the generated API JSON. In this example, `meta.docsUrl` becomes `https://docs.example.com/components/date-range-picker`, which external tools such as `quasar describe ...` can open after publication.
 
 The docs package scripts should point Q-Press at the workspace root because the config and source are outside the docs folder:
 

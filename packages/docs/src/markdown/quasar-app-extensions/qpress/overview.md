@@ -1,26 +1,50 @@
 ---
 title: Q-Press
 desc: Q-Press App Extension for Quasar.
+related:
+  - quasar-app-extensions/qpress/quick-start
+  - quasar-app-extensions/qpress/installation
+  - quasar-app-extensions/qpress/landing-page
+  - quasar-app-extensions/qpress/site-config
+scope:
+  qpressTree:
+    l: src
+    c:
+      - l: .q-press
+        e: Generated Q-Press shell. Refresh with the app-extension invoke flow.
+      - l: markdown
+        e: Project-owned Markdown routes and page content.
+      - l: examples
+        e: Project-owned Vue examples rendered by MarkdownExample.
+      - l: components
+        e: Project-owned Vue components used by docs pages or examples.
+      - l: siteConfig
+        e: Project-owned navigation, identity, footer, CodePen, and shell feature config.
+      - l: css
+        e: Project-owned theme imports and app-level style overrides.
+      - l: router
+        e: Project-owned custom Vue routes plus Q-Press route installation.
 ---
 
-The Q-Press App Extension is a powerful tool for Quasar developers that simplifies the integration of Markdown content into Quasar applications. It leverages the capabilities of Vite and various Markdown plugins to transform Markdown files into Vue components, enabling a seamless and efficient workflow for content management.
+Q-Press is a Quasar App Extension for building documentation sites from Markdown, Vue examples, generated API JSON, search indexes, and an optional static-site prerender pass.
 
 ::: warning
-Q-Press is for Quasar Vite projects using `@quasar/app-vite` `>=3.0.0-rc.5` at this time. TypeScript processing is also required. Do not use if you are using Webpack or have a JavaScript-only project.
+Q-Press is for Quasar Vite projects using `@quasar/app-vite` `>=3.0.0-rc.6` at this time. TypeScript processing is also required. Do not use it with Webpack or JavaScript-only projects.
 :::
 
 ::: tip
-This website is built with **Q-Press**! When you install the App Extension, you will be able to have this website up and running in minutes. Later, you can make adjustments to the `src/siteConfig` and add your own Markdown files in the `src/markdown` folder to make it your own.
+This website is built with **Q-Press**. A new install gives you a working docs site, then you edit `src/siteConfig`, add Markdown pages in `src/markdown`, and add live examples in `src/examples`.
 :::
 
-## Key Features
+## What Q-Press Provides
 
-- **Markdown as Vue Components**: Transform Markdown files into Vue components, allowing you to write and manage content in Markdown while leveraging the power of Vue and Quasar.
-- **Automatic Configuration**: Automatically configures your Quasar project to handle Markdown files, reducing the need for manual setup.
-- **Seamless Integration**: Integrates with Quasar's build system and Vue Router, ensuring smooth navigation and rendering of Markdown content.
-- **Customizable**: Provides options to customize the integration, allowing you to tailor the behavior to your specific needs.
-- **Hot Module Replacement (HMR)**: Supports HMR for Markdown files, enabling a smooth development experience with instant updates.
-- **Static Route Output**: Adds Q-Press SSG route inventory and generated app-factory helpers for static-host prerender workflows.
+- Markdown pages rendered as Vue route components.
+- A generated docs shell with header, sidebar, table of contents, footer, dark mode, and theme support.
+- Live example cards from Vue files in `src/examples`.
+- API pages from Quasar-style JSON, including generated API JSON from TypeScript/JSDoc.
+- Search UI backed by a static search index.
+- Optional announcement banners, privacy consent, and restrained campaign dialogs.
+- Optional SSG output for route-specific static HTML on static hosts.
 
 ```mermaid
 flowchart TD
@@ -37,25 +61,28 @@ flowchart TD
   qpress --> vite --> output
 ```
 
-## How You Work With Q-Press
+## Project-Owned Files
 
 Q-Press has two kinds of files:
 
-- **Project-owned files** are the files you normally edit: `src/markdown`, `src/examples`, `src/components`, and `src/siteConfig`.
-- **Generated shell files** live in `src/.q-press`. They provide the layout, markdown components, composables, API helpers, styles, SSG helpers, and generated route utilities.
+- **Project-owned files** are the files you normally edit: `src/markdown`, `src/examples`, `src/components`, `src/siteConfig`, `src/css`, and your normal router files.
+- **Generated shell files** live in `src/.q-press`. They provide the layout, Markdown components, composables, API helpers, styles, SSG helpers, and generated route utilities.
 
-The normal authoring loop looks like this:
+When upgrading Q-Press, expect `src/.q-press` to be refreshed. Keep project-specific docs, examples, theme overrides, and navigation in project-owned folders.
+
+<MarkdownTree :def="scope.qpressTree" />
+
+## Authoring Loop
 
 1. Add or edit Markdown in `src/markdown`.
 2. Add the page to `src/siteConfig` if it should appear in the header, sidebar, footer, or `More` menu.
-3. Add examples under `src/examples/<topic>` when a page needs live example cards.
+3. Add Vue examples under `src/examples/<topic>` when a page needs live example cards.
 4. Use Q-Press components such as `MarkdownExample`, `MarkdownApi`, `MarkdownPage`, and `MarkdownCardLink` inside Markdown when the page needs richer structure.
-5. Customize the docs theme through `src/css/quasar.variables.scss` and runtime `--qpress-*` CSS variables.
-6. Build with `pnpm build` for SPA output or `pnpm build:ssg` when you want static route HTML for crawlers and static hosts.
+5. Customize the theme through `src/css/quasar.variables.scss` and runtime `--qpress-*` CSS variables.
+6. Run `pnpm check:qpress` before release.
+7. Build with `pnpm build` for SPA output or `pnpm build:ssg` for static route HTML.
 
-When upgrading Q-Press, expect `src/.q-press` to be refreshed. Avoid placing project-specific edits there unless you are intentionally carrying a local fork of the generated shell.
-
-## Route And Content Conventions
+## Route Conventions
 
 Markdown files become route components. The route path follows the file path under `src/markdown`.
 
@@ -74,313 +101,28 @@ src/markdown/vite-plugins/vite-md-plugin/vite-md-plugin.md
   -> /vite-plugins/vite-md-plugin
 ```
 
-The landing page is the special case. A `landing-page.md` route is mounted at `/` and usually uses `meta: { fullscreen: true }` so it can own the full hero layout.
+The landing page is the special case. A `landing-page.md` route is mounted at `/` and usually uses `meta: { fullscreen: true }` so it can own the full hero layout. See [Customizing The Landing Page](/quasar-app-extensions/qpress/landing-page) for the focused guide.
 
-## Route Manifest
+## Generated Route Manifest
 
 Q-Press builds a route manifest from `src/markdown/listing.ts` during dev and build. The listing uses Vite's `import.meta.glob()` so Markdown files stay lazy-loaded, HMR-aware, and visible to the bundler.
 
 Each manifest entry contains the source file, generated route path, route name, Markdown component loader, and Q-Press route metadata. `installQPressRoutes()` registers those entries with Vue Router by calling `router.addRoute()` under the generated Q-Press layout route.
 
-The manifest is the Markdown route inventory used by the generated router setup. Keep custom Vue routes, such as tools, theme builders, or pages with their own layout, in `src/router/routes.ts` as normal route records.
-
-## Installation
-
-To install the Q-Press App Extension, use the following command on your existing Quasar project:
-
-```bash
-quasar ext add @md-plugins/q-press
-```
-
-### What Gets Installed
-
-- **New Install:**
-  - `src/.q-press`
-  - `src/components`
-  - `src/markdown`
-  - `src/examples`
-  - `src/siteConfig`
-- **Update Install:**
-  - `src/.q-press`
-
-### Additional Dependencies
-
-1. **Install `markdown-it` and `@types/markdown-it` in your project devDependencies:**
-
-```tabs
-<<| bash pnpm |>>
-pnpm i -D markdown-it @types/markdown-it
-<<| bash bun |>>
-bun add -d markdown-it @types/markdown-it
-<<| bash yarn |>>
-yarn add -D markdown-it @types/markdown-it
-<<| bash npm |>>
-npm i -D markdown-it @types/markdown-it
-```
-
-2. **Q-Press adds `mermaid`, `shiki`, `@md-plugins/search-ui`, `@md-plugins/vite-search-plugin`, `@md-plugins/vite-ssg-plugin`, and `@vue/server-renderer` to your project dev dependencies when invoked. If you are wiring the generated files manually, add them yourself:**
-
-```tabs
-<<| bash pnpm |>>
-pnpm add -D mermaid shiki @md-plugins/search-ui @md-plugins/vite-search-plugin @md-plugins/vite-ssg-plugin @vue/server-renderer
-<<| bash bun |>>
-bun add -d mermaid shiki @md-plugins/search-ui @md-plugins/vite-search-plugin @md-plugins/vite-ssg-plugin @vue/server-renderer
-<<| bash yarn |>>
-yarn add -D mermaid shiki @md-plugins/search-ui @md-plugins/vite-search-plugin @md-plugins/vite-ssg-plugin @vue/server-renderer
-<<| bash npm |>>
-npm i -D mermaid shiki @md-plugins/search-ui @md-plugins/vite-search-plugin @md-plugins/vite-ssg-plugin @vue/server-renderer
-```
-
-## Configuration
-
-### Verify `tsconfig.json`
-
-Quasar CLI Vite 3 already generates a `tsconfig.json` with JSON module support. If you are migrating an older app, run `quasar prepare` after upgrading so the generated TypeScript config is refreshed.
-
-### Modify `src/css/quasar.variables.scss`
-
-Import a Q-Press theme (`copperline`, `default`, `evergreen`, `mystic`, `newspaper`, `signal`, `sunrise`, `tawny`, your own or a 3rd-party theme):
-
-```scss
-@import '../.q-press/css/themes/sunrise.scss';
-```
-
-### Modify `src/css/app.scss`
-
-Import Q-Press styles:
-
-```scss
-@import '../.q-press/css/app.scss';
-```
-
-### Modify `quasar.config.ts`
-
-```ts [maxheight=400px]
-import { defineConfig } from '#q-app'
-import type { Plugin } from 'vite'
-import { viteMdPlugin, type MenuItem, type MarkdownOptions } from '@md-plugins/vite-md-plugin'
-
-export default defineConfig(async (ctx) => {
-  // Dynamically import siteConfig
-  const siteConfig = await import('./src/siteConfig')
-  const { sidebar } = siteConfig.default
-
-  return {
-    build: {
-      vitePlugins: [
-        // add this plugin
-        [
-          viteMdPlugin,
-          {
-            path: ctx.appPaths.srcDir + '/markdown',
-            menu: sidebar as MenuItem[],
-            // options: myOptions as MarkdownOptions
-          },
-        ],
-        // other plugins...
-      ],
-    },
-  }
-})
-```
-
-### Modify `src/router/routes.ts`
-
-```ts [maxheight=400px]
-import { createQPressLayoutRoute, createQPressNotFoundRoute } from '@/.q-press/router/routes'
-
-const routes = [
-  // Keep custom Vue routes here. For example:
-  // {
-  //   path: '/theme-builder',
-  //   component: () => import('@/layouts/ThemeBuilder.vue'),
-  // },
-  createQPressLayoutRoute(),
-  createQPressNotFoundRoute(),
-]
-
-export default routes
-```
-
-### Modify `src/router/index.ts`
-
-Q-Press Markdown pages are registered from the generated route manifest. The manifest is built from `src/markdown/listing.ts`, which uses `import.meta.glob()` so Vite can update the route inventory in dev and build.
-
-```ts [maxheight=400px]
-import { defineRouter } from '#q-app'
-import {
-  createMemoryHistory,
-  createRouter,
-  createWebHashHistory,
-  createWebHistory,
-} from 'vue-router'
-import { installQPressRoutes } from '@/.q-press/router/routes'
-import { qpressRouteManifest } from '@/markdown/listing'
-import routes from './routes'
-
-export default defineRouter(() => {
-  const createHistory = import.meta.env.QUASAR_SERVER
-    ? createMemoryHistory
-    : import.meta.env.QUASAR_VUE_ROUTER_MODE === 'history'
-      ? createWebHistory
-      : createWebHashHistory
-
-  const router = createRouter({
-    scrollBehavior: () => ({ left: 0, top: 0 }),
-    routes,
-    history: createHistory(import.meta.env.QUASAR_VUE_ROUTER_BASE),
-  })
-
-  installQPressRoutes(router, qpressRouteManifest)
-
-  return router
-})
-```
-
-### Set Up for Dark Mode
-
-Update your `App.vue`:
-
-```ts
-<template>
-  <router-view />
-</template>
-
-<script setup lang="ts">
-  import { useDark } from '@/.q-press/composables/dark'
-  const { initDark } = useDark()
-  initDark()
-</script>
-```
-
-### Set Up for Meta Tags
-
-This is optional, but it's recommended to set up meta tags for SEO and social media sharing, and especially for SSR.
-
-Update your `App.vue`:
-
-```ts
-<template>
-  <router-view />
-</template>
-
-<script setup lang="ts">
-// don't forget to add the Quasar 'Meta' plugin into your quasar.config file!
-import { useMeta } from 'quasar'
-import getMeta from '@/.q-press/assets/get-meta'
-
-// You can use the `getMeta` function to get the meta tags for your page and provide default values
-useMeta({
-  title: 'MD-Plugins for Vite, Vue, and Quasar',
-  titleTemplate: (title) => `${title} | MD-Plugins`,
-
-  meta: getMeta(
-    'MD-Plugins - Markdown tooling for Vite, Vue, and Quasar',
-    'MD-Plugins provides Markdown-it plugins, Vite plugins, and Quasar app extensions for Vue/Vite content workflows, Q-Press docs sites, and SSG-ready documentation.',
-  ),
-})
-</script>
-```
-
-### Static Site Generation
-
-Q-Press installs the md-plugins Vite SSG route plugin (`@md-plugins/vite-ssg-plugin`) automatically. During a production SPA build, it emits a `q-press-ssg-routes.json` manifest and route-specific HTML shell files for Markdown routes.
-
-Q-Press also installs `@md-plugins/vite-search-plugin` and `@md-plugins/search-ui` automatically.
-During the Vite build it emits `search/search-index.json`. Q-Press renders that static index
-through its generated `MarkdownSearch.vue` wrapper, which uses the framework-agnostic `<md-search>`
-component internally.
-
-Installed projects also get first-class SSG scripts:
-
-```bash
-pnpm check:qpress
-pnpm build:ssg
-pnpm prerender:ssg
-pnpm preview:ssg
-```
-
-The short version: Q-Press SSG gives direct requests, browser refreshes, crawlers, and link-preview bots route-specific HTML before the Vue/Quasar app hydrates. The output still deploys as static files, and the output directory is configurable. See [Q-Press SSG](/quasar-app-extensions/qpress/ssg) for the full workflow, CLI options, SSR notes, and deployment guidance.
-
-## FAQ
-
-:::details Q. I upgraded an existing Q-Press project and now the browser says `process is not defined`. What changed?
-
-**A.** Q-Press `0.1.0-rc.19` targets Quasar CLI Vite 3, so browser-side code must use `import.meta.env` instead of `process.env`.
-
-If you copied older Q-Press internals into your app, update the common cases below:
-
-```ts
-process.env.CLIENT // old
-import.meta.env.QUASAR_CLIENT // new
-
-process.env.DEV // old
-import.meta.env.DEV // new
-
-process.env.FS_QUASAR_FOLDER // old
-import.meta.env.QCLI_FS_QUASAR_FOLDER // new
-
-process.env.SEARCH_INDEX // old
-import.meta.env.QCLI_SEARCH_INDEX // new
-```
-
-If your project was generated from an older Q-Press version, rerun the extension update after upgrading:
-
-```bash
-quasar ext invoke @md-plugins/q-press
-```
-
-Choose `Overwrite All` if you want the generated `src/.q-press` files to match the current release-candidate templates.
-:::
-
-:::details Q. I have errors in my `routes.ts` file, what should I do?
-
-**A.** Update to the manifest-backed route setup shown above. `src/router/routes.ts` should keep custom Vue routes plus `createQPressLayoutRoute()` and `createQPressNotFoundRoute()`. `src/router/index.ts` should call `installQPressRoutes(router, qpressRouteManifest)` after creating the router.
-
-Custom routes, such as a docs-only Theme Builder page, stay in `routes.ts`. Q-Press only adds Markdown routes from the manifest.
-:::
-
-:::details Q. I see linting issues regarding `any`, what should I do?
-
-**A.** Prefer replacing `any` with the real type first. If the `any` is intentional, keep the exception close to the code and use an oxlint directive with a short explanation:
-
-```ts
-// oxlint-disable-next-line typescript/no-explicit-any -- third-party API has no useful type here
-function normalizeExternalValue(value: any) {
-  return value
-}
-```
-
-:::
-
-:::details Q. Every time I save a Markdown file, the formatter changes syntax that Q-Press needs. How can I prevent this?
-
-**A.** Current Q-Press projects use `oxfmt` for repository formatting. Use `pnpm format` and `pnpm format:check` as the source of truth for Markdown formatting.
-
-If your editor formats Markdown differently on save, configure it to use the workspace formatter or disable format-on-save for Markdown in that project. A project-level VS Code setting is usually enough:
-
-```json
-{
-  "[markdown]": {
-    "editor.formatOnSave": false
-  }
-}
-```
-
-:::
-
-## Updating
-
-When you update, only the `src/.q-press` folder will be updated. If you want to re-install everything, just remove the `src/siteConfig` folder.
-
-To make it easier to update, you can use the following command:
-
-```bash
-quasar ext invoke @md-plugins/q-press
-```
-
-Then select the `Overwrite All` option.
-
----
-
-After invocation, review the refreshed `src/.q-press` folder and keep project-specific docs, examples, theme overrides, and navigation in the project-owned folders described above.
+Keep custom Vue routes, such as tools, theme builders, or pages with their own layout, in `src/router/routes.ts` as normal route records.
+
+## Where To Go Next
+
+| Page                                                                   | Use it for                                                                                             |
+| ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| [Quick Start](/quasar-app-extensions/qpress/quick-start)               | The shortest path from install to a working docs page.                                                 |
+| [Installation](/quasar-app-extensions/qpress/installation)             | Required dependencies, app wiring, router setup, dark mode, and updates.                               |
+| [Site Config](/quasar-app-extensions/qpress/site-config)               | Identity, layout switches, public URLs, footer links, and global feature config.                       |
+| [Navigation](/quasar-app-extensions/qpress/navigation)                 | Header menus, sidebars, footer links, route paths, and responsive overflow.                            |
+| [Landing Page](/quasar-app-extensions/qpress/landing-page)             | Customizing the `/` route with project-owned Markdown, Vue components, assets, and theme styles.       |
+| [Markdown Features](/quasar-app-extensions/qpress/markdown-features)   | Q-Press-flavored Markdown helpers such as tabs, callouts, file trees, examples, cards, and API blocks. |
+| [Search](/quasar-app-extensions/qpress/search)                         | Static search indexing and the generated search UI.                                                    |
+| [Banners + Campaigns](/quasar-app-extensions/qpress/banners-campaigns) | Announcements and restrained opt-in campaign dialogs.                                                  |
+| [Privacy Consent](/quasar-app-extensions/qpress/privacy-consent)       | Static-host-friendly privacy notice and consent prompts.                                               |
+| [API JSON](/quasar-app-extensions/qpress/api-json)                     | Generated API JSON from TypeScript and JSDoc.                                                          |
+| [SSG](/quasar-app-extensions/qpress/ssg)                               | Static route prerendering.                                                                             |

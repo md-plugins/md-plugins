@@ -1,14 +1,24 @@
 ---
 title: Q-Press Site Config
-desc: Site Config for the Q-Press App Extension for Quasar.
-examples: QPressSiteConfig
+desc: Configure Q-Press identity, global shell options, public URLs, and feature entry points.
+related:
+  - quasar-app-extensions/qpress/navigation
+  - quasar-app-extensions/qpress/banners-campaigns
+  - quasar-app-extensions/qpress/privacy-consent
 ---
 
-The Site Config lives in your `src/siteConfig/index.ts`. Here you can make changes to control the look and feel of your site.
+The Site Config lives in `src/siteConfig/index.ts`. Treat it as the project-owned contract for the generated Q-Press shell.
+
+Use this page for the global shape. Use the focused pages for larger topics:
+
+- [Navigation](/quasar-app-extensions/qpress/navigation)
+- [Search](/quasar-app-extensions/qpress/search)
+- [Banners + Campaigns](/quasar-app-extensions/qpress/banners-campaigns)
+- [Privacy Consent](/quasar-app-extensions/qpress/privacy-consent)
+- [CodePen](/quasar-app-extensions/qpress/codepen)
+- [Themes](/quasar-app-extensions/qpress/themes)
 
 ## What Site Config Controls
-
-Think of `src/siteConfig/index.ts` as the public contract for your docs shell. It controls identity, menus, footer links, GitHub edit links, CodePen setup, and which layout features are enabled.
 
 | Section                                       | What it controls                                                                                   |
 | --------------------------------------------- | -------------------------------------------------------------------------------------------------- |
@@ -29,16 +39,25 @@ Think of `src/siteConfig/index.ts` as the public contract for your docs shell. I
 ## Recommended Editing Flow
 
 1. Update `title`, `description`, logos, and version display first.
-2. Add header menu groups in the `links` section.
-3. Mirror the same content into `sidebar` when you want drawer navigation.
-4. Add footer, sponsor, social, and ecosystem links after the main docs routes are in place.
-5. Run the dev server and resize the page to verify `mq` breakpoints and `moreLinks` behavior.
+2. Add header, sidebar, and footer links once the main docs routes exist.
+3. Pick one Q-Press theme in `src/css/quasar.variables.scss`.
+4. Configure CodePen only after examples need external packages or assets.
+5. Keep announcements, campaigns, and privacy consent disabled until their copy, storage ids, and rules are ready.
+6. Run `pnpm check:qpress` after changing routes, navigation, or examples.
 
-Theme selection lives in `src/css/quasar.variables.scss` or `src/css/quasar.variables.sass`, not
-`siteConfig`. Import one Q-Press theme there, then add project-specific overrides below the import.
-See [Themes](/quasar-app-extensions/qpress/themes) for the bundled themes and customization tokens.
+## Identity
 
-## Public URL
+The top-level identity fields feed browser metadata, generated shell labels, search context, and public docs links:
+
+```ts
+const config = {
+  lang: 'en-US',
+  title: 'My Docs',
+  description: 'Documentation for my package.',
+  publicUrl: 'https://docs.example.com/',
+  version: '1.0.0',
+}
+```
 
 Set `publicUrl` to the published root URL for the documentation site:
 
@@ -48,228 +67,74 @@ publicUrl: 'https://docs.example.com/'
 
 Use the same value in `qpress.config.*` under `site.publicUrl` when generated API JSON should contain full documentation URLs. This is important for external consumers such as `quasar describe ...`, which read API JSON outside the running docs app after a package has been published.
 
-## Route Paths
+## Logos And Version Display
 
-For each Markdown file in your `src/markdown` folder, Vue Router generates a matching route. When creating menus, use the same route path that the Markdown file generates.
-
-```txt
-src/markdown/getting-started/introduction.md
-  -> /getting-started/introduction
-
-src/markdown/quasar-app-extensions/qpress/site-config.md
-  -> /quasar-app-extensions/qpress/site-config
-```
-
-If the folder name and file name are the same, Q-Press removes the duplicate segment:
-
-```txt
-src/markdown/vite-plugins/vite-md-plugin/vite-md-plugin.md
-  -> /vite-plugins/vite-md-plugin
-```
-
-## Menu System
-
-Menus can be displayed in the header, drawer/sidebar, footer, or `More` overflow menu. Header and footer menus usually use direct route paths, while sidebar menus usually use slugified grouping nodes.
-
-To create a top-level menu, create something similar to the following:
-
-```ts [twoslash]
-const mdPluginsMenu = {
-  name: 'MD Plugins',
-  mq: 600, // media query breakpoint
-  children: [
-    {
-      name: 'Blockquote',
-      children: [
-        { name: 'Overview', path: '/md-plugins/blockquote/overview' },
-        { name: 'Advanced', path: '/md-plugins/blockquote/advanced' },
-      ],
-    },
-    {
-      name: 'Codeblocks',
-      children: [
-        { name: 'Overview', path: '/md-plugins/codeblocks/overview' },
-        { name: 'Advanced', path: '/md-plugins/codeblocks/advanced' },
-      ],
-    },
-  ],
-}
-```
-
-Be sure the media query breakpoint matches the one you set in your `src/css/quasar.variables.(scss|sass)` file. See [Themes](/quasar-app-extensions/qpress/themes#media-query-breakpoints) for more info.
-
-Choose the toolbar and order you want the menu displayed on like this:
+`logoConfig` controls the header and sidebar logo:
 
 ```ts
-const secondaryToolbarLinks = [
-  gettingStartedMenu,
-  mdPluginsMenu, // <-- this is the menu we just created
-  vitePluginsMenu,
-  QuasarAppExts,
-  otherMenu,
-]
-```
-
-## MenuItem Type
-
-A `MenuItem` looks like this, but not every option is used in every region:
-
-```ts [twoslash]
-interface MenuItem {
-  name: string
-  path?: string
-  icon?: string
-  iconColor?: string
-  rightIcon?: string
-  rightIconColor?: string
-  badge?: string
-  children?: MenuItem[] | undefined
-  external?: boolean
-  expanded?: boolean
+const logoConfig = {
+  showLogo: true,
+  logoLight: '/logo-light.png',
+  logoDark: '/logo-dark.png',
+  logoAlt: 'My Docs',
 }
-
-const docsMenu = {
-  name: 'Guides',
-  expanded: true,
-  children: [
-    { name: 'Installation', path: '/getting-started/installation' },
-    { name: 'Themes', path: '/quasar-app-extensions/qpress/themes' },
-  ],
-} satisfies MenuItem
-
-const firstDocLink = docsMenu.children[0]
-//    ^?
-
-type MenuChildren = NonNullable<MenuItem['children']>
-//   ^?
 ```
 
-| Property                                           | Use it for                                                                  |
-| -------------------------------------------------- | --------------------------------------------------------------------------- |
-| `name`                                             | Visible label for the link or group.                                        |
-| `path`                                             | Internal route path, external URL, or `''` for a visual-only sidebar group. |
-| `icon`, `iconColor`, `rightIcon`, `rightIconColor` | Header, sidebar, footer, or card-style link decoration.                     |
-| `badge`                                            | Small status label beside a menu item.                                      |
-| `children`                                         | Nested menu groups.                                                         |
-| `external`                                         | Opens links with external-link behavior.                                    |
-| `expanded`                                         | Initial expansion state for sidebar groups.                                 |
-| `mq`                                               | Responsive breakpoint used to show or hide header items.                    |
-| `image`, `maxWidth`                                | Image-style footer or sponsor links.                                        |
-
-## Sidebar Menu Items
-
-Sidebar menu items need a bit more care because they represent drawer sections instead of flat header links. Use the `sidebar` export in Site Config to control drawer navigation.
-
-When a header menu already has the structure you want, process it into a sidebar-safe tree:
+`versionConfig` controls where product/version labels appear:
 
 ```ts
-function getSidebarPath(item: MenuItem): string {
-  if (item.path === '') {
-    return ''
-  }
-
-  const path = item.path?.replace(/^\/+/, '').split('/').filter(Boolean).pop()
-  return path ?? slugify(item.name)
-}
-
-function processMenuItem(item: MenuItem): MenuItem {
-  return {
-    name: item.name,
-    path: getSidebarPath(item),
-    expanded: item.expanded ?? false,
-    children: item.children ? item.children.map(processMenuItem) : undefined,
-  }
-}
-
-const processedMdPluginsMenu = {
-  name: mdPluginsMenu.name,
-  path: slugify(mdPluginsMenu.name),
-  expanded: false,
-  children: mdPluginsMenu.children.map(processMenuItem),
+const versionConfig = {
+  showTitle: true,
+  showVersion: true,
+  showOnHeader: false,
+  showOnSidebar: true,
 }
 ```
 
-Now we have `processedMdPluginsMenu` which we can add to the `sidebar` array:
+## Layout Switches
+
+Use `config` for coarse layout behavior:
 
 ```ts
-export const sidebar = [
-  {
-    name: gettingStartedMenu.name,
-    path: slugify(gettingStartedMenu.name),
-    expanded: false,
-    children: gettingStartedMenu.children.map((item) => ({
-      name: item.name,
-      path: getSidebarPath(item),
-    })),
+const config = {
+  usePrimaryHeader: false,
+  useSecondaryHeader: true,
+  headerHeightHint: 55,
+  useMoreLinks: true,
+  useFooter: true,
+  useSidebar: true,
+  useToc: true,
+}
+```
+
+`headerHeightHint` should match the enabled header rows so scroll and anchor behavior can account for fixed header height.
+
+## Footer And Legal Links
+
+Footer values are part of Site Config because they belong to the site shell, not individual Markdown pages:
+
+```ts
+const config = {
+  license: {
+    label: 'MIT License',
+    link: 'https://github.com/example/project/blob/main/LICENSE.md',
   },
-  processedMdPluginsMenu, // <-- this is the menu we just created
-  processedVitePluginsMenu,
-  processedQuasarAppExts,
-  processedOtherMenu,
-]
-```
-
-Use `path: ''` when a sidebar item is only a visual grouping node and should not contribute a URL segment. This keeps grouped children under their real route instead of creating a route such as `/examples/agenda/recipes/planner`.
-
-```ts
-const examplesMenu = {
-  name: 'Examples',
-  path: '/examples',
-  children: [
-    {
-      name: 'Agenda',
-      path: '/examples/agenda',
-      children: [
-        {
-          name: 'Recipes',
-          path: '',
-          children: [
-            { name: 'Planner', path: '/examples/agenda/planner' },
-            { name: 'Server Data', path: '/examples/agenda/server-data' },
-          ],
-        },
-      ],
-    },
-  ],
-} satisfies MenuItem
-```
-
-Reserve `path: ''` for sidebar-only grouping nodes. Real pages and header links should keep an explicit route path.
-
-## More Links
-
-The `moreLinks` array controls a menu item called `More`. Items here are displayed based on media query breakpoints and are removed from the normal header menu when they no longer fit. This is useful for smaller displays, tablets, and crowded navigation bars.
-
-Use `mq` on the original header menu to decide when the item should move:
-
-```ts [twoslash]
-const guidesMenu = {
-  name: 'Guides',
-  mq: 780,
-  children: [
-    { name: 'Installation', path: '/getting-started/installation' },
-    { name: 'Themes', path: '/quasar-app-extensions/qpress/themes' },
-  ],
-}
-
-const links = {
-  secondaryHeaderLinks: [guidesMenu],
-  moreLinks: [guidesMenu],
+  privacy: {
+    label: 'Privacy Policy',
+    link: '/privacy-policy',
+  },
+  copyright: {
+    line1: `Copyright © 2024-${new Date().getFullYear()} Example`,
+    line2: '',
+  },
 }
 ```
 
-## Header, Sidebar, And Footer
+Use `links.footerLinks` and `links.socialLinks` for footer groups and social buttons. See [Navigation](/quasar-app-extensions/qpress/navigation) for menu structure.
 
-| Region    | Configure with                                                              | Best for                                                           |
-| --------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------ |
-| Header    | `links.primaryHeaderLinks`, `links.secondaryHeaderLinks`                    | High-priority sections and short route groups.                     |
-| More menu | `links.moreLinks`                                                           | Header items that should collapse at smaller widths.               |
-| Sidebar   | `sidebar`                                                                   | Full documentation outline and nested sections.                    |
-| Footer    | `links.footerLinks`, `links.socialLinks`, `license`, `privacy`, `copyright` | Sponsor links, external references, legal links, and social links. |
+## Generated Layout Features
 
-## Generated Layout Pieces
-
-Q-Press templates already render the optional announcement, privacy consent, and campaign components from the generated `MarkdownLayout`. Configure them in `src/siteConfig/index.ts`; do not add these components to individual Markdown pages.
+Q-Press templates already render optional shell features from the generated `MarkdownLayout`:
 
 ```vue
 <MarkdownAnnouncement :config="qpressShellConfig.announcement" />
@@ -277,265 +142,13 @@ Q-Press templates already render the optional announcement, privacy consent, and
 <MarkdownCampaigns :campaigns="qpressShellConfig.campaigns" />
 ```
 
-Keep these features disabled until the copy, route targeting, storage ids, and legal requirements are ready. The examples below are drop-in Site Config fragments.
+Configure them in `src/siteConfig/index.ts`; do not add these components to individual Markdown pages.
 
-| Piece            | Configure with   | What you can change                                                                                                      |
-| ---------------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| Announcement     | `announcement`   | Notice copy, tone, start/end dates, dismiss behavior, storage id, and optional action link.                              |
-| Privacy consent  | `privacyConsent` | Notice vs consent mode, title, message, policy link, labels, expiration, required categories, and optional categories.   |
-| Campaign dialogs | `campaigns`      | Dialog copy, tone, route targeting, device targeting, trigger type, frequency, date window, close behavior, and actions. |
+| Piece            | Configure with   | Focused docs                                                           |
+| ---------------- | ---------------- | ---------------------------------------------------------------------- |
+| Announcement     | `announcement`   | [Banners + Campaigns](/quasar-app-extensions/qpress/banners-campaigns) |
+| Privacy consent  | `privacyConsent` | [Privacy Consent](/quasar-app-extensions/qpress/privacy-consent)       |
+| Campaign dialogs | `campaigns`      | [Banners + Campaigns](/quasar-app-extensions/qpress/banners-campaigns) |
+| CodePen links    | `codepen`        | [CodePen](/quasar-app-extensions/qpress/codepen)                       |
 
-Skinning belongs in theme and app styles, not in `siteConfig`. The generated components use Q-Press theme tokens by default and expose stable wrapper classes when a project needs a focused override:
-
-```scss
-.qpress-announcement {
-  border-bottom-color: var(--qpress-border-strong);
-}
-
-.qpress-consent,
-.qpress-campaign {
-  background: var(--qpress-surface-raised-strong);
-  border-color: var(--qpress-border-strong);
-}
-```
-
-Prefer Q-Press CSS variables such as `--qpress-text-primary`, `--qpress-text-body`, `--qpress-surface-panel`, `--qpress-surface-raised-strong`, `--qpress-border-subtle`, and `--qpress-border-strong` so light and dark mode stay aligned with the selected theme.
-
-<MarkdownExample title="Generated Layout Toggles" file="GeneratedLayoutToggles" no-edit no-github/>
-
-## Announcements
-
-Use `announcement` for calm site-wide notices such as releases, maintenance windows, upgrade warnings, or sponsor messages. Announcements are intentionally separate from privacy consent and marketing popups.
-
-```ts [twoslash]
-const config = {
-  announcement: {
-    enabled: true,
-    id: 'qpress-2026-06-release',
-    message: 'Q-Press 0.1.0 includes improved SSG and themed docs components.',
-    tone: 'info',
-    startAt: '2026-06-01T00:00:00Z',
-    endAt: '2026-06-30T23:59:59Z',
-    dismissible: true,
-    action: {
-      label: 'Read release notes',
-      link: '/other/releases',
-    },
-  },
-}
-```
-
-`id` is the versioned dismissal key. When a visitor dismisses the banner, Q-Press stores that id in `localStorage`. Change the id when you want dismissed visitors to see a new announcement. Use `startAt` and `endAt` when a normal docs announcement should only be visible during a planned window.
-
-## Privacy Consent
-
-Use `privacyConsent` only for privacy notices or consent prompts. This is separate from announcements because privacy consent can require accept, reject, customize, category-level preferences, policy links, expiration, and optional script or embed gating.
-
-```ts [twoslash]
-const config = {
-  privacyConsent: {
-    enabled: true,
-    id: 'privacy-consent-v1',
-    mode: 'consent',
-    title: 'Privacy preferences',
-    message:
-      'Choose whether this documentation site can enable optional analytics or third-party embeds.',
-    policyLink: '/privacy-policy',
-    expirationDays: 180,
-    categories: [
-      { id: 'necessary', label: 'Necessary', required: true },
-      { id: 'analytics', label: 'Analytics' },
-      { id: 'embeds', label: 'Third-party embeds' },
-    ],
-  },
-}
-```
-
-`expirationDays` starts when the visitor saves their choice. Q-Press stores both `savedAt` and a computed `expiresAt`, then asks again after the saved choice expires.
-
-When a consent choice is read or saved, Q-Press dispatches a `qpress:privacy-consent` event on `window`. Site owners can listen for this event before loading optional analytics, marketing pixels, or third-party embeds:
-
-```ts
-window.addEventListener('qpress:privacy-consent', (event) => {
-  const consent = event.detail
-
-  if (consent.categories.analytics === true) {
-    // Load optional analytics here.
-  }
-})
-```
-
-Q-Press keeps this feature static-host friendly, but it cannot provide legal advice. Site owners remain responsible for local privacy, cookie, and consent requirements.
-
-## Campaigns
-
-Use `campaigns` for intentionally restrained opt-in prompts such as sponsor messages, release campaigns, route-specific upgrade notices, or limited-time calls to action. Campaigns are separate from announcements and privacy consent so normal docs notices stay calm and consent behavior stays focused on privacy requirements.
-
-```ts [twoslash]
-const config = {
-  campaigns: [
-    {
-      enabled: true,
-      id: 'sponsor-qpress-v1',
-      title: 'Support Q-Press maintenance',
-      message: 'If Q-Press is useful in your workflow, consider sponsoring ongoing maintenance.',
-      tone: 'sponsor',
-      startAt: '2026-06-01T00:00:00Z',
-      endAt: '2026-06-30T23:59:59Z',
-      includeRoutes: ['/quasar-app-extensions/qpress/*'],
-      excludeRoutes: ['/privacy-policy'],
-      trigger: { type: 'scroll-depth', scrollDepth: 65 },
-      frequency: { strategy: 'days', days: 30, maxViews: 3 },
-      device: 'desktop',
-      mobileFallback: 'none',
-      closeOnEsc: true,
-      closeOnBackdrop: true,
-      action: {
-        label: 'Sponsor Jeff',
-        link: 'https://github.com/sponsors/hawkeye64',
-        external: true,
-      },
-    },
-  ],
-}
-```
-
-Campaign triggers currently support `load`, `delay`, `scroll-depth`, and desktop `exit-intent`. Route patterns support exact paths and simple trailing-wildcard prefixes such as `/guides/*`. Frequency defaults to `once`; use `session`, `days`, or `always` only when the message genuinely needs that behavior. Keep campaigns disabled by default and avoid mobile exit-intent patterns.
-
-Use `device: 'desktop'`, `device: 'mobile'`, or `device: 'all'` to target a campaign to the right viewport class. `mobileFallback: 'load'` is only for cases where an `exit-intent` campaign is allowed on mobile but needs a touch-safe trigger instead.
-
-### Campaign Recipes
-
-Use these patterns as starting points. Keep only one or two campaigns enabled at a time, give each campaign a stable `id`, and prefer route/date/frequency limits so prompts stay useful instead of noisy.
-
-#### Route-Specific Upgrade Notice
-
-Use this when a breaking change affects a specific docs area:
-
-```ts
-{
-  enabled: true,
-  id: 'qpress-upgrade-guide-v2',
-  title: 'Q-Press upgrade notes',
-  message: 'This section changed in the latest release. Review the upgrade guide before updating generated files.',
-  tone: 'warning',
-  includeRoutes: ['/quasar-app-extensions/qpress/*'],
-  excludeRoutes: ['/quasar-app-extensions/qpress/upgrade-guide'],
-  trigger: { type: 'load' },
-  frequency: { strategy: 'once' },
-  action: {
-    label: 'Open upgrade guide',
-    link: '/quasar-app-extensions/qpress/upgrade-guide',
-  },
-}
-```
-
-#### Limited Release Promotion
-
-Use start/end dates for release windows:
-
-```ts
-{
-  enabled: true,
-  id: 'docs-release-2026-07',
-  title: 'New docs release',
-  message: 'The July docs update includes SSG, API generation, and Q-Press validation improvements.',
-  tone: 'info',
-  startAt: '2026-07-01T00:00:00Z',
-  endAt: '2026-07-15T23:59:59Z',
-  includeRoutes: ['/*'],
-  trigger: { type: 'delay', delayMs: 2000 },
-  frequency: { strategy: 'session' },
-  action: {
-    label: 'Read release notes',
-    link: '/releases',
-  },
-}
-```
-
-#### Sponsor Prompt
-
-Use scroll depth and a longer cooldown for sponsor prompts:
-
-```ts
-{
-  enabled: true,
-  id: 'sponsor-docs-maintenance-v1',
-  title: 'Support ongoing maintenance',
-  message: 'If these docs help your workflow, consider sponsoring future maintenance.',
-  tone: 'sponsor',
-  includeRoutes: ['/quasar-app-extensions/qpress/*'],
-  trigger: { type: 'scroll-depth', scrollDepth: 70 },
-  frequency: { strategy: 'days', days: 30, maxViews: 3 },
-  device: 'desktop',
-  mobileFallback: 'none',
-  action: {
-    label: 'Sponsor Jeff',
-    link: 'https://github.com/sponsors/hawkeye64',
-    external: true,
-  },
-}
-```
-
-#### Scroll-Depth Learning Prompt
-
-Use this when a reader has already engaged with a long guide:
-
-```ts
-{
-  enabled: true,
-  id: 'api-generation-next-step-v1',
-  title: 'Try the API generator next',
-  message: 'You are deep into the guide. The API JSON workflow can turn your TypeScript source into docs-ready API pages.',
-  tone: 'info',
-  includeRoutes: ['/quasar-app-extensions/qpress/api-json'],
-  trigger: { type: 'scroll-depth', scrollDepth: 80 },
-  frequency: { strategy: 'once' },
-  action: {
-    label: 'Open CLI docs',
-    link: '/quasar-app-extensions/qpress/cli',
-  },
-}
-```
-
-#### Desktop Exit Intent With Mobile Fallback
-
-Exit intent is desktop-only by nature. If mobile visitors should see the same message, make the fallback explicit:
-
-```ts
-{
-  enabled: true,
-  id: 'newsletter-exit-intent-v1',
-  title: 'Before you go',
-  message: 'Bookmark the release notes to keep track of Q-Press changes.',
-  tone: 'info',
-  includeRoutes: ['/quasar-app-extensions/qpress/*'],
-  trigger: { type: 'exit-intent' },
-  device: 'all',
-  mobileFallback: 'load',
-  frequency: { strategy: 'days', days: 14, maxViews: 2 },
-  action: {
-    label: 'View release notes',
-    link: '/releases',
-  },
-}
-```
-
-## CodePen Links
-
-`codepen` is used by `MarkdownExample` when a live example opens in CodePen. Add global packages when an example needs browser globals and use `cssExternal`, `jsExternal`, or `head` when examples need shared assets.
-
-```ts [twoslash]
-const codepen = {
-  titleSuffix: ' - Q-Press Example',
-  jsPreProcessor: 'typescript',
-  globalPackages: [
-    {
-      packageName: 'quasar',
-      globalName: 'Quasar',
-    },
-  ],
-}
-```
-
-Keep CodePen setup in Site Config rather than hard-coding it into each example. That makes the examples portable across docs pages and easier to update when dependency versions change.
+Skinning belongs in theme and app styles, not in `siteConfig`. Prefer Q-Press CSS variables such as `--qpress-text-primary`, `--qpress-text-body`, `--qpress-surface-panel`, `--qpress-surface-raised-strong`, `--qpress-border-subtle`, and `--qpress-border-strong` so light and dark mode stay aligned with the selected theme.

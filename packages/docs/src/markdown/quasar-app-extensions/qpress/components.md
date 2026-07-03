@@ -17,6 +17,7 @@ Q-Press ships components for the generated docs shell and for Markdown-authored 
 | `MarkdownCodepen`        | Open examples in CodePen with the site's configured dependencies.    |
 | `MarkdownPrerender`      | Control content that should behave differently during SSG prerender. |
 | `MarkdownPrivacyConsent` | Render a static-host-friendly privacy notice or consent prompt.      |
+| `MarkdownTree`           | Render file and folder trees from page-scoped data.                  |
 
 The remaining components are primarily used by the generated layout, header, drawer, table-of-contents, and code rendering system. They are documented here for advanced customization and debugging.
 
