@@ -11,7 +11,7 @@ related:
 
 Q-Press currently expects:
 
-- Quasar CLI Vite with `@quasar/app-vite` `>=3.0.0-rc.6`
+- Quasar CLI Vite with `@quasar/app-vite` `>=3.0.0`
 - TypeScript project support
 - Vue Router from the Quasar Vite app template
 - `markdown-it` and `@types/markdown-it`

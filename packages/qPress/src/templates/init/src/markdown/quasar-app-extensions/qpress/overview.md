@@ -29,7 +29,7 @@ scope:
 Q-Press is a Quasar App Extension for building documentation sites from Markdown, Vue examples, generated API JSON, search indexes, and an optional static-site prerender pass.
 
 ::: warning
-Q-Press is for Quasar Vite projects using `@quasar/app-vite` `>=3.0.0-rc.6` at this time. TypeScript processing is also required. Do not use it with Webpack or JavaScript-only projects.
+Q-Press is for Quasar Vite projects using `@quasar/app-vite` `>=3.0.0` at this time. TypeScript processing is also required. Do not use it with Webpack or JavaScript-only projects.
 :::
 
 ::: tip

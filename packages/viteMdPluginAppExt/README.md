@@ -30,7 +30,7 @@ This App Extension is for convenience only. For more granular control, use `vite
 
 > Current stable release: `1.0.0`.
 >
-> This app extension currently targets Quasar Vite projects using `@quasar/app-vite` `>=3.0.0-rc.6`.
+> This app extension currently targets Quasar Vite projects using `@quasar/app-vite` `>=3.0.0`.
 
 ## Installation
 
