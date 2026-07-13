@@ -37,19 +37,19 @@
     "test": "vitest run"
   },
   "devDependencies": {
-    "@types/node": "^26.1.0",
-    "@vitest/coverage-istanbul": "^4.1.9",
+    "@types/node": "^26.1.1",
+    "@vitest/coverage-istanbul": "^4.1.10",
     "npm-check-updates": "^22.2.9",
-    "obuild": "^0.4.37",
-    "oxfmt": "^0.57.0",
-    "oxlint": "^1.72.0",
+    "obuild": "^0.4.38",
+    "oxfmt": "^0.58.0",
+    "oxlint": "^1.73.0",
     "typescript": "~6.0.3",
-    "vitest": "^4.1.9"
+    "vitest": "^4.1.10"
   },
   "engines": {
     "node": ">=22.13",
     "pnpm": ">=11.5.0"
   },
-  "packageManager": "pnpm@11.9.0",
+  "packageManager": "pnpm@11.12.0",
   "access": "private"
 }

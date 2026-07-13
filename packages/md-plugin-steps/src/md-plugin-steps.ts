@@ -130,7 +130,7 @@ function splitContainerTokens(
     currentTokens = []
   }
 
-  for (let index = 0; index < innerTokens.length; ) {
+  for (let index = 0; index < innerTokens.length;) {
     const headingMatch = getHeadingTitle(innerTokens, index, contentLevel, headingLevels)
     const markerMatch =
       enableAlternateMarker === true
