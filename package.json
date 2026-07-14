@@ -1,6 +1,6 @@
 {
   "name": "@md-plugins/mono-repo",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "description": "Markdown-it, Vite, and Quasar documentation tooling for Vue/Vite projects.",
   "keywords": [

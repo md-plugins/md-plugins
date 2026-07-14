@@ -1,6 +1,6 @@
 ---
 title: Upgrade Guide
-desc: Upgrade MD-Plugins and Q-Press to the 1.0 stable line.
+desc: Upgrade MD-Plugins and Q-Press to the 1.1 stable line.
 keys: Other
 related:
   - quasar-app-extensions/qpress/overview
@@ -11,7 +11,7 @@ related:
   - vite-plugins/vite-md-plugin/overview
 ---
 
-The `1.0.0` stable line is the recommended MD-Plugins and Q-Press baseline for Quasar CLI Vite projects. The Quasar app extensions, including Q-Press, target Quasar applications using `@quasar/app-vite` `>=3.0.0`.
+The `1.1.0` stable line is the recommended MD-Plugins and Q-Press baseline for Quasar CLI Vite projects. The Quasar app extensions, including Q-Press, target Quasar applications using `@quasar/app-vite` `>=3.0.0`.
 
 ::: warning
 Q-Press and the Quasar app extension packages now target Quasar Vite projects using `@quasar/app-vite` `>=3.0.0`. They are not intended for Webpack projects or JavaScript-only Quasar projects.

@@ -1,6 +1,6 @@
 {
   "name": "@md-plugins/vite-examples-plugin",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A Vite plugin for @md-plugins for handling imported examples in markdown files.",
   "keywords": [
     "markdown-it",
