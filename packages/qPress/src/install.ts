@@ -16,6 +16,10 @@ type DependencySection =
 
 type PackageJson = Partial<Record<DependencySection, Record<string, string>>>
 
+type QPressPackageJson = {
+  version: string
+}
+
 const dependencySections: DependencySection[] = [
   'devDependencies',
   'dependencies',
@@ -23,13 +27,18 @@ const dependencySections: DependencySection[] = [
   'peerDependencies',
 ]
 
-const qPressDevDependencies = {
-  '@md-plugins/search-ui': '^0.1.0-rc.19',
-  '@md-plugins/vite-search-plugin': '^0.1.0-rc.19',
-  '@md-plugins/vite-ssg-plugin': '^0.1.0-rc.19',
-  '@vue/server-renderer': '^3.5.0',
-  mermaid: '^11.15.0',
-  shiki: '^4.1.0',
+const { version: qPressVersion } = JSON.parse(
+  readFileSync(new URL('../package.json', import.meta.url), 'utf8'),
+) as QPressPackageJson
+const mdPluginsVersionRange = `^${qPressVersion}`
+
+export const qPressDevDependencies = {
+  '@md-plugins/search-ui': mdPluginsVersionRange,
+  '@md-plugins/vite-search-plugin': mdPluginsVersionRange,
+  '@md-plugins/vite-ssg-plugin': mdPluginsVersionRange,
+  '@vue/server-renderer': '^3.5.40',
+  mermaid: '^11.16.0',
+  shiki: '^4.3.1',
 }
 
 /**
@@ -56,22 +65,22 @@ function getDependencySection(pkgJson: PackageJson, name: string): DependencySec
  * Comparable ranges are only updated when the desired range is newer. Non-semver
  * ranges such as aliases, file links, and workspace ranges are preserved.
  */
-function shouldUpdateDependency(
+export function shouldUpdateDependency(
   existingRange: string,
   desiredRange: string,
   installedVersion?: string,
 ): boolean {
-  const desiredMinimum = semver.minVersion(desiredRange)
+  let desiredMinimum: semver.SemVer | null
+  let existingMinimum: semver.SemVer | null
 
-  if (desiredMinimum === null) {
+  try {
+    desiredMinimum = semver.minVersion(desiredRange)
+    existingMinimum = semver.minVersion(existingRange)
+  } catch {
     return false
   }
 
-  const existingMinimum = semver.minVersion(existingRange)
-
-  // Preserve package aliases, file/link/workspace ranges, and other ranges
-  // that semver cannot compare safely.
-  if (existingMinimum === null) {
+  if (desiredMinimum === null || existingMinimum === null) {
     return false
   }
 
@@ -79,11 +88,15 @@ function shouldUpdateDependency(
     return false
   }
 
-  if (installedVersion !== undefined && semver.valid(installedVersion) !== null) {
-    return semver.lt(installedVersion, desiredMinimum)
+  if (installedVersion === undefined) {
+    return true
   }
 
-  return true
+  const validInstalledVersion = semver.valid(installedVersion)
+
+  // If the installed version cannot be compared safely, preserve the user's
+  // dependency declaration rather than risk replacing it with an older range.
+  return validInstalledVersion !== null && semver.lt(validInstalledVersion, desiredMinimum)
 }
 
 /**
