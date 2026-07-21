@@ -30,11 +30,11 @@ vi.mock('vue-router', () => ({
   useRouter: () => ({ replace: vi.fn(() => Promise.resolve()) }),
 }))
 
-vi.mock('../src/.q-press/stores/markdown', () => ({
+vi.mock('../src/templates/init/src/_q-press/stores/markdown', () => ({
   useMarkdownStore: () => ({ setActiveToc: vi.fn() }),
 }))
 
-import { useScroll } from '../src/.q-press/composables/scroll'
+import { useScroll } from '../src/templates/init/src/_q-press/composables/scroll'
 
 describe('Q-Press anchor scrolling', () => {
   beforeEach(() => {
