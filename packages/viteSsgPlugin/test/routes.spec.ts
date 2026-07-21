@@ -471,6 +471,27 @@ describe('Vue SSG renderer adapter', () => {
     expect(html).toContain('<div id="q-app"><main>Rendered /guide from /guide</main></div>')
   })
 
+  it('inserts rendered replacement tokens literally', async () => {
+    const manifest = createSsgRouteManifest(['/replacement-tokens'])
+    const route = manifest.routes[0]
+    const renderedAppHtml = `<main>$&|$1|$2|$\`|$'|$$</main>`
+    const renderer = createVueSsgRouteRenderer({
+      createApp: () => ({ app: {} }),
+      renderToString: () => renderedAppHtml,
+    })
+
+    const html = await renderer(route, {
+      appHtml:
+        '<html><body><div class="app" id="q-app"></div><footer>Footer</footer></body></html>',
+      manifest,
+      routeIndex: 0,
+    })
+
+    expect(html).toBe(
+      `<html><body><div class="app" id="q-app">${renderedAppHtml}</div><footer>Footer</footer></body></html>`,
+    )
+  })
+
   it('supports custom shell replacement and rendered fragment transforms', async () => {
     const manifest = createSsgRouteManifest(['/custom'])
     const route = manifest.routes[0]

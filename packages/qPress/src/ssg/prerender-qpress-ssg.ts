@@ -24,6 +24,7 @@ import type {
 } from '@md-plugins/vite-ssg-plugin'
 import type { MenuItem } from '@md-plugins/vite-md-plugin'
 import type { Plugin, ViteDevServer } from 'vite'
+import { replaceQPressMountElement } from './replace-mount-element.js'
 
 type VueRenderTarget = Parameters<typeof renderToString>[0]
 type QPressSsgRenderer = 'qpress' | 'quasar-ssr'
@@ -82,13 +83,6 @@ const defaultServerEntry = 'server/server-entry.js'
 const defaultSrcDir = 'src'
 const defaultRouterRoutesEntry = 'router/routes.ts'
 const defaultSsgAppEntry = '.q-press/ssg/create-app.ts'
-
-/**
- * Escapes a string for safe interpolation into a generated RegExp.
- */
-function escapeRegExp(value: string): string {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-}
 
 /**
  * Asserts that a required file exists before prerendering continues.
@@ -269,22 +263,6 @@ function mergeBodyClasses(html: string, bodyClasses: string | undefined): string
 }
 
 /**
- * Replaces the empty Quasar app mount element with server-rendered app HTML.
- */
-function replaceMountElement(appHtml: string, renderedAppHtml: string, appMountId: string): string {
-  const mountId = escapeRegExp(appMountId)
-  const mountElementRE = new RegExp(
-    `<([a-zA-Z][\\w:-]*)([^>]*\\bid=["']?${mountId}["']?[^>]*)>\\s*</\\1>`,
-  )
-
-  if (!mountElementRE.test(appHtml)) {
-    throw new Error(`Could not find empty app mount element with id "${appMountId}".`)
-  }
-
-  return appHtml.replace(mountElementRE, `<$1$2>${renderedAppHtml}</$1>`)
-}
-
-/**
  * Applies Quasar SSR meta output and initial state to the built app HTML shell.
  */
 function applySsrMeta(
@@ -294,7 +272,7 @@ function applySsrMeta(
   appMountId: string,
 ): string {
   const stateScript = ssrContext.state === undefined ? '' : createStateScript(ssrContext.state)
-  let html = replaceMountElement(appHtml, renderedAppHtml, appMountId)
+  let html = replaceQPressMountElement(appHtml, renderedAppHtml, appMountId)
 
   html = appendOpeningTagAttrs(html, 'html', ssrContext._meta.htmlAttrs)
   html = appendOpeningTagAttrs(html, 'body', ssrContext._meta.bodyAttrs)

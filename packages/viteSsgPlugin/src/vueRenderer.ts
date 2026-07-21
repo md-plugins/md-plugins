@@ -67,7 +67,10 @@ function replaceMountElement(appHtml: string, renderedAppHtml: string, appMountI
     throw new Error(`Could not find empty app mount element with id "${appMountId}".`)
   }
 
-  return appHtml.replace(mountElementRE, `<$1$2>${renderedAppHtml}</$1>`)
+  return appHtml.replace(
+    mountElementRE,
+    (_match, tag: string, attributes: string) => `<${tag}${attributes}>${renderedAppHtml}</${tag}>`,
+  )
 }
 
 /**
