@@ -31,6 +31,10 @@ export interface SsgRouteManifest {
   routes: SsgRoute[]
 }
 
+export type SsgManifestTransformer = (
+  manifest: SsgRouteManifest,
+) => MaybePromise<SsgRouteManifest | void>
+
 export type SsgRouteSource = SsgRouteInput[] | (() => MaybePromise<SsgRouteInput[]>)
 
 export type SsgRouteExclusion = string | RegExp
@@ -111,6 +115,11 @@ export interface PrerenderSsgRoutesOptions extends SsgRouteHtmlOptions {
    * Manifest to use instead of reading one from disk.
    */
   manifest?: SsgRouteManifest
+
+  /**
+   * Optional manifest transform after loading and before normalization.
+   */
+  transformManifest?: SsgManifestTransformer
 
   /**
    * Routes to skip while prerendering. String values are matched after route
@@ -261,7 +270,8 @@ export type VueSsgAppHtmlReplacer = (
   renderedAppHtml: string,
   route: SsgRoute,
   context: SsgRouteRenderContext,
-) => string
+  appResult: VueSsgAppFactoryResult,
+) => MaybePromise<string>
 
 export type VueSsgRenderedAppHtmlTransformer = (
   renderedAppHtml: string,

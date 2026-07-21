@@ -46,6 +46,8 @@ interface SsgRouteManifest {
   routes: SsgRoute[]
 }
 
+type SsgManifestTransformer = (manifest: SsgRouteManifest) => MaybePromise<SsgRouteManifest | void>
+
 type SsgRouteSource = SsgRouteInput[] | (() => MaybePromise<SsgRouteInput[]>)
 
 interface SsgRouterRouteLike {
@@ -88,6 +90,7 @@ interface PrerenderSsgRoutesOptions extends SsgRouteHtmlOptions {
   appHtmlFile?: string
   manifestFile?: string
   manifest?: SsgRouteManifest
+  transformManifest?: SsgManifestTransformer
   exclude?: SsgRouteExclusion[]
   concurrency?: number
   interval?: number
@@ -190,7 +193,8 @@ type VueSsgAppHtmlReplacer = (
   renderedAppHtml: string,
   route: SsgRoute,
   context: SsgRouteRenderContext,
-) => string
+  appResult: VueSsgAppFactoryResult,
+) => MaybePromise<string>
 
 type VueSsgRenderedAppHtmlTransformer = (
   renderedAppHtml: string,
@@ -246,7 +250,7 @@ viteSsgPlugin({
   routes: [
     '/',
     {
-      path: '/releases/v0.1.0',
+      path: '/releases/v0-1-0',
       meta: {
         title: 'v0.1.0 Release Notes',
       },
@@ -260,6 +264,10 @@ viteSsgPlugin({
 
 The route values are written into the emitted manifest and the virtual module, so keep `meta`,
 `params`, and `data` JSON-safe.
+
+Explicit routes must be static, portable page paths. Dot segments, backslashes, dynamic or
+catch-all segments, asset-looking filenames, and path segments that are invalid on Windows are
+rejected.
 
 ## Static Router Route Discovery
 
@@ -437,11 +445,18 @@ await prerenderSsgRoutes({
 })
 ```
 
+`transformManifest` runs once after the manifest is loaded and before its routes are normalized. It
+lets framework adapters add discovered routes while leaving manifest loading and validation in the
+generic prerenderer.
+
 By default, post-build prerendering writes `q-press-ssg-report.json` next to the route manifest. Pass
 `reportFile: false` to disable it or pass another filename to keep reports elsewhere inside
-`outDir`.
+`outDir`. Configured and hook-provided file paths are resolved and must remain inside `outDir`.
 
 ## Vue / Quasar Renderer Adapter
+
+The default Vue shell replacement accepts quoted or unquoted mount IDs, reordered attributes, and
+standard or custom mount elements as emitted by production HTML builds.
 
 The generated Q-Press factory lives at `src/.q-press/ssg/create-app`:
 

@@ -1,4 +1,5 @@
 import { prerenderSsgRoutes } from './prerender'
+import { replaceSsgMountElement } from './htmlShell'
 import type {
   PrerenderSsgRoutesResult,
   PrerenderVueSsgRoutesOptions,
@@ -11,13 +12,6 @@ import type {
 } from './types'
 
 const vueServerRendererPackage = '@vue/server-renderer'
-
-/**
- * Escapes a string for safe use inside a dynamically-created regular expression.
- */
-function escapeRegExp(value: string): string {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-}
 
 /**
  * Detects the object shape returned by Vue SSG app factories.
@@ -55,25 +49,6 @@ async function loadVueRenderToString(): Promise<VueSsgRenderToString> {
 }
 
 /**
- * Replaces the empty app mount element in a built HTML shell with rendered Vue HTML.
- */
-function replaceMountElement(appHtml: string, renderedAppHtml: string, appMountId: string): string {
-  const mountId = escapeRegExp(appMountId)
-  const mountElementRE = new RegExp(
-    `<([a-zA-Z][\\w:-]*)([^>]*\\bid=["']${mountId}["'][^>]*)>\\s*</\\1>`,
-  )
-
-  if (!mountElementRE.test(appHtml)) {
-    throw new Error(`Could not find empty app mount element with id "${appMountId}".`)
-  }
-
-  return appHtml.replace(
-    mountElementRE,
-    (_match, tag: string, attributes: string) => `<${tag}${attributes}>${renderedAppHtml}</${tag}>`,
-  )
-}
-
-/**
  * Moves the app router to the target SSG route before rendering.
  */
 async function pushRouterLocation(
@@ -102,6 +77,19 @@ async function pushRouterLocation(
 }
 
 /**
+ * Runs app and framework SSR callbacks after Vue has rendered the route.
+ */
+async function runRenderedCallbacks(appResult: VueSsgAppFactoryResult): Promise<void> {
+  await appResult.onRendered?.()
+
+  const rendered = appResult.ssrContext?.rendered
+
+  if (typeof rendered === 'function') {
+    await rendered.call(appResult.ssrContext)
+  }
+}
+
+/**
  * Creates a route renderer that turns a fresh Vue/Quasar SSR app into static HTML.
  */
 export function createVueSsgRouteRenderer(options: VueSsgRouteRendererOptions): SsgRouteRenderer {
@@ -113,13 +101,14 @@ export function createVueSsgRouteRenderer(options: VueSsgRouteRendererOptions): 
 
     const renderToString = options.renderToString ?? (await loadVueRenderToString())
     const renderedAppHtml = await renderToString(appResult.app, appResult.ssrContext)
+
+    await runRenderedCallbacks(appResult)
+
     const transformedAppHtml =
       (await options.transformRenderedAppHtml?.(renderedAppHtml, route, context)) ?? renderedAppHtml
     const html = options.replaceAppHtml
-      ? options.replaceAppHtml(context.appHtml, transformedAppHtml, route, context)
-      : replaceMountElement(context.appHtml, transformedAppHtml, options.appMountId ?? 'q-app')
-
-    await appResult.onRendered?.()
+      ? await options.replaceAppHtml(context.appHtml, transformedAppHtml, route, context, appResult)
+      : replaceSsgMountElement(context.appHtml, transformedAppHtml, options.appMountId ?? 'q-app')
 
     return html
   }

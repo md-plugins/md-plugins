@@ -1,5 +1,7 @@
 export * from './html'
+export * from './htmlShell'
 export * from './markdownRoutes'
+export * from './outputPaths'
 export * from './prerender'
 export * from './routes'
 export * from './types'

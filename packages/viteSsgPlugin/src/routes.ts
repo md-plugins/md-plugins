@@ -16,6 +16,58 @@ export interface SsgRouterRouteLike {
   children?: SsgRouterRouteLike[]
 }
 
+const windowsReservedPathSegmentRE = /^(?:con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\.|$)/i
+
+/**
+ * Returns whether a route segment contains a character that cannot be used in
+ * a portable output filename.
+ */
+function hasInvalidPathCharacter(segment: string): boolean {
+  return Array.from(segment).some((character) => {
+    const codePoint = character.codePointAt(0) ?? 0
+
+    return codePoint <= 31 || '<>:"|?*'.includes(character)
+  })
+}
+
+/**
+ * Ensures a route can be mapped to the same safe output path on every platform.
+ */
+function assertPortableSsgRoutePath(path: string): void {
+  if (path.includes('\\')) {
+    throw new Error(`SSG route path cannot contain backslashes: ${path}`)
+  }
+
+  for (const segment of path.split('/').filter(Boolean)) {
+    if (segment === '.' || segment === '..') {
+      throw new Error(`SSG route path cannot contain dot segments: ${path}`)
+    }
+
+    if (
+      hasInvalidPathCharacter(segment) ||
+      segment.endsWith('.') ||
+      segment.endsWith(' ') ||
+      windowsReservedPathSegmentRE.test(segment)
+    ) {
+      throw new Error(`SSG route path contains a platform-invalid segment: ${path}`)
+    }
+  }
+}
+
+/**
+ * Returns whether a normalized route represents a page rather than a dynamic
+ * route or asset-looking file path.
+ */
+function isNormalizedStaticSsgRoutePath(path: string): boolean {
+  return (
+    path.startsWith('/') &&
+    !path.startsWith('//') &&
+    !path.includes(':') &&
+    !path.includes('*') &&
+    !/\.[a-z0-9]+$/i.test(path)
+  )
+}
+
 /**
  * Normalizes a Vite base value for use in generated SSG manifests and links.
  */
@@ -52,6 +104,9 @@ export function normalizeSsgRoutePath(path: string): string {
 
   const withoutHash = trimmed.split('#')[0] ?? ''
   const withoutQuery = withoutHash.split('?')[0] ?? ''
+
+  assertPortableSsgRoutePath(withoutQuery)
+
   const withLeadingSlash = withoutQuery.startsWith('/') ? withoutQuery : `/${withoutQuery}`
   const compacted = withLeadingSlash.replace(/\/{2,}/g, '/')
 
@@ -66,15 +121,11 @@ export function normalizeSsgRoutePath(path: string): string {
  * Checks whether a route path can be emitted as a static HTML file.
  */
 export function isStaticSsgRoutePath(path: string): boolean {
-  const normalized = normalizeSsgRoutePath(path)
-
-  return (
-    normalized.startsWith('/') &&
-    !normalized.startsWith('//') &&
-    !normalized.includes(':') &&
-    !normalized.includes('*') &&
-    !/\.[a-z0-9]+$/i.test(normalized)
-  )
+  try {
+    return isNormalizedStaticSsgRoutePath(normalizeSsgRoutePath(path))
+  } catch {
+    return false
+  }
 }
 
 /**
@@ -82,6 +133,10 @@ export function isStaticSsgRoutePath(path: string): boolean {
  */
 export function routePathToHtmlFile(routePath: string): string {
   const normalized = normalizeSsgRoutePath(routePath)
+
+  if (!isNormalizedStaticSsgRoutePath(normalized)) {
+    throw new Error(`SSG route path must be a static page path: ${normalized}`)
+  }
 
   if (normalized === '/') {
     return 'index.html'

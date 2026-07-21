@@ -11,6 +11,7 @@ import {
   normalizeSsgRoutePath,
 } from './routes'
 import { renderSsgRouteHtml } from './html'
+import { resolveSsgOutDirFile } from './outputPaths'
 import type {
   PrerenderSsgRoutesOptions,
   PrerenderSsgRoutesResult,
@@ -30,7 +31,10 @@ async function readSsgRouteManifest(
   outDir: string,
   manifestFile: string,
 ): Promise<SsgRouteManifest> {
-  const manifestJson = await readFile(join(outDir, manifestFile), 'utf8')
+  const manifestJson = await readFile(
+    resolveSsgOutDirFile(outDir, manifestFile, 'SSG route manifest'),
+    'utf8',
+  )
 
   return JSON.parse(manifestJson) as SsgRouteManifest
 }
@@ -280,6 +284,7 @@ export async function prerenderSsgRoutes({
   appHtmlFile = 'index.html',
   manifestFile = defaultSsgManifestFile,
   manifest,
+  transformManifest,
   exclude,
   concurrency,
   interval,
@@ -295,13 +300,24 @@ export async function prerenderSsgRoutes({
   injectRoutePayload,
 }: PrerenderSsgRoutesOptions): Promise<PrerenderSsgRoutesResult> {
   const resolvedOutDir = resolve(outDir)
-  const rawManifest = manifest ?? (await readSsgRouteManifest(resolvedOutDir, manifestFile))
+  const resolvedAppHtmlFile = resolveSsgOutDirFile(resolvedOutDir, appHtmlFile, 'SSG app HTML file')
+  const resolvedManifestFile = resolveSsgOutDirFile(
+    resolvedOutDir,
+    manifestFile,
+    'SSG route manifest',
+  )
+  const resolvedReportFile =
+    reportFile === false
+      ? undefined
+      : resolveSsgOutDirFile(resolvedOutDir, reportFile, 'SSG generation report')
+  const loadedManifest = manifest ?? (await readSsgRouteManifest(resolvedOutDir, manifestFile))
+  const rawManifest = (await transformManifest?.(loadedManifest)) ?? loadedManifest
   const resolvedManifest = createSsgRouteManifest(rawManifest.routes, {
     base: rawManifest.base,
     exclude,
   })
   const appHtml = await injectMissingCssAssets(
-    await readFile(join(resolvedOutDir, appHtmlFile), 'utf8'),
+    await readFile(resolvedAppHtmlFile, 'utf8'),
     resolvedOutDir,
     resolvedManifest.base,
   )
@@ -365,7 +381,11 @@ export async function prerenderSsgRoutes({
         }
       }
 
-      const htmlPath = join(resolvedOutDir, route.htmlFile)
+      const htmlPath = resolveSsgOutDirFile(
+        resolvedOutDir,
+        route.htmlFile,
+        `Generated HTML for route "${route.path}"`,
+      )
       const page: SsgGeneratedPage = {
         route,
         html,
@@ -375,7 +395,19 @@ export async function prerenderSsgRoutes({
       const pageUpdate = await onPageGenerated?.(page, context)
       const finalHtml = pageUpdate?.html ?? page.html
       const finalHtmlFile = pageUpdate?.htmlFile ?? page.htmlFile
-      const finalFilePath = pageUpdate?.filePath ?? join(resolvedOutDir, finalHtmlFile)
+      const resolvedHtmlFile = resolveSsgOutDirFile(
+        resolvedOutDir,
+        finalHtmlFile,
+        `Generated HTML for route "${route.path}"`,
+      )
+      const finalFilePath =
+        pageUpdate?.filePath === undefined
+          ? resolvedHtmlFile
+          : resolveSsgOutDirFile(
+              resolvedOutDir,
+              pageUpdate.filePath,
+              `Generated file for route "${route.path}"`,
+            )
 
       await mkdir(dirname(finalFilePath), { recursive: true })
       await writeFile(finalFilePath, finalHtml)
@@ -437,10 +469,7 @@ export async function prerenderSsgRoutes({
     }
   }
 
-  await writeFile(
-    join(resolvedOutDir, manifestFile),
-    `${JSON.stringify(resolvedManifest, null, 2)}\n`,
-  )
+  await writeFile(resolvedManifestFile, `${JSON.stringify(resolvedManifest, null, 2)}\n`)
 
   const report = createReport({
     generated: routes,
@@ -451,8 +480,8 @@ export async function prerenderSsgRoutes({
     warnings,
   })
 
-  if (reportFile !== false) {
-    await writeFile(join(resolvedOutDir, reportFile), `${JSON.stringify(report, null, 2)}\n`)
+  if (resolvedReportFile !== undefined) {
+    await writeFile(resolvedReportFile, `${JSON.stringify(report, null, 2)}\n`)
   }
 
   const result = {

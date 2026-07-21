@@ -1,10 +1,11 @@
 import { describe, expect, it } from 'vitest'
 import { mkdir, mkdtemp, readFile, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
-import { join } from 'node:path'
+import { basename, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { createSsgRouteHtml } from '../src/html'
 import { discoverMarkdownSsgRoutes, markdownFileToRoutePath } from '../src/markdownRoutes'
+import { resolveSsgOutDirFile } from '../src/outputPaths'
 import { prerenderSsgRoutes } from '../src/prerender'
 import {
   createSsgRouteManifest,
@@ -50,6 +51,18 @@ describe('SSG route helpers', () => {
     expect(normalizeSsgRoutePath('//other//releases/?from=home#top')).toBe('/other/releases')
   })
 
+  it.each([
+    ['/../escaped', 'dot segments'],
+    ['/guide/./introduction', 'dot segments'],
+    ['/guide\\introduction', 'backslashes'],
+    ['/guide/<draft>', 'platform-invalid'],
+    ['/guide/trailing.', 'platform-invalid'],
+    ['/CON', 'platform-invalid'],
+  ])('rejects non-portable route path %s', (routePath, expectedError) => {
+    expect(() => normalizeSsgRoutePath(routePath)).toThrow(expectedError)
+    expect(isStaticSsgRoutePath(routePath)).toBe(false)
+  })
+
   it('identifies static route paths', () => {
     expect(isStaticSsgRoutePath('/getting-started')).toBe(true)
     expect(isStaticSsgRoutePath('/packages/:name')).toBe(false)
@@ -62,6 +75,8 @@ describe('SSG route helpers', () => {
     expect(routePathToHtmlFile('/getting-started/introduction')).toBe(
       'getting-started/introduction/index.html',
     )
+    expect(() => routePathToHtmlFile('/packages/:name')).toThrow('platform-invalid')
+    expect(() => routePathToHtmlFile('/assets/logo.png')).toThrow('static page path')
   })
 
   it('creates stable route ids', () => {
@@ -72,15 +87,15 @@ describe('SSG route helpers', () => {
   it('normalizes route objects', () => {
     expect(
       normalizeSsgRoute({
-        path: '/packages/:name',
+        path: '/packages/qcalendar',
         params: { name: 'qcalendar' },
         meta: { source: 'package' },
         data: { packageName: 'QCalendar' },
       }),
     ).toEqual({
-      path: '/packages/:name',
-      htmlFile: 'packages/:name/index.html',
-      id: 'packages-name',
+      path: '/packages/qcalendar',
+      htmlFile: 'packages/qcalendar/index.html',
+      id: 'packages-qcalendar',
       params: { name: 'qcalendar' },
       meta: { source: 'package' },
       data: { packageName: 'QCalendar' },
@@ -129,6 +144,13 @@ describe('SSG route helpers', () => {
     )
   })
 
+  it.each(['/packages/:name', '/:catchAll(.*)*', '/assets/logo.png'])(
+    'rejects non-static explicit route %s',
+    (routePath) => {
+      expect(() => createSsgRouteManifest([routePath])).toThrow()
+    },
+  )
+
   it('flattens static Vue Router-style routes', () => {
     expect(
       flattenStaticSsgRouterRoutes(
@@ -146,6 +168,23 @@ describe('SSG route helpers', () => {
       ),
     ).toEqual(['/', '/getting-started'])
   })
+})
+
+describe('SSG output paths', () => {
+  it('resolves portable files inside outDir', () => {
+    const outDir = join(tmpdir(), 'md-plugins-output')
+
+    expect(resolveSsgOutDirFile(outDir, 'guide/index.html')).toBe(join(outDir, 'guide/index.html'))
+  })
+
+  it.each(['../escaped.html', 'guide/../../escaped.html', 'bad\\path.html', 'CON.json'])(
+    'rejects output file %s',
+    (file) => {
+      const outDir = join(tmpdir(), 'md-plugins-output')
+
+      expect(() => resolveSsgOutDirFile(outDir, file)).toThrow()
+    },
+  )
 })
 
 describe('Markdown SSG route helpers', () => {
@@ -355,6 +394,124 @@ describe('SSG file prerendering', () => {
     ])
   })
 
+  it('transforms a loaded manifest before route normalization and rendering', async () => {
+    const outDir = await mkdtemp(join(tmpdir(), 'md-plugins-ssg-transform-manifest-'))
+    const manifest = createSsgRouteManifest(['/'])
+    let transformCalls = 0
+
+    await writeFile(
+      join(outDir, 'index.html'),
+      '<html><head></head><body><div id="q-app"></div></body></html>',
+    )
+    await writeFile(
+      join(outDir, 'q-press-ssg-routes.json'),
+      `${JSON.stringify(manifest, null, 2)}\n`,
+    )
+
+    const result = await prerenderSsgRoutes({
+      outDir,
+      reportFile: false,
+      transformManifest(loadedManifest) {
+        transformCalls += 1
+
+        return createSsgRouteManifest([...loadedManifest.routes, '/guide'], {
+          base: loadedManifest.base,
+        })
+      },
+      renderRoute(route, { appHtml }) {
+        return appHtml.replace(
+          '<div id="q-app"></div>',
+          `<div id="q-app"><main>${route.path}</main></div>`,
+        )
+      },
+    })
+
+    expect(transformCalls).toBe(1)
+    expect(result.routes.map((route) => route.path)).toEqual(['/', '/guide'])
+    await expect(readFile(join(outDir, 'guide/index.html'), 'utf8')).resolves.toContain(
+      '<main>/guide</main>',
+    )
+  })
+
+  it('rejects every generated file path that resolves outside outDir', async () => {
+    const outDir = await mkdtemp(join(tmpdir(), 'md-plugins-ssg-containment-'))
+    const manifest = createSsgRouteManifest(['/guide'])
+    const escapedFileName = `${basename(outDir)}-escaped.html`
+    const escapedFile = join(outDir, '..', escapedFileName)
+
+    await writeFile(
+      join(outDir, 'index.html'),
+      '<html><head></head><body><div id="q-app"></div></body></html>',
+    )
+
+    const renderRoute = (_route: unknown, { appHtml }: { appHtml: string }) => appHtml
+
+    await expect(
+      prerenderSsgRoutes({
+        outDir,
+        manifest: {
+          base: '/',
+          routes: [
+            {
+              path: `/../${escapedFileName}`,
+              htmlFile: `../${escapedFileName}`,
+              id: 'escaped',
+              meta: {},
+              params: {},
+            },
+          ],
+        },
+        reportFile: false,
+        renderRoute,
+      }),
+    ).rejects.toThrow('dot segments')
+
+    await expect(
+      prerenderSsgRoutes({
+        outDir,
+        manifest,
+        reportFile: false,
+        renderRoute,
+        onPageGenerated() {
+          return { htmlFile: `../${escapedFileName}` }
+        },
+      }),
+    ).rejects.toThrow('inside outDir')
+
+    await expect(
+      prerenderSsgRoutes({
+        outDir,
+        manifest,
+        reportFile: false,
+        renderRoute,
+        onPageGenerated() {
+          return { filePath: escapedFile }
+        },
+      }),
+    ).rejects.toThrow('inside outDir')
+
+    await expect(
+      prerenderSsgRoutes({
+        outDir,
+        manifest,
+        manifestFile: `../${escapedFileName}`,
+        reportFile: false,
+        renderRoute,
+      }),
+    ).rejects.toThrow('inside outDir')
+
+    await expect(
+      prerenderSsgRoutes({
+        outDir,
+        manifest,
+        reportFile: `../${escapedFileName}`,
+        renderRoute,
+      }),
+    ).rejects.toThrow('inside outDir')
+
+    await expect(readFile(escapedFile, 'utf8')).rejects.toMatchObject({ code: 'ENOENT' })
+  })
+
   it('supports hooks, route crawling, redirects, skipped 404s, concurrency, and reports', async () => {
     const outDir = await mkdtemp(join(tmpdir(), 'md-plugins-ssg-'))
     const manifest = createSsgRouteManifest(['/', '/old-guide', '/missing', '/private'], {
@@ -462,13 +619,13 @@ describe('Vue SSG renderer adapter', () => {
     })
 
     const html = await renderer(route, {
-      appHtml: '<html><head></head><body><div id="q-app"></div></body></html>',
+      appHtml: '<html><head></head><body><div id=q-app></div></body></html>',
       manifest,
       routeIndex: 0,
     })
 
     expect(navigatedTo).toEqual(['/guide', 'ready'])
-    expect(html).toContain('<div id="q-app"><main>Rendered /guide from /guide</main></div>')
+    expect(html).toContain('<div id=q-app><main>Rendered /guide from /guide</main></div>')
   })
 
   it('inserts rendered replacement tokens literally', async () => {
@@ -513,6 +670,43 @@ describe('Vue SSG renderer adapter', () => {
     })
 
     expect(html).toContain('<div data-rendered="true"><main>Docs</main></div>')
+  })
+
+  it('runs app and framework callbacks before framework-specific shell replacement', async () => {
+    const manifest = createSsgRouteManifest(['/callbacks'])
+    const route = manifest.routes[0]
+    const calls: string[] = []
+    const renderer = createVueSsgRouteRenderer({
+      createApp: () => ({
+        app: {},
+        ssrContext: {
+          rendered() {
+            calls.push('ssr-context')
+          },
+        },
+        onRendered() {
+          calls.push('app')
+        },
+      }),
+      renderToString() {
+        calls.push('render')
+        return '<main>Callbacks</main>'
+      },
+      replaceAppHtml(appHtml, renderedAppHtml, _route, _context, appResult) {
+        calls.push('replace')
+        expect(appResult.ssrContext).toBeDefined()
+
+        return appHtml.replace('<div id=q-app></div>', `<div id=q-app>${renderedAppHtml}</div>`)
+      },
+    })
+
+    await renderer(route, {
+      appHtml: '<html><body><div id=q-app></div></body></html>',
+      manifest,
+      routeIndex: 0,
+    })
+
+    expect(calls).toEqual(['render', 'app', 'ssr-context', 'replace'])
   })
 
   it('falls back to router.replace when push is unavailable', async () => {

@@ -1,21 +1,26 @@
 /**
- * Escapes a string for safe interpolation into a generated RegExp.
+ * Escapes a string for safe use inside a dynamically-created regular expression.
  */
 function escapeRegExp(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 }
 
 /**
- * Replaces the empty Quasar app mount element with server-rendered app HTML.
+ * Replaces an empty app mount element with server-rendered HTML.
+ *
+ * Supports quoted and unquoted IDs, arbitrary attribute order, and custom
+ * element names as emitted by production HTML minifiers.
  */
-export function replaceQPressMountElement(
+export function replaceSsgMountElement(
   appHtml: string,
   renderedAppHtml: string,
   appMountId: string,
 ): string {
   const mountId = escapeRegExp(appMountId)
+  const idValue = `(?:["']${mountId}["']|${mountId}(?=[\\s/>]))`
   const mountElementRE = new RegExp(
-    `<([a-zA-Z][\\w:-]*)([^>]*\\bid=["']?${mountId}["']?[^>]*)>\\s*</\\1>`,
+    `<([a-zA-Z][\\w:-]*)([^>]*?\\s+id\\s*=\\s*${idValue}[^>]*)>\\s*</\\1\\s*>`,
+    'i',
   )
 
   if (!mountElementRE.test(appHtml)) {

@@ -113,6 +113,10 @@ The plugin emits `q-press-ssg-routes.json` by default:
 Route `meta`, `params`, and `data` values should stay JSON-safe because they are written
 directly into the emitted manifest and the virtual module.
 
+Explicit routes must be static, portable page paths. Dot segments, backslashes, dynamic or
+catch-all segments, asset-looking filenames, and path segments that are invalid on Windows are
+rejected.
+
 ## Route HTML
 
 When Vite emits `index.html`, this plugin creates matching route HTML files such as:
@@ -176,7 +180,10 @@ static-host deployments simple, but non-Q-Press projects can use another output 
 
 By default, post-build prerendering writes `q-press-ssg-report.json`. Pass `reportFile: false` to
 disable reports, or provide hooks such as `onRouteRendered`, `onPageGenerated`, and `afterGenerate`
-for custom output.
+for custom output. Configured and hook-provided file paths must resolve inside `outDir`.
+
+Framework adapters can use `transformManifest` to add discovered routes after the manifest is
+loaded while leaving file loading and route validation in the generic prerenderer.
 
 ## Vue / Quasar Build-Time Rendering
 
@@ -193,6 +200,8 @@ Projects that already have a Quasar SSR bundle can opt into that renderer with
 For lower-level Vue or Quasar apps, `createVueSsgRouteRenderer` adapts a per-route SSR app factory
 into the generic `renderRoute` hook. This uses Vue's server renderer at build time only; the
 published output can still be deployed as static files on Netlify or any other static host.
+The default shell replacement supports quoted or unquoted mount IDs, reordered attributes, and
+standard or custom mount elements.
 
 ```ts
 import { prerenderVueSsgRoutes } from '@md-plugins/vite-ssg-plugin'

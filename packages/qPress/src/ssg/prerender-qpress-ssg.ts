@@ -1,4 +1,4 @@
-import { access, readFile } from 'node:fs/promises'
+import { access } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import { dirname, join, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
@@ -7,9 +7,11 @@ import { quasar as quasarVitePlugin } from '@quasar/vite-plugin'
 import { viteMdPlugin } from '@md-plugins/vite-md-plugin'
 import {
   createSsgRouteManifest,
+  createVueSsgRouteRenderer,
   escapeJsonForHtml,
   flattenStaticSsgRouterRoutes,
   prerenderSsgRoutes,
+  replaceSsgMountElement,
 } from '@md-plugins/vite-ssg-plugin'
 import { renderToString } from '@vue/server-renderer'
 import { createServer } from 'vite'
@@ -20,11 +22,11 @@ import type {
   SsgRouteInput,
   SsgRouteManifest,
   SsgRouteRenderContext,
+  SsgRouteRenderer,
   VueSsgAppFactoryResult,
 } from '@md-plugins/vite-ssg-plugin'
 import type { MenuItem } from '@md-plugins/vite-md-plugin'
 import type { Plugin, ViteDevServer } from 'vite'
-import { replaceQPressMountElement } from './replace-mount-element.js'
 
 type VueRenderTarget = Parameters<typeof renderToString>[0]
 type QPressSsgRenderer = 'qpress' | 'quasar-ssr'
@@ -272,7 +274,7 @@ function applySsrMeta(
   appMountId: string,
 ): string {
   const stateScript = ssrContext.state === undefined ? '' : createStateScript(ssrContext.state)
-  let html = replaceQPressMountElement(appHtml, renderedAppHtml, appMountId)
+  let html = replaceSsgMountElement(appHtml, renderedAppHtml, appMountId)
 
   html = appendOpeningTagAttrs(html, 'html', ssrContext._meta.htmlAttrs)
   html = appendOpeningTagAttrs(html, 'body', ssrContext._meta.bodyAttrs)
@@ -285,69 +287,57 @@ function applySsrMeta(
   return html
 }
 
-/**
- * Runs Vue and Quasar rendered callbacks after route rendering.
- */
-async function runRenderedCallbacks(appResult: VueSsgAppFactoryResult): Promise<void> {
-  await appResult.onRendered?.()
-
-  const ssrContext = appResult.ssrContext
-
-  if (isRecord(ssrContext) && typeof ssrContext.rendered === 'function') {
-    await ssrContext.rendered()
-  }
-}
-
-/**
- * Navigates the app router to the target route before rendering.
- */
-async function pushRouterLocation(
-  appResult: VueSsgAppFactoryResult,
-  route: SsgRoute,
-): Promise<void> {
-  const router = appResult.router
-
-  if (!router) {
-    return
-  }
-
-  const location = appResult.routeLocation ?? route.path
-  const navigate = router.replace ?? router.push
-
-  if (navigate) {
-    await navigate.call(router, location)
-  }
-
-  await router.isReady?.()
-}
-
-/**
- * Renders one route through a compiled Quasar SSR server entry.
- */
-async function renderRouteWithQuasarSsr(
-  route: SsgRoute,
-  context: SsgRouteRenderContext,
-  serverEntry: QPressServerEntry,
-  appMountId: string,
-): Promise<string> {
-  const onRenderedList: Array<() => unknown> = []
-  const ssrContext = createSsrContext(route, onRenderedList)
-  const renderFn = await serverEntry(ssrContext)
-  const renderedAppHtml = await renderToString(renderFn, ssrContext)
-
-  for (const callback of onRenderedList) {
-    await callback()
-  }
-
-  await ssrContext.rendered?.()
-
-  return applySsrMeta(context.appHtml, ssrContext, renderedAppHtml, appMountId)
-}
-
 type QPressSsgCreateApp = (
   route: SsgRoute,
   context: SsgRouteRenderContext,
 ) => Promise<VueSsgAppFactoryResult> | VueSsgAppFactoryResult
+
+/**
+ * Adapts a Q-Press app factory to the generic Vue SSG route renderer.
+ */
+function createQPressVueSsgRouteRenderer(
+  createApp: QPressSsgCreateApp,
+  appMountId: string,
+): SsgRouteRenderer {
+  return createVueSsgRouteRenderer({
+    createApp,
+    renderToString: (app, ssrContext) =>
+      renderToString(app as VueRenderTarget, ssrContext as QPressSsrContext | undefined),
+    appMountId,
+    useRouterReplace: true,
+    replaceAppHtml(appHtml, renderedAppHtml, _route, _context, appResult) {
+      return applySsrMeta(
+        appHtml,
+        toQPressSsrContext(appResult.ssrContext),
+        renderedAppHtml,
+        appMountId,
+      )
+    },
+  })
+}
+
+/**
+ * Adapts a compiled Quasar SSR server entry to the generic Vue SSG renderer.
+ */
+function createQuasarSsrRouteRenderer(
+  serverEntry: QPressServerEntry,
+  appMountId: string,
+): SsgRouteRenderer {
+  return createQPressVueSsgRouteRenderer(async (route) => {
+    const onRenderedList: Array<() => unknown> = []
+    const ssrContext = createSsrContext(route, onRenderedList)
+
+    return {
+      app: await serverEntry(ssrContext),
+      ssrContext,
+      async onRendered() {
+        for (const callback of onRenderedList) {
+          await callback()
+        }
+      },
+    }
+  }, appMountId)
+}
 
 type QPressSsgCreateAppModule = {
   createQPressSsgApp?: QPressSsgCreateApp
@@ -514,13 +504,6 @@ async function loadRouterSsgRoutes(
 }
 
 /**
- * Reads the route manifest produced by the Vite SSG plugin.
- */
-async function readSsgManifest(outDir: string, manifestFile: string): Promise<SsgRouteManifest> {
-  return JSON.parse(await readFile(join(outDir, manifestFile), 'utf8')) as SsgRouteManifest
-}
-
-/**
  * Adds discovered router routes to the manifest without duplicating Markdown routes.
  */
 function mergeRouterRoutesIntoManifest(
@@ -612,7 +595,7 @@ async function createQPressSourceRenderer(
 ): Promise<{
   close: () => Promise<void>
   discoverRoutes: (routerRoutesEntry: string) => Promise<string[]>
-  renderRoute: (route: SsgRoute, context: SsgRouteRenderContext) => Promise<string>
+  renderRoute: SsgRouteRenderer
 }> {
   await assertFile(
     ssgAppEntry,
@@ -641,25 +624,7 @@ async function createQPressSourceRenderer(
     return {
       close: () => viteServer.close(),
       discoverRoutes: (routerRoutesEntry) => loadRouterSsgRoutes(viteServer, routerRoutesEntry),
-      async renderRoute(route, context) {
-        const appResult = await createApp(route, context)
-
-        await pushRouterLocation(appResult, route)
-
-        const renderedAppHtml = await renderToString(
-          appResult.app as VueRenderTarget,
-          appResult.ssrContext,
-        )
-
-        await runRenderedCallbacks(appResult)
-
-        return applySsrMeta(
-          context.appHtml,
-          toQPressSsrContext(appResult.ssrContext),
-          renderedAppHtml,
-          appMountId,
-        )
-      },
+      renderRoute: createQPressVueSsgRouteRenderer(createApp, appMountId),
     }
   } catch (error) {
     await viteServer.close()
@@ -694,32 +659,7 @@ export async function prerenderQPressSsg({
   const appRoot = resolve()
   const resolvedSrcDir = resolve(srcDir)
   const resolvedSsgAppEntry = resolve(resolvedSrcDir, ssgAppEntry)
-  const resolvedManifestFile = manifestFile ?? 'q-press-ssg-routes.json'
   const resolvedRouterRoutesEntry = resolve(resolvedSrcDir, routerRoutesEntry)
-
-  await assertFile(
-    join(resolvedOutDir, appHtmlFile ?? 'index.html'),
-    `Could not find a built SPA shell in ${resolvedOutDir}. Run \`quasar build\` first.`,
-  )
-
-  if (manifestFile !== undefined) {
-    await assertFile(
-      join(resolvedOutDir, manifestFile),
-      `Could not find the SSG route manifest ${manifestFile} in ${resolvedOutDir}.`,
-    )
-  }
-
-  if (manifestFile === undefined) {
-    const fallbackManifest = join(resolvedOutDir, resolvedManifestFile)
-
-    await assertFile(
-      fallbackManifest,
-      `Could not find ${resolvedManifestFile} in ${resolvedOutDir}. Make sure viteSsgPlugin is enabled for the SPA build.`,
-    )
-  }
-
-  // Warm the shell read early so missing appHtmlFile errors happen before route rendering starts.
-  await readFile(join(resolvedOutDir, appHtmlFile ?? 'index.html'), 'utf8')
 
   if (renderer === 'qpress') {
     const sourceRenderer = await createQPressSourceRenderer(
@@ -730,13 +670,6 @@ export async function prerenderQPressSsg({
     )
 
     try {
-      const mergedManifest = includeRouterRoutes
-        ? mergeRouterRoutesIntoManifest(
-            await readSsgManifest(resolvedOutDir, resolvedManifestFile),
-            await sourceRenderer.discoverRoutes(resolvedRouterRoutesEntry),
-          )
-        : undefined
-
       return await prerenderSsgRoutes({
         appHtmlFile,
         concurrency,
@@ -744,12 +677,18 @@ export async function prerenderQPressSsg({
         exclude,
         interval,
         manifestFile,
-        manifest: mergedManifest,
         notFound,
         outDir: resolvedOutDir,
         redirects,
         reportFile,
         renderRoute: sourceRenderer.renderRoute,
+        transformManifest: includeRouterRoutes
+          ? async (manifest) =>
+              mergeRouterRoutesIntoManifest(
+                manifest,
+                await sourceRenderer.discoverRoutes(resolvedRouterRoutesEntry),
+              )
+          : undefined,
       })
     } finally {
       await sourceRenderer.close()
@@ -769,7 +708,6 @@ export async function prerenderQPressSsg({
     outDir: resolvedOutDir,
     redirects,
     reportFile,
-    renderRoute: (route, context) =>
-      renderRouteWithQuasarSsr(route, context, serverEntry, appMountId),
+    renderRoute: createQuasarSsrRouteRenderer(serverEntry, appMountId),
   })
 }
