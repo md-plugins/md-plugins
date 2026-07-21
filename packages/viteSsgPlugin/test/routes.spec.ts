@@ -3,6 +3,7 @@ import { mkdir, mkdtemp, readFile, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { basename, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { Teleport, createSSRApp, h } from 'vue'
 import { createSsgRouteHtml } from '../src/html'
 import { discoverMarkdownSsgRoutes, markdownFileToRoutePath } from '../src/markdownRoutes'
 import { resolveSsgOutDirFile } from '../src/outputPaths'
@@ -649,6 +650,40 @@ describe('Vue SSG renderer adapter', () => {
     )
   })
 
+  it('captures and injects multiple Teleports rendered by Vue', async () => {
+    const manifest = createSsgRouteManifest(['/teleports'])
+    const route = manifest.routes[0]
+    const renderer = createVueSsgRouteRenderer({
+      createApp: () =>
+        createSSRApp({
+          render() {
+            return h('main', [
+              h('p', 'App content'),
+              h(Teleport, { to: '#modals' }, h('div', { class: 'modal' }, 'Modal content')),
+              h(Teleport, { to: '#alerts' }, h('strong', 'Alert content')),
+            ])
+          },
+        }),
+    })
+
+    const html = await renderer(route, {
+      appHtml:
+        '<html><body><div id="q-app"></div><div id="modals"></div><aside id=alerts></aside></body></html>',
+      manifest,
+      routeIndex: 0,
+    })
+
+    expect(html).toContain(
+      '<main><p>App content</p><!--teleport start--><!--teleport end--><!--teleport start--><!--teleport end--></main>',
+    )
+    expect(html).toContain(
+      '<div id="modals"><!--teleport start anchor--><div class="modal">Modal content</div><!--teleport anchor--></div>',
+    )
+    expect(html).toContain(
+      '<aside id=alerts><!--teleport start anchor--><strong>Alert content</strong><!--teleport anchor--></aside>',
+    )
+  })
+
   it('supports custom shell replacement and rendered fragment transforms', async () => {
     const manifest = createSsgRouteManifest(['/custom'])
     const route = manifest.routes[0]
@@ -670,6 +705,38 @@ describe('Vue SSG renderer adapter', () => {
     })
 
     expect(html).toContain('<div data-rendered="true"><main>Docs</main></div>')
+  })
+
+  it('injects Teleports after a QPress-style custom shell replacement', async () => {
+    const manifest = createSsgRouteManifest(['/custom-teleport'])
+    const route = manifest.routes[0]
+    const renderer = createVueSsgRouteRenderer({
+      createApp: () => ({ app: {}, ssrContext: {} }),
+      renderToString(_app, ssrContext) {
+        if (ssrContext) {
+          ssrContext.teleports = {
+            '#modals': '<!--teleport start anchor--><div>Modal</div><!--teleport anchor-->',
+          }
+        }
+
+        return '<main>QPress content</main>'
+      },
+      replaceAppHtml(appHtml, renderedAppHtml) {
+        return appHtml
+          .replace('<!--app-->', renderedAppHtml)
+          .replace('<head>', '<head><meta name="qpress" content="ssr">')
+      },
+    })
+
+    const html = await renderer(route, {
+      appHtml: '<html><head></head><body><!--app--><div id=modals></div></body></html>',
+      manifest,
+      routeIndex: 0,
+    })
+
+    expect(html).toBe(
+      '<html><head><meta name="qpress" content="ssr"></head><body><main>QPress content</main><div id=modals><!--teleport start anchor--><div>Modal</div><!--teleport anchor--></div></body></html>',
+    )
   })
 
   it('runs app and framework callbacks before framework-specific shell replacement', async () => {

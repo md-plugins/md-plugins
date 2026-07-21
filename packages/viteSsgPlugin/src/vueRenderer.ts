@@ -1,5 +1,5 @@
 import { prerenderSsgRoutes } from './prerender'
-import { replaceSsgMountElement } from './htmlShell'
+import { injectSsgTeleports, replaceSsgMountElement } from './htmlShell'
 import type {
   PrerenderSsgRoutesResult,
   PrerenderVueSsgRoutesOptions,
@@ -9,6 +9,7 @@ import type {
   VueSsgAppFactoryResult,
   VueSsgRenderToString,
   VueSsgRouteRendererOptions,
+  VueSsgSsrContext,
 } from './types'
 
 const vueServerRendererPackage = '@vue/server-renderer'
@@ -18,6 +19,25 @@ const vueServerRendererPackage = '@vue/server-renderer'
  */
 function isVueSsgAppFactoryResult(value: unknown): value is VueSsgAppFactoryResult {
   return typeof value === 'object' && value !== null && 'app' in value
+}
+
+/**
+ * Resolves an observable SSR context for Vue Teleport output.
+ */
+function resolveSsrContext(appResult: VueSsgAppFactoryResult): VueSsgSsrContext {
+  if (appResult.ssrContext === undefined) {
+    return {}
+  }
+
+  if (
+    typeof appResult.ssrContext !== 'object' ||
+    appResult.ssrContext === null ||
+    Array.isArray(appResult.ssrContext)
+  ) {
+    throw new Error('Vue SSG app factory ssrContext must be an object when provided.')
+  }
+
+  return appResult.ssrContext
 }
 
 /**
@@ -79,13 +99,16 @@ async function pushRouterLocation(
 /**
  * Runs app and framework SSR callbacks after Vue has rendered the route.
  */
-async function runRenderedCallbacks(appResult: VueSsgAppFactoryResult): Promise<void> {
+async function runRenderedCallbacks(
+  appResult: VueSsgAppFactoryResult,
+  ssrContext: VueSsgSsrContext,
+): Promise<void> {
   await appResult.onRendered?.()
 
-  const rendered = appResult.ssrContext?.rendered
+  const rendered = ssrContext.rendered
 
   if (typeof rendered === 'function') {
-    await rendered.call(appResult.ssrContext)
+    await rendered.call(ssrContext)
   }
 }
 
@@ -96,21 +119,30 @@ export function createVueSsgRouteRenderer(options: VueSsgRouteRendererOptions): 
   return async (route, context) => {
     const createdApp = await options.createApp(route, context)
     const appResult = isVueSsgAppFactoryResult(createdApp) ? createdApp : { app: createdApp }
+    const ssrContext = resolveSsrContext(appResult)
 
     await pushRouterLocation(appResult, route, context, options)
 
     const renderToString = options.renderToString ?? (await loadVueRenderToString())
-    const renderedAppHtml = await renderToString(appResult.app, appResult.ssrContext)
+    const renderedAppHtml = await renderToString(appResult.app, ssrContext)
 
-    await runRenderedCallbacks(appResult)
+    await runRenderedCallbacks(appResult, ssrContext)
 
     const transformedAppHtml =
       (await options.transformRenderedAppHtml?.(renderedAppHtml, route, context)) ?? renderedAppHtml
-    const html = options.replaceAppHtml
-      ? await options.replaceAppHtml(context.appHtml, transformedAppHtml, route, context, appResult)
+    const appResultWithSsrContext =
+      appResult.ssrContext === ssrContext ? appResult : { ...appResult, ssrContext }
+    const htmlWithApp = options.replaceAppHtml
+      ? await options.replaceAppHtml(
+          context.appHtml,
+          transformedAppHtml,
+          route,
+          context,
+          appResultWithSsrContext,
+        )
       : replaceSsgMountElement(context.appHtml, transformedAppHtml, options.appMountId ?? 'q-app')
 
-    return html
+    return injectSsgTeleports(htmlWithApp, ssrContext.teleports)
   }
 }
 

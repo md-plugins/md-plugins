@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { replaceSsgMountElement } from '../src/htmlShell'
+import { injectSsgTeleports, replaceSsgMountElement } from '../src/htmlShell'
 
 describe('SSG HTML shell helpers', () => {
   it.each([
@@ -54,5 +54,64 @@ describe('SSG HTML shell helpers', () => {
     expect(() => replaceSsgMountElement(shell, '<main>Rendered</main>', 'q-app')).toThrow(
       'Could not find empty app mount element',
     )
+  })
+
+  it('injects multiple Vue SSR Teleports into dedicated targets', () => {
+    const modalHtml = '<!--teleport start anchor--><div>Modal $& $1</div><!--teleport anchor-->'
+    const alertHtml = '<!--teleport start anchor--><strong>Alert</strong><!--teleport anchor-->'
+
+    expect(
+      injectSsgTeleports(
+        '<html><body><div id="q-app"></div><div id=modals></div><aside id="alerts"></aside></body></html>',
+        {
+          '#modals': modalHtml,
+          '#alerts': alertHtml,
+        },
+      ),
+    ).toBe(
+      `<html><body><div id="q-app"></div><div id=modals>${modalHtml}</div><aside id="alerts">${alertHtml}</aside></body></html>`,
+    )
+  })
+
+  it('returns the shell unchanged when Vue produced no Teleports', () => {
+    const shell = '<html><body><div id="q-app"></div></body></html>'
+
+    expect(injectSsgTeleports(shell, undefined)).toBe(shell)
+    expect(injectSsgTeleports(shell, {})).toBe(shell)
+  })
+
+  it.each(['body', '.modals', '#modals .content', '#app.modal', '#'])(
+    'rejects an unsupported Vue SSR Teleport target: %s',
+    (target) => {
+      expect(() => injectSsgTeleports('<div id="modals"></div>', { [target]: 'Modal' })).toThrow(
+        'Use a simple #id selector',
+      )
+    },
+  )
+
+  it.each([
+    {
+      name: 'missing',
+      shell: '<div id="other"></div>',
+    },
+    {
+      name: 'non-empty',
+      shell: '<div id="modals">Existing content</div>',
+    },
+  ])('rejects a $name Vue SSR Teleport target', ({ shell }) => {
+    expect(() => injectSsgTeleports(shell, { '#modals': '<div>Modal</div>' })).toThrow(
+      'Could not find an empty Vue SSR Teleport target for "#modals"',
+    )
+  })
+
+  it('rejects malformed Vue SSR Teleport context data', () => {
+    expect(() =>
+      injectSsgTeleports('<div id="modals"></div>', [] as unknown as Record<string, string>),
+    ).toThrow('teleports must be a record')
+    expect(() =>
+      injectSsgTeleports('<div id="modals"></div>', {
+        '#modals': 42,
+      } as unknown as Record<string, string>),
+    ).toThrow('content for target "#modals" must be a string')
   })
 })

@@ -168,10 +168,14 @@ interface VueSsgRouterAdapter {
   isReady?: () => MaybePromise<unknown>
 }
 
+interface VueSsgSsrContext extends Record<string, unknown> {
+  teleports?: Record<string, string>
+}
+
 interface VueSsgAppFactoryResult {
   app: unknown
   router?: VueSsgRouterAdapter
-  ssrContext?: Record<string, unknown>
+  ssrContext?: VueSsgSsrContext
   routeLocation?: unknown
   onRendered?: () => MaybePromise<void>
 }
@@ -181,10 +185,7 @@ type VueSsgAppFactory = (
   context: SsgRouteRenderContext,
 ) => MaybePromise<VueSsgAppFactoryResult | unknown>
 
-type VueSsgRenderToString = (
-  app: unknown,
-  ssrContext?: Record<string, unknown>,
-) => MaybePromise<string>
+type VueSsgRenderToString = (app: unknown, ssrContext?: VueSsgSsrContext) => MaybePromise<string>
 
 type VueSsgRouteLocationResolver = (route: SsgRoute, context: SsgRouteRenderContext) => unknown
 
@@ -457,6 +458,23 @@ By default, post-build prerendering writes `q-press-ssg-report.json` next to the
 
 The default Vue shell replacement accepts quoted or unquoted mount IDs, reordered attributes, and
 standard or custom mount elements as emitted by production HTML builds.
+
+Vue SSR Teleports are injected after the app shell has been replaced, including when a framework
+adapter such as Q-Press supplies a custom shell replacer. Use a simple `#id` Teleport target and
+include one dedicated empty target element in the built shell for each target:
+
+```html
+<body>
+  <div id="q-app"></div>
+  <div id="modals"></div>
+  <div id="notifications"></div>
+</body>
+```
+
+The renderer always passes an SSR context to Vue, even when the app factory does not provide one,
+so Vue's generated `teleports` record is preserved. An unsupported selector, missing target, or
+non-empty target fails the prerender with an actionable error instead of silently dropping the
+teleported HTML.
 
 The generated Q-Press factory lives at `src/.q-press/ssg/create-app`:
 

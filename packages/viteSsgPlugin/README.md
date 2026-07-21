@@ -201,7 +201,10 @@ For lower-level Vue or Quasar apps, `createVueSsgRouteRenderer` adapts a per-rou
 into the generic `renderRoute` hook. This uses Vue's server renderer at build time only; the
 published output can still be deployed as static files on Netlify or any other static host.
 The default shell replacement supports quoted or unquoted mount IDs, reordered attributes, and
-standard or custom mount elements.
+standard or custom mount elements. Vue SSR Teleports are also preserved and injected after either
+the default replacement or a framework-provided replacement such as Q-Press metadata handling.
+Use simple `#id` Teleport targets backed by dedicated empty elements in the built app shell;
+unsupported, missing, and non-empty targets fail prerendering instead of dropping their content.
 
 ```ts
 import { prerenderVueSsgRoutes } from '@md-plugins/vite-ssg-plugin'

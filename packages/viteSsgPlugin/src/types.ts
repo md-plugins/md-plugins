@@ -242,10 +242,14 @@ export interface VueSsgRouterAdapter {
   isReady?: () => MaybePromise<unknown>
 }
 
+export interface VueSsgSsrContext extends Record<string, unknown> {
+  teleports?: Record<string, string>
+}
+
 export interface VueSsgAppFactoryResult {
   app: unknown
   router?: VueSsgRouterAdapter
-  ssrContext?: Record<string, unknown>
+  ssrContext?: VueSsgSsrContext
   routeLocation?: unknown
   onRendered?: () => MaybePromise<void>
 }
@@ -257,7 +261,7 @@ export type VueSsgAppFactory = (
 
 export type VueSsgRenderToString = (
   app: unknown,
-  ssrContext?: Record<string, unknown>,
+  ssrContext?: VueSsgSsrContext,
 ) => MaybePromise<string>
 
 export type VueSsgRouteLocationResolver = (
