@@ -653,6 +653,36 @@ describe('SSG file prerendering', () => {
     )
   })
 
+  it('persists output paths changed by onPageGenerated in the route manifest', async () => {
+    const outDir = await mkdtemp(join(tmpdir(), 'md-plugins-ssg-page-output-'))
+    const manifest = createSsgRouteManifest(['/guide'])
+
+    await writeFile(
+      join(outDir, 'index.html'),
+      '<html><head></head><body><div id="q-app"></div></body></html>',
+    )
+
+    const result = await prerenderSsgRoutes({
+      outDir,
+      manifest,
+      reportFile: false,
+      renderRoute: (_route, { appHtml }) => appHtml,
+      onPageGenerated() {
+        return { htmlFile: 'guide.html' }
+      },
+    })
+    const persistedManifest = JSON.parse(
+      await readFile(join(outDir, 'q-press-ssg-routes.json'), 'utf8'),
+    )
+
+    expect(result.manifest.routes[0].htmlFile).toBe('guide.html')
+    expect(result.routes[0].htmlFile).toBe('guide.html')
+    expect(persistedManifest.routes[0].htmlFile).toBe('guide.html')
+    await expect(readFile(join(outDir, 'guide.html'), 'utf8')).resolves.toContain(
+      'id="md-plugins-ssg-route"',
+    )
+  })
+
   it('rejects every generated file path that resolves outside outDir', async () => {
     const outDir = await mkdtemp(join(tmpdir(), 'md-plugins-ssg-containment-'))
     const manifest = createSsgRouteManifest(['/guide'])

@@ -462,6 +462,10 @@ await prerenderSsgRoutes({
 lets framework adapters add discovered routes while leaving manifest loading and validation in the
 generic prerenderer.
 
+When `onPageGenerated()` returns `htmlFile`, that validated output path becomes the route's final
+`htmlFile` in the returned result, generation report, and persisted route manifest. Custom output
+hooks therefore leave every generated artifact pointing at the file that was actually written.
+
 By default, post-build prerendering writes `q-press-ssg-report.json` next to the route manifest. Pass
 `reportFile: false` to disable it or pass another filename to keep reports elsewhere inside
 `outDir`. Configured and hook-provided file paths are resolved and must remain inside `outDir`.

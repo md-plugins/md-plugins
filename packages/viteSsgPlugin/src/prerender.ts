@@ -469,9 +469,11 @@ export async function prerenderSsgRoutes({
       await mkdir(dirname(finalFilePath), { recursive: true })
       await writeFile(finalFilePath, finalHtml)
 
+      route.htmlFile = finalHtmlFile
+
       routes.push({
         path: route.path,
-        htmlFile: finalHtmlFile,
+        htmlFile: route.htmlFile,
         bytes: Buffer.byteLength(finalHtml),
         milliseconds: Math.round(performance.now() - start),
       })
