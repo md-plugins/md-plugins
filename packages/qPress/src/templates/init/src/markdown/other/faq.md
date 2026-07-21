@@ -168,6 +168,17 @@ quasar ext invoke @md-plugins/q-press
 Choose `Overwrite All` when you want the generated files to match the latest templates.
 :::
 
+:::details Q. Why does an image or icon briefly fill the screen when an SSG page loads?
+
+**A.** The browser can paint server-rendered HTML before the site's external CSS is available. Q-Press includes critical first-paint sizing for Quasar icons, but project-owned images also need intrinsic `width` and `height` attributes so the browser can reserve the correct space immediately:
+
+```vue
+<img src="/app-logo.svg" alt="Project logo" class="hero-logo" width="120" height="120" />
+```
+
+Use dimensions with the image's real aspect ratio; responsive CSS can still change its displayed size. After upgrading Q-Press, run `quasar ext invoke @md-plugins/q-press`, choose `Overwrite All` to refresh generated templates, and rebuild the site.
+:::
+
 :::details Q. How do I report a bug or request a feature?
 
 **A.** Open an issue in the MD-Plugins repository and include the package name, version, reproduction steps, expected result, and actual result.

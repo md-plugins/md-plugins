@@ -91,6 +91,8 @@ const htmlAttributeRE =
 const metaElementRE = /<meta\b((?:[^"'<>]|"[^"]*"|'[^']*')*)\/?\s*>/gi
 const linkElementRE = /<link\b((?:[^"'<>]|"[^"]*"|'[^']*')*)\/?\s*>/gi
 const titleElementRE = /<title\b[^>]*>[\s\S]*?<\/title\s*>/gi
+const qPressSsgCriticalStyle =
+  '<style data-qpress-ssg-critical>.q-icon{display:inline-flex;align-items:center;justify-content:center;width:1em;height:1em;line-height:1;vertical-align:middle;flex-shrink:0}.q-icon>svg,.q-icon>img{width:100%;height:100%}</style>'
 
 /**
  * Asserts that a required file exists before prerendering continues.
@@ -496,6 +498,7 @@ function applySsrMeta(
   let html = replaceSsgMountElement(appHtml, renderedAppHtml, appMountId)
 
   html = reconcileSsrHead(html, ssrContext._meta.headTags, routePath)
+  html = injectAfterOpeningTag(html, 'head', qPressSsgCriticalStyle)
   html = appendOpeningTagAttrs(html, 'html', ssrContext._meta.htmlAttrs)
   html = appendOpeningTagAttrs(html, 'body', ssrContext._meta.bodyAttrs)
   html = injectAfterOpeningTag(html, 'head', ssrContext._meta.headTags)

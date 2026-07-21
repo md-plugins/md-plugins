@@ -111,6 +111,63 @@ describe('Q-Press SSG prerendering', () => {
       expect(guideHtml).toContain('content="Guide description" data-qmeta="description"')
       expect(findMetaElements(guideHtml, 'twitter:site')).toHaveLength(1)
       expect(guideHtml).toContain('<main id="route-content">Guide | Docs</main>')
+      expect(rootHtml.match(/data-qpress-ssg-critical/g)).toHaveLength(1)
+      expect(guideHtml.match(/data-qpress-ssg-critical/g)).toHaveLength(1)
+      expect(guideHtml).toContain('.q-icon>svg,.q-icon>img{width:100%;height:100%}')
+    } finally {
+      await rm(testRoot, { force: true, recursive: true })
+    }
+  })
+
+  it('adds first-paint icon dimensions with the source renderer', async () => {
+    const testRoot = await mkdtemp(join(packageRoot, '.qpress-ssg-critical-style-'))
+    const outDir = join(testRoot, 'spa')
+    const srcDir = join(testRoot, 'src')
+    const ssgDir = join(srcDir, '.q-press/ssg')
+    const ssgAppEntry = join(ssgDir, 'create-app.ts')
+    const manifest = createSsgRouteManifest(['/'])
+    const serverRendererEntry = createRequire(import.meta.url).resolve('@vue/server-renderer')
+    const vuePackageDir = dirname(createRequire(serverRendererEntry).resolve('vue/package.json'))
+    const vueEntry = join(vuePackageDir, 'dist/vue.runtime.esm-bundler.js')
+
+    try {
+      await mkdir(outDir, { recursive: true })
+      await mkdir(ssgDir, { recursive: true })
+      await writeFile(
+        join(outDir, 'index.html'),
+        '<!doctype html><html><head></head><body><div id="q-app"></div></body></html>',
+      )
+      await writeFile(
+        join(outDir, 'q-press-ssg-routes.json'),
+        `${JSON.stringify(manifest, null, 2)}\n`,
+      )
+      await writeFile(
+        ssgAppEntry,
+        [
+          `import { createSSRApp, h } from ${JSON.stringify(pathToFileURL(vueEntry).href)}`,
+          'export function createQPressSsgApp() {',
+          '  return {',
+          "    app: createSSRApp({ render: () => h('i', { class: 'q-icon' }, [h('svg')]) }),",
+          '  }',
+          '}',
+        ].join('\n'),
+      )
+
+      await prerenderQPressSsg({
+        includeRouterRoutes: false,
+        outDir,
+        reportFile: false,
+        srcDir,
+        ssgAppEntry,
+      })
+
+      const html = await readFile(join(outDir, 'index.html'), 'utf8')
+
+      expect(html.match(/data-qpress-ssg-critical/g)).toHaveLength(1)
+      expect(html).toContain(
+        '.q-icon{display:inline-flex;align-items:center;justify-content:center;width:1em;height:1em;line-height:1;vertical-align:middle;flex-shrink:0}',
+      )
+      expect(html).toContain('<i class="q-icon"><svg></svg></i>')
     } finally {
       await rm(testRoot, { force: true, recursive: true })
     }
@@ -221,6 +278,8 @@ describe('Q-Press SSG prerendering', () => {
       expect(findMetaElements(firstDeepHtml, 'og:url')[0]).toContain(
         'content="https://docs.example.com/guide/deep"',
       )
+      expect(firstRootHtml.match(/data-qpress-ssg-critical/g)).toHaveLength(1)
+      expect(firstDeepHtml.match(/data-qpress-ssg-critical/g)).toHaveLength(1)
     } finally {
       await rm(testRoot, { force: true, recursive: true })
     }

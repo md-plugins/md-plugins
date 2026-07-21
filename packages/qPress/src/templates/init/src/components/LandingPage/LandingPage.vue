@@ -7,7 +7,7 @@
       <div class="hero__grid">
         <div class="hero__copy">
           <div class="hero__eyebrow">{{ heroEyebrow }}</div>
-          <img :src="logoSrc" :alt="logoAlt" class="hero-logo" />
+          <img :src="logoSrc" :alt="logoAlt" class="hero-logo" width="132" height="132" />
           <h1 class="hero-title">{{ productName }}</h1>
 
           <p class="hero-subtitle">{{ siteConfig.description }}</p>
