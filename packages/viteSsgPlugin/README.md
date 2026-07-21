@@ -141,6 +141,10 @@ That payload helps future hydration or diagnostics know which static route was g
 If an input shell or custom renderer already contains the payload script, its stale JSON is
 replaced so the generated page always identifies the current route.
 
+When Vite uses a relative base (`base: './'` or `base: ''`), dot-relative shell assets are rebased
+for each output file. For example, `./assets/app.js` becomes `../assets/app.js` in
+`guide/index.html` and `../../assets/app.js` in `guide/deep/index.html`.
+
 Projects that need fully prerendered content can provide `renderRoute`:
 
 ```ts

@@ -4,7 +4,12 @@ import { tmpdir } from 'node:os'
 import { basename, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { Teleport, createSSRApp, h } from 'vue'
-import { createSsgRouteHtml, createSsgRoutePayloadScript, injectSsgRoutePayload } from '../src/html'
+import {
+  createSsgRouteHtml,
+  createSsgRoutePayloadScript,
+  injectSsgRoutePayload,
+  rebaseSsgHtmlAssetUrls,
+} from '../src/html'
 import { discoverMarkdownSsgRoutes, markdownFileToRoutePath } from '../src/markdownRoutes'
 import { resolveSsgOutDirFile } from '../src/outputPaths'
 import { prerenderSsgRoutes } from '../src/prerender'
@@ -39,6 +44,7 @@ type TestViteSsgPlugin = {
 describe('SSG route helpers', () => {
   it('normalizes base paths', () => {
     expect(normalizeSsgBase('/')).toBe('/')
+    expect(normalizeSsgBase('')).toBe('./')
     expect(normalizeSsgBase('docs')).toBe('/docs')
     expect(normalizeSsgBase('/docs/')).toBe('/docs')
     expect(normalizeSsgBase('./')).toBe('./')
@@ -288,6 +294,45 @@ describe('Vite SSG plugin', () => {
       },
     ])
   })
+
+  it('rebases dot-relative shell assets for nested route files', async () => {
+    const emittedAssets: Array<{ fileName: string; source: string }> = []
+    const appHtml =
+      '<html><head><link rel="stylesheet" href="./assets/app.css"><link rel="icon" href=./favicon.ico><script type="module" src=\'./assets/app.js\'></script></head><body><div id="q-app"></div></body></html>'
+    const bundle = {
+      'index.html': {
+        type: 'asset',
+        fileName: 'index.html',
+        source: appHtml,
+      },
+    }
+    const plugin = viteSsgPlugin({ routes: ['/', '/guide', '/guide/deep'] })
+    const pluginHooks = plugin as unknown as TestViteSsgPlugin
+
+    pluginHooks.configResolved({ base: './' })
+    await pluginHooks.buildStart()
+    await pluginHooks.generateBundle.call(
+      {
+        emitFile(asset: { type: 'asset'; fileName: string; source: string }) {
+          emittedAssets.push({ fileName: asset.fileName, source: asset.source })
+        },
+        warn() {},
+      },
+      {},
+      bundle,
+    )
+
+    expect(bundle['index.html'].source).toContain('href="./assets/app.css"')
+    expect(emittedAssets.find((asset) => asset.fileName === 'guide/index.html')?.source).toContain(
+      'href="../assets/app.css"',
+    )
+    expect(
+      emittedAssets.find((asset) => asset.fileName === 'guide/deep/index.html')?.source,
+    ).toContain("src='../../assets/app.js'")
+    expect(
+      emittedAssets.find((asset) => asset.fileName === 'guide/deep/index.html')?.source,
+    ).toContain('href=../../favicon.ico')
+  })
 })
 
 describe('SSG HTML helpers', () => {
@@ -362,6 +407,17 @@ describe('SSG HTML helpers', () => {
     expect(html).toContain(unrelatedScript)
     expect(html).toContain(createSsgRoutePayloadScript(route))
   })
+
+  it('rebases only dot-relative asset URLs for nested output files', () => {
+    const html =
+      '<link href="./assets/app.css"><script src=\'./assets/app.js\'>const example = \'<a href="./unchanged">\'</script><video poster=./assets/poster.jpg></video><object data="./assets/file.pdf"></object><svg><use xlink:href="./assets/icons.svg#check"></use></svg><a href="/absolute">Absolute</a><img src="https://example.com/image.png"><a data-href="./unchanged" data-example=\' href="./unchanged"\'>Data</a><!-- <img src="./unchanged"> -->'
+
+    expect(rebaseSsgHtmlAssetUrls(html, 'guide/deep/index.html', './')).toBe(
+      '<link href="../../assets/app.css"><script src=\'../../assets/app.js\'>const example = \'<a href="./unchanged">\'</script><video poster=../../assets/poster.jpg></video><object data="../../assets/file.pdf"></object><svg><use xlink:href="../../assets/icons.svg#check"></use></svg><a href="/absolute">Absolute</a><img src="https://example.com/image.png"><a data-href="./unchanged" data-example=\' href="./unchanged"\'>Data</a><!-- <img src="./unchanged"> -->',
+    )
+    expect(rebaseSsgHtmlAssetUrls(html, 'index.html', './')).toBe(html)
+    expect(rebaseSsgHtmlAssetUrls(html, 'guide/index.html', '/docs')).toBe(html)
+  })
 })
 
 describe('SSG file prerendering', () => {
@@ -395,6 +451,46 @@ describe('SSG file prerendering', () => {
 
     expect(html.match(/href="\/assets\/main\.css"/g)).toHaveLength(1)
     expect(html).toContain('href="/assets/route.css"')
+  })
+
+  it('rebases shell and injected CSS assets for nested routes with a dot-relative base', async () => {
+    const outDir = await mkdtemp(join(tmpdir(), 'md-plugins-relative-assets-'))
+    const manifest = createSsgRouteManifest(['/', '/guide', '/guide/deep'], { base: './' })
+
+    await mkdir(join(outDir, 'assets'), { recursive: true })
+    await writeFile(join(outDir, 'assets/main.css'), 'body { color: black; }')
+    await writeFile(join(outDir, 'assets/route.css'), '.route { color: blue; }')
+    await writeFile(
+      join(outDir, 'index.html'),
+      '<html><head><link rel="stylesheet" href="./assets/main.css"><script type="module" src="./assets/app.js"></script></head><body><div id="q-app"></div></body></html>',
+    )
+    await writeFile(
+      join(outDir, 'q-press-ssg-routes.json'),
+      `${JSON.stringify(manifest, null, 2)}\n`,
+    )
+
+    await prerenderSsgRoutes({
+      outDir,
+      renderRoute(route, { appHtml }) {
+        return appHtml.replace(
+          '<div id="q-app"></div>',
+          `<div id="q-app"><main>${route.path}</main></div>`,
+        )
+      },
+    })
+
+    const rootHtml = await readFile(join(outDir, 'index.html'), 'utf8')
+    const guideHtml = await readFile(join(outDir, 'guide/index.html'), 'utf8')
+    const deepHtml = await readFile(join(outDir, 'guide/deep/index.html'), 'utf8')
+
+    expect(rootHtml).toContain('href="./assets/main.css"')
+    expect(rootHtml).toContain('href="./assets/route.css"')
+    expect(guideHtml).toContain('href="../assets/main.css"')
+    expect(guideHtml).toContain('href="../assets/route.css"')
+    expect(guideHtml).toContain('src="../assets/app.js"')
+    expect(deepHtml).toContain('href="../../assets/main.css"')
+    expect(deepHtml).toContain('href="../../assets/route.css"')
+    expect(deepHtml).toContain('src="../../assets/app.js"')
   })
 
   it('renders route HTML files with a custom async renderer', async () => {

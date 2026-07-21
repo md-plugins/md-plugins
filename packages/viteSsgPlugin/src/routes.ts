@@ -75,7 +75,11 @@ function isNormalizedStaticSsgRoutePath(path: string): boolean {
 export function normalizeSsgBase(base = '/'): string {
   const trimmed = base.trim()
 
-  if (trimmed === '' || trimmed === '/') {
+  if (trimmed === '') {
+    return './'
+  }
+
+  if (trimmed === '/') {
     return '/'
   }
 

@@ -11,7 +11,7 @@ import {
   normalizeSsgRoute,
   normalizeSsgRoutePath,
 } from './routes'
-import { renderSsgRouteHtml } from './html'
+import { rebaseSsgHtmlAssetUrls, renderSsgRouteHtml } from './html'
 import { resolveSsgOutDirFile } from './outputPaths'
 import type {
   PrerenderSsgRoutesOptions,
@@ -407,8 +407,9 @@ export async function prerenderSsgRoutes({
   async function renderOne(route: SsgRoute): Promise<void> {
     const start = performance.now()
     const routeIndex = resolvedManifest.routes.findIndex((entry) => entry.path === route.path)
+    const routeAppHtml = rebaseSsgHtmlAssetUrls(appHtml, route.htmlFile, resolvedManifest.base)
     const context = {
-      appHtml,
+      appHtml: routeAppHtml,
       manifest: resolvedManifest,
       routeIndex,
     }

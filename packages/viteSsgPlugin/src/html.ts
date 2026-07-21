@@ -3,7 +3,10 @@ import type { SsgRoute, SsgRouteHtmlOptions, SsgRouteRenderContext } from './typ
 const ssgRoutePayloadId = 'md-plugins-ssg-route'
 const scriptElementRE = /<script\b((?:[^"'<>]|"[^"]*"|'[^']*')*)>[\s\S]*?<\/script\s*>/gi
 const htmlAttributeRE =
-  /(?:^|\s+)([^\s"'=<>`/]+)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'=<>`]+)))?/g
+  /(^|\s+)([^\s"'=<>`/]+)(?:(\s*=\s*)(?:"([^"]*)"|'([^']*)'|([^\s"'=<>`]+)))?/g
+const htmlElementTokenRE =
+  /<!--[\s\S]*?-->|<(script|style)((?:[^"'<>]|"[^"]*"|'[^']*')*)>([\s\S]*?)(<\/\1\s*>)|<([a-zA-Z][\w:-]*)((?:[^"'<>]|"[^"]*"|'[^']*')*)>/gi
+const htmlAssetUrlAttributes = new Set(['data', 'href', 'poster', 'src', 'xlink:href'])
 
 /**
  * Reads one HTML attribute without mistaking text inside another quoted value for an attribute.
@@ -12,12 +15,105 @@ function getHtmlAttributeValue(attributes: string, name: string): string | undef
   htmlAttributeRE.lastIndex = 0
 
   for (const match of attributes.matchAll(htmlAttributeRE)) {
-    if (match[1].toLowerCase() === name) {
-      return match[2] ?? match[3] ?? match[4]
+    if (match[2].toLowerCase() === name) {
+      return match[4] ?? match[5] ?? match[6]
     }
   }
 
   return undefined
+}
+
+/**
+ * Rebases supported URL attributes in one parsed opening tag.
+ */
+function rebaseHtmlAssetAttributes(attributes: string, outputRootPrefix: string): string {
+  return attributes.replace(
+    htmlAttributeRE,
+    (
+      attribute,
+      separator: string,
+      name: string,
+      equals?: string,
+      doubleQuoted?: string,
+      singleQuoted?: string,
+      unquoted?: string,
+    ) => {
+      const url = doubleQuoted ?? singleQuoted ?? unquoted
+
+      if (
+        equals === undefined ||
+        htmlAssetUrlAttributes.has(name.toLowerCase()) === false ||
+        url?.startsWith('./') !== true
+      ) {
+        return attribute
+      }
+
+      const rebasedUrl = `${outputRootPrefix}${url.slice(2)}`
+
+      if (doubleQuoted !== undefined) {
+        return `${separator}${name}${equals}"${rebasedUrl}"`
+      }
+
+      if (singleQuoted !== undefined) {
+        return `${separator}${name}${equals}'${rebasedUrl}'`
+      }
+
+      return `${separator}${name}${equals}${rebasedUrl}`
+    },
+  )
+}
+
+/**
+ * Returns the path from a generated HTML file's directory to the output root.
+ */
+function getSsgOutputRootPrefix(htmlFile: string): string {
+  const directoryDepth = htmlFile
+    .split('/')
+    .slice(0, -1)
+    .filter((segment) => segment !== '' && segment !== '.').length
+
+  return directoryDepth === 0 ? './' : '../'.repeat(directoryDepth)
+}
+
+/**
+ * Rebases dot-relative asset URLs copied from the root Vite shell for a route's output file.
+ */
+export function rebaseSsgHtmlAssetUrls(html: string, htmlFile: string, base: string): string {
+  if (base !== './') {
+    return html
+  }
+
+  const outputRootPrefix = getSsgOutputRootPrefix(htmlFile)
+
+  if (outputRootPrefix === './') {
+    return html
+  }
+
+  return html.replace(
+    htmlElementTokenRE,
+    (
+      token,
+      rawTagName?: string,
+      rawAttributes?: string,
+      rawContent?: string,
+      rawClosingTag?: string,
+      tagName?: string,
+      attributes?: string,
+    ) => {
+      if (rawTagName !== undefined) {
+        return `<${rawTagName}${rebaseHtmlAssetAttributes(
+          rawAttributes ?? '',
+          outputRootPrefix,
+        )}>${rawContent ?? ''}${rawClosingTag ?? ''}`
+      }
+
+      if (tagName !== undefined) {
+        return `<${tagName}${rebaseHtmlAssetAttributes(attributes ?? '', outputRootPrefix)}>`
+      }
+
+      return token
+    },
+  )
 }
 
 /**
