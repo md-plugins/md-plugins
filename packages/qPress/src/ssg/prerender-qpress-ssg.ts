@@ -86,6 +86,11 @@ const defaultServerEntry = 'server/server-entry.js'
 const defaultSrcDir = 'src'
 const defaultRouterRoutesEntry = 'router/routes.ts'
 const defaultSsgAppEntry = '.q-press/ssg/create-app.ts'
+const htmlAttributeRE =
+  /(^|\s+)([^\s"'=<>`/]+)(?:(\s*=\s*)(?:"([^"]*)"|'([^']*)'|([^\s"'=<>`]+)))?/g
+const metaElementRE = /<meta\b((?:[^"'<>]|"[^"]*"|'[^']*')*)\/?\s*>/gi
+const linkElementRE = /<link\b((?:[^"'<>]|"[^"]*"|'[^']*')*)\/?\s*>/gi
+const titleElementRE = /<title\b[^>]*>[\s\S]*?<\/title\s*>/gi
 
 /**
  * Asserts that a required file exists before prerendering continues.
@@ -236,6 +241,218 @@ function injectBeforeClosingTag(html: string, tag: string, content: string | und
 }
 
 /**
+ * Reads one attribute from a parsed HTML opening tag.
+ */
+function getHtmlAttributeValue(attributes: string, name: string): string | undefined {
+  htmlAttributeRE.lastIndex = 0
+
+  for (const match of attributes.matchAll(htmlAttributeRE)) {
+    if (match[2].toLowerCase() === name.toLowerCase()) {
+      return match[4] ?? match[5] ?? match[6]
+    }
+  }
+
+  return undefined
+}
+
+/**
+ * Escapes a value for a double-quoted HTML attribute.
+ */
+function escapeHtmlAttribute(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+}
+
+/**
+ * Replaces or appends one attribute on a complete HTML opening tag.
+ */
+function setHtmlAttributeValue(element: string, name: string, value: string): string {
+  let replaced = false
+  const escapedValue = escapeHtmlAttribute(value)
+  const updated = element.replace(
+    htmlAttributeRE,
+    (attribute, separator: string, attributeName: string) => {
+      if (attributeName.toLowerCase() !== name.toLowerCase()) {
+        return attribute
+      }
+
+      replaced = true
+      return `${separator}${attributeName}="${escapedValue}"`
+    },
+  )
+
+  if (replaced) {
+    return updated
+  }
+
+  return updated.replace(/\s*\/?>$/, (closing) => ` ${name}="${escapedValue}"${closing}`)
+}
+
+/**
+ * Returns the semantic identity of a meta tag, treating name and property as equivalent.
+ */
+function getMetaIdentity(attributes: string): string | undefined {
+  const namedValue =
+    getHtmlAttributeValue(attributes, 'name') ?? getHtmlAttributeValue(attributes, 'property')
+
+  if (namedValue) {
+    return `named:${namedValue.toLowerCase()}`
+  }
+
+  const httpEquiv = getHtmlAttributeValue(attributes, 'http-equiv')
+
+  return httpEquiv ? `http-equiv:${httpEquiv.toLowerCase()}` : undefined
+}
+
+/**
+ * Checks whether a link tag owns one rel token.
+ */
+function hasLinkRel(attributes: string, rel: string): boolean {
+  return (
+    getHtmlAttributeValue(attributes, 'rel')
+      ?.toLowerCase()
+      .split(/\s+/)
+      .includes(rel.toLowerCase()) === true
+  )
+}
+
+/**
+ * Reads a canonical URL from serialized head tags.
+ */
+function findCanonicalHref(headTags: string): string | undefined {
+  linkElementRE.lastIndex = 0
+
+  for (const match of headTags.matchAll(linkElementRE)) {
+    if (hasLinkRel(match[1], 'canonical')) {
+      return getHtmlAttributeValue(match[1], 'href')
+    }
+  }
+
+  return undefined
+}
+
+/**
+ * Reads one named/property metadata value from serialized head tags.
+ */
+function findMetaContent(headTags: string, name: string): string | undefined {
+  const identity = `named:${name.toLowerCase()}`
+
+  metaElementRE.lastIndex = 0
+
+  for (const match of headTags.matchAll(metaElementRE)) {
+    if (getMetaIdentity(match[1]) === identity) {
+      return getHtmlAttributeValue(match[1], 'content')
+    }
+  }
+
+  return undefined
+}
+
+/**
+ * Resolves one static route URL from the site-root URL owned by the built shell.
+ */
+function resolveRouteMetadataUrl(
+  siteRootUrl: string | undefined,
+  routePath: string,
+): string | undefined {
+  if (!siteRootUrl || !/^https?:\/\//i.test(siteRootUrl)) {
+    return undefined
+  }
+
+  try {
+    const baseUrl = new URL(siteRootUrl)
+
+    baseUrl.hash = ''
+    baseUrl.search = ''
+
+    if (!baseUrl.pathname.endsWith('/')) {
+      baseUrl.pathname += '/'
+    }
+
+    return routePath === '/' ? baseUrl.href : new URL(routePath.replace(/^\/+/, ''), baseUrl).href
+  } catch {
+    return undefined
+  }
+}
+
+/**
+ * Lets route-level Quasar metadata own matching shell tags and updates shell-owned route URLs.
+ */
+function reconcileSsrHead(
+  appHtml: string,
+  headTags: string | undefined,
+  routePath: string,
+): string {
+  const ssrHeadTags = headTags ?? ''
+  const ownedMeta = new Set<string>()
+
+  metaElementRE.lastIndex = 0
+
+  for (const match of ssrHeadTags.matchAll(metaElementRE)) {
+    const identity = getMetaIdentity(match[1])
+
+    if (identity) {
+      ownedMeta.add(identity)
+    }
+  }
+
+  const ssrOwnsTitle = titleElementRE.test(ssrHeadTags)
+  const ssrCanonicalHref = findCanonicalHref(ssrHeadTags)
+  const ssrOgUrl = findMetaContent(ssrHeadTags, 'og:url')
+
+  titleElementRE.lastIndex = 0
+
+  return appHtml.replace(
+    /(<head\b(?:[^"'<>]|"[^"]*"|'[^']*')*>)([\s\S]*?)(<\/head\s*>)/i,
+    (head, openingHead: string, shellHeadTags: string, closingHead: string) => {
+      const shellCanonicalHref = findCanonicalHref(shellHeadTags)
+      const shellOgUrl = findMetaContent(shellHeadTags, 'og:url')
+      const routeUrl =
+        ssrCanonicalHref ??
+        ssrOgUrl ??
+        resolveRouteMetadataUrl(shellCanonicalHref ?? shellOgUrl, routePath)
+      let reconciledHeadTags = ssrOwnsTitle
+        ? shellHeadTags.replace(titleElementRE, '')
+        : shellHeadTags
+
+      reconciledHeadTags = reconciledHeadTags.replace(
+        metaElementRE,
+        (element, attributes: string) => {
+          const identity = getMetaIdentity(attributes)
+
+          if (identity && ownedMeta.has(identity)) {
+            return ''
+          }
+
+          return identity === 'named:og:url' && routeUrl
+            ? setHtmlAttributeValue(element, 'content', routeUrl)
+            : element
+        },
+      )
+      reconciledHeadTags = reconciledHeadTags.replace(
+        linkElementRE,
+        (element, attributes: string) => {
+          if (!hasLinkRel(attributes, 'canonical')) {
+            return element
+          }
+
+          return ssrCanonicalHref
+            ? ''
+            : routeUrl
+              ? setHtmlAttributeValue(element, 'href', routeUrl)
+              : element
+        },
+      )
+
+      return `${openingHead}${reconciledHeadTags}${closingHead}`
+    },
+  )
+}
+
+/**
  * Appends SSR-provided attributes to an opening HTML tag.
  */
 function appendOpeningTagAttrs(html: string, tag: string, attrs: string | undefined): string {
@@ -273,10 +490,12 @@ function applySsrMeta(
   ssrContext: QPressSsrContext,
   renderedAppHtml: string,
   appMountId: string,
+  routePath: string,
 ): string {
   const stateScript = ssrContext.state === undefined ? '' : createStateScript(ssrContext.state)
   let html = replaceSsgMountElement(appHtml, renderedAppHtml, appMountId)
 
+  html = reconcileSsrHead(html, ssrContext._meta.headTags, routePath)
   html = appendOpeningTagAttrs(html, 'html', ssrContext._meta.htmlAttrs)
   html = appendOpeningTagAttrs(html, 'body', ssrContext._meta.bodyAttrs)
   html = injectAfterOpeningTag(html, 'head', ssrContext._meta.headTags)
@@ -306,12 +525,13 @@ function createQPressVueSsgRouteRenderer(
       renderToString(app as VueRenderTarget, ssrContext as QPressSsrContext | undefined),
     appMountId,
     useRouterReplace: true,
-    replaceAppHtml(appHtml, renderedAppHtml, _route, _context, appResult) {
+    replaceAppHtml(appHtml, renderedAppHtml, route, _context, appResult) {
       return applySsrMeta(
         appHtml,
         toQPressSsrContext(appResult.ssrContext),
         renderedAppHtml,
         appMountId,
+        route.path,
       )
     },
   })

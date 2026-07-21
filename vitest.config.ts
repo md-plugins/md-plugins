@@ -8,6 +8,14 @@ export default defineConfig({
   resolve: {
     alias: [
       {
+        find: /^@md-plugins\/vite-md-plugin$/,
+        replacement: path.resolve(root, './packages/viteMdPlugin/src/index.ts'),
+      },
+      {
+        find: /^@md-plugins\/vite-ssg-plugin$/,
+        replacement: path.resolve(root, './packages/viteSsgPlugin/src/index.ts'),
+      },
+      {
         find: /^@md-plugins\/([^/]*)$/,
         replacement: path.resolve(root, './packages/$1/src/index.ts'),
       },

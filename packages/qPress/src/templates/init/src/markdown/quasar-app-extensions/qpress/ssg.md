@@ -130,6 +130,18 @@ qpress ssg --renderer quasar-ssr --out-dir dist/spa --ssr-dir dist/ssr
 
 This is optional. It exists for users who already maintain SSR wiring and want the prerender step to reuse the SSR bundle.
 
+## Route Metadata
+
+Q-Press reconciles Quasar's route-level SSR metadata with the built SPA shell before writing each
+HTML file. An SSR title replaces the shell title, and SSR meta tags replace shell tags with the same
+`name` or `property`; unrelated site-wide tags remain in place. This prevents duplicate descriptions
+and conflicting Open Graph or Twitter fields in the raw response HTML.
+
+SSR-provided canonical and `og:url` values take precedence. Otherwise, when the SPA shell provides
+an absolute site-root canonical or `og:url`, Q-Press derives the current route URL from it. Root and
+nested static files therefore advertise their own URL instead of every page retaining the site's
+root URL.
+
 ## Route Discovery
 
 Q-Press starts with the routes emitted by the md-plugins Vite SSG route plugin. Markdown pages are discovered automatically during the production SPA build and written to `q-press-ssg-routes.json`.
