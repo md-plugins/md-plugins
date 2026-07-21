@@ -11,16 +11,6 @@ declare module '@md-plugins/md-plugin-headers' {
   }
 }
 
-interface ImportMetaHot {
-  accept(callback?: (..._args: unknown[]) => unknown): void
-}
-
-interface ImportMeta {
-  readonly env: ImportMetaEnv
-  glob: <T = unknown>(pattern: string) => Record<string, () => Promise<T>>
-  hot?: ImportMetaHot
-}
-
 interface TocMenuItem {
   id: string
   level: number

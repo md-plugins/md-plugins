@@ -1,6 +1,6 @@
 {
   "name": "@md-plugins/quasar-app-extension-q-press",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Q-Press - Markdown documentation tooling for Quasar and Vite",
   "keywords": [
     "markdown",
@@ -54,16 +54,16 @@
     "@md-plugins/vite-search-plugin": "workspace:*",
     "@md-plugins/vite-ssg-plugin": "workspace:*",
     "@quasar/vite-plugin": "^1.12.0",
-    "@vitejs/plugin-vue": "^6.0.7",
-    "@vue/server-renderer": "^3.5.39",
+    "@vitejs/plugin-vue": "^6.0.8",
+    "@vue/server-renderer": "^3.5.40",
     "fs-extra": "^11.3.6",
     "markdown-it": "^14.3.0",
     "semver": "^7.8.5",
     "typescript": "~6.0.3",
-    "vite": "^8.1.4"
+    "vite": "^8.1.5"
   },
   "devDependencies": {
-    "@quasar/app-vite": "3.0.1",
+    "@quasar/app-vite": "^3.1.0",
     "@types/markdown-it": "^14.1.2",
     "@types/semver": "^7.7.1"
   },

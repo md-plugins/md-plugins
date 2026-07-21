@@ -1,6 +1,6 @@
 {
   "name": "@md-plugins/vite-search-plugin",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A Vite plugin that generates search index data for Markdown and Q-Press documentation sites.",
   "keywords": [
     "algolia",
@@ -53,7 +53,7 @@
   },
   "devDependencies": {
     "@types/markdown-it": "^14.1.2",
-    "vite": "^8.1.4"
+    "vite": "^8.1.5"
   },
   "peerDependencies": {
     "markdown-it": "^14.2.0"

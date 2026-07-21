@@ -1,6 +1,6 @@
 {
   "name": "mdplugins_docs",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "private": true,
   "description": "Documentation site for MD-Plugins, Q-Press, and the Vite/Markdown plugin ecosystem.",
   "author": "Jeff <galbraith64@gmail.com>",
@@ -24,15 +24,15 @@
     "prepared": "quasar prepare"
   },
   "dependencies": {
-    "@hono/node-server": "2.0.8",
+    "@hono/node-server": "2.0.11",
     "@md-plugins/search-ui": "workspace:*",
     "@quasar/extras": "2.0.2",
-    "hono": "4.12.29",
-    "pinia": "^3.0.4",
-    "quasar": "^2.21.3",
+    "hono": "4.12.31",
+    "pinia": "^4.0.2",
+    "quasar": "^2.22.0",
     "serialize-javascript": "7.0.7",
-    "vue": "^3.5.39",
-    "vue-router": "^5.1.0"
+    "vue": "^3.5.40",
+    "vue-router": "^5.2.0"
   },
   "devDependencies": {
     "@md-plugins/md-plugin-headers": "workspace:*",
@@ -41,16 +41,16 @@
     "@md-plugins/vite-md-plugin": "workspace:*",
     "@md-plugins/vite-search-plugin": "workspace:*",
     "@md-plugins/vite-ssg-plugin": "workspace:*",
-    "@quasar/app-vite": "3.0.1",
+    "@quasar/app-vite": "3.1.0",
     "@types/markdown-it-container": "^4.0.0",
     "@types/node": "^26.1.1",
-    "autoprefixer": "^10.5.2",
+    "autoprefixer": "^10.5.4",
     "markdown-it-container": "^4.0.0",
     "mermaid": "^11.16.0",
     "sass-embedded": "1.100.0",
     "shiki": "^4.3.1",
     "typescript": "~6.0.3",
-    "vite": "^8.1.4",
+    "vite": "^8.1.5",
     "vite-plugin-checker": "^0.14.4",
     "vue-tsc": "^3.3.7"
   },

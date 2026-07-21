@@ -43,8 +43,8 @@ Documentation tooling for Vue, Vite, and Quasar projects: Q-Press sites, Markdow
 
 ---
 
-[![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/md-plugins/md-plugins)]()
-[![GitHub repo size in bytes](https://img.shields.io/github/repo-size/md-plugins/md-plugins)]()
+[![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/md-plugins/md-plugins)](https://github.com/md-plugins/md-plugins)
+[![GitHub repo size in bytes](https://img.shields.io/github/repo-size/md-plugins/md-plugins)](https://github.com/md-plugins/md-plugins)
 [![Netlify Status](https://api.netlify.com/api/v1/badges/850bdc62-254a-464f-98cd-90e823f257d2/deploy-status)](https://app.netlify.com/projects/md-plugins/deploys)
 
 [![npm](https://img.shields.io/npm/dt/@md-plugins/quasar-app-extension-q-press)](https://www.npmjs.com/package/@md-plugins/quasar-app-extension-q-press)
@@ -86,11 +86,11 @@ This monorepo provides:
 
 ## Current Release
 
-The current stable line in this repository is `1.1.0`. Packages in this line publish to npm under the `latest` dist-tag.
+The current stable line in this repository is `1.2.0`. Packages in this line publish to npm under the `latest` dist-tag.
 
-The `1.1.0` line supports direct Markdown-it and Vite plugin usage in Vue/Vite projects, including Markdown transforms, live example source loading, optional SSG route output, static search index generation, and a framework-agnostic search UI. The Quasar app extensions in this repo target Quasar Vite projects using `@quasar/app-vite` `>=3.0.0`. Repository development and CI use Node.js `>=22.13` and `pnpm@11.12.0`.
+The `1.2.0` line supports direct Markdown-it and Vite plugin usage in Vue/Vite projects, including Markdown transforms, live example source loading, optional SSG route output, static search index generation, and a framework-agnostic search UI. The Quasar app extensions in this repo target Quasar Vite projects using `@quasar/app-vite` `>=3.0.0`. Repository development and CI use Node.js `>=22.13` and `pnpm@11.13.0`.
 
-The `1.1.0` line adds configurable minimum heights to fenced code examples while retaining the `obuild` package pipeline and Q-Press API generation for documented exports.
+The `1.2.0` line hardens SSG output generation, preserves Vue teleports and route-specific payloads, supports repeatable prerendering, and improves Q-Press dependency updates and first-paint stability.
 
 ```bash
 pnpm add @md-plugins/vite-md-plugin
