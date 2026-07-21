@@ -250,7 +250,7 @@ function hrefToSsgRoutePath(href: string, base: string, fromRoutePath = '/'): st
   const withoutHash = trimmed.split('#')[0] ?? ''
   const withoutQuery = withoutHash.split('?')[0] ?? ''
 
-  if (!withoutQuery || withoutQuery.startsWith('.')) {
+  if (!withoutQuery) {
     return undefined
   }
 

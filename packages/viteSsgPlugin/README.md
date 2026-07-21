@@ -186,6 +186,10 @@ it from `appHtmlFile`. This makes repeated prerender commands deterministic with
 SPA. The renderer can be a Vue SSR renderer, a Quasar SSR adapter, or any project-specific static
 renderer.
 
+When crawling or following redirects, root-relative, ordinary relative, `./`, and safe `../`
+targets are resolved against the current route. External URLs, asset-looking paths, and invalid
+route/output paths are ignored.
+
 The output directory is configurable. Q-Press defaults to `dist/spa` because that keeps existing
 static-host deployments simple, but non-Q-Press projects can use another output folder.
 

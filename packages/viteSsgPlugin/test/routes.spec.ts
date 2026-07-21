@@ -815,6 +815,62 @@ describe('SSG file prerendering', () => {
       '"routeCount"',
     )
   })
+
+  it('crawls dot-relative links and follows dot-relative redirects safely', async () => {
+    const outDir = await mkdtemp(join(tmpdir(), 'md-plugins-relative-crawl-'))
+    const manifest = createSsgRouteManifest(['/start', '/guide/current', '/redirect/old'])
+
+    await writeFile(
+      join(outDir, 'index.html'),
+      '<html><head></head><body><div id="q-app"></div></body></html>',
+    )
+
+    const result = await prerenderSsgRoutes({
+      outDir,
+      manifest,
+      reportFile: false,
+      crawlLinks: true,
+      redirects: 'follow',
+      renderRoute(route, { appHtml }) {
+        if (route.path === '/redirect/old') {
+          throw { url: '../new?from=old#content' }
+        }
+
+        const links =
+          route.path === '/start'
+            ? '<a href="./guide?from=start#top">Guide</a>'
+            : route.path === '/guide/current'
+              ? '<a href="./advanced">Advanced</a><a href="../api">API</a><a href="./assets/app.js">Asset</a><a href="../CON">Invalid</a><a href="..\\escaped">Backslash</a>'
+              : ''
+
+        return appHtml.replace(
+          '<div id="q-app"></div>',
+          `<div id="q-app"><main>${route.path}${links}</main></div>`,
+        )
+      },
+    })
+
+    expect(result.routes.map((route) => route.path)).toEqual(
+      expect.arrayContaining(['/guide', '/guide/advanced', '/api', '/new']),
+    )
+    expect(result.routes.map((route) => route.path)).not.toEqual(
+      expect.arrayContaining(['/guide/assets/app.js', '/CON']),
+    )
+    expect(result.skipped).toContainEqual({
+      path: '/redirect/old',
+      reason: 'redirected',
+      target: '/new',
+    })
+    await expect(readFile(join(outDir, 'guide/advanced/index.html'), 'utf8')).resolves.toContain(
+      '<main>/guide/advanced</main>',
+    )
+    await expect(readFile(join(outDir, 'api/index.html'), 'utf8')).resolves.toContain(
+      '<main>/api</main>',
+    )
+    await expect(readFile(join(outDir, 'new/index.html'), 'utf8')).resolves.toContain(
+      '<main>/new</main>',
+    )
+  })
 })
 
 describe('Vue SSG renderer adapter', () => {

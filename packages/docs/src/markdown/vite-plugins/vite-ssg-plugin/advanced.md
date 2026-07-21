@@ -425,12 +425,14 @@ skips renderer 404s, and writes a JSON generation report. Use `--no-router-route
 
 `crawlLinks: true` scans rendered HTML for safe internal links and queues any missing static routes.
 External links, protocol links, hash-only links, dynamic route params, catch-all routes, and
-asset-looking URLs are ignored.
+asset-looking URLs are ignored. Ordinary relative, `./`, and safe `../` links are resolved against
+the route that emitted them and pass through the same static-route and output-path validation.
 
 Renderer errors with a string `url` property can be handled as redirects with
-`redirects: 'follow'`. Renderer errors with `code`, `status`, or `statusCode` set to `404` can be
-skipped with `notFound: 'skip'`. Generic `prerenderSsgRoutes()` stays strict by default, while the
-Q-Press runner defaults to following redirects and skipping 404 routes.
+`redirects: 'follow'`. Dot-relative redirect targets use the same current-route resolution and
+validation as crawled links. Renderer errors with `code`, `status`, or `statusCode` set to `404` can
+be skipped with `notFound: 'skip'`. Generic `prerenderSsgRoutes()` stays strict by default, while
+the Q-Press runner defaults to following redirects and skipping 404 routes.
 
 ### Hooks and Reports
 
