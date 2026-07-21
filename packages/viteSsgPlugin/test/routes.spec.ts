@@ -146,6 +146,15 @@ describe('SSG route helpers', () => {
     expect(isSsgRouteExcluded('/admin/users', [/^\/admin/])).toBe(true)
   })
 
+  it.each([/^\/drafts\//g, /^\/drafts\//y])(
+    'applies stateful route exclusion %s consistently',
+    (exclusion) => {
+      expect(isSsgRouteExcluded('/drafts/private', [exclusion])).toBe(true)
+      expect(isSsgRouteExcluded('/drafts/private', [exclusion])).toBe(true)
+      expect(exclusion.lastIndex).toBe(0)
+    },
+  )
+
   it('rejects duplicate route paths after normalization', () => {
     expect(() => createSsgRouteManifest(['/other/releases', 'other/releases/'])).toThrow(
       'Duplicate SSG route path: /other/releases',
@@ -421,6 +430,29 @@ describe('SSG HTML helpers', () => {
 })
 
 describe('SSG file prerendering', () => {
+  it.each([
+    ['concurrency', { concurrency: Number.NaN }],
+    ['concurrency', { concurrency: Number.POSITIVE_INFINITY }],
+    ['concurrency', { concurrency: Number.NEGATIVE_INFINITY }],
+    ['interval', { interval: Number.NaN }],
+    ['interval', { interval: Number.POSITIVE_INFINITY }],
+    ['interval', { interval: Number.NEGATIVE_INFINITY }],
+  ] as const)('rejects a non-finite %s value', async (optionName, numericOption) => {
+    const outDir = await mkdtemp(join(tmpdir(), 'md-plugins-ssg-numeric-option-'))
+    const manifest = createSsgRouteManifest(['/'])
+
+    await writeFile(join(outDir, 'index.html'), '<html><body><div id="q-app"></div></body></html>')
+
+    await expect(
+      prerenderSsgRoutes({
+        outDir,
+        manifest,
+        reportFile: false,
+        ...numericOption,
+      }),
+    ).rejects.toThrow(`SSG ${optionName} must be a finite number.`)
+  })
+
   it('injects built CSS assets that are missing from the app shell', async () => {
     const outDir = await mkdtemp(join(tmpdir(), 'md-plugins-ssg-'))
     const manifest = createSsgRouteManifest(['/'])

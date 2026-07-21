@@ -172,11 +172,19 @@ export function routePathToId(routePath: string): string {
 export function isSsgRouteExcluded(path: string, exclude: SsgRouteExclusion[] = []): boolean {
   const normalized = normalizeSsgRoutePath(path)
 
-  return exclude.some((pattern) =>
-    typeof pattern === 'string'
-      ? normalizeSsgRoutePath(pattern) === normalized
-      : pattern.test(normalized),
-  )
+  return exclude.some((pattern) => {
+    if (typeof pattern === 'string') {
+      return normalizeSsgRoutePath(pattern) === normalized
+    }
+
+    pattern.lastIndex = 0
+
+    const matches = pattern.test(normalized)
+
+    pattern.lastIndex = 0
+
+    return matches
+  })
 }
 
 /**

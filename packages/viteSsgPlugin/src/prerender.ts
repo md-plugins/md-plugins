@@ -134,17 +134,30 @@ async function injectMissingCssAssets(
 }
 
 /**
+ * Rejects non-finite numeric options before they can break queue processing.
+ */
+function requireFiniteOption(value: number | undefined, fallback: number, name: string): number {
+  const resolvedValue = value ?? fallback
+
+  if (!Number.isFinite(resolvedValue)) {
+    throw new Error(`SSG ${name} must be a finite number.`)
+  }
+
+  return resolvedValue
+}
+
+/**
  * Normalizes route rendering concurrency to a safe positive integer.
  */
 function clampConcurrency(concurrency: number | undefined): number {
-  return Math.max(1, Math.floor(concurrency ?? 1))
+  return Math.max(1, Math.floor(requireFiniteOption(concurrency, 1, 'concurrency')))
 }
 
 /**
  * Normalizes the optional delay between prerender batches.
  */
 function clampInterval(interval: number | undefined): number {
-  return Math.max(0, Math.floor(interval ?? 0))
+  return Math.max(0, Math.floor(requireFiniteOption(interval, 0, 'interval')))
 }
 
 /**
@@ -332,6 +345,8 @@ export async function prerenderSsgRoutes({
   transformHtml,
   injectRoutePayload,
 }: PrerenderSsgRoutesOptions): Promise<PrerenderSsgRoutesResult> {
+  const maxConcurrency = clampConcurrency(concurrency)
+  const batchInterval = clampInterval(interval)
   const resolvedOutDir = resolve(outDir)
   const resolvedAppHtmlFile = resolveSsgOutDirFile(resolvedOutDir, appHtmlFile, 'SSG app HTML file')
   const resolvedAppShellFile = resolveSsgOutDirFile(
@@ -381,8 +396,6 @@ export async function prerenderSsgRoutes({
   const warnings: SsgGenerationWarning[] = []
   const queue = [...resolvedManifest.routes]
   const enqueuedPaths = new Set(queue.map((route) => route.path))
-  const maxConcurrency = clampConcurrency(concurrency)
-  const batchInterval = clampInterval(interval)
 
   /**
    * Adds a discovered route to the queue when it is not excluded or already known.
