@@ -138,6 +138,8 @@ Each generated page receives a small JSON payload:
 ```
 
 That payload helps future hydration or diagnostics know which static route was generated.
+If an input shell or custom renderer already contains the payload script, its stale JSON is
+replaced so the generated page always identifies the current route.
 
 Projects that need fully prerendered content can provide `renderRoute`:
 

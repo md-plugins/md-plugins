@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os'
 import { basename, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { Teleport, createSSRApp, h } from 'vue'
-import { createSsgRouteHtml } from '../src/html'
+import { createSsgRouteHtml, createSsgRoutePayloadScript, injectSsgRoutePayload } from '../src/html'
 import { discoverMarkdownSsgRoutes, markdownFileToRoutePath } from '../src/markdownRoutes'
 import { resolveSsgOutDirFile } from '../src/outputPaths'
 import { prerenderSsgRoutes } from '../src/prerender'
@@ -312,6 +312,55 @@ describe('SSG HTML helpers', () => {
     expect(html).toContain('"path":"/unsafe"')
     expect(html).toContain('\\u003C/script\\u003E')
     expect(html).not.toContain('</script><script>alert')
+  })
+
+  it.each([
+    {
+      name: 'double-quoted id',
+      attributes: 'type="application/json" id="md-plugins-ssg-route"',
+    },
+    {
+      name: 'single-quoted id',
+      attributes: "id='md-plugins-ssg-route' type='application/json'",
+    },
+    {
+      name: 'unquoted id',
+      attributes: 'data-route id=md-plugins-ssg-route type=application/json',
+    },
+  ])('replaces a stale route payload with a $name', ({ attributes }) => {
+    const route = createSsgRouteManifest(['/guide']).routes[0]
+    const stalePayload = `<script ${attributes}>{"path":"/","htmlFile":"index.html"}</script>`
+    const html = injectSsgRoutePayload(`<html><head>${stalePayload}</head></html>`, route)
+
+    expect(html).toContain(createSsgRoutePayloadScript(route))
+    expect(html).not.toContain('{"path":"/","htmlFile":"index.html"}')
+    expect(html.match(/id="md-plugins-ssg-route"/g)).toHaveLength(1)
+  })
+
+  it('collapses duplicate stale route payloads into one current payload', () => {
+    const route = createSsgRouteManifest(['/guide']).routes[0]
+    const stalePayload =
+      '<script type="application/json" id="md-plugins-ssg-route">{"path":"/"}</script>'
+    const html = injectSsgRoutePayload(
+      `<html><head>${stalePayload}${stalePayload}</head></html>`,
+      route,
+    )
+
+    expect(html.match(/id="md-plugins-ssg-route"/g)).toHaveLength(1)
+    expect(html).toContain(createSsgRoutePayloadScript(route))
+  })
+
+  it.each([
+    'data-id="md-plugins-ssg-route"',
+    'id="md-plugins-ssg-route-preview"',
+    'data-example=" id=md-plugins-ssg-route "',
+  ])('does not replace a script with a lookalike payload attribute: %s', (attribute) => {
+    const route = createSsgRouteManifest(['/guide']).routes[0]
+    const unrelatedScript = `<script ${attribute}>{"keep":true}</script>`
+    const html = injectSsgRoutePayload(`<html><head>${unrelatedScript}</head></html>`, route)
+
+    expect(html).toContain(unrelatedScript)
+    expect(html).toContain(createSsgRoutePayloadScript(route))
   })
 })
 

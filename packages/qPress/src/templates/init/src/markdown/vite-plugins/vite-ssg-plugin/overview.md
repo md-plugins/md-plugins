@@ -87,8 +87,8 @@ or accessible markup. It simply makes the route content available earlier and mo
   during prerendering when a project opts in.
 - **Static route files**: Emit `index.html` files for known routes so static hosts can serve deep
   links without depending on a catch-all SPA rewrite.
-- **Route payloads**: Inject a small JSON route payload for diagnostics and future hydration
-  behavior.
+- **Route payloads**: Inject or replace a small JSON route payload so every static page identifies
+  its own route for diagnostics and future hydration behavior.
 - **Renderer bridge**: Accept a custom renderer or use the Vue/Quasar build-time adapter for
   SSR-quality static HTML.
 - **Optional output**: Disable emitted output when a project only wants the virtual manifest or when
