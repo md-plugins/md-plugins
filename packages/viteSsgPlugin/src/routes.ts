@@ -9,6 +9,7 @@ import type {
 
 export const defaultSsgManifestFile = 'q-press-ssg-routes.json'
 export const defaultSsgReportFile = 'q-press-ssg-report.json'
+export const defaultSsgAppShellFile = 'q-press-ssg-shell.html'
 export const defaultSsgVirtualModuleId = 'virtual:md-plugins/ssg-routes'
 
 export interface SsgRouterRouteLike {

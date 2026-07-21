@@ -60,6 +60,7 @@ type QPressServerEntry = (
 
 export interface PrerenderQPressSsgOptions {
   appHtmlFile?: string
+  appShellFile?: string
   appMountId?: string
   concurrency?: number
   crawlLinks?: boolean
@@ -637,6 +638,7 @@ async function createQPressSourceRenderer(
  */
 export async function prerenderQPressSsg({
   appHtmlFile,
+  appShellFile,
   appMountId = defaultAppMountId,
   concurrency,
   crawlLinks,
@@ -672,6 +674,7 @@ export async function prerenderQPressSsg({
     try {
       return await prerenderSsgRoutes({
         appHtmlFile,
+        appShellFile,
         concurrency,
         crawlLinks,
         exclude,
@@ -699,6 +702,7 @@ export async function prerenderQPressSsg({
 
   return prerenderSsgRoutes({
     appHtmlFile,
+    appShellFile,
     concurrency,
     crawlLinks,
     exclude,

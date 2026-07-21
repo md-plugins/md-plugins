@@ -70,6 +70,10 @@ Use `prerender:ssg` when the SPA output already exists and you only want to reru
 pnpm prerender:ssg
 ```
 
+The SPA build preserves its unmodified shell as `dist/spa/q-press-ssg-shell.html`. Each prerender
+pass reads that artifact instead of the already-generated root `index.html`, so this command can be
+run repeatedly without rebuilding first.
+
 Use `preview:ssg` to serve the generated output locally with a history fallback:
 
 ```bash

@@ -2,7 +2,12 @@ import type { Plugin, ResolvedConfig } from 'vite'
 import { Buffer } from 'node:buffer'
 import { renderSsgRouteHtml } from './html'
 import { discoverMarkdownSsgRoutes } from './markdownRoutes'
-import { createSsgRouteManifest, defaultSsgManifestFile, defaultSsgVirtualModuleId } from './routes'
+import {
+  createSsgRouteManifest,
+  defaultSsgAppShellFile,
+  defaultSsgManifestFile,
+  defaultSsgVirtualModuleId,
+} from './routes'
 import type { SsgRouteInput, SsgRouteManifest, ViteSsgPluginOptions } from './types'
 
 type BundleAsset = {
@@ -142,11 +147,13 @@ export function viteSsgPlugin(options: ViteSsgPluginOptions = {}): Plugin {
 
       const resolvedManifest = await refreshManifest()
       const appHtmlFile = options.appHtmlFile ?? 'index.html'
+      const appShellFile = options.appShellFile ?? defaultSsgAppShellFile
+      const manifestFile = options.manifestFile ?? defaultSsgManifestFile
       const appHtmlAsset = findHtmlAsset(bundle as OutputBundle, appHtmlFile)
 
       this.emitFile({
         type: 'asset',
-        fileName: options.manifestFile ?? defaultSsgManifestFile,
+        fileName: manifestFile,
         source: `${JSON.stringify(resolvedManifest, null, 2)}\n`,
       })
 
@@ -164,6 +171,18 @@ export function viteSsgPlugin(options: ViteSsgPluginOptions = {}): Plugin {
       }
 
       const appHtml = assetSourceToString(htmlAsset.source)
+
+      if (appShellFile === appHtmlFile || appShellFile === manifestFile) {
+        throw new Error(
+          'SSG appShellFile must differ from appHtmlFile and manifestFile so the shell stays immutable.',
+        )
+      }
+
+      this.emitFile({
+        type: 'asset',
+        fileName: appShellFile,
+        source: appHtml,
+      })
 
       for (const [routeIndex, route] of resolvedManifest.routes.entries()) {
         const context = {

@@ -2,6 +2,7 @@ import { prerenderQPressSsg } from '../ssg/prerender-qpress-ssg.js'
 
 type QPressSsgCliOptions = {
   appHtmlFile?: string
+  appShellFile?: string
   appMountId?: string
   concurrency?: number
   crawlLinks?: boolean
@@ -47,6 +48,8 @@ Options:
                          Defaults to dist/ssr.
   --manifest-file <file> SSG route manifest inside out-dir. Defaults to q-press-ssg-routes.json.
   --app-html-file <file> App shell file inside out-dir. Defaults to index.html.
+  --app-shell-file <file>
+                         Immutable SPA shell inside out-dir. Defaults to q-press-ssg-shell.html.
   --app-mount-id <id>    App mount element id. Defaults to q-app.
   --exclude <route>      Exclude a route path. Can be repeated.
   --crawl-links          Crawl rendered internal links and prerender discovered routes.
@@ -150,6 +153,10 @@ function parseQPressSsgArgs(args: string[]): QPressSsgCliOptions {
         break
       case '--app-html-file':
         options.appHtmlFile = readValue(args, index, arg)
+        index += 1
+        break
+      case '--app-shell-file':
+        options.appShellFile = readValue(args, index, arg)
         index += 1
         break
       case '--app-mount-id':

@@ -107,6 +107,12 @@ export interface PrerenderSsgRoutesOptions extends SsgRouteHtmlOptions {
   appHtmlFile?: string
 
   /**
+   * Immutable copy of the built SPA shell inside outDir. Defaults to
+   * q-press-ssg-shell.html and is created from appHtmlFile when missing.
+   */
+  appShellFile?: string
+
+  /**
    * Build asset path for the generated route manifest.
    */
   manifestFile?: string
@@ -359,6 +365,12 @@ export interface ViteSsgPluginOptions {
    * Built HTML file used as the app shell. Defaults to index.html.
    */
   appHtmlFile?: string
+
+  /**
+   * File that preserves the unmodified built SPA shell for repeatable
+   * post-build prerendering. Defaults to q-press-ssg-shell.html.
+   */
+  appShellFile?: string
 
   /**
    * Optional per-route HTML renderer/transform behavior.

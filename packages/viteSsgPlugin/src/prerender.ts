@@ -3,6 +3,7 @@ import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises'
 import { dirname, join, posix as pathPosix, resolve } from 'node:path'
 import {
   createSsgRouteManifest,
+  defaultSsgAppShellFile,
   defaultSsgManifestFile,
   defaultSsgReportFile,
   isSsgRouteExcluded,
@@ -23,6 +24,37 @@ import type {
   SsgRoute,
   SsgRouteManifest,
 } from './types'
+
+/**
+ * Returns whether an unknown error is a missing-file filesystem error.
+ */
+function isMissingFileError(error: unknown): boolean {
+  return isRecord(error) && error.code === 'ENOENT'
+}
+
+/**
+ * Reads the immutable app shell, creating it from the built SPA entry when it
+ * does not exist yet. Existing snapshots are never overwritten by prerendering.
+ */
+async function readOrCreateAppShell(
+  resolvedAppHtmlFile: string,
+  resolvedAppShellFile: string,
+): Promise<string> {
+  try {
+    return await readFile(resolvedAppShellFile, 'utf8')
+  } catch (error) {
+    if (!isMissingFileError(error)) {
+      throw error
+    }
+  }
+
+  const appHtml = await readFile(resolvedAppHtmlFile, 'utf8')
+
+  await mkdir(dirname(resolvedAppShellFile), { recursive: true })
+  await writeFile(resolvedAppShellFile, appHtml)
+
+  return appHtml
+}
 
 /**
  * Reads the JSON SSG route manifest emitted by the Vite plugin.
@@ -282,6 +314,7 @@ function createReport({
 export async function prerenderSsgRoutes({
   outDir,
   appHtmlFile = 'index.html',
+  appShellFile = defaultSsgAppShellFile,
   manifestFile = defaultSsgManifestFile,
   manifest,
   transformManifest,
@@ -301,6 +334,11 @@ export async function prerenderSsgRoutes({
 }: PrerenderSsgRoutesOptions): Promise<PrerenderSsgRoutesResult> {
   const resolvedOutDir = resolve(outDir)
   const resolvedAppHtmlFile = resolveSsgOutDirFile(resolvedOutDir, appHtmlFile, 'SSG app HTML file')
+  const resolvedAppShellFile = resolveSsgOutDirFile(
+    resolvedOutDir,
+    appShellFile,
+    'SSG immutable app shell',
+  )
   const resolvedManifestFile = resolveSsgOutDirFile(
     resolvedOutDir,
     manifestFile,
@@ -310,6 +348,18 @@ export async function prerenderSsgRoutes({
     reportFile === false
       ? undefined
       : resolveSsgOutDirFile(resolvedOutDir, reportFile, 'SSG generation report')
+
+  if (resolvedAppShellFile === resolvedAppHtmlFile) {
+    throw new Error('SSG appShellFile must differ from appHtmlFile so the shell stays immutable.')
+  }
+
+  if (
+    resolvedAppShellFile === resolvedManifestFile ||
+    resolvedAppShellFile === resolvedReportFile
+  ) {
+    throw new Error('SSG appShellFile must differ from manifestFile and reportFile.')
+  }
+
   const loadedManifest = manifest ?? (await readSsgRouteManifest(resolvedOutDir, manifestFile))
   const rawManifest = (await transformManifest?.(loadedManifest)) ?? loadedManifest
   const resolvedManifest = createSsgRouteManifest(rawManifest.routes, {
@@ -317,7 +367,7 @@ export async function prerenderSsgRoutes({
     exclude,
   })
   const appHtml = await injectMissingCssAssets(
-    await readFile(resolvedAppHtmlFile, 'utf8'),
+    await readOrCreateAppShell(resolvedAppHtmlFile, resolvedAppShellFile),
     resolvedOutDir,
     resolvedManifest.base,
   )
@@ -408,6 +458,12 @@ export async function prerenderSsgRoutes({
               pageUpdate.filePath,
               `Generated file for route "${route.path}"`,
             )
+
+      if (finalFilePath === resolvedAppShellFile) {
+        throw new Error(
+          `Generated file for route "${route.path}" cannot overwrite the immutable SSG app shell.`,
+        )
+      }
 
       await mkdir(dirname(finalFilePath), { recursive: true })
       await writeFile(finalFilePath, finalHtml)

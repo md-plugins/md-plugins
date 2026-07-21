@@ -88,6 +88,7 @@ interface SsgRouteHtmlOptions {
 interface PrerenderSsgRoutesOptions extends SsgRouteHtmlOptions {
   outDir: string
   appHtmlFile?: string
+  appShellFile?: string
   manifestFile?: string
   manifest?: SsgRouteManifest
   transformManifest?: SsgManifestTransformer
@@ -224,6 +225,7 @@ interface ViteSsgPluginOptions {
   base?: string
   emitHtml?: boolean
   appHtmlFile?: string
+  appShellFile?: string
   renderRoute?: SsgRouteHtmlOptions['renderRoute']
   transformHtml?: SsgRouteHtmlOptions['transformHtml']
   injectRoutePayload?: SsgRouteHtmlOptions['injectRoutePayload']
@@ -340,6 +342,9 @@ viteSsgPlugin({
 This is useful when a static host needs concrete HTML files for deep links, even if the app still
 hydrates like a normal SPA.
 
+The build also emits `q-press-ssg-shell.html` before generating route files. This immutable copy
+keeps the original empty app mount available after the root route overwrites `index.html`.
+
 Use `emitHtml: false` when a build should only publish the route manifest:
 
 ```ts
@@ -383,7 +388,7 @@ For Q-Press, use the first-class command after building the SPA:
 pnpm build:ssg
 ```
 
-`qpress ssg` reads `q-press-ssg-routes.json`, renders every route with the generated Q-Press SSG app factory, and writes the route HTML files back into the built SPA output directory. Use `pnpm prerender:ssg` when `dist/spa` already exists and only the static prerender pass needs to run again.
+`qpress ssg` reads `q-press-ssg-routes.json`, renders every route with the generated Q-Press SSG app factory, and writes the route HTML files back into the built SPA output directory. It always renders from the preserved `q-press-ssg-shell.html`, so `pnpm prerender:ssg` can be run repeatedly without rebuilding the SPA. Lower-level callers can rename the artifact with `appShellFile`; when it is absent, the first prerender pass snapshots `appHtmlFile` before writing any routes.
 
 The output directory is configurable. Q-Press defaults to `dist/spa` because that keeps existing
 Netlify/static-host workflows simple, but non-Q-Press sites can choose a different output folder.

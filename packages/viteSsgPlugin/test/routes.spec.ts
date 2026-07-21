@@ -10,6 +10,7 @@ import { resolveSsgOutDirFile } from '../src/outputPaths'
 import { prerenderSsgRoutes } from '../src/prerender'
 import {
   createSsgRouteManifest,
+  defaultSsgAppShellFile,
   flattenStaticSsgRouterRoutes,
   isSsgRouteExcluded,
   isStaticSsgRoutePath,
@@ -237,9 +238,10 @@ describe('Markdown SSG route helpers', () => {
 })
 
 describe('Vite SSG plugin', () => {
-  it('emits an empty manifest without route HTML when no markdown or routes are configured', async () => {
+  it('emits an immutable app shell before generating the root route', async () => {
     const emittedAssets: Array<{ fileName: string; source: string }> = []
     const warnings: string[] = []
+    const manifest = createSsgRouteManifest(['/'])
     const appHtml =
       '<html><head><title>Docs</title></head><body><div id="q-app"></div></body></html>'
     const bundle = {
@@ -249,7 +251,7 @@ describe('Vite SSG plugin', () => {
         source: appHtml,
       },
     }
-    const plugin = viteSsgPlugin()
+    const plugin = viteSsgPlugin({ routes: ['/'] })
     const pluginHooks = plugin as unknown as TestViteSsgPlugin
 
     pluginHooks.configResolved({
@@ -273,11 +275,16 @@ describe('Vite SSG plugin', () => {
     )
 
     expect(warnings).toEqual([])
-    expect(bundle['index.html'].source).toBe(appHtml)
+    expect(bundle['index.html'].source).not.toBe(appHtml)
+    expect(bundle['index.html'].source).toContain('id="md-plugins-ssg-route"')
     expect(emittedAssets).toEqual([
       {
         fileName: 'q-press-ssg-routes.json',
-        source: `${JSON.stringify({ base: '/', routes: [] }, null, 2)}\n`,
+        source: `${JSON.stringify(manifest, null, 2)}\n`,
+      },
+      {
+        fileName: defaultSsgAppShellFile,
+        source: appHtml,
       },
     ])
   })
@@ -395,6 +402,73 @@ describe('SSG file prerendering', () => {
     ])
   })
 
+  it('preserves an immutable shell across repeated prerender passes', async () => {
+    const outDir = await mkdtemp(join(tmpdir(), 'md-plugins-ssg-repeat-'))
+    const manifest = createSsgRouteManifest(['/', '/guide'])
+    const appShell =
+      '<html><head><title>Docs</title></head><body><div id="q-app"></div></body></html>'
+
+    await writeFile(join(outDir, 'index.html'), appShell)
+    await writeFile(
+      join(outDir, 'q-press-ssg-routes.json'),
+      `${JSON.stringify(manifest, null, 2)}\n`,
+    )
+
+    const renderRoute = (route: { path: string }, { appHtml }: { appHtml: string }) =>
+      appHtml.replace(
+        '<div id="q-app"></div>',
+        `<div id="q-app"><main>Rendered ${route.path}</main></div>`,
+      )
+
+    await prerenderSsgRoutes({ outDir, renderRoute })
+
+    const firstRootHtml = await readFile(join(outDir, 'index.html'), 'utf8')
+    const firstGuideHtml = await readFile(join(outDir, 'guide/index.html'), 'utf8')
+
+    expect(firstRootHtml).toContain('<main>Rendered /</main>')
+    expect(firstGuideHtml).toContain('<main>Rendered /guide</main>')
+    await expect(readFile(join(outDir, defaultSsgAppShellFile), 'utf8')).resolves.toBe(appShell)
+
+    await prerenderSsgRoutes({ outDir, renderRoute })
+
+    await expect(readFile(join(outDir, 'index.html'), 'utf8')).resolves.toBe(firstRootHtml)
+    await expect(readFile(join(outDir, 'guide/index.html'), 'utf8')).resolves.toBe(firstGuideHtml)
+    await expect(readFile(join(outDir, defaultSsgAppShellFile), 'utf8')).resolves.toBe(appShell)
+  })
+
+  it('prevents generated routes from overwriting the immutable app shell', async () => {
+    const outDir = await mkdtemp(join(tmpdir(), 'md-plugins-ssg-shell-guard-'))
+    const manifest = createSsgRouteManifest(['/guide'])
+    const appShell = '<html><body><div id="q-app"></div></body></html>'
+
+    await writeFile(join(outDir, 'index.html'), appShell)
+
+    await expect(
+      prerenderSsgRoutes({
+        outDir,
+        manifest,
+        reportFile: false,
+        renderRoute: (_route, { appHtml }) => appHtml,
+        onPageGenerated() {
+          return { htmlFile: defaultSsgAppShellFile }
+        },
+      }),
+    ).rejects.toThrow('cannot overwrite the immutable SSG app shell')
+
+    await expect(readFile(join(outDir, defaultSsgAppShellFile), 'utf8')).resolves.toBe(appShell)
+
+    await expect(
+      prerenderSsgRoutes({
+        outDir,
+        appHtmlFile: 'index.html',
+        appShellFile: 'index.html',
+        manifest,
+        reportFile: false,
+        renderRoute: (_route, { appHtml }) => appHtml,
+      }),
+    ).rejects.toThrow('appShellFile must differ from appHtmlFile')
+  })
+
   it('transforms a loaded manifest before route normalization and rendering', async () => {
     const outDir = await mkdtemp(join(tmpdir(), 'md-plugins-ssg-transform-manifest-'))
     const manifest = createSsgRouteManifest(['/'])
@@ -488,6 +562,16 @@ describe('SSG file prerendering', () => {
         onPageGenerated() {
           return { filePath: escapedFile }
         },
+      }),
+    ).rejects.toThrow('inside outDir')
+
+    await expect(
+      prerenderSsgRoutes({
+        outDir,
+        manifest,
+        appShellFile: `../${escapedFileName}`,
+        reportFile: false,
+        renderRoute,
       }),
     ).rejects.toThrow('inside outDir')
 

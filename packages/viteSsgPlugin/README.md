@@ -125,6 +125,7 @@ When Vite emits `index.html`, this plugin creates matching route HTML files such
 index.html
 getting-started/introduction/index.html
 other/releases/index.html
+q-press-ssg-shell.html
 q-press-ssg-routes.json
 ```
 
@@ -172,8 +173,12 @@ await prerenderSsgRoutes({
 ```
 
 The helper reads `q-press-ssg-routes.json`, renders every route, and writes each route's
-`index.html` file. The renderer can be a Vue SSR renderer, a Quasar SSR adapter, or any
-project-specific static renderer.
+`index.html` file. The Vite plugin preserves the unmodified SPA shell as
+`q-press-ssg-shell.html`, and the prerenderer always reads that immutable copy rather than a
+generated root page. If the Vite plugin did not emit the artifact, the first prerender pass creates
+it from `appHtmlFile`. This makes repeated prerender commands deterministic without rebuilding the
+SPA. The renderer can be a Vue SSR renderer, a Quasar SSR adapter, or any project-specific static
+renderer.
 
 The output directory is configurable. Q-Press defaults to `dist/spa` because that keeps existing
 static-host deployments simple, but non-Q-Press projects can use another output folder.
@@ -181,6 +186,8 @@ static-host deployments simple, but non-Q-Press projects can use another output 
 By default, post-build prerendering writes `q-press-ssg-report.json`. Pass `reportFile: false` to
 disable reports, or provide hooks such as `onRouteRendered`, `onPageGenerated`, and `afterGenerate`
 for custom output. Configured and hook-provided file paths must resolve inside `outDir`.
+The shell artifact can be renamed with `appShellFile`, but it must differ from the app HTML,
+manifest, report, and generated route files.
 
 Framework adapters can use `transformManifest` to add discovered routes after the manifest is
 loaded while leaving file loading and route validation in the generic prerenderer.
