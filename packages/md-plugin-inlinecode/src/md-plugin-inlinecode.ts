@@ -1,10 +1,7 @@
-import type { MarkdownItEnv } from '@md-plugins/shared'
-import type MarkdownIt from 'markdown-it'
-import type { PluginWithOptions, Options } from 'markdown-it'
-import type Renderer from 'markdown-it/lib/renderer.mjs'
-import type Token from 'markdown-it/lib/token.mjs'
+import type { MarkdownItEnv, MarkdownItPluginWithOptions } from '@md-plugins/shared'
+import type { MarkdownIt } from 'markdown-it'
+import type { MarkdownItOptions, Renderer, Token } from 'markdown-it'
 import type { InlineCodePluginOptions } from './types'
-import { escapeHtml } from 'markdown-it/lib/common/utils.mjs'
 import { resolvePluginOptions } from '@md-plugins/shared'
 
 // Default options for the inline code plugin.
@@ -15,7 +12,7 @@ const DEFAULT_INLINECODE_PLUGIN_OPTIONS: InlineCodePluginOptions = {
 /**
  * Adds a class to inline code.
  */
-export const inlinecodePlugin: PluginWithOptions<InlineCodePluginOptions> = (
+export const inlinecodePlugin: MarkdownItPluginWithOptions<InlineCodePluginOptions> = (
   md: MarkdownIt,
   options?: InlineCodePluginOptions | { inlinecodePlugin?: InlineCodePluginOptions },
 ): void => {
@@ -29,8 +26,8 @@ export const inlinecodePlugin: PluginWithOptions<InlineCodePluginOptions> = (
   md.renderer.rules.code_inline = (
     tokens: Token[],
     idx: number,
-    _options: Options,
-    _env: MarkdownItEnv,
+    _options: Required<MarkdownItOptions>,
+    _env: MarkdownItEnv | undefined | undefined,
     self: Renderer,
   ): string => {
     const token = tokens[idx]
@@ -45,6 +42,6 @@ export const inlinecodePlugin: PluginWithOptions<InlineCodePluginOptions> = (
 
     token.attrSet('class', combinedClass)
 
-    return '<code' + self.renderAttrs(token) + '>' + escapeHtml(token.content) + '</code>'
+    return '<code' + self.renderAttrs(token) + '>' + md.utils.escapeHtml(token.content) + '</code>'
   }
 }

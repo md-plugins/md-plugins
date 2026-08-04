@@ -1,6 +1,6 @@
 {
   "name": "@md-plugins/md-plugin-codeblocks",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "description": "A markdown-it plugin for code blocks.",
   "keywords": [
     "markdown-it",
@@ -42,16 +42,15 @@
     "prepack": "pnpm build"
   },
   "dependencies": {
-    "@shikijs/transformers": "^4.3.1",
-    "@shikijs/twoslash": "^4.3.1",
-    "shiki": "^4.3.1"
+    "@shikijs/transformers": "^4.4.1",
+    "@shikijs/twoslash": "^4.4.1",
+    "shiki": "^4.4.1"
   },
   "devDependencies": {
     "@md-plugins/shared": "workspace:*",
-    "@types/markdown-it": "^14.1.2",
-    "markdown-it": "^14.3.0"
+    "markdown-it": "^15.0.0"
   },
   "peerDependencies": {
-    "markdown-it": "^14.2.0"
+    "markdown-it": "^15.0.0"
   }
 }

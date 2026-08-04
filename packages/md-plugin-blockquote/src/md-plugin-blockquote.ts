@@ -1,7 +1,8 @@
+import type { MarkdownItPluginWithOptions } from '@md-plugins/shared'
 import type { MarkdownItEnv } from '@md-plugins/shared'
-import type MarkdownIt from 'markdown-it'
-import type { Options, PluginWithOptions } from 'markdown-it'
-import type Token from 'markdown-it/lib/token.mjs'
+import type { MarkdownIt } from 'markdown-it'
+import type { MarkdownItOptions } from 'markdown-it'
+import type { Token } from 'markdown-it'
 import type { BlockquotePluginOptions } from './types'
 import { resolvePluginOptions } from '@md-plugins/shared'
 
@@ -13,7 +14,7 @@ const DEFAULT_BLOCKQUOTE_OPTIONS: BlockquotePluginOptions = {
 /**
  * Adds the configured CSS class to every rendered Markdown blockquote.
  */
-export const blockquotePlugin: PluginWithOptions<BlockquotePluginOptions> = (
+export const blockquotePlugin: MarkdownItPluginWithOptions<BlockquotePluginOptions> = (
   md: MarkdownIt,
   options?: BlockquotePluginOptions | { blockquotePlugin?: BlockquotePluginOptions },
 ): void => {
@@ -26,7 +27,11 @@ export const blockquotePlugin: PluginWithOptions<BlockquotePluginOptions> = (
   // Preserve the original render method
   const originalRender = md.renderer.render.bind(md.renderer)
 
-  md.renderer.render = (tokens: Token[], options: Options, env: MarkdownItEnv): string => {
+  md.renderer.render = (
+    tokens: Token[],
+    options: Required<MarkdownItOptions>,
+    env: MarkdownItEnv | undefined,
+  ): string => {
     // Iterate over all tokens to ensure multiple blockquotes are handled
     tokens.forEach((token) => {
       if (token.tag === 'blockquote' && token.type === 'blockquote_open') {

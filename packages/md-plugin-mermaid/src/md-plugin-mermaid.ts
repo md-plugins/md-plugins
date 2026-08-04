@@ -1,8 +1,9 @@
+import type { MarkdownItPluginWithOptions } from '@md-plugins/shared'
 import type { MarkdownItEnv } from '@md-plugins/shared'
 import { resolvePluginOptions } from '@md-plugins/shared'
-import type { Options, PluginWithOptions } from 'markdown-it'
-import type MarkdownIt from 'markdown-it'
-import type Token from 'markdown-it/lib/token.mjs'
+import type { MarkdownItOptions } from 'markdown-it'
+import type { MarkdownIt } from 'markdown-it'
+import type { Token } from 'markdown-it'
 import type { MermaidPluginOptions } from './types'
 
 const DEFAULT_MERMAID_PLUGIN_OPTIONS: Required<MermaidPluginOptions> = {
@@ -48,7 +49,7 @@ function getVueBinding(md: MarkdownIt, value: string): string {
 /**
  * Renders Mermaid fenced code blocks as either a Vue component or a plain pre block.
  */
-export const mermaidPlugin: PluginWithOptions<MermaidPluginOptions> = (
+export const mermaidPlugin: MarkdownItPluginWithOptions<MermaidPluginOptions> = (
   md: MarkdownIt,
   options?: MermaidPluginOptions | { mermaidPlugin?: MermaidPluginOptions },
 ): void => {
@@ -73,10 +74,11 @@ export const mermaidPlugin: PluginWithOptions<MermaidPluginOptions> = (
   md.renderer.rules.fence = (
     tokens: Token[],
     idx: number,
-    options: Options,
-    env: MarkdownItEnv,
+    options: Required<MarkdownItOptions>,
+    env: MarkdownItEnv | undefined,
     self,
   ): string => {
+    env ??= {}
     const token = tokens[idx]
     if (!token) {
       return ''

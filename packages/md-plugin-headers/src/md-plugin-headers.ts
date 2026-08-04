@@ -1,8 +1,8 @@
+import type { MarkdownItPluginWithOptions } from '@md-plugins/shared'
 import { slugify as defaultSlugify } from '@md-plugins/shared'
 import type { MarkdownItEnv } from '@md-plugins/shared'
-import type { PluginWithOptions } from 'markdown-it'
 import type { HeadersPluginOptions } from './types'
-import type MarkdownIt from 'markdown-it'
+import type { MarkdownIt } from 'markdown-it'
 import { resolvePluginOptions } from '@md-plugins/shared'
 
 // Default options for the headers plugin
@@ -36,7 +36,7 @@ function parseContent(
 /**
  * Adds heading ids, copy handlers, and table-of-contents entries while rendering Markdown.
  */
-export const headersPlugin: PluginWithOptions<HeadersPluginOptions> = (
+export const headersPlugin: MarkdownItPluginWithOptions<HeadersPluginOptions> = (
   md: MarkdownIt,
   options?: HeadersPluginOptions | { headersPlugin?: HeadersPluginOptions },
 ): void => {
@@ -56,7 +56,14 @@ export const headersPlugin: PluginWithOptions<HeadersPluginOptions> = (
   const originalHeadingOpen = md.renderer.rules.heading_open
   const originalHtmlBlock = md.renderer.rules.html_block
 
-  md.renderer.rules.heading_open = (tokens, idx, options, env: MarkdownItEnv, self): string => {
+  md.renderer.rules.heading_open = (
+    tokens,
+    idx,
+    options,
+    env: MarkdownItEnv | undefined,
+    self,
+  ): string => {
+    env ??= {}
     const token = tokens[idx]
     if (!token) {
       return self.renderToken(tokens, idx, options)
@@ -97,7 +104,14 @@ export const headersPlugin: PluginWithOptions<HeadersPluginOptions> = (
     return self.renderToken(tokens, idx, options)
   }
 
-  md.renderer.rules.html_block = (tokens, idx, options, env: MarkdownItEnv, self): string => {
+  md.renderer.rules.html_block = (
+    tokens,
+    idx,
+    options,
+    env: MarkdownItEnv | undefined,
+    self,
+  ): string => {
+    env ??= {}
     const token = tokens[idx]
     if (!token) {
       return ''

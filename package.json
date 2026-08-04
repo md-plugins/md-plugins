@@ -1,6 +1,6 @@
 {
   "name": "@md-plugins/mono-repo",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "private": true,
   "description": "Markdown-it, Vite, and Quasar documentation tooling for Vue/Vite projects.",
   "keywords": [
@@ -37,12 +37,12 @@
     "test": "vitest run"
   },
   "devDependencies": {
-    "@types/node": "^26.1.1",
+    "@types/node": "^26.1.2",
     "@vitest/coverage-istanbul": "^4.1.10",
-    "npm-check-updates": "^22.2.9",
+    "npm-check-updates": "^23.0.1",
     "obuild": "^0.4.38",
-    "oxfmt": "^0.59.0",
-    "oxlint": "^1.74.0",
+    "oxfmt": "^0.62.0",
+    "oxlint": "^1.77.0",
     "typescript": "~6.0.3",
     "vitest": "^4.1.10"
   },
@@ -50,6 +50,6 @@
     "node": ">=22.13",
     "pnpm": ">=11.5.0"
   },
-  "packageManager": "pnpm@11.13.0",
+  "packageManager": "pnpm@11.20.0",
   "access": "private"
 }

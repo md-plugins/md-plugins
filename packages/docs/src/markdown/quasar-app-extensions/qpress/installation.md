@@ -14,7 +14,7 @@ Q-Press currently expects:
 - Quasar CLI Vite with `@quasar/app-vite` `>=3.0.0`
 - TypeScript project support
 - Vue Router from the Quasar Vite app template
-- `markdown-it` and `@types/markdown-it`
+- `markdown-it`
 
 Q-Press is not intended for Webpack-era Quasar projects or JavaScript-only Quasar apps.
 
@@ -56,13 +56,13 @@ Install `markdown-it` and its types:
 
 ```tabs
 <<| bash pnpm |>>
-pnpm i -D markdown-it @types/markdown-it
+pnpm i -D markdown-it
 <<| bash bun |>>
-bun add -d markdown-it @types/markdown-it
+bun add -d markdown-it
 <<| bash yarn |>>
-yarn add -D markdown-it @types/markdown-it
+yarn add -D markdown-it
 <<| bash npm |>>
-npm i -D markdown-it @types/markdown-it
+npm i -D markdown-it
 ```
 
 Q-Press adds `mermaid`, `shiki`, `@md-plugins/search-ui`, `@md-plugins/vite-search-plugin`, `@md-plugins/vite-ssg-plugin`, and `@vue/server-renderer` to your project dev dependencies when invoked. If you are wiring generated files manually, add them yourself:

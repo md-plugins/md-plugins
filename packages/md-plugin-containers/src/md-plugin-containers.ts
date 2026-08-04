@@ -1,4 +1,4 @@
-import type MarkdownIt from 'markdown-it'
+import type { MarkdownIt } from 'markdown-it'
 import type { CreateContainerFn, ContainerDetails } from './types'
 import container from 'markdown-it-container'
 
@@ -70,7 +70,12 @@ export function containersPlugin(
 
   containers.forEach(({ type, defaultTitle }) => {
     try {
-      md.use(...createContainer(container, type, defaultTitle, md))
+      const [plugin, ...params] = createContainer(container, type, defaultTitle, md)
+      const compatiblePlugin = plugin as unknown as (
+        instance: MarkdownIt,
+        ...args: unknown[]
+      ) => void
+      compatiblePlugin(md, ...params)
     } catch (error) {
       console.error(`Failed to create container for type: ${type}`, error)
     }

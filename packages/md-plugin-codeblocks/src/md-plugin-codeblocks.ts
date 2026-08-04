@@ -1,6 +1,7 @@
-import MarkdownIt from 'markdown-it'
-import type { PluginWithOptions, Options } from 'markdown-it'
-import type Token from 'markdown-it/lib/token.mjs'
+import type { MarkdownItPluginWithOptions } from '@md-plugins/shared'
+import type { MarkdownIt } from 'markdown-it'
+import type { MarkdownItOptions } from 'markdown-it'
+import type { Token } from 'markdown-it'
 import type { MarkdownItEnv } from '@md-plugins/shared'
 import type { CodeblockPluginOptions, Lang } from './types'
 import { resolvePluginOptions } from '@md-plugins/shared'
@@ -55,7 +56,7 @@ const DEFAULT_CODEBLOCK_PLUGIN_OPTIONS: CodeblockPluginOptions = {
  * The plugin supports language aliases, tabbed code fences, Shiki highlighting,
  * copy buttons, twoslash hints, line numbers, and add/remove/highlight notation.
  */
-export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
+export const codeblocksPlugin: MarkdownItPluginWithOptions<CodeblockPluginOptions> = (
   md: MarkdownIt,
   options?: CodeblockPluginOptions | { codeblocksPlugin?: CodeblockPluginOptions },
 ): void => {
@@ -373,9 +374,10 @@ export const codeblocksPlugin: PluginWithOptions<CodeblockPluginOptions> = (
   md.renderer.rules.fence = (
     tokens: Token[],
     idx: number,
-    _options: Options,
-    env: MarkdownItEnv,
+    _options: Required<MarkdownItOptions>,
+    env: MarkdownItEnv | undefined,
   ): string => {
+    env ??= {}
     const token = tokens[idx]
     if (!token) {
       return ''

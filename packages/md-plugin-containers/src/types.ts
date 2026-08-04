@@ -1,6 +1,6 @@
-import type Token from 'markdown-it/lib/token.mjs'
+import type { Token } from 'markdown-it'
 import container from 'markdown-it-container'
-import type MarkdownIt from 'markdown-it'
+import type { MarkdownIt } from 'markdown-it'
 
 export type Container = typeof container
 

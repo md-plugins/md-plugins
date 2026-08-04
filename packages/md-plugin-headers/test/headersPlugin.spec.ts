@@ -7,7 +7,7 @@ import type { MarkdownItEnv } from '@md-plugins/shared'
 describe('headersPlugin', () => {
   it('extracts headers into the Table of Contents (toc)', () => {
     const md = new MarkdownIt()
-    const env: MarkdownItEnv = {}
+    const env: MarkdownItEnv | undefined = {}
 
     const options: HeadersPluginOptions = {
       level: [2, 3], // Extract headers at levels 2 and 3
@@ -40,7 +40,7 @@ Last bit of content.
 
   it('formats header titles using a custom format function', () => {
     const md = new MarkdownIt()
-    const env: MarkdownItEnv = {}
+    const env: MarkdownItEnv | undefined = {}
 
     const options: HeadersPluginOptions = {
       format: (str) => str.toUpperCase(),
@@ -60,7 +60,7 @@ Content under Subheading 1.
 
   it('generates custom slugs using a custom slugify function', () => {
     const md = new MarkdownIt()
-    const env: MarkdownItEnv = {}
+    const env: MarkdownItEnv | undefined = {}
 
     const options: HeadersPluginOptions = {
       slugify: (str) => `custom-slug-${str.replace(/\s+/g, '-').toLowerCase()}`,
@@ -80,7 +80,7 @@ Some content.
 
   it('respects nested block extraction settings', () => {
     const md = new MarkdownIt()
-    const env: MarkdownItEnv = {}
+    const env: MarkdownItEnv | undefined = {}
 
     const options: HeadersPluginOptions = {
       shouldAllowNested: true, // Extract headers inside nested blocks
@@ -101,7 +101,7 @@ Some content.
 
   it('ignores headers outside the specified levels', () => {
     const md = new MarkdownIt()
-    const env: MarkdownItEnv = {}
+    const env: MarkdownItEnv | undefined = {}
 
     const options: HeadersPluginOptions = {
       level: [3], // Only extract headers at level 3

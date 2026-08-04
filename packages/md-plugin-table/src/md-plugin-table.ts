@@ -1,6 +1,7 @@
+import type { MarkdownItPluginWithOptions } from '@md-plugins/shared'
 import type { MarkdownItEnv } from '@md-plugins/shared'
-import type { PluginWithOptions, Options } from 'markdown-it'
-import type Token from 'markdown-it/lib/token.mjs'
+import type { MarkdownItOptions } from 'markdown-it'
+import type { Token } from 'markdown-it'
 import type { TablePluginOptions } from './types'
 import { resolvePluginOptions } from '@md-plugins/shared'
 
@@ -17,7 +18,7 @@ const DEFAULT_TABLE_PLUGIN_OPTIONS: TablePluginOptions = {
 /**
  * Rewrites Markdown table tokens to configured tags, classes, and attributes.
  */
-export const tablePlugin: PluginWithOptions<TablePluginOptions> = (
+export const tablePlugin: MarkdownItPluginWithOptions<TablePluginOptions> = (
   md,
   options?: TablePluginOptions | { tablePlugin?: TablePluginOptions },
 ): void => {
@@ -38,7 +39,12 @@ export const tablePlugin: PluginWithOptions<TablePluginOptions> = (
   // Preserve the original renderer.
   const render = md.renderer.render.bind(md.renderer)
 
-  md.renderer.render = (tokens: Token[], options: Options, env: MarkdownItEnv): string => {
+  md.renderer.render = (
+    tokens: Token[],
+    options: Required<MarkdownItOptions>,
+    env: MarkdownItEnv | undefined,
+  ): string => {
+    env ??= {}
     for (let i = 0; i < tokens.length; i++) {
       const token = tokens[i]
       if (!token) continue

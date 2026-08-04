@@ -15,7 +15,7 @@ Q-Press is the Quasar documentation layer in md-plugins. It turns Markdown folde
 
 See the [documentation](https://md-plugins.netlify.app/quasar-app-extensions/qpress/overview) for more information.
 
-> Current stable release: `1.2.0`.
+> Current stable release: `2.0.0`.
 >
 > Q-Press currently targets Quasar Vite projects using `@quasar/app-vite` `>=3.0.0`. TypeScript processing is required.
 
@@ -47,12 +47,12 @@ Q-Press builds a Markdown route manifest from `src/markdown/listing.ts` during d
 - Here is what gets installed on an **update** install:
   - `src/.q-press`
 
-2. Install `markdown-it` and `@types/markdown-it` in your project devDependencies
+2. Install `markdown-it` in your project devDependencies
 
-- `npm i -D markdown-it @types/markdown-it`
-- `yarn add -D markdown-it @types/markdown-it`
-- `pnpm i -D markdown-it @types/markdown-it`
-- `bun add -d markdown-it @types/markdown-it`
+- `npm i -D markdown-it`
+- `yarn add -D markdown-it`
+- `pnpm i -D markdown-it`
+- `bun add -d markdown-it`
 
 3. Q-Press adds its docs build helpers to your project devDependencies when invoked. If you are wiring the generated files manually, add them yourself:
 

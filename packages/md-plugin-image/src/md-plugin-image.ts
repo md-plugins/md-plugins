@@ -1,8 +1,9 @@
+import type { MarkdownItPluginWithOptions } from '@md-plugins/shared'
 import type { MarkdownItEnv } from '@md-plugins/shared'
-import type { PluginWithOptions, Options } from 'markdown-it'
+import type { MarkdownItOptions } from 'markdown-it'
 import type { ImagePluginOptions } from './types'
-import type MarkdownIt from 'markdown-it'
-import type Token from 'markdown-it/lib/token.mjs'
+import type { MarkdownIt } from 'markdown-it'
+import type { Token } from 'markdown-it'
 import { resolvePluginOptions } from '@md-plugins/shared'
 
 // Define default options for the image plugin.
@@ -13,7 +14,7 @@ const DEFAULT_IMAGE_PLUGIN_OPTIONS: ImagePluginOptions = {
 /**
  * Adds consistent image classes and supports width/height hints in image text.
  */
-export const imagePlugin: PluginWithOptions<ImagePluginOptions> = (
+export const imagePlugin: MarkdownItPluginWithOptions<ImagePluginOptions> = (
   md: MarkdownIt,
   options?: ImagePluginOptions | { imagePlugin?: ImagePluginOptions },
 ): void => {
@@ -29,8 +30,8 @@ export const imagePlugin: PluginWithOptions<ImagePluginOptions> = (
   md.renderer.rules.image = (
     tokens: Token[],
     idx: number,
-    options: Options,
-    env: MarkdownItEnv,
+    options: Required<MarkdownItOptions>,
+    env: MarkdownItEnv | undefined,
     self,
   ): string => {
     const token = tokens[idx]

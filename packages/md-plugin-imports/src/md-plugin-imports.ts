@@ -1,6 +1,6 @@
+import type { MarkdownItPlugin } from '@md-plugins/shared'
 import type { MarkdownItEnv } from '@md-plugins/shared'
-import type { PluginSimple } from 'markdown-it'
-import type MarkdownIt from 'markdown-it'
+import type { MarkdownIt } from 'markdown-it'
 
 const scriptRE = /^\s*<script import>\n([\s\S]*?)\n\s*<\/script>/gm
 const fenceStartRE = /^ {0,3}(`{3,}|~{3,})/
@@ -89,10 +89,10 @@ function extractScriptImportsOutsideFences(src: string, env: MarkdownItEnv): str
  *
  * @param md - The Markdown-It instance to extend.
  */
-export const importsPlugin: PluginSimple = (md: MarkdownIt): void => {
+export const importsPlugin: MarkdownItPlugin = (md: MarkdownIt): void => {
   const render = md.render.bind(md)
 
-  md.render = (src: string, env: MarkdownItEnv = {}): string => {
+  md.render = (src: string, env: MarkdownItEnv | undefined = {}): string => {
     env.pageScripts = env.pageScripts || new Set<string>()
     const mdContent = extractScriptImportsOutsideFences(src, env)
 

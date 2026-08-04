@@ -1,8 +1,9 @@
 import { describe, it, expect } from 'vitest'
 import MarkdownIt from 'markdown-it'
+import type { MarkdownIt as MarkdownItInstance } from 'markdown-it'
 import { containersPlugin } from '../src/md-plugin-containers'
 import type { Container, ContainerDetails, ContainerOptions } from '../src/types'
-import type Token from 'markdown-it/lib/token.mjs'
+import type { Token } from 'markdown-it'
 
 // Define container types and their default titles
 const containers: ContainerDetails[] = [
@@ -16,7 +17,7 @@ function createContainer(
   container: Container,
   containerType: string,
   defaultTitle: string,
-  md: MarkdownIt,
+  md: MarkdownItInstance,
 ): [Container, string, ContainerOptions] {
   const containerTypeLen = containerType.length
 

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { resolveHeadersFromTokens } from '../src/resolve-headers-from-tokens'
-import type Token from 'markdown-it/lib/token.mjs'
+import type { Token } from 'markdown-it'
 import type { ResolveHeadersOptions } from '../src/resolve-headers-from-tokens'
 
 describe('resolveHeadersFromTokens', () => {

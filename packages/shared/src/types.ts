@@ -1,4 +1,10 @@
-export interface MarkdownItEnv {
+import type { Env, MarkdownIt } from 'markdown-it'
+
+export type MarkdownItPlugin = (md: MarkdownIt) => void
+
+export type MarkdownItPluginWithOptions<T> = (md: MarkdownIt, options?: T) => void
+
+export interface MarkdownItEnv extends Env {
   plugins?: Record<string, unknown>
   // empty interface to allow for env to be extended with module augmentation
 }

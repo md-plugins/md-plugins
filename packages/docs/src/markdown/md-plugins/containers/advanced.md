@@ -11,7 +11,7 @@ The `containers` plugin allows you to add custom containers for callouts, warnin
 
 ```ts
 import MarkdownIt from 'markdown-it'
-import Token from 'markdown-it/lib/token.mjs'
+import { Token } from 'markdown-it'
 import container from 'markdown-it-container'
 
 type Container = typeof container
@@ -264,7 +264,7 @@ Here is an example of how you can configure the `containers` plugin with custom 
 
 ```typescript
 import MarkdownIt from 'markdown-it'
-import type Token from 'markdown-it/lib/token.mjs'
+import type { Token } from 'markdown-it'
 import { containersPlugin } from '@md-plugins/md-plugin-containers'
 import type {
   ContainerDetails,

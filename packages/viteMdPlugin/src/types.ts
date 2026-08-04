@@ -1,5 +1,5 @@
-import type { Options } from 'markdown-it'
-import type MarkdownIt from 'markdown-it'
+import type { MarkdownItOptions } from 'markdown-it'
+import type { MarkdownIt } from 'markdown-it'
 import type { MarkdownItEnv } from '@md-plugins/shared'
 import type { BlockquotePluginOptions } from '@md-plugins/md-plugin-blockquote'
 import type { CodeblockPluginOptions } from '@md-plugins/md-plugin-codeblocks'
@@ -15,7 +15,7 @@ import type { TablePluginOptions } from '@md-plugins/md-plugin-table'
 export type MarkdownItPlugin = (md: MarkdownIt, ...params: any[]) => void
 export type MarkdownItPluginEntry = MarkdownItPlugin | [MarkdownItPlugin, ...any[]]
 
-export interface MarkdownOptions extends Options {
+export interface MarkdownOptions extends MarkdownItOptions {
   html?: boolean
   linkify?: boolean
   typographer?: boolean

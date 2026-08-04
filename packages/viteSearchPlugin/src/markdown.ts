@@ -2,7 +2,7 @@ import { readFile } from 'node:fs/promises'
 import matter from 'gray-matter'
 import MarkdownIt from 'markdown-it'
 import { globSync } from 'tinyglobby'
-import type Token from 'markdown-it/lib/token.mjs'
+import type { Token } from 'markdown-it'
 import type {
   CreateSearchIndexOptions,
   JsonValue,

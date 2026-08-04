@@ -1,5 +1,6 @@
-import type Token from 'markdown-it/lib/token.mjs'
+import type { Token } from 'markdown-it'
 import MarkdownIt from 'markdown-it'
+import type { MarkdownIt as MarkdownItInstance } from 'markdown-it'
 import markdownItIns from 'markdown-it-ins'
 
 import type { MarkdownItEnv } from '@md-plugins/shared'
@@ -24,7 +25,7 @@ import type {
 import { containersPlugin } from '@md-plugins/md-plugin-containers'
 import type { MarkdownItPluginEntry, MarkdownOptions } from './types'
 
-export type MarkdownRenderer = MarkdownIt
+export type MarkdownRenderer = MarkdownItInstance
 
 export interface MarkdownRenderResult {
   html: string
@@ -53,7 +54,7 @@ const createContainer: CreateContainerFn = (
   container: Container,
   containerType: string,
   defaultTitle: string,
-  md: MarkdownIt,
+  md: MarkdownItInstance,
 ): [Container, string, ContainerOptions] => {
   const containerTypeLen = containerType.length
 
@@ -91,7 +92,7 @@ const createContainer: CreateContainerFn = (
  * Applies any user-supplied MarkdownIt plugins after the built-in md-plugins stack.
  */
 function registerUserMarkdownItPlugins(
-  md: MarkdownIt,
+  md: MarkdownItInstance,
   plugins: MarkdownItPluginEntry[] | undefined,
 ): void {
   for (const entry of plugins ?? []) {
@@ -129,10 +130,13 @@ export function createMarkdownRenderer(options: MarkdownOptions = {}): MarkdownR
     ...options,
   })
 
-  md.use(frontmatterPlugin, { ...options })
+  md.use(frontmatterPlugin, options.frontmatterPlugin)
   md.use(importsPlugin)
   md.use(titlePlugin)
-  md.use(headersPlugin, { level: [2, 3], ...options })
+  md.use(headersPlugin, {
+    level: [2, 3],
+    ...(typeof options.headersPlugin === 'object' ? options.headersPlugin : {}),
+  })
   md.use(markdownItIns)
 
   // md.use(tocPlugin)
@@ -144,9 +148,12 @@ export function createMarkdownRenderer(options: MarkdownOptions = {}): MarkdownR
     { type: 'details', defaultTitle: 'Details' },
   ]
 
-  md.use(containersPlugin, containers, createContainer, md)
+  md.use(containersPlugin, containers, createContainer)
   md.use(stepsPlugin, { ...options.stepsPlugin })
-  md.use(blockquotePlugin, { blockquoteClass: 'markdown-note', ...options })
+  md.use(blockquotePlugin, {
+    blockquoteClass: 'markdown-note',
+    ...options.blockquotePlugin,
+  })
   md.use(tablePlugin, {
     tableClass: 'markdown-table',
     tableHeaderClass: 'text-left',
@@ -156,7 +163,7 @@ export function createMarkdownRenderer(options: MarkdownOptions = {}): MarkdownR
       [':flat', 'true'],
       [':bordered', 'true'],
     ],
-    ...options,
+    ...options.tablePlugin,
   })
 
   md.use(codeblocksPlugin, {
@@ -166,12 +173,12 @@ export function createMarkdownRenderer(options: MarkdownOptions = {}): MarkdownR
       "import MarkdownPrerender from '@/.q-press/components/MarkdownPrerender'",
       "import MarkdownCopyButton from '@/.q-press/components/MarkdownCopyButton.vue'",
     ],
-    ...options,
+    ...options.codeblockPlugin,
   })
-  md.use(mermaidPlugin, { ...options })
-  md.use(linkPlugin, { ...options })
-  md.use(inlinecodePlugin, { ...options })
-  md.use(imagePlugin, { ...options })
+  md.use(mermaidPlugin, options.mermaidPlugin)
+  md.use(linkPlugin, options.linkPlugin)
+  md.use(inlinecodePlugin, options.inlineCodePlugin)
+  md.use(imagePlugin, options.imagePlugin)
   registerUserMarkdownItPlugins(md, options.markdownItPlugins)
 
   return {

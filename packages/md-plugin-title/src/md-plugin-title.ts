@@ -1,14 +1,15 @@
+import type { MarkdownItPlugin } from '@md-plugins/shared'
 import { resolveTitleFromToken } from '@md-plugins/shared'
 import type { MarkdownItEnv } from '@md-plugins/shared'
-import type { PluginSimple } from 'markdown-it'
 
 /**
  * Extracts the first `h1` title and heading flag into the Markdown environment.
  */
-export const titlePlugin: PluginSimple = (md): void => {
+export const titlePlugin: MarkdownItPlugin = (md): void => {
   // extract title to env
   const render = md.renderer.render.bind(md.renderer)
-  md.renderer.render = (tokens, options, env: MarkdownItEnv): string => {
+  md.renderer.render = (tokens, options, env: MarkdownItEnv | undefined): string => {
+    env ??= {}
     const tokenIdx = tokens.findIndex((token) => token.tag === 'h1')
     env.title =
       tokenIdx > -1

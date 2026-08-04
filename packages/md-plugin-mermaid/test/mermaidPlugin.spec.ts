@@ -7,7 +7,7 @@ import type { MarkdownItEnv } from '@md-plugins/shared'
 describe('mermaidPlugin', () => {
   it('renders Mermaid fences as a Vue component by default', () => {
     const md = new MarkdownIt()
-    const env: MarkdownItEnv = {}
+    const env: MarkdownItEnv | undefined = {}
 
     md.use(mermaidPlugin)
 

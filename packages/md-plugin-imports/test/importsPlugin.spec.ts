@@ -17,7 +17,7 @@ import MyComponent from './MyComponent.vue';
 Some content here.
 `
 
-    const env: MarkdownItEnv = {}
+    const env: MarkdownItEnv | undefined = {}
     const result = markdownIt.render(src, env)
 
     // Verify the rendered content
@@ -43,7 +43,7 @@ import B from './B.vue';
 </script>
 `
 
-    const env: MarkdownItEnv = {}
+    const env: MarkdownItEnv | undefined = {}
     const result = markdownIt.render(src, env)
 
     // Verify the rendered content
@@ -66,7 +66,7 @@ import B from './B.vue';
   Some content here.
   `
 
-    const env: MarkdownItEnv = {}
+    const env: MarkdownItEnv | undefined = {}
     const result = markdownIt.render(src, env)
 
     // Verify the rendered content matches expected HTML
@@ -85,7 +85,7 @@ import B from './B.vue';
 Some content here.
 `
 
-    const env: MarkdownItEnv = {}
+    const env: MarkdownItEnv | undefined = {}
     const result = markdownIt.render(src, env)
 
     // Verify the rendered content
@@ -116,7 +116,7 @@ author: John Doe
 Some content here.
   `
 
-    const env: MarkdownItEnv = {}
+    const env: MarkdownItEnv | undefined = {}
     const result = markdownIt.render(src, env)
 
     // console.log('env:', env)
@@ -156,7 +156,7 @@ import RealComponent from './RealComponent.vue';
 Some content here.
 `
 
-    const env: MarkdownItEnv = {}
+    const env: MarkdownItEnv | undefined = {}
     const result = markdownIt.render(src, env)
 
     expect(env.pageScripts).toBeInstanceOf(Set)

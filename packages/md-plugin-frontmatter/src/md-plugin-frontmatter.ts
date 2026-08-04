@@ -1,8 +1,8 @@
+import type { MarkdownItPluginWithOptions } from '@md-plugins/shared'
 import type { MarkdownItEnv } from '@md-plugins/shared'
 import grayMatter from 'gray-matter'
-import type { PluginWithOptions } from 'markdown-it'
 import type { FrontmatterPluginOptions } from './types'
-import type MarkdownIt from 'markdown-it'
+import type { MarkdownIt } from 'markdown-it'
 import { resolvePluginOptions } from '@md-plugins/shared'
 
 /**
@@ -18,7 +18,7 @@ const DEFAULT_FRONTMATTER_PLUGIN_OPTIONS: FrontmatterPluginOptions = {
  * Get markdown frontmatter and excerpt.
  * Extract them into env.
  */
-export const frontmatterPlugin: PluginWithOptions<FrontmatterPluginOptions> = (
+export const frontmatterPlugin: MarkdownItPluginWithOptions<FrontmatterPluginOptions> = (
   md: MarkdownIt,
   options?: FrontmatterPluginOptions | { frontmatterPlugin?: FrontmatterPluginOptions },
 ): void => {
@@ -38,7 +38,7 @@ export const frontmatterPlugin: PluginWithOptions<FrontmatterPluginOptions> = (
   const render = md.render.bind(md)
 
   // Override md.render to parse frontmatter before rendering.
-  md.render = (src: string, env: MarkdownItEnv = {}): string => {
+  md.render = (src: string, env: MarkdownItEnv | undefined = {}): string => {
     let data, content, excerpt
 
     try {

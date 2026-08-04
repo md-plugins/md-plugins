@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { resolveTitleFromToken } from '../src/resolve-title-from-token'
 import type { ResolveTitleOptions } from '../src/resolve-title-from-token'
-import type Token from 'markdown-it/lib/token.mjs'
+import type { Token } from 'markdown-it'
 
 const mockToken = (children: Partial<Token>[]): Token =>
   ({

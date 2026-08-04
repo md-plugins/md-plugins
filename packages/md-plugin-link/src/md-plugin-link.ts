@@ -1,8 +1,9 @@
+import type { MarkdownItPluginWithOptions } from '@md-plugins/shared'
 import type { MarkdownItEnv } from '@md-plugins/shared'
-import type MarkdownIt from 'markdown-it'
-import type { Options, PluginWithOptions } from 'markdown-it'
-import type Renderer from 'markdown-it/lib/renderer.mjs'
-import type Token from 'markdown-it/lib/token.mjs'
+import type { MarkdownIt } from 'markdown-it'
+import type { MarkdownItOptions } from 'markdown-it'
+import type { Renderer } from 'markdown-it'
+import type { Token } from 'markdown-it'
 import type { LinkPluginOptions } from './types'
 import { resolvePluginOptions } from '@md-plugins/shared'
 
@@ -16,7 +17,7 @@ const DEFAULT_LINK_PLUGIN_OPTIONS: LinkPluginOptions = {
 /**
  * Rewrites Markdown links to the configured Vue link component and records its import.
  */
-export const linkPlugin: PluginWithOptions<LinkPluginOptions> = (
+export const linkPlugin: MarkdownItPluginWithOptions<LinkPluginOptions> = (
   md: MarkdownIt,
   options?: LinkPluginOptions | { linkPlugin?: LinkPluginOptions },
 ): void => {
@@ -35,7 +36,7 @@ export const linkPlugin: PluginWithOptions<LinkPluginOptions> = (
   md.renderer.rules.link_open = (
     tokens: Token[],
     idx: number,
-    options: Options,
+    options: Required<MarkdownItOptions>,
     env: any,
     self: Renderer,
   ): string => {
@@ -70,8 +71,8 @@ export const linkPlugin: PluginWithOptions<LinkPluginOptions> = (
   md.renderer.rules.link_close = (
     tokens: Token[],
     idx: number,
-    options: Options,
-    env: MarkdownItEnv,
+    options: Required<MarkdownItOptions>,
+    env: MarkdownItEnv | undefined,
     self: Renderer,
   ): string => {
     const token = tokens[idx]

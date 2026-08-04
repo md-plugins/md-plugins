@@ -1,5 +1,5 @@
 import type { MarkdownItHeader } from './types'
-import type Token from 'markdown-it/lib/token.mjs'
+import type { Token } from 'markdown-it'
 import type { ResolveTitleOptions } from './resolve-title-from-token'
 import { resolveTitleFromToken } from './resolve-title-from-token'
 import { slugify as defaultSlugify } from './slugify'
@@ -86,7 +86,7 @@ export const resolveHeadersFromTokens = (
       shouldEscapeText,
     })
 
-    const slug = token.attrGet('id') ?? slugify(title)
+    const slug = String(token.attrGet('id') ?? slugify(title))
 
     pushHeader({
       level: headerLevel,

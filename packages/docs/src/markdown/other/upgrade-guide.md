@@ -1,6 +1,6 @@
 ---
 title: Upgrade Guide
-desc: Upgrade MD-Plugins and Q-Press to the 1.1 stable line.
+desc: Upgrade MD-Plugins and Q-Press to the 2.0 stable line.
 keys: Other
 related:
   - quasar-app-extensions/qpress/overview
@@ -11,7 +11,24 @@ related:
   - vite-plugins/vite-md-plugin/overview
 ---
 
-The `1.2.0` stable line is the recommended MD-Plugins and Q-Press baseline for Quasar CLI Vite projects. The Quasar app extensions, including Q-Press, target Quasar applications using `@quasar/app-vite` `>=3.0.0`.
+The `2.0.0` stable line is the recommended MD-Plugins and Q-Press baseline for Quasar CLI Vite projects. The Quasar app extensions, including Q-Press, target Quasar applications using `@quasar/app-vite` `>=3.0.0`.
+
+## Markdown-it 15
+
+MD-Plugins 2 requires Markdown-it 15. If your project installs Markdown-it directly, update it and remove the separate DefinitelyTyped package because Markdown-it now bundles its declarations:
+
+```bash
+pnpm up markdown-it@^15
+pnpm remove @types/markdown-it
+```
+
+Markdown-it 15 no longer exports package-internal paths such as `markdown-it/lib/token.mjs` or `markdown-it/lib/renderer.mjs`. Import public runtime values and types from `markdown-it` instead:
+
+```ts
+import type { MarkdownIt, Renderer, Token } from 'markdown-it'
+```
+
+Custom plugins that import Markdown-it internals must be upgraded before they are used with this release. Markdown-it 15 also upgrades linkify-it and changes some URL parsing boundaries, including Unicode punctuation and authenticated URLs, so applications that depend on exact generated HTML should review representative Markdown output.
 
 ::: warning
 Q-Press and the Quasar app extension packages now target Quasar Vite projects using `@quasar/app-vite` `>=3.0.0`. They are not intended for Webpack projects or JavaScript-only Quasar projects.

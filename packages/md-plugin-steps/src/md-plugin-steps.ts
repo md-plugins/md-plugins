@@ -1,7 +1,7 @@
 import container from 'markdown-it-container'
-import type MarkdownIt from 'markdown-it'
-import type Token from 'markdown-it/lib/token.mjs'
-import type StateCore from 'markdown-it/lib/rules_core/state_core.mjs'
+import type { MarkdownIt } from 'markdown-it'
+import type { Token } from 'markdown-it'
+import type { StateCore } from 'markdown-it'
 import type { StepsHeadingLevel, StepsPluginOptions, StepsTitleTag } from './types'
 
 interface StepGroup {
@@ -193,7 +193,13 @@ export const stepsPlugin = (
   const headingLevelSet = new Set(headingLevels)
   const renderedTitleTag = normalizeTitleTag(titleTag)
 
-  md.use(container, containerName, {
+  const compatibleContainer = container as unknown as (
+    instance: MarkdownIt,
+    name: string,
+    options: { render(tokens: Token[], index: number): string },
+  ) => void
+
+  compatibleContainer(md, containerName, {
     render(tokens: Token[], index: number): string {
       return tokens[index]?.nesting === 1 ? `<div class="${stepsClass}" role="list">\n` : '</div>\n'
     },
@@ -252,7 +258,7 @@ export const stepsPlugin = (
   })
 
   md.renderer.rules.steps_item_open = (tokens: Token[], index: number): string => {
-    const meta = tokens[index]?.meta as StepItemMeta | undefined
+    const meta = tokens[index]?.meta as unknown as StepItemMeta | undefined
     const stepNumber = meta?.number ?? ''
     const title = meta?.title ?? ''
     const renderedTitle =
