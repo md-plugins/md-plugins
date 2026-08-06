@@ -11,6 +11,7 @@ import { fileURLToPath } from 'node:url'
 import { viteSearchPlugin } from '@md-plugins/vite-search-plugin'
 import { viteSsgPlugin } from '@md-plugins/vite-ssg-plugin'
 import type { PluginOption } from 'vite'
+import { qPressFontPreloadPlugin } from './vite/font-preload'
 
 // import fse from 'fs-extra'
 // import { viteMdPlugin } from '@md-plugins/vite-md-plugin'
@@ -113,6 +114,11 @@ export default defineIndexScript((api) => {
     config.build.viteVuePluginOptions ??= {}
     config.framework ??= {}
 
+    const extras = new Set(config.extras || [])
+    extras.add('roboto-font')
+    extras.add('material-icons')
+    config.extras = Array.from(extras)
+
     extendTypeScriptConfig(config.build.typescript)
 
     // make sure 'vueRouterMode' has 'history' mode
@@ -162,6 +168,7 @@ export default defineIndexScript((api) => {
     const qPressViteConf = viteConf as ViteConfigWithAlias
 
     addQuasarSourceAlias(qPressViteConf, aeApi.appDir)
+    addVitePlugin(qPressViteConf, qPressFontPreloadPlugin)
 
     const markdownPath = api.resolve.src('markdown')
 

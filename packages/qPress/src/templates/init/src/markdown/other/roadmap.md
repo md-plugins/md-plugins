@@ -32,7 +32,7 @@ These are understood limitations rather than hidden blockers. They are good plac
 
 ### Offline Font Strategy
 
-Q-Press generated styles currently load Material Icons, Roboto, and Montserrat from the Quasar CDN. That is convenient for public demos, but it is not ideal for private networks, strict CSP policies, or air-gapped documentation sites.
+Q-Press currently loads Roboto and Material Icons through Quasar Extras and loads its Montserrat brand font from the Quasar CDN. The normal Montserrat variable font is preloaded to avoid a late layout shift when the asynchronous docs shell mounts. The remaining remote font dependency is convenient for public demos, but it is not ideal for private networks, strict CSP policies, or air-gapped documentation sites.
 
 Future work should provide a clear font strategy:
 
