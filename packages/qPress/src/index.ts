@@ -11,7 +11,7 @@ import { fileURLToPath } from 'node:url'
 import { viteSearchPlugin } from '@md-plugins/vite-search-plugin'
 import { viteSsgPlugin } from '@md-plugins/vite-ssg-plugin'
 import type { PluginOption } from 'vite'
-import { qPressFontPreloadPlugin } from './vite/font-preload'
+import { qPressFontPreloadPlugin } from './vite/font-preload.js'
 
 // import fse from 'fs-extra'
 // import { viteMdPlugin } from '@md-plugins/vite-md-plugin'

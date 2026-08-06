@@ -3,7 +3,6 @@ import { createRequire } from 'node:module'
 import { dirname, join, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import vuePlugin from '@vitejs/plugin-vue'
-import { quasar as quasarVitePlugin } from '@quasar/vite-plugin'
 import { viteMdPlugin } from '@md-plugins/vite-md-plugin'
 import {
   createSsgRouteManifest,
@@ -765,7 +764,6 @@ async function createQPressSsgViteServer(appRoot: string, srcDir: string): Promi
       vuePlugin({
         include: [/\.(vue|md)$/],
       }) as Plugin,
-      quasarVitePlugin() as Plugin,
     ],
     resolve: {
       alias: createAliasEntries(appRoot, srcDir),

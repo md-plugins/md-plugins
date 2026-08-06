@@ -28,7 +28,7 @@ The extension adds the Markdown-to-Vue transform, configures Quasar to compile `
 
 This App Extension is for convenience only. For more granular control, use `viteMdPlugin` directly in your Vite configuration. For the full generated docs-site experience, use Q-Press instead. For more information, refer to the [viteMdPlugin documentation](https://github.com/md-plugins/md-plugins/tree/dev/packages/viteMdPlugin).
 
-> Current stable release: `2.0.1`.
+> Current stable release: `2.0.2`.
 >
 > This app extension currently targets Quasar Vite projects using `@quasar/app-vite` `>=3.0.0`.
 

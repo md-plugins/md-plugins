@@ -1,6 +1,6 @@
 {
   "name": "@md-plugins/md-plugin-image",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "A markdown-it plugin for handling images.",
   "keywords": [
     "markdown-it",

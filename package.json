@@ -1,6 +1,6 @@
 {
   "name": "@md-plugins/mono-repo",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "private": true,
   "description": "Markdown-it, Vite, and Quasar documentation tooling for Vue/Vite projects.",
   "keywords": [
@@ -29,7 +29,8 @@
     "check:all": "pnpm verify",
     "verify": "pnpm verify:fast && pnpm verify:build",
     "verify:fast": "pnpm format:check && pnpm lint && pnpm test",
-    "verify:build": "pnpm build && pnpm check-types:packages && pnpm --filter mdplugins_docs check-types",
+    "verify:build": "pnpm build && pnpm check:qpress-runtime && pnpm check-types:packages && pnpm --filter mdplugins_docs check-types",
+    "check:qpress-runtime": "node -e \"import('./packages/qPress/dist/index.js')\"",
     "ci:publish": "pnpm -r publish --access public --publish-branch dev",
     "ci:publish:latest": "pnpm -r publish --access public --publish-branch dev --tag latest",
     "ci:publish:beta": "pnpm -r publish --access public --publish-branch dev --tag beta",
