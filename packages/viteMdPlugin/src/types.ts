@@ -14,10 +14,12 @@ import type { TablePluginOptions } from '@md-plugins/md-plugin-table'
 
 export type MarkdownItPlugin = (md: MarkdownIt, ...params: any[]) => void
 export type MarkdownItPluginEntry = MarkdownItPlugin | [MarkdownItPlugin, ...any[]]
+export type MarkdownItLinkifyOptions = Parameters<MarkdownIt['linkify']['set']>[0]
 
 export interface MarkdownOptions extends MarkdownItOptions {
   html?: boolean
   linkify?: boolean
+  linkifyOptions?: MarkdownItLinkifyOptions
   typographer?: boolean
   breaks?: boolean
   blockquotePlugin?: BlockquotePluginOptions

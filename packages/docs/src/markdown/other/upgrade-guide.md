@@ -28,7 +28,7 @@ Markdown-it 15 no longer exports package-internal paths such as `markdown-it/lib
 import type { MarkdownIt, Renderer, Token } from 'markdown-it'
 ```
 
-Custom plugins that import Markdown-it internals must be upgraded before they are used with this release. Markdown-it 15 also upgrades linkify-it and changes some URL parsing boundaries, including Unicode punctuation and authenticated URLs, so applications that depend on exact generated HTML should review representative Markdown output.
+Custom plugins that import Markdown-it internals must be upgraded before they are used with this release. Markdown-it 15 also upgrades linkify-it and changes some URL parsing boundaries, including Unicode punctuation and authenticated URLs. The Vite Markdown plugin preserves its previous bare-domain linkification by default; set `linkifyOptions: { fuzzyLink: false }` to adopt Markdown-it 15's default. Applications that depend on exact generated HTML should review representative Markdown output.
 
 ::: warning
 Q-Press and the Quasar app extension packages now target Quasar Vite projects using `@quasar/app-vite` `>=3.0.0`. They are not intended for Webpack projects or JavaScript-only Quasar projects.

@@ -86,7 +86,7 @@ This monorepo provides:
 
 ## Current Release
 
-The current stable release in this repository is `2.0.2`. Packages in this line publish to npm under the `latest` dist-tag.
+The current stable release in this repository is `2.0.3`. Packages in this line publish to npm under the `latest` dist-tag.
 
 The `2.0.x` line supports direct Markdown-it and Vite plugin usage in Vue/Vite projects, including Markdown transforms, live example source loading, optional SSG route output, static search index generation, and a framework-agnostic search UI. The Quasar app extensions in this repo target Quasar Vite projects using `@quasar/app-vite` `>=3.0.0`. Repository development and CI use Node.js `>=22.13` and `pnpm@11.20.0`.
 

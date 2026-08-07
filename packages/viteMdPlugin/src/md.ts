@@ -130,6 +130,11 @@ export function createMarkdownRenderer(options: MarkdownOptions = {}): MarkdownR
     ...options,
   })
 
+  md.linkify.set({
+    fuzzyLink: true,
+    ...options.linkifyOptions,
+  })
+
   md.use(frontmatterPlugin, options.frontmatterPlugin)
   md.use(importsPlugin)
   md.use(titlePlugin)

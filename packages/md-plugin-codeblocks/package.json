@@ -1,6 +1,6 @@
 {
   "name": "@md-plugins/md-plugin-codeblocks",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "A markdown-it plugin for code blocks.",
   "keywords": [
     "markdown-it",

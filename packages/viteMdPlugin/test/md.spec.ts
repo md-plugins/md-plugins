@@ -25,6 +25,24 @@ describe('createMarkdownRenderer', () => {
     expect(result.html).toContain('<br>')
   })
 
+  it('linkifies bare domains by default', () => {
+    const renderer = createMarkdownRenderer()
+    const result = renderer.render('Visit example.com', {})
+
+    expect(result.html).toContain('<MarkdownLink to="http://example.com">')
+    expect(result.html).toContain('>example.com</MarkdownLink>')
+  })
+
+  it('allows bare-domain linkification to be disabled', () => {
+    const renderer = createMarkdownRenderer({
+      linkifyOptions: { fuzzyLink: false },
+    })
+    const result = renderer.render('Visit example.com', {})
+
+    expect(result.html).toContain('Visit example.com')
+    expect(result.html).not.toContain('<MarkdownLink')
+  })
+
   it('renders built-in steps containers', () => {
     const renderer = createMarkdownRenderer()
     const result = renderer.render(

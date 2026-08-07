@@ -25,10 +25,12 @@ import { TablePluginOptions } from '@md-plugins/md-plugin-table'
 
 type MarkdownItPlugin = (md: MarkdownIt, ...params: any[]) => void
 type MarkdownItPluginEntry = MarkdownItPlugin | [MarkdownItPlugin, ...any[]]
+type MarkdownItLinkifyOptions = Parameters<MarkdownIt['linkify']['set']>[0]
 
 interface MarkdownOptions extends Options {
   html?: boolean
   linkify?: boolean
+  linkifyOptions?: MarkdownItLinkifyOptions
   typographer?: boolean
   breaks?: boolean
   blockquotePlugin?: BlockquotePluginOptions
@@ -105,6 +107,7 @@ declare function viteMdPlugin(userConfig: UserConfig): Plugin
 export {
   type FlatMenu,
   type FlatMenuEntry,
+  type MarkdownItLinkifyOptions,
   type MarkdownOptions,
   type MenuItem,
   type MenuNode,
@@ -133,6 +136,20 @@ const basePath = '/docs' // Base path prefix
 
 export default defineConfig({
   plugins: [vue(), viteMdPlugin({ path: basePath, menu })],
+})
+```
+
+### Linkification
+
+The Vite Markdown plugin preserves its historical behavior of converting bare domains such as `example.com` into links. To use Markdown-it 15's default behavior instead, disable fuzzy links in the Markdown configuration:
+
+```ts
+viteMdPlugin({
+  path: markdownPath,
+  menu,
+  config: {
+    linkifyOptions: { fuzzyLink: false },
+  },
 })
 ```
 
