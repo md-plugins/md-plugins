@@ -15,6 +15,7 @@
         dense
         flat
         color="brand-accent"
+        aria-label="Close table of contents"
         @click="markdownStore.toggleTocDrawer"
       />
     </div>

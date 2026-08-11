@@ -15,7 +15,11 @@
       <div class="qpress-theme-preview__pair">
         <section class="qpress-theme-preview__panel qpress-theme-preview__panel--light">
           <span class="qpress-theme-preview__surface">Light</span>
-          <div class="qpress-theme-preview__swatches" aria-label="Light theme color swatches">
+          <div
+            class="qpress-theme-preview__swatches"
+            role="img"
+            aria-label="Light theme color swatches"
+          >
             <span class="qpress-theme-preview__swatch qpress-theme-preview__swatch--primary"></span>
             <span
               class="qpress-theme-preview__swatch qpress-theme-preview__swatch--secondary"
@@ -39,7 +43,11 @@
 
         <section class="qpress-theme-preview__panel qpress-theme-preview__panel--dark">
           <span class="qpress-theme-preview__surface">Dark</span>
-          <div class="qpress-theme-preview__swatches" aria-label="Dark theme color swatches">
+          <div
+            class="qpress-theme-preview__swatches"
+            role="img"
+            aria-label="Dark theme color swatches"
+          >
             <span class="qpress-theme-preview__swatch qpress-theme-preview__swatch--primary"></span>
             <span
               class="qpress-theme-preview__swatch qpress-theme-preview__swatch--secondary"

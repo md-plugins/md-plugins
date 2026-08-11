@@ -466,6 +466,7 @@ export class MdSearchElement extends HTMLElementBase {
   private searchRequestId = 0
   private selectionStart: number | null = null
   private selectionEnd: number | null = null
+  private previouslyFocusedElement: HTMLElement | null = null
 
   connectedCallback(): void {
     this.render()
@@ -491,6 +492,8 @@ export class MdSearchElement extends HTMLElementBase {
   }
 
   open(): void {
+    this.previouslyFocusedElement =
+      document.activeElement instanceof HTMLElement ? document.activeElement : null
     this.opened = true
     this.render()
     this.focusInput()
@@ -499,6 +502,10 @@ export class MdSearchElement extends HTMLElementBase {
   close(): void {
     this.opened = false
     this.render()
+    const focusTarget =
+      this.previouslyFocusedElement ?? this.root.querySelector<HTMLElement>('[part="trigger"]')
+    focusTarget?.focus()
+    this.previouslyFocusedElement = null
   }
 
   toggle(): void {
@@ -599,6 +606,28 @@ export class MdSearchElement extends HTMLElementBase {
       return
     }
 
+    if (event.key === 'Tab') {
+      const focusableElements = Array.from(
+        this.root.querySelectorAll<HTMLElement>(
+          '[part="dialog"] button:not([disabled]), [part="dialog"] input:not([disabled])',
+        ),
+      )
+      const firstElement = focusableElements[0]
+      const lastElement = focusableElements.at(-1)
+
+      if (firstElement !== undefined && lastElement !== undefined) {
+        if (event.shiftKey && this.root.activeElement === firstElement) {
+          event.preventDefault()
+          lastElement.focus()
+        } else if (event.shiftKey === false && this.root.activeElement === lastElement) {
+          event.preventDefault()
+          firstElement.focus()
+        }
+      }
+
+      return
+    }
+
     if (event.key === 'ArrowDown') {
       event.preventDefault()
       this.setActiveIndex(this.activeIndex + 1, {
@@ -690,9 +719,11 @@ export class MdSearchElement extends HTMLElementBase {
 
     if (this.results.length === 0) {
       input.removeAttribute('aria-activedescendant')
+      input.removeAttribute('aria-controls')
       return
     }
 
+    input.setAttribute('aria-controls', `${this.elementId}-listbox`)
     input.setAttribute('aria-activedescendant', `${this.elementId}-result-${this.activeIndex}`)
   }
 
@@ -789,6 +820,7 @@ export class MdSearchElement extends HTMLElementBase {
                 class="result ${index === this.activeIndex ? 'result--active' : ''}"
                 data-result-index="${index}"
                 role="option"
+                tabindex="-1"
                 aria-selected="${index === this.activeIndex ? 'true' : 'false'}"
               >
                 <div part="result-title" class="result__header">
@@ -851,7 +883,7 @@ export class MdSearchElement extends HTMLElementBase {
               aria-label="${escapeHtml(this.searchLabel)}"
               aria-autocomplete="list"
               aria-expanded="${this.results.length > 0 ? 'true' : 'false'}"
-              aria-controls="${this.elementId}-listbox"
+              ${this.results.length > 0 ? `aria-controls="${this.elementId}-listbox"` : ''}
               ${activeResultId !== undefined ? `aria-activedescendant="${activeResultId}"` : ''}
               autocomplete="off"
               spellcheck="false"

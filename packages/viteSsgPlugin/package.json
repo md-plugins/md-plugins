@@ -1,6 +1,6 @@
 {
   "name": "@md-plugins/vite-ssg-plugin",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "A Vite plugin for @md-plugins static route inventory and future SSG output.",
   "keywords": [
     "markdown-it",

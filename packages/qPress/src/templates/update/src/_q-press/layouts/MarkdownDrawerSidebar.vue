@@ -15,6 +15,7 @@
         dense
         flat
         color="brand-accent"
+        aria-label="Close navigation menu"
         @click="markdownStore.toggleMenuDrawer"
       />
     </div>

@@ -1,3 +1,4 @@
+// @vitest-environment happy-dom
 /// <reference lib="dom" />
 
 import { describe, expect, it } from 'vitest'
@@ -7,6 +8,7 @@ import {
   searchRecords,
 } from '../src/providers'
 import { createSearchSnippet } from '../src/text'
+import { defineMdSearchElement, type MdSearchElement } from '../src/element'
 import type { SearchIndex, SearchRecord } from '../src/types'
 
 const records: SearchRecord[] = [
@@ -180,5 +182,32 @@ describe('search-ui providers', () => {
         120,
       ),
     ).toBe('The containers plugin supports custom containers and links.')
+  })
+})
+
+describe('search-ui accessibility', () => {
+  it('keeps modal focus contained and restores it when closed', () => {
+    const previousButton = document.createElement('button')
+    defineMdSearchElement('md-search-test')
+    const search = document.createElement('md-search-test') as MdSearchElement
+    document.body.append(previousButton, search)
+    previousButton.focus()
+
+    search.open()
+
+    const input = search.shadowRoot?.querySelector<HTMLInputElement>('[part="input"]')
+    const closeButton = search.shadowRoot?.querySelector<HTMLButtonElement>('[part="close-button"]')
+
+    expect(input?.hasAttribute('aria-controls')).toBe(false)
+
+    input?.focus()
+    input?.dispatchEvent(new KeyboardEvent('keydown', { bubbles: true, key: 'Tab' }))
+    expect(search.shadowRoot?.activeElement).toBe(closeButton)
+
+    closeButton?.dispatchEvent(new KeyboardEvent('keydown', { bubbles: true, key: 'Escape' }))
+    expect(document.activeElement).toBe(previousButton)
+
+    search.remove()
+    previousButton.remove()
   })
 })
