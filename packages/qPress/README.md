@@ -15,7 +15,7 @@ Q-Press is the Quasar documentation layer in md-plugins. It turns Markdown folde
 
 See the [documentation](https://md-plugins.netlify.app/quasar-app-extensions/qpress/overview) for more information.
 
-> Current stable release: `2.0.4`.
+> Current stable release: `2.1.0`.
 >
 > Q-Press currently targets Quasar Vite projects using `@quasar/app-vite` `>=3.0.0`. TypeScript processing is required.
 

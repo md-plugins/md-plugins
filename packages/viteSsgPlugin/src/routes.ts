@@ -268,6 +268,7 @@ export function createSsgRouteManifest(
     .map(normalizeSsgRoute)
     .filter((route) => !isSsgRouteExcluded(route.path, exclude))
   const routePaths = new Set<string>()
+  const routePathsById = new Map<string, string>()
 
   for (const route of routes) {
     if (routePaths.has(route.path)) {
@@ -275,6 +276,16 @@ export function createSsgRouteManifest(
     }
 
     routePaths.add(route.path)
+
+    const existingPath = routePathsById.get(route.id)
+
+    if (existingPath !== undefined) {
+      throw new Error(
+        `SSG route id collision: ${existingPath} and ${route.path} both resolve to "${route.id}"`,
+      )
+    }
+
+    routePathsById.set(route.id, route.path)
   }
 
   return {

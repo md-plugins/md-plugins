@@ -9,6 +9,7 @@ import {
   createSsgRoutePayloadScript,
   injectSsgRoutePayload,
   rebaseSsgHtmlAssetUrls,
+  renderSsgRouteHtml,
 } from '../src/html'
 import { discoverMarkdownSsgRoutes, markdownFileToRoutePath } from '../src/markdownRoutes'
 import { resolveSsgOutDirFile } from '../src/outputPaths'
@@ -158,6 +159,12 @@ describe('SSG route helpers', () => {
   it('rejects duplicate route paths after normalization', () => {
     expect(() => createSsgRouteManifest(['/other/releases', 'other/releases/'])).toThrow(
       'Duplicate SSG route path: /other/releases',
+    )
+  })
+
+  it('rejects distinct route paths that normalize to the same route id', () => {
+    expect(() => createSsgRouteManifest(['/guide/a-b', '/guide/a_b'])).toThrow(
+      'SSG route id collision: /guide/a-b and /guide/a_b both resolve to "guide-a-b"',
     )
   })
 
@@ -345,6 +352,18 @@ describe('Vite SSG plugin', () => {
 })
 
 describe('SSG HTML helpers', () => {
+  it('injects the route payload when a custom renderer returns an empty string', async () => {
+    const manifest = createSsgRouteManifest(['/empty'])
+    const route = manifest.routes[0]
+    const html = await renderSsgRouteHtml(
+      route,
+      { appHtml: '<html></html>', manifest, routeIndex: 0 },
+      { renderRoute: () => '' },
+    )
+
+    expect(html).toBe(`${createSsgRoutePayloadScript(route)}\n`)
+  })
+
   it('injects route payload JSON into the app shell', () => {
     const manifest = createSsgRouteManifest([
       {
@@ -453,7 +472,7 @@ describe('SSG file prerendering', () => {
     ).rejects.toThrow(`SSG ${optionName} must be a finite number.`)
   })
 
-  it('injects built CSS assets that are missing from the app shell', async () => {
+  it('does not inject unrelated built CSS assets into every route', async () => {
     const outDir = await mkdtemp(join(tmpdir(), 'md-plugins-ssg-'))
     const manifest = createSsgRouteManifest(['/'])
 
@@ -482,7 +501,7 @@ describe('SSG file prerendering', () => {
     const html = await readFile(join(outDir, 'index.html'), 'utf8')
 
     expect(html.match(/href="\/assets\/main\.css"/g)).toHaveLength(1)
-    expect(html).toContain('href="/assets/route.css"')
+    expect(html).not.toContain('href="/assets/route.css"')
   })
 
   it('rebases shell and injected CSS assets for nested routes with a dot-relative base', async () => {
@@ -516,12 +535,12 @@ describe('SSG file prerendering', () => {
     const deepHtml = await readFile(join(outDir, 'guide/deep/index.html'), 'utf8')
 
     expect(rootHtml).toContain('href="./assets/main.css"')
-    expect(rootHtml).toContain('href="./assets/route.css"')
+    expect(rootHtml).not.toContain('route.css')
     expect(guideHtml).toContain('href="../assets/main.css"')
-    expect(guideHtml).toContain('href="../assets/route.css"')
+    expect(guideHtml).not.toContain('route.css')
     expect(guideHtml).toContain('src="../assets/app.js"')
     expect(deepHtml).toContain('href="../../assets/main.css"')
-    expect(deepHtml).toContain('href="../../assets/route.css"')
+    expect(deepHtml).not.toContain('route.css')
     expect(deepHtml).toContain('src="../../assets/app.js"')
   })
 
@@ -858,16 +877,29 @@ describe('SSG file prerendering', () => {
     expect(renderOrder).toContain('/old-guide')
     expect(renderOrder).toContain('/guide/overview')
     expect(renderOrder).toContain('/guide/advanced')
-    expect(result.routes.map((route) => route.path)).toContain('/guide/advanced')
+    expect(result.routes.map((route) => route.path)).toEqual([
+      '/',
+      '/advanced',
+      '/guide/advanced',
+      '/guide/overview',
+    ])
+    expect(result.manifest.routes.map((route) => route.path)).toEqual([
+      '/',
+      '/advanced',
+      '/guide/advanced',
+      '/guide/overview',
+      '/missing',
+      '/old-guide',
+    ])
     expect(result.skipped).toEqual([
+      {
+        path: '/missing',
+        reason: 'not-found',
+      },
       {
         path: '/old-guide',
         reason: 'redirected',
         target: '/guide/overview',
-      },
-      {
-        path: '/missing',
-        reason: 'not-found',
       },
     ])
     await expect(readFile(join(outDir, 'guide/advanced/index.html'), 'utf8')).resolves.toContain(

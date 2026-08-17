@@ -1,6 +1,6 @@
 {
   "name": "@md-plugins/search-ui",
-  "version": "2.0.4",
+  "version": "2.1.0",
   "description": "Framework-agnostic search UI and static search provider for md-plugins documentation search indexes.",
   "keywords": [
     "algolia",

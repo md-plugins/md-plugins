@@ -53,6 +53,14 @@ describe('Q-Press SSG prerendering', () => {
         `${JSON.stringify(manifest, null, 2)}\n`,
       )
       await writeFile(
+        join(ssrDir, 'quasar.manifest.json'),
+        `${JSON.stringify({
+          'src/pages/Home.vue': ['/assets/home.css'],
+          'src/pages/Guide.vue': ['/assets/guide.css'],
+          'src/layouts/MainLayout.vue': ['/assets/layout.css'],
+        })}\n`,
+      )
+      await writeFile(
         join(serverDir, 'server-entry.js'),
         [
           `import vue from ${JSON.stringify(pathToFileURL(vueEntry).href)}`,
@@ -61,6 +69,8 @@ describe('Q-Press SSG prerendering', () => {
           "  const isRoot = ssrContext.req.url === '/'",
           "  const title = isRoot ? 'Reference home | Docs' : 'Guide | Docs'",
           "  const description = isRoot ? 'Reference home description' : 'Guide description'",
+          "  ssrContext.modules.add(isRoot ? 'src/pages/Home.vue' : 'src/pages/Guide.vue')",
+          "  ssrContext.modules.add('src/layouts/MainLayout.vue')",
           '  ssrContext._meta.headTags = `<title>${title}</title>` +',
           '    `<meta name="description" content="${description}" data-qmeta="description">` +',
           '    `<meta name="twitter:title" content="${title}" data-qmeta="twitterTitle">` +',
@@ -111,6 +121,12 @@ describe('Q-Press SSG prerendering', () => {
       expect(guideHtml).toContain('content="Guide description" data-qmeta="description"')
       expect(findMetaElements(guideHtml, 'twitter:site')).toHaveLength(1)
       expect(guideHtml).toContain('<main id="route-content">Guide | Docs</main>')
+      expect(rootHtml).toContain('href="/assets/home.css"')
+      expect(rootHtml).toContain('href="/assets/layout.css"')
+      expect(rootHtml).not.toContain('guide.css')
+      expect(guideHtml).toContain('href="/assets/guide.css"')
+      expect(guideHtml).toContain('href="/assets/layout.css"')
+      expect(guideHtml).not.toContain('home.css')
       expect(rootHtml.match(/data-qpress-ssg-critical/g)).toHaveLength(1)
       expect(guideHtml.match(/data-qpress-ssg-critical/g)).toHaveLength(1)
       expect(guideHtml).toContain('.q-icon>svg,.q-icon>img{width:100%;height:100%}')

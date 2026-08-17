@@ -1,4 +1,4 @@
-import { access } from 'node:fs/promises'
+import { access, readFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import { dirname, join, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
@@ -56,6 +56,8 @@ type QPressSsrContext = {
 type QPressServerEntry = (
   ssrContext: QPressSsrContext,
 ) => Promise<VueRenderTarget> | VueRenderTarget
+
+type QuasarSsrManifest = Record<string, string[]>
 
 export interface PrerenderQPressSsgOptions {
   appHtmlFile?: string
@@ -142,6 +144,67 @@ async function pathExists(path: string): Promise<boolean> {
   } catch {
     return false
   }
+}
+
+/**
+ * Loads Quasar's SSR-to-client asset map when the renderer build emitted one.
+ */
+async function loadQuasarSsrManifest(ssrDir: string): Promise<QuasarSsrManifest> {
+  const manifestPath = join(ssrDir, 'quasar.manifest.json')
+
+  return (await pathExists(manifestPath))
+    ? (JSON.parse(await readFile(manifestPath, 'utf8')) as QuasarSsrManifest)
+    : {}
+}
+
+/**
+ * Converts a client asset from Quasar's SSR manifest into a Vite-base-aware href.
+ */
+function resolveManifestAssetHref(asset: string, base: string): string {
+  const file = asset.replace(/^\/+/, '')
+
+  if (base === './') {
+    return `./${file}`
+  }
+
+  if (/^https?:\/\//.test(base)) {
+    return `${base.replace(/\/$/, '')}/${file}`
+  }
+
+  return `${base === '/' ? '' : base}/${file}`
+}
+
+/**
+ * Injects only the CSS chunks used by modules rendered for the current route.
+ */
+function injectRouteCssAssets(
+  html: string,
+  modules: Set<string>,
+  manifest: QuasarSsrManifest,
+  base: string,
+): string {
+  const hrefs = Array.from(
+    new Set(
+      Array.from(modules).flatMap((moduleId) =>
+        (manifest[moduleId] ?? [])
+          .filter((asset) => asset.endsWith('.css'))
+          .map((asset) => resolveManifestAssetHref(asset, base)),
+      ),
+    ),
+  ).sort()
+  const links = hrefs
+    .filter((href) => !html.includes(`href="${href}"`) && !html.includes(`href=${href}`))
+    .map((href) => `<link rel="stylesheet" crossorigin href="${href}">`)
+
+  if (links.length === 0) {
+    return html
+  }
+
+  const content = `${links.join('\n')}\n`
+
+  return html.includes('</head>')
+    ? html.replace('</head>', `${content}</head>`)
+    : `${content}${html}`
 }
 
 /**
@@ -520,6 +583,7 @@ type QPressSsgCreateApp = (
 function createQPressVueSsgRouteRenderer(
   createApp: QPressSsgCreateApp,
   appMountId: string,
+  assetManifest: QuasarSsrManifest,
 ): SsgRouteRenderer {
   return createVueSsgRouteRenderer({
     createApp,
@@ -528,13 +592,10 @@ function createQPressVueSsgRouteRenderer(
     appMountId,
     useRouterReplace: true,
     replaceAppHtml(appHtml, renderedAppHtml, route, _context, appResult) {
-      return applySsrMeta(
-        appHtml,
-        toQPressSsrContext(appResult.ssrContext),
-        renderedAppHtml,
-        appMountId,
-        route.path,
-      )
+      const ssrContext = toQPressSsrContext(appResult.ssrContext)
+      const html = applySsrMeta(appHtml, ssrContext, renderedAppHtml, appMountId, route.path)
+
+      return injectRouteCssAssets(html, ssrContext.modules, assetManifest, _context.manifest.base)
     },
   })
 }
@@ -545,21 +606,26 @@ function createQPressVueSsgRouteRenderer(
 function createQuasarSsrRouteRenderer(
   serverEntry: QPressServerEntry,
   appMountId: string,
+  assetManifest: QuasarSsrManifest,
 ): SsgRouteRenderer {
-  return createQPressVueSsgRouteRenderer(async (route) => {
-    const onRenderedList: Array<() => unknown> = []
-    const ssrContext = createSsrContext(route, onRenderedList)
+  return createQPressVueSsgRouteRenderer(
+    async (route) => {
+      const onRenderedList: Array<() => unknown> = []
+      const ssrContext = createSsrContext(route, onRenderedList)
 
-    return {
-      app: await serverEntry(ssrContext),
-      ssrContext,
-      async onRendered() {
-        for (const callback of onRenderedList) {
-          await callback()
-        }
-      },
-    }
-  }, appMountId)
+      return {
+        app: await serverEntry(ssrContext),
+        ssrContext,
+        async onRendered() {
+          for (const callback of onRenderedList) {
+            await callback()
+          }
+        },
+      }
+    },
+    appMountId,
+    assetManifest,
+  )
 }
 
 type QPressSsgCreateAppModule = {
@@ -814,6 +880,7 @@ async function createQPressSourceRenderer(
   srcDir: string,
   ssgAppEntry: string,
   appMountId: string,
+  assetManifest: QuasarSsrManifest,
 ): Promise<{
   close: () => Promise<void>
   discoverRoutes: (routerRoutesEntry: string) => Promise<string[]>
@@ -846,7 +913,7 @@ async function createQPressSourceRenderer(
     return {
       close: () => viteServer.close(),
       discoverRoutes: (routerRoutesEntry) => loadRouterSsgRoutes(viteServer, routerRoutesEntry),
-      renderRoute: createQPressVueSsgRouteRenderer(createApp, appMountId),
+      renderRoute: createQPressVueSsgRouteRenderer(createApp, appMountId, assetManifest),
     }
   } catch (error) {
     await viteServer.close()
@@ -883,6 +950,7 @@ export async function prerenderQPressSsg({
   const resolvedSrcDir = resolve(srcDir)
   const resolvedSsgAppEntry = resolve(resolvedSrcDir, ssgAppEntry)
   const resolvedRouterRoutesEntry = resolve(resolvedSrcDir, routerRoutesEntry)
+  const assetManifest = await loadQuasarSsrManifest(resolvedSsrDir)
 
   if (renderer === 'qpress') {
     const sourceRenderer = await createQPressSourceRenderer(
@@ -890,6 +958,7 @@ export async function prerenderQPressSsg({
       resolvedSrcDir,
       resolvedSsgAppEntry,
       appMountId,
+      assetManifest,
     )
 
     try {
@@ -933,6 +1002,6 @@ export async function prerenderQPressSsg({
     outDir: resolvedOutDir,
     redirects,
     reportFile,
-    renderRoute: createQuasarSsrRouteRenderer(serverEntry, appMountId),
+    renderRoute: createQuasarSsrRouteRenderer(serverEntry, appMountId, assetManifest),
   })
 }

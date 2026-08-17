@@ -97,6 +97,11 @@ type SourceFileContext = {
   sourceFile: ts.SourceFile
 }
 
+type ResolvedFunction = {
+  context: SourceFileContext
+  node: FunctionLikeNode
+}
+
 const defaultGeneratedSuffix = '.generated'
 
 /**
@@ -1189,6 +1194,7 @@ function extractExposedMethods(
   const methods: Record<string, GeneratedApiProperty> = {}
   const sourceFile = context.sourceFile
   const localFunctions = collectLocalFunctions(body)
+  const composableFunctions = collectDestructuredComposableFunctions(body, context)
 
   const visit = (node: ts.Node) => {
     if (
@@ -1204,11 +1210,18 @@ function extractExposedMethods(
           continue
         }
 
-        const local = localFunctions.get(name) ?? getExposedInlineFunction(property)
+        const referencedName =
+          ts.isPropertyAssignment(property) && ts.isIdentifier(property.initializer)
+            ? property.initializer.text
+            : name
+        const local = localFunctions.get(referencedName) ?? getExposedInlineFunction(property)
+        const resolvedComposable = composableFunctions.get(referencedName)
 
-        if (local !== undefined) {
-          methods[name] = createFunctionEntry(local, sourceFile, {
-            context,
+        if (local !== undefined || resolvedComposable !== undefined) {
+          const resolved = resolvedComposable ?? { context, node: local! }
+
+          methods[name] = createFunctionEntry(resolved.node, resolved.context.sourceFile, {
+            context: resolved.context,
             fallbackJSDocNode: property,
             name,
           })
@@ -1232,6 +1245,115 @@ function extractExposedMethods(
   visit(body)
 
   return methods
+}
+
+/**
+ * Resolves functions returned from a composable into object-destructured setup bindings.
+ */
+function collectDestructuredComposableFunctions(
+  body: ts.Block,
+  context: SourceFileContext,
+): Map<string, ResolvedFunction> {
+  const functions = new Map<string, ResolvedFunction>()
+
+  for (const statement of body.statements) {
+    if (!ts.isVariableStatement(statement)) {
+      continue
+    }
+
+    for (const declaration of statement.declarationList.declarations) {
+      if (
+        !ts.isObjectBindingPattern(declaration.name) ||
+        declaration.initializer === undefined ||
+        !ts.isCallExpression(declaration.initializer) ||
+        !ts.isIdentifier(declaration.initializer.expression)
+      ) {
+        continue
+      }
+
+      const composable = resolveFunctionByName(declaration.initializer.expression.text, context)
+      const composableBody = composable && getFunctionBody(composable.node)
+
+      if (composable === undefined || composableBody === undefined) {
+        continue
+      }
+
+      const returnStatement = composableBody.statements.find((entry): entry is ts.ReturnStatement =>
+        ts.isReturnStatement(entry),
+      )
+      const returnedObject =
+        returnStatement?.expression === undefined
+          ? undefined
+          : resolveObjectLiteral(returnStatement.expression, composable.context)
+
+      if (returnedObject === undefined) {
+        continue
+      }
+
+      const returnedFunctions = collectLocalFunctions(composableBody)
+
+      for (const binding of declaration.name.elements) {
+        if (!ts.isIdentifier(binding.name)) {
+          continue
+        }
+
+        const returnedName = binding.propertyName?.getText(context.sourceFile) ?? binding.name.text
+        const returnedProperty = returnedObject.properties.find(
+          (property) =>
+            getObjectPropertyName(property, composable.context.sourceFile) === returnedName,
+        )
+        const referencedName =
+          returnedProperty !== undefined &&
+          ts.isPropertyAssignment(returnedProperty) &&
+          ts.isIdentifier(returnedProperty.initializer)
+            ? returnedProperty.initializer.text
+            : returnedName
+        const returnedFunction =
+          returnedFunctions.get(referencedName) ??
+          (returnedProperty === undefined ? undefined : getExposedInlineFunction(returnedProperty))
+
+        if (returnedFunction !== undefined) {
+          functions.set(binding.name.text, {
+            context: composable.context,
+            node: returnedFunction,
+          })
+        }
+      }
+    }
+  }
+
+  return functions
+}
+
+/**
+ * Resolves a local or imported named function and its owning source context.
+ */
+function resolveFunctionByName(
+  name: string,
+  context: SourceFileContext,
+): ResolvedFunction | undefined {
+  const localDeclaration = context.sourceFile.statements.find(
+    (statement): statement is ts.FunctionDeclaration =>
+      ts.isFunctionDeclaration(statement) && statement.name?.text === name,
+  )
+  const localInitializer = findVariableInitializer(name, context.sourceFile)
+
+  if (localDeclaration !== undefined) {
+    return { context, node: localDeclaration }
+  }
+
+  if (localInitializer !== undefined && isFunctionLikeInitializer(localInitializer)) {
+    return { context, node: localInitializer }
+  }
+
+  const imported = resolveImportedName(name, context)
+
+  return imported === undefined
+    ? undefined
+    : resolveFunctionByName(imported.importedName, {
+        ...context,
+        sourceFile: imported.sourceFile,
+      })
 }
 
 function getExposedInlineFunction(

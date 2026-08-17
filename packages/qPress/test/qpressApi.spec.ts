@@ -748,11 +748,12 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['select', 'update:modelValue'])
+const emit = defineEmits(['select', 'update:modelValue', 'beforeDrag'])
 
 function select() {
   emit('select', { id: 1 })
   emit('update:modelValue', 'active')
+  emit('beforeDrag', { x: 10, y: 20 })
 }
 
 defineSlots<{
@@ -872,7 +873,7 @@ withDefaults(defineProps<DefaultedProps>(), {
         ),
       )
 
-      expect(result.entries[0]?.exportCount).toBe(6)
+      expect(result.entries[0]?.exportCount).toBe(7)
       expect(generated.props.to).toEqual({
         category: 'navigation|content',
         desc: 'Target URL or route.',
@@ -914,6 +915,16 @@ withDefaults(defineProps<DefaultedProps>(), {
         },
       })
       expect(generated.events).not.toHaveProperty('update:modelValue')
+      expect(generated.events['before-drag']).toEqual({
+        desc: '',
+        params: {
+          value: {
+            desc: '',
+            type: 'Object',
+          },
+        },
+      })
+      expect(generated.events).not.toHaveProperty('beforeDrag')
       expect(generated.slots.default).toEqual({
         applicable: ['card', 'link'],
         desc: 'Custom content inside the card link.',
@@ -1172,6 +1183,7 @@ export default defineComponent({
 import { defineComponent, type SlotsType } from 'vue'
 import { useCommonEmits, useCommonProps } from '../composables/useCommon'
 import { getRawMouseEvents } from '../composables/useMouse'
+import { useCalendarNavigation } from '../composables/useNavigation'
 import type { CalendarDaySlots, DaySlotScope } from '../slots'
 
 export default defineComponent({
@@ -1205,6 +1217,7 @@ export default defineComponent({
 
   setup(_props, { expose, slots }) {
     slots.default?.()
+    const { moveToToday } = useCalendarNavigation()
 
     /**
      * Moves to the previous visible range.
@@ -1223,6 +1236,21 @@ export default defineComponent({
     })
   },
 })
+`,
+      'src/composables/useNavigation.ts': `
+export function useCalendarNavigation() {
+  /**
+   * Moves to today's visible range.
+   *
+   * @param focus Whether to focus the current day after moving.
+   * @returns The selected date.
+   */
+  function moveToToday(focus: boolean = true): string {
+    return focus ? 'today' : ''
+  }
+
+  return { moveToToday }
+}
 `,
       'src/composables/useCommon.ts': `
 import { type PropType } from 'vue'
@@ -1477,6 +1505,20 @@ export interface CalendarDaySlots {
       })
       expect(generated.methods.moveToToday).toEqual({
         desc: "Moves to today's visible range.",
+        params: {
+          focus: {
+            desc: 'Whether to focus the current day after moving.',
+            required: false,
+            tsType: 'boolean',
+            type: 'boolean',
+          },
+        },
+        returns: {
+          desc: 'The selected date.',
+          tsType: 'string',
+          type: 'string',
+        },
+        tsSignature: 'function moveToToday(focus?: boolean): string',
         type: 'Function',
       })
       expect(generated.methods).not.toHaveProperty('mediaRef')

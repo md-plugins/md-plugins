@@ -197,7 +197,7 @@ export async function renderSsgRouteHtml(
       injectRoutePayload: options.injectRoutePayload,
     })
   const html =
-    renderedHtml && options.injectRoutePayload !== false
+    renderedHtml !== undefined && options.injectRoutePayload !== false
       ? injectSsgRoutePayload(routeHtml, route)
       : routeHtml
 
