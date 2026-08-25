@@ -86,11 +86,11 @@ This monorepo provides:
 
 ## Current Release
 
-The current stable release in this repository is `2.1.0`. Packages in this line publish to npm under the `latest` dist-tag.
+The current stable release in this repository is `2.2.0`. Packages in this line publish to npm under the `latest` dist-tag.
 
-The `2.1.x` line supports direct Markdown-it and Vite plugin usage in Vue/Vite projects, including Markdown transforms, live example source loading, optional SSG route output, static search index generation, and a framework-agnostic search UI. The Quasar app extensions in this repo target Quasar Vite projects using `@quasar/app-vite` `>=3.0.0`. Repository development and CI use Node.js `>=22.13` and `pnpm@11.24.0`.
+The `2.2.x` line supports direct Markdown-it and Vite plugin usage in Vue/Vite projects, including Markdown transforms, live example source loading, optional SSG route output, static search index generation, and a framework-agnostic search UI. The Quasar app extensions in this repo target Quasar Vite projects using `@quasar/app-vite` `>=3.0.0`. Repository development and CI use Node.js `>=22.13` and `pnpm@11.24.0`.
 
-The `2.1.x` line uses Markdown-it 15 and its public plugin types. Consumers upgrading from an older major must remove `@types/markdown-it` and replace any `markdown-it/lib/*` imports with Markdown-it's public exports.
+The `2.2.x` line uses Markdown-it 15 and its public plugin types. Consumers upgrading from an older major must remove `@types/markdown-it` and replace any `markdown-it/lib/*` imports with Markdown-it's public exports.
 
 ```bash
 pnpm add @md-plugins/vite-md-plugin

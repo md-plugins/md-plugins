@@ -1,6 +1,6 @@
 {
   "name": "@md-plugins/quasar-app-extension-q-press",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Q-Press - Markdown documentation tooling for Quasar and Vite",
   "keywords": [
     "markdown",
