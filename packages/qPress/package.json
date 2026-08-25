@@ -59,11 +59,13 @@
     "markdown-it": "^15.0.0",
     "semver": "^7.8.5",
     "typescript": "~6.0.3",
-    "vite": "^8.2.1"
+    "vite": "^8.2.2"
   },
   "devDependencies": {
-    "@quasar/app-vite": "^3.6.0",
-    "@types/semver": "^7.8.0"
+    "@quasar/app-vite": "^3.8.0",
+    "@types/semver": "^7.8.0",
+    "quasar": "^2.26.0",
+    "vue": "^3.5.41"
   },
   "peerDependencies": {
     "@quasar/app-vite": ">=3.0.0",
