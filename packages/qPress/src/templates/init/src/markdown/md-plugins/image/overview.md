@@ -61,13 +61,13 @@ The official NPM name is `@md-plugins/md-plugin-image`.
 You can install the Image plugin using npm, yarn, pnpm, or bun. Choose your preferred method below:
 
 ```tabs
-<<| bash pnpm |>>
+<<| bash [icon=pnpm] pnpm |>>
 pnpm add @md-plugins/md-plugin-image
-<<| bash bun |>>
+<<| bash [icon=bun] bun |>>
 bun add @md-plugins/md-plugin-image
-<<| bash yarn |>>
+<<| bash [icon=yarn] yarn |>>
 yarn add @md-plugins/md-plugin-image
-<<| bash npm |>>
+<<| bash [icon=npm] npm |>>
 npm install @md-plugins/md-plugin-image
 ```
 

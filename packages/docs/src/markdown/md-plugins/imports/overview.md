@@ -42,13 +42,13 @@ The official NPM name is `@md-plugins/md-plugin-imports`.
 You can install the Imports plugin using npm, yarn, pnpm, or bun. Choose your preferred method below:
 
 ```tabs
-<<| bash pnpm |>>
+<<| bash [icon=pnpm] pnpm |>>
 pnpm add @md-plugins/md-plugin-imports
-<<| bash bun |>>
+<<| bash [icon=bun] bun |>>
 bun add @md-plugins/md-plugin-imports
-<<| bash yarn |>>
+<<| bash [icon=yarn] yarn |>>
 yarn add @md-plugins/md-plugin-imports
-<<| bash npm |>>
+<<| bash [icon=npm] npm |>>
 npm install @md-plugins/md-plugin-imports
 ```
 

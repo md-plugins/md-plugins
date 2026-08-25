@@ -526,26 +526,28 @@ Look for the `+` and `-` on individual lines at the far-left.
 
 ### Tabs
 
+Add `icon=<package-manager>` to a tab's attribute list to display its package-manager icon while keeping the text label. Q-Press bundles icons for `pnpm`, `npm`, `yarn`, and `bun`; an unknown icon name falls back to the text-only tab.
+
 ```tabs
-<<| bash pnpm |>>
+<<| bash [icon=pnpm] pnpm |>>
 pnpm add @md-plugins/md-plugin-codeblocks
-<<| bash bun |>>
+<<| bash [icon=bun] bun |>>
 bun add @md-plugins/md-plugin-codeblocks
-<<| bash yarn |>>
+<<| bash [icon=yarn] yarn |>>
 yarn add @md-plugins/md-plugin-codeblocks
-<<| bash npm |>>
+<<| bash [icon=npm] npm |>>
 npm install @md-plugins/md-plugin-codeblocks
 ```
 
 ````markup
 ```tabs
-<<| bash pnpm |>>
+<<| bash [icon=pnpm] pnpm |>>
 pnpm add @md-plugins/md-plugin-codeblocks
-<<| bash bun |>>
+<<| bash [icon=bun] bun |>>
 bun add @md-plugins/md-plugin-codeblocks
-<<| bash yarn |>>
+<<| bash [icon=yarn] yarn |>>
 yarn add @md-plugins/md-plugin-codeblocks
-<<| bash npm |>>
+<<| bash [icon=npm] npm |>>
 npm install @md-plugins/md-plugin-codeblocks
 ```
 ````
@@ -651,13 +653,13 @@ The official NPM name is `@md-plugins/md-plugin-codeblocks`.
 You can install the Codeblocks plugin using npm, yarn, pnpm, or bun. Choose your preferred method below:
 
 ```tabs
-<<| bash pnpm |>>
+<<| bash [icon=pnpm] pnpm |>>
 pnpm add @md-plugins/md-plugin-codeblocks
-<<| bash bun |>>
+<<| bash [icon=bun] bun |>>
 bun add @md-plugins/md-plugin-codeblocks
-<<| bash yarn |>>
+<<| bash [icon=yarn] yarn |>>
 yarn add @md-plugins/md-plugin-codeblocks
-<<| bash npm |>>
+<<| bash [icon=npm] npm |>>
 npm install @md-plugins/md-plugin-codeblocks
 ```
 

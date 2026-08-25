@@ -34,13 +34,13 @@ flowchart TD
 You can install the Vite Examples plugin using npm, yarn, pnpm, or bun. Choose your preferred method below:
 
 ```tabs
-<<| bash pnpm |>>
+<<| bash [icon=pnpm] pnpm |>>
 pnpm add @md-plugins/vite-examples-plugin
-<<| bash bun |>>
+<<| bash [icon=bun] bun |>>
 bun add @md-plugins/vite-examples-plugin
-<<| bash yarn |>>
+<<| bash [icon=yarn] yarn |>>
 yarn add @md-plugins/vite-examples-plugin
-<<| bash npm |>>
+<<| bash [icon=npm] npm |>>
 npm install @md-plugins/vite-examples-plugin
 ```
 

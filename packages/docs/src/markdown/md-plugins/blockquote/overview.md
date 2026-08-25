@@ -118,13 +118,13 @@ The official NPM name is `@md-plugins/md-plugin-blockquote`.
 You can install the Blockquote plugin using `npm`, `yarn`, `pnpm`, or `bun`. Choose your preferred method below:
 
 ```tabs
-<<| bash pnpm |>>
+<<| bash [icon=pnpm] pnpm |>>
 pnpm add @md-plugins/md-plugin-blockquote
-<<| bash bun |>>
+<<| bash [icon=bun] bun |>>
 bun add @md-plugins/md-plugin-blockquote
-<<| bash yarn |>>
+<<| bash [icon=yarn] yarn |>>
 yarn add @md-plugins/md-plugin-blockquote
-<<| bash npm |>>
+<<| bash [icon=npm] npm |>>
 npm install @md-plugins/md-plugin-blockquote
 ```
 

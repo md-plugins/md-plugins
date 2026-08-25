@@ -30,13 +30,13 @@ flowchart TD
 You can install the Mermaid plugin using npm, yarn, pnpm, or bun:
 
 ```tabs
-<<| bash pnpm |>>
+<<| bash [icon=pnpm] pnpm |>>
 pnpm add @md-plugins/md-plugin-mermaid mermaid
-<<| bash bun |>>
+<<| bash [icon=bun] bun |>>
 bun add @md-plugins/md-plugin-mermaid mermaid
-<<| bash yarn |>>
+<<| bash [icon=yarn] yarn |>>
 yarn add @md-plugins/md-plugin-mermaid mermaid
-<<| bash npm |>>
+<<| bash [icon=npm] npm |>>
 npm install @md-plugins/md-plugin-mermaid mermaid
 ```
 

@@ -44,18 +44,18 @@ Use ```tabs for install commands or alternate code samples:
 
 ````md
 ```tabs
-<<| bash pnpm |>>
+<<| bash [icon=pnpm] pnpm |>>
 pnpm add @md-plugins/vite-md-plugin
-<<| bash bun |>>
+<<| bash [icon=bun] bun |>>
 bun add @md-plugins/vite-md-plugin
-<<| bash yarn |>>
+<<| bash [icon=yarn] yarn |>>
 yarn add @md-plugins/vite-md-plugin
-<<| bash npm |>>
+<<| bash [icon=npm] npm |>>
 npm install @md-plugins/vite-md-plugin
 ```
 ````
 
-See [Codeblocks](/md-plugins/codeblocks/overview) for advanced tab labels, titles, and code-block options.
+The explicit `icon` attribute adds the bundled package-manager icon without removing the accessible text label. See [Codeblocks](/md-plugins/codeblocks/overview) for advanced tab labels, titles, and code-block options.
 
 ## Callouts And Details
 

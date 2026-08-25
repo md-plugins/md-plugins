@@ -17,13 +17,13 @@ element.
 ## Install
 
 ```tabs
-<<| bash pnpm |>>
+<<| bash [icon=pnpm] pnpm |>>
 pnpm add @md-plugins/search-ui
-<<| bash bun |>>
+<<| bash [icon=bun] bun |>>
 bun add @md-plugins/search-ui
-<<| bash yarn |>>
+<<| bash [icon=yarn] yarn |>>
 yarn add @md-plugins/search-ui
-<<| bash npm |>>
+<<| bash [icon=npm] npm |>>
 npm install @md-plugins/search-ui
 ```
 

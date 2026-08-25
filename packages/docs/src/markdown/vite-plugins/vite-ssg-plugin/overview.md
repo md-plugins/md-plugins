@@ -99,13 +99,13 @@ or accessible markup. It simply makes the route content available earlier and mo
 ## Installation
 
 ```tabs
-<<| bash pnpm |>>
+<<| bash [icon=pnpm] pnpm |>>
 pnpm add @md-plugins/vite-ssg-plugin
-<<| bash bun |>>
+<<| bash [icon=bun] bun |>>
 bun add @md-plugins/vite-ssg-plugin
-<<| bash yarn |>>
+<<| bash [icon=yarn] yarn |>>
 yarn add @md-plugins/vite-ssg-plugin
-<<| bash npm |>>
+<<| bash [icon=npm] npm |>>
 npm install @md-plugins/vite-ssg-plugin
 ```
 

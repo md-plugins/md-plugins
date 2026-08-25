@@ -191,13 +191,15 @@ Additonally, with the exception of `numbered`, you can use ranges to annotate mu
 
 Easily create tabbed interfaces for multiple code examples:
 
+When Q-Press renders the generated tab container, `icon` can select a bundled `pnpm`, `npm`, `yarn`, or `bun` icon. Other renderers may consume the generated `tab-icons` metadata themselves.
+
 ````markup
 ```tabs
-<<|js Tab 1|>>
-console.log('Hello from Tab 1');
+<<|bash [icon=pnpm] pnpm|>>
+pnpm add example-package
 
-<<|ts Tab 2|>>
-console.log('Hello from Tab 2');
+<<|bash [icon=npm] npm|>>
+npm install example-package
 ```
 ````
 

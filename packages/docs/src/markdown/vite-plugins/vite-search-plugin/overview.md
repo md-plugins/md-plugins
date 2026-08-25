@@ -60,13 +60,13 @@ front-end component that reads the generated JSON index.
 ## Installation
 
 ```tabs
-<<| bash pnpm |>>
+<<| bash [icon=pnpm] pnpm |>>
 pnpm add -D @md-plugins/vite-search-plugin
-<<| bash bun |>>
+<<| bash [icon=bun] bun |>>
 bun add -D @md-plugins/vite-search-plugin
-<<| bash yarn |>>
+<<| bash [icon=yarn] yarn |>>
 yarn add -D @md-plugins/vite-search-plugin
-<<| bash npm |>>
+<<| bash [icon=npm] npm |>>
 npm install -D @md-plugins/vite-search-plugin
 ```
 

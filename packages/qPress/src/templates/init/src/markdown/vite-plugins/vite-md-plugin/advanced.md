@@ -158,13 +158,13 @@ viteMdPlugin({
 The `viteMdPlugin` already includes the md-plugins used by Q-Press, including `::: steps` support, plus inserted text support for `++text++`. If you need additional Markdown-it syntax, install the plugin and pass it through `config.markdownItPlugins`.
 
 ```tabs
-<<| bash pnpm |>>
+<<| bash [icon=pnpm] pnpm |>>
 pnpm add markdown-it-mark markdown-it-sub markdown-it-sup markdown-it-footnote
-<<| bash bun |>>
+<<| bash [icon=bun] bun |>>
 bun add markdown-it-mark markdown-it-sub markdown-it-sup markdown-it-footnote
-<<| bash yarn |>>
+<<| bash [icon=yarn] yarn |>>
 yarn add markdown-it-mark markdown-it-sub markdown-it-sup markdown-it-footnote
-<<| bash npm |>>
+<<| bash [icon=npm] npm |>>
 npm install markdown-it-mark markdown-it-sub markdown-it-sup markdown-it-footnote
 ```
 

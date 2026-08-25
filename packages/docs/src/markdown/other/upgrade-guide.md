@@ -52,13 +52,13 @@ The core Markdown-it plugins and direct Vite plugins are not Quasar-only. You ca
 For Q-Press projects, update the app extension package and then invoke it:
 
 ```tabs
-<<| bash pnpm |>>
+<<| bash [icon=pnpm] pnpm |>>
 pnpm up @md-plugins/quasar-app-extension-q-press
-<<| bash npm |>>
+<<| bash [icon=npm] npm |>>
 npm install @md-plugins/quasar-app-extension-q-press
-<<| bash yarn |>>
+<<| bash [icon=yarn] yarn |>>
 yarn add @md-plugins/quasar-app-extension-q-press
-<<| bash bun |>>
+<<| bash [icon=bun] bun |>>
 bun add @md-plugins/quasar-app-extension-q-press
 ```
 
@@ -90,13 +90,13 @@ If your project carries local edits in generated Q-Press files and you cannot ov
 Install the search packages if they were not added during the invoke step:
 
 ```tabs
-<<| bash pnpm |>>
+<<| bash [icon=pnpm] pnpm |>>
 pnpm add -D @md-plugins/search-ui @md-plugins/vite-search-plugin
-<<| bash npm |>>
+<<| bash [icon=npm] npm |>>
 npm install -D @md-plugins/search-ui @md-plugins/vite-search-plugin
-<<| bash yarn |>>
+<<| bash [icon=yarn] yarn |>>
 yarn add -D @md-plugins/search-ui @md-plugins/vite-search-plugin
-<<| bash bun |>>
+<<| bash [icon=bun] bun |>>
 bun add -D @md-plugins/search-ui @md-plugins/vite-search-plugin
 ```
 
@@ -197,13 +197,13 @@ After changing breakpoints, resize the docs site around each `mq` value. At wide
 For direct Vite plugin usage, update the packages you consume:
 
 ```tabs
-<<| bash pnpm |>>
+<<| bash [icon=pnpm] pnpm |>>
 pnpm up @md-plugins/vite-md-plugin @md-plugins/vite-examples-plugin
-<<| bash npm |>>
+<<| bash [icon=npm] npm |>>
 npm install @md-plugins/vite-md-plugin @md-plugins/vite-examples-plugin
-<<| bash yarn |>>
+<<| bash [icon=yarn] yarn |>>
 yarn add @md-plugins/vite-md-plugin @md-plugins/vite-examples-plugin
-<<| bash bun |>>
+<<| bash [icon=bun] bun |>>
 bun add @md-plugins/vite-md-plugin @md-plugins/vite-examples-plugin
 ```
 
@@ -214,13 +214,13 @@ Q-Press applications should not install or import `@md-plugins/shared` directly.
 If your project has this dependency, remove it from the consuming app:
 
 ```tabs
-<<| bash pnpm |>>
+<<| bash [icon=pnpm] pnpm |>>
 pnpm remove @md-plugins/shared
-<<| bash npm |>>
+<<| bash [icon=npm] npm |>>
 npm uninstall @md-plugins/shared
-<<| bash yarn |>>
+<<| bash [icon=yarn] yarn |>>
 yarn remove @md-plugins/shared
-<<| bash bun |>>
+<<| bash [icon=bun] bun |>>
 bun remove @md-plugins/shared
 ```
 

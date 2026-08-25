@@ -55,26 +55,26 @@ Keep project-specific changes in project-owned folders such as `src/markdown`, `
 Install `markdown-it` and its types:
 
 ```tabs
-<<| bash pnpm |>>
+<<| bash [icon=pnpm] pnpm |>>
 pnpm i -D markdown-it
-<<| bash bun |>>
+<<| bash [icon=bun] bun |>>
 bun add -d markdown-it
-<<| bash yarn |>>
+<<| bash [icon=yarn] yarn |>>
 yarn add -D markdown-it
-<<| bash npm |>>
+<<| bash [icon=npm] npm |>>
 npm i -D markdown-it
 ```
 
 Q-Press adds `mermaid`, `shiki`, `@md-plugins/search-ui`, `@md-plugins/vite-search-plugin`, `@md-plugins/vite-ssg-plugin`, and `@vue/server-renderer` to your project dev dependencies when invoked. If you are wiring generated files manually, add them yourself:
 
 ```tabs
-<<| bash pnpm |>>
+<<| bash [icon=pnpm] pnpm |>>
 pnpm add -D mermaid shiki @md-plugins/search-ui @md-plugins/vite-search-plugin @md-plugins/vite-ssg-plugin @vue/server-renderer
-<<| bash bun |>>
+<<| bash [icon=bun] bun |>>
 bun add -d mermaid shiki @md-plugins/search-ui @md-plugins/vite-search-plugin @md-plugins/vite-ssg-plugin @vue/server-renderer
-<<| bash yarn |>>
+<<| bash [icon=yarn] yarn |>>
 yarn add -D mermaid shiki @md-plugins/search-ui @md-plugins/vite-search-plugin @md-plugins/vite-ssg-plugin @vue/server-renderer
-<<| bash npm |>>
+<<| bash [icon=npm] npm |>>
 npm i -D mermaid shiki @md-plugins/search-ui @md-plugins/vite-search-plugin @md-plugins/vite-ssg-plugin @vue/server-renderer
 ```
 
