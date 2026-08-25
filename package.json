@@ -38,13 +38,13 @@
     "test": "vitest run"
   },
   "devDependencies": {
-    "@types/node": "^26.2.0",
+    "@types/node": "^26.3.0",
     "@vitest/coverage-istanbul": "^4.1.11",
     "happy-dom": "^20.11.6",
-    "npm-check-updates": "^23.0.2",
+    "npm-check-updates": "^23.1.0",
     "obuild": "^0.4.38",
-    "oxfmt": "^0.64.0",
-    "oxlint": "^1.79.0",
+    "oxfmt": "^0.65.0",
+    "oxlint": "^1.80.0",
     "typescript": "~6.0.3",
     "vitest": "^4.1.11"
   },
@@ -52,6 +52,6 @@
     "node": ">=22.13",
     "pnpm": ">=11.5.0"
   },
-  "packageManager": "pnpm@11.22.0",
+  "packageManager": "pnpm@11.24.0",
   "access": "private"
 }

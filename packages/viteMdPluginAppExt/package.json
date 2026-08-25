@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "@md-plugins/vite-md-plugin": "workspace:*",
-    "@quasar/app-vite": "^3.8.0"
+    "@quasar/app-vite": "^3.8.1"
   },
   "peerDependencies": {
     "@quasar/app-vite": ">=3.0.0"
