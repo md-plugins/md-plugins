@@ -208,6 +208,33 @@ const two = 2
     expect(renderedHTML).toContain('min-height:9rem')
   })
 
+  it('passes explicit tab icon metadata to the tab container', () => {
+    const md = new MarkdownIt()
+    md.use(codeblocksPlugin, {
+      containerComponent: 'MarkdownPrerender',
+      tabPanelTagName: 'q-tab-panel',
+      tabPanelTagClass: 'q-pa-none',
+    })
+
+    const markdownInput = `
+\`\`\`tabs
+<<| bash [icon=pnpm] pnpm |>>
+pnpm add example
+<<| bash [icon=npm numbered] npm |>>
+npm install example
+<<| bash yarn |>>
+yarn add example
+\`\`\`
+      `.trim()
+
+    const renderedHTML = md.render(markdownInput)
+
+    expect(renderedHTML).toContain(`:tabs="[ 'pnpm', 'npm', 'yarn' ]"`)
+    expect(renderedHTML).toContain(`:tab-icons="{ 'pnpm': 'pnpm', 'npm': 'npm' }"`)
+    expect(renderedHTML).toContain('<q-tab-panel class="q-pa-none" name="yarn">')
+    expect(renderedHTML).toContain('<span class="c-lpref">1</span>')
+  })
+
   it('falls back gracefully for unsupported languages', () => {
     const md = new MarkdownIt()
     md.use(codeblocksPlugin)

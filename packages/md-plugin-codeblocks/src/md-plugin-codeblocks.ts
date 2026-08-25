@@ -128,6 +128,7 @@ export const codeblocksPlugin: MarkdownItPluginWithOptions<CodeblockPluginOption
   function extractTabs(content: string) {
     const list: string[] = []
     const tabMap: TabMap = {}
+    const iconMap: Record<string, string> = {}
 
     let currentTabName: string | null = null
 
@@ -149,6 +150,10 @@ export const codeblocksPlugin: MarkdownItPluginWithOptions<CodeblockPluginOption
           },
           content: [],
         }
+
+        if (tabMap[currentTabName].attrs.icon !== undefined) {
+          iconMap[currentTabName] = String(tabMap[currentTabName].attrs.icon)
+        }
       } else if (currentTabName) {
         tabMap[currentTabName].content.push(line)
       }
@@ -158,6 +163,12 @@ export const codeblocksPlugin: MarkdownItPluginWithOptions<CodeblockPluginOption
 
     return {
       param: `[ ${list.map((tab) => `'${tab}'`).join(', ')} ]`,
+      iconParam:
+        Object.keys(iconMap).length > 0
+          ? `{ ${Object.entries(iconMap)
+              .map(([tab, icon]) => `'${tab}': '${icon}'`)
+              .join(', ')} }`
+          : undefined,
       content: list
         .map((tabName) => {
           const props = tabMap[tabName]
@@ -399,7 +410,7 @@ export const codeblocksPlugin: MarkdownItPluginWithOptions<CodeblockPluginOption
     return (
       `<${containerComponent}${attrs.title !== null ? ` title="${attrs.title}"` : ''}${
         attrs.tabs !== void 0 ? ` :tabs="${attrs.tabs.param}"` : ''
-      }>` +
+      }${attrs.tabs?.iconParam !== undefined ? ` :tab-icons="${attrs.tabs.iconParam}"` : ''}>` +
       (attrs.tabs !== void 0 ? attrs.tabs.content : getHighlightedContent(token.content, attrs)) +
       `</${containerComponent}>`
     )
